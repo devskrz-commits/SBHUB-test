@@ -3,123 +3,135 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sportsbook Hub - Customizable Timezones</title>
+  <title>Sportsbook Hub - Glassmorphic Sidebar</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
     :root {
-      --bg-overlay: rgba(13, 17, 23, 0.65);
-      --sidebar-bg: rgba(22, 27, 34, 0.92);
-      --card-bg: rgba(22, 27, 34, 0.88);
-      --btn-bg: rgba(45, 55, 72, 0.75);
+      --bg-overlay: rgba(10, 15, 26, 0.25);
+      --glass-bg: rgba(22, 27, 34, 0.45);
+      --glass-bg-hover: rgba(255, 255, 255, 0.20);
+      --glass-border: rgba(255, 255, 255, 0.22);
+      --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
       --text-main: #ffffff;
-      --text-sub: #9ca3af;
-      --accent-color: #60a5fa;
-      --accent-hover: #2563eb;
-      --border-color: rgba(255, 255, 255, 0.12);
+      --text-sub: rgba(255, 255, 255, 0.75);
+      --accent-glow: #60a5fa;
+      --card-blur: blur(16px);
     }
 
     body.light-mode {
-      --bg-overlay: rgba(240, 244, 248, 0.4);
-      --sidebar-bg: rgba(255, 255, 255, 0.92);
-      --card-bg: rgba(255, 255, 255, 0.88);
-      --btn-bg: rgba(226, 232, 240, 0.85);
+      --bg-overlay: rgba(240, 244, 248, 0.15);
+      --glass-bg: rgba(255, 255, 255, 0.40);
+      --glass-bg-hover: rgba(255, 255, 255, 0.75);
+      --glass-border: rgba(255, 255, 255, 0.5);
+      --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
       --text-main: #0f172a;
       --text-sub: #475569;
-      --accent-color: #2563eb;
-      --accent-hover: #1d4ed8;
-      --border-color: rgba(0, 0, 0, 0.12);
+      --accent-glow: #2563eb;
+      --card-blur: blur(20px);
     }
 
     body {
       min-height: 100vh;
       background-color: #0d1117;
       background-image: linear-gradient(var(--bg-overlay), var(--bg-overlay)), 
+                        url('sb-hub.jpg'),
                         url('sb-hub.jpeg'),
-                        url('https://raw.githubusercontent.com/devskrz-commits/SBHUB-test/main/sb-hub.jpeg?raw=true');
+                        url('sb-hub.png'),
+                        url('https://raw.githubusercontent.com/devskrz-commits/SBHUB-test/main/sb-hub.jpg');
       background-repeat: no-repeat;
       background-position: center center;
       background-attachment: fixed;
       background-size: cover;
       color: var(--text-main);
       display: flex;
-      overflow-x: hidden;
+      overflow: hidden;
       transition: background 0.3s ease, color 0.3s ease;
     }
 
-    /* Sidebar Layout */
+    /* Glass Sidebar Layout */
     .sidebar {
       position: fixed;
-      top: 0;
-      left: 0;
-      height: 100%;
+      top: 15px;
+      left: 15px;
+      height: calc(100vh - 30px);
       width: 250px;
-      background: var(--sidebar-bg);
-      backdrop-filter: blur(16px);
-      padding: 12px 14px;
-      transition: all 0.4s ease;
+      background: var(--glass-bg);
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 16px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 100;
-      border-right: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
-      box-shadow: 4px 0 25px rgba(0,0,0,0.5);
+      box-shadow: var(--glass-shadow);
     }
 
+    /* Collapsed Sidebar State */
     .sidebar.close {
       width: 78px;
     }
 
     .sidebar .logo-details {
-      height: 50px;
+      height: 45px;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 0 4px;
     }
 
     .sidebar .logo-details .logo_name {
-      color: var(--accent-color);
-      font-size: 15px;
+      color: var(--text-main);
+      font-size: 14px;
       font-weight: 800;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       opacity: 1;
-      transition: 0.3s ease;
+      transition: opacity 0.3s ease;
       white-space: nowrap;
     }
 
     .sidebar.close .logo-details .logo_name {
+      display: none;
       opacity: 0;
       pointer-events: none;
     }
 
     .sidebar #btn {
-      font-size: 24px;
+      font-size: 22px;
       cursor: pointer;
       color: var(--text-main);
-      line-height: 50px;
       transition: all 0.3s ease;
+    }
+
+    /* Keep toggle button inside the sidebar track when collapsed */
+    .sidebar.close .logo-details {
+      justify-content: center;
     }
 
     .sidebar.close #btn {
       margin: 0 auto;
     }
 
+    /* Search Box */
     .sidebar .search-box {
       position: relative;
-      height: 46px;
+      height: 42px;
       width: 100%;
-      margin-top: 10px;
-      background: var(--btn-bg);
-      border-radius: 10px;
+      margin-top: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
       display: flex;
       align-items: center;
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--glass-border);
       transition: all 0.3s ease;
     }
 
@@ -127,9 +139,9 @@
       position: absolute;
       left: 0;
       height: 100%;
-      width: 50px;
+      width: 46px;
       text-align: center;
-      line-height: 46px;
+      line-height: 42px;
       font-size: 18px;
       color: var(--text-main);
       cursor: pointer;
@@ -141,8 +153,8 @@
       outline: none;
       border: none;
       background: transparent;
-      padding-left: 50px;
-      font-size: 13px;
+      padding-left: 46px;
+      font-size: 12px;
       font-weight: 600;
       color: var(--text-main);
     }
@@ -152,6 +164,7 @@
       pointer-events: none;
     }
 
+    /* Navigation Items */
     .sidebar .nav-list {
       margin-top: 15px;
       display: flex;
@@ -173,9 +186,9 @@
 
     .sidebar li a {
       display: flex;
-      height: 46px;
+      height: 44px;
       width: 100%;
-      border-radius: 10px;
+      border-radius: 12px;
       align-items: center;
       text-decoration: none;
       transition: all 0.3s ease;
@@ -185,18 +198,15 @@
     }
 
     .sidebar li a:hover, .sidebar li a.active {
-      background: var(--accent-hover);
-      border-color: var(--accent-color);
-    }
-
-    .sidebar li a:hover *, .sidebar li a.active * {
-      color: #ffffff !important;
+      background: var(--glass-bg-hover);
+      border-color: var(--glass-border);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
 
     .sidebar li i {
-      min-width: 50px;
+      min-width: 46px;
       text-align: center;
-      font-size: 19px;
+      font-size: 18px;
       color: var(--text-main);
     }
 
@@ -219,18 +229,19 @@
       top: -20px;
       left: calc(100% + 15px);
       z-index: 3;
-      background: var(--sidebar-bg);
+      background: var(--glass-bg);
+      backdrop-filter: var(--card-blur);
       color: var(--text-main);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
       padding: 6px 14px;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 11px;
       font-weight: 700;
       opacity: 0;
       white-space: nowrap;
       pointer-events: none;
       transition: 0s;
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
     }
 
     .sidebar.close li:hover .tooltip {
@@ -244,16 +255,22 @@
     .sidebar li.profile {
       position: absolute;
       height: 55px;
-      width: 100%;
-      left: 0;
-      bottom: 0;
-      padding: 10px 14px;
-      background: var(--btn-bg);
-      border-top: 1px solid var(--border-color);
+      width: calc(100% - 32px);
+      left: 16px;
+      bottom: 16px;
+      padding: 10px 12px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       transition: all 0.4s ease;
+    }
+
+    .sidebar.close li.profile {
+      justify-content: center;
+      padding: 10px 0;
     }
 
     .sidebar .profile-details {
@@ -278,54 +295,70 @@
     }
 
     .sidebar.close .profile .name_job {
+      display: none;
       opacity: 0;
       pointer-events: none;
     }
 
-    /* Main Container */
-    .main-content {
-      margin-left: 250px;
-      padding: 30px;
-      width: calc(100% - 250px);
-      transition: all 0.4s ease;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      align-items: center;
-      min-height: 100vh;
+    /* Main Workspace */
+    .main-workspace {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    .sidebar.close ~ .main-content {
-      margin-left: 78px;
-      width: calc(100% - 78px);
-    }
-
-    .content-card {
-      width: 100%;
-      max-width: 850px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      backdrop-filter: blur(16px);
-      border-radius: 14px;
+    /* Draggable Glass Cards */
+    .draggable-card {
+      position: absolute;
+      width: 700px;
+      max-width: calc(100vw - 140px);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+      border-radius: 20px;
       padding: 20px 24px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      box-shadow: var(--glass-shadow);
+      user-select: none;
+      z-index: 10;
+    }
+
+    .draggable-card:active {
+      cursor: grabbing;
     }
 
     .card-header-title {
       font-size: 13px;
       font-weight: 800;
-      color: var(--accent-color);
+      color: var(--accent-glow);
       letter-spacing: 1px;
       text-transform: uppercase;
       padding-bottom: 10px;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--glass-border);
       margin-bottom: 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      cursor: grab;
     }
 
-    /* Dynamic Timezone Control & Grid Layout */
+    .card-header-title:active {
+      cursor: grabbing;
+    }
+
+    .drag-hint {
+      font-size: 10px;
+      color: var(--text-sub);
+      font-weight: normal;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Timezone Controls */
     .tz-controls {
       display: flex;
       gap: 10px;
@@ -333,11 +366,11 @@
     }
 
     .tz-select {
-      background: var(--btn-bg);
+      background: var(--glass-bg);
       color: var(--text-main);
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--glass-border);
       padding: 6px 10px;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 11px;
       font-weight: 700;
       outline: none;
@@ -345,16 +378,16 @@
     }
 
     .tz-select option {
-      background: #1e293b;
+      background: #0f172a;
       color: #fff;
     }
 
     .add-tz-btn {
-      background: var(--accent-hover);
+      background: var(--accent-glow);
       color: #fff;
       border: none;
       padding: 6px 12px;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 11px;
       font-weight: 800;
       cursor: pointer;
@@ -362,7 +395,8 @@
     }
 
     .add-tz-btn:hover {
-      background: var(--accent-color);
+      opacity: 0.9;
+      transform: scale(1.02);
     }
 
     .timezone-grid {
@@ -373,17 +407,17 @@
 
     .time-card {
       position: relative;
-      background: var(--btn-bg);
-      border: 1px solid var(--border-color);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--glass-border);
       padding: 12px;
-      border-radius: 8px;
+      border-radius: 12px;
       text-align: center;
     }
 
     .time-card .remove-btn {
       position: absolute;
       top: 4px;
-      right: 6px;
+      right: 8px;
       font-size: 12px;
       color: var(--text-sub);
       cursor: pointer;
@@ -397,7 +431,7 @@
     .time-card .zone-name {
       font-size: 10px;
       font-weight: 800;
-      color: var(--accent-color);
+      color: var(--accent-glow);
       margin-bottom: 4px;
       text-transform: uppercase;
     }
@@ -408,36 +442,36 @@
       color: var(--text-main);
     }
 
-    /* Category Links Grid */
+    /* Links Grid */
     .links-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 12px;
     }
 
     .sub-link-item {
-      background: var(--btn-bg);
+      background: rgba(255, 255, 255, 0.08);
       color: var(--text-main);
       padding: 12px;
       font-size: 11px;
       font-weight: 700;
-      border-radius: 8px;
+      border-radius: 12px;
       text-decoration: none;
       text-align: center;
       transition: all 0.2s ease;
       text-transform: uppercase;
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--glass-border);
     }
 
     .sub-link-item:hover {
-      background: var(--accent-hover);
+      background: var(--glass-bg-hover);
       color: #ffffff;
-      border-color: var(--accent-color);
+      border-color: var(--accent-glow);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
 
-    /* Modal Component */
+    /* Settings Modal */
     .modal {
       display: none;
       position: fixed;
@@ -445,20 +479,21 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
       z-index: 200;
       justify-content: center;
       align-items: center;
     }
 
     .modal-content {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: var(--card-blur);
       padding: 24px;
-      border-radius: 12px;
-      width: 320px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      border-radius: 16px;
+      width: 340px;
+      box-shadow: var(--glass-shadow);
     }
 
     .setting-row {
@@ -466,6 +501,29 @@
       justify-content: space-between;
       align-items: center;
       margin-top: 15px;
+    }
+
+    .action-btn {
+      width: 100%;
+      margin-top: 18px;
+      background: var(--accent-glow);
+      color: #fff;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
     }
 
     .switch {
@@ -485,9 +543,10 @@
       position: absolute;
       cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #4b5563;
+      background-color: rgba(255, 255, 255, 0.2);
       transition: .3s;
       border-radius: 22px;
+      border: 1px solid var(--glass-border);
     }
 
     .slider:before {
@@ -495,8 +554,8 @@
       content: "";
       height: 16px;
       width: 16px;
-      left: 3px;
-      bottom: 3px;
+      left: 2px;
+      bottom: 2px;
       background-color: white;
       transition: .3s;
       border-radius: 50%;
@@ -513,14 +572,12 @@
 </head>
 <body>
 
-  <!-- Sidebar Component -->
-  <div class="sidebar">
+  <div class="sidebar close">
     <div class="logo-details">
       <div class="logo_name">SPORTSBOOK HUB</div>
       <i class='bx bx-menu' id="btn"></i>
     </div>
 
-    <!-- Search Bar -->
     <div class="search-box">
       <i class='bx bx-search' onclick="expandSidebar()"></i>
       <input type="text" id="searchInput" placeholder="Search..." onkeyup="handleSearch()">
@@ -540,13 +597,11 @@
     </li>
   </div>
 
-  <!-- Main View Area -->
-  <section class="main-content">
+  <div class="main-workspace">
     
-    <!-- Timezone Control Box (Max 3 Clocks) -->
-    <div class="content-card">
+    <div class="draggable-card" id="timezonesCard" style="top: 25px; left: 120px;">
       <div class="card-header-title">
-        <span>LIVE TIMEZONES (MAX 3)</span>
+        <span>LIVE TIMEZONES (MAX 3) <span class="drag-hint"><i class='bx bx-move'></i> Drag to move</span></span>
         <div class="tz-controls">
           <select class="tz-select" id="tzPicker">
             <option value="UTC|UTC / GMT">UTC / GMT</option>
@@ -563,28 +618,26 @@
           <button class="add-tz-btn" onclick="addTimezone()">+ ADD</button>
         </div>
       </div>
-      <div class="timezone-grid" id="timezoneGrid">
-        <!-- Up to 3 dynamic clocks -->
-      </div>
+      <div class="timezone-grid" id="timezoneGrid"></div>
     </div>
 
-    <!-- Active Category Links View -->
-    <div class="content-card">
-      <div class="card-header-title" id="activeCategoryTitle">
-        SELECT A CATEGORY
+    <div class="draggable-card" id="linksCard" style="top: 210px; left: 120px;">
+      <div class="card-header-title">
+        <span id="activeCategoryTitle">SELECT A CATEGORY</span>
+        <span class="drag-hint"><i class='bx bx-move'></i> Drag to move</span>
       </div>
       <div class="links-grid" id="linksGrid"></div>
     </div>
 
-  </section>
+  </div>
 
-  <!-- Settings Modal Popup -->
   <div class="modal" id="settingsModal">
     <div class="modal-content">
       <div class="card-header-title">
         <span>SETTINGS</span>
         <i class='bx bx-x' style="cursor:pointer; font-size: 22px;" onclick="toggleModal()"></i>
       </div>
+
       <div class="setting-row">
         <span style="font-size: 12px; font-weight: 700;">Daylight Mode</span>
         <label class="switch">
@@ -592,6 +645,10 @@
           <span class="slider"></span>
         </label>
       </div>
+
+      <button class="action-btn" id="saveLayoutBtn" onclick="saveLayoutToURL()">
+        <i class='bx bx-link-external'></i> SAVE LAYOUT & COPY LINK
+      </button>
     </div>
   </div>
 
@@ -673,7 +730,6 @@
       }
     ];
 
-    // Default Selected Active Timezones (Max 3)
     let activeTimezones = [
       { zone: "UTC", name: "UTC / GMT" },
       { zone: "America/New_York", name: "US East (EST)" },
@@ -756,7 +812,6 @@
       sidebar.classList.remove("close");
     }
 
-    /* Dynamic Timezone Management (Strict Max 3) */
     function addTimezone() {
       if (activeTimezones.length >= 3) {
         alert("Maximum of 3 timezone clocks allowed at once. Please remove one first.");
@@ -766,7 +821,6 @@
       const picker = document.getElementById("tzPicker");
       const [zone, name] = picker.value.split("|");
 
-      // Prevent duplicate additions
       if (activeTimezones.some(tz => tz.zone === zone)) {
         alert("This timezone is already displayed.");
         return;
@@ -825,14 +879,103 @@
       }
     }
 
+    function saveLayoutToURL() {
+      const tzCard = document.getElementById("timezonesCard");
+      const linksCard = document.getElementById("linksCard");
+
+      const layoutData = {
+        tzTop: tzCard.offsetTop,
+        tzLeft: tzCard.offsetLeft,
+        lkTop: linksCard.offsetTop,
+        lkLeft: linksCard.offsetLeft
+      };
+
+      const params = new URLSearchParams(window.location.search);
+      params.set("tzTop", layoutData.tzTop);
+      params.set("tzLeft", layoutData.tzLeft);
+      params.set("lkTop", layoutData.lkTop);
+      params.set("lkLeft", layoutData.lkLeft);
+
+      const shareableURL = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+      window.history.replaceState({}, '', shareableURL);
+
+      navigator.clipboard.writeText(shareableURL).then(() => {
+        const btn = document.getElementById("saveLayoutBtn");
+        btn.innerHTML = "<i class='bx bx-check'></i> COPIED TO CLIPBOARD!";
+        setTimeout(() => {
+          btn.innerHTML = "<i class='bx bx-link-external'></i> SAVE LAYOUT & COPY LINK";
+        }, 2000);
+      });
+    }
+
+    function restoreLayoutFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const tzTop = params.get("tzTop");
+      const tzLeft = params.get("tzLeft");
+      const lkTop = params.get("lkTop");
+      const lkLeft = params.get("lkLeft");
+
+      if (tzTop && tzLeft) {
+        const tzCard = document.getElementById("timezonesCard");
+        tzCard.style.top = `${tzTop}px`;
+        tzCard.style.left = `${tzLeft}px`;
+      }
+
+      if (lkTop && lkLeft) {
+        const linksCard = document.getElementById("linksCard");
+        linksCard.style.top = `${lkTop}px`;
+        linksCard.style.left = `${lkLeft}px`;
+      }
+    }
+
+    let zIndexCounter = 10;
+
+    function makeElementDraggable(element) {
+      let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+      element.onmousedown = function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
+          return;
+        }
+
+        e.preventDefault();
+        zIndexCounter++;
+        element.style.zIndex = zIndexCounter;
+
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+      };
+
+      function elementDrag(e) {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+
+        element.style.top = (element.offsetTop - pos2) + "px";
+        element.style.left = (element.offsetLeft - pos1) + "px";
+      }
+
+      function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+      }
+    }
+
+    document.querySelectorAll(".draggable-card").forEach(makeElementDraggable);
+
     closeBtn.addEventListener("click", () => {
       sidebar.classList.toggle("close");
     });
 
-    // Init Execution
     renderSidebar();
     selectCategory(0);
     updateClocks();
+    restoreLayoutFromURL();
     setInterval(updateClocks, 1000);
   </script>
 </body>
