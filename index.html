@@ -13,8 +13,8 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      /* Background setup using sb-hub.jpg as a full cover wallpaper with dark overlay for readability */
-      background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('sb-hub.jpg') no-repeat center center fixed;
+      /* Background setup pointing to sb-hub.jpeg with a dark overlay for contrast */
+      background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('sb-hub.jpeg') no-repeat center center fixed;
       background-size: cover;
       color: #ffffff;
       min-height: 100vh;
@@ -114,4 +114,280 @@
 
     .main-btn:hover, .main-btn.active {
       background: #2563eb;
-      box-shadow: 0 0
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.8);
+    }
+
+    /* Right Sidebar Box for Sub-Menu Items */
+    .right-sidebar {
+      position: fixed;
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%) translateX(20px);
+      width: 280px;
+      max-height: 80vh;
+      background: rgba(37, 40, 44, 0.92);
+      border: 1px solid #374151;
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 200;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+      backdrop-filter: blur(10px);
+    }
+
+    .right-sidebar.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(-50%) translateX(0);
+    }
+
+    .sidebar-header {
+      font-size: 13px;
+      font-weight: 800;
+      color: #60a5fa;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #374151;
+      text-align: center;
+    }
+
+    .sidebar-content {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      max-height: calc(80vh - 60px);
+      padding-right: 4px;
+    }
+
+    .sidebar-content::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .sidebar-content::-webkit-scrollbar-thumb {
+      background: #4b5563;
+      border-radius: 4px;
+    }
+
+    .sub-link {
+      background: #374151;
+      color: #e5e7eb;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+      text-align: center;
+    }
+
+    .sub-link:hover {
+      background: #3b82f6;
+      color: #ffffff;
+      transform: translateX(-2px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="viewport-center">
+    <div class="central-console" onclick="toggleMainHub()">
+      <div class="mascot-icon">🐭</div>
+      <div class="console-title">MAIN HUB</div>
+    </div>
+
+    <div class="button-ring" id="mainRing"></div>
+  </div>
+
+  <div class="right-sidebar" id="rightSidebar">
+    <div class="sidebar-header" id="sidebarTitle">CATEGORY</div>
+    <div class="sidebar-content" id="sidebarContent"></div>
+  </div>
+
+  <script>
+    const menuData = [
+      {
+        category: "INTERNAL",
+        subs: [
+          { name: "DAILY DUTY", url: "#" },
+          { name: "ROTA", url: "#" }
+        ]
+      },
+      {
+        category: "DAILY TASK",
+        subs: [
+          { name: "EDGE BOOST EXCEL", url: "#" },
+          { name: "IBET BOOST EXCEL", url: "#" },
+          { name: "EDGE BOOST SYS", url: "#" },
+          { name: "IBET BOOST SYS", url: "#" }
+        ]
+      },
+      {
+        category: "DAILY MONITORING",
+        subs: [
+          { name: "GREEN TRACKER", url: "#" },
+          { name: "RED TRACKER", url: "#" },
+          { name: "ORANGE TRACKER", url: "#" },
+          { name: "GREEN CRM", url: "#" },
+          { name: "RED CRM", url: "#" }
+        ]
+      },
+      {
+        category: "BETRADAR",
+        subs: [
+          { name: "MTS", url: "#" },
+          { name: "PORTAL", url: "#" }
+        ]
+      },
+      {
+        category: "OWN BRANDS",
+        subs: [
+          { name: "7A", url: "#" },
+          { name: "QBET", url: "#" },
+          { name: "30BET", url: "#" },
+          { name: "55BET", url: "#" },
+          { name: "GQBET", url: "#" },
+          { name: "BVBET", url: "#" },
+          { name: "IBET", url: "#" }
+        ]
+      },
+      {
+        category: "PRICE REFERENCES",
+        subs: [
+          { name: "FLASHSCORE", url: "#" },
+          { name: "PINNACLE", url: "#" },
+          { name: "ODDSCHECKER", url: "#" },
+          { name: "ODDSPORTAL", url: "#" },
+          { name: "GGBET", url: "#" },
+          { name: "BETSAPI", url: "#" },
+          { name: "SOFASCORE", url: "#" },
+          { name: "MARATHON", url: "#" },
+          { name: "FONBET", url: "#" }
+        ]
+      },
+      {
+        category: "SOP's",
+        subs: [
+          { name: "WORKPLACE", url: "#" },
+          { name: "CONFLUENCE", url: "#" },
+          { name: "HANDOVER", url: "#" }
+        ]
+      }
+    ];
+
+    const mainRing = document.getElementById('mainRing');
+    const rightSidebar = document.getElementById('rightSidebar');
+    const sidebarTitle = document.getElementById('sidebarTitle');
+    const sidebarContent = document.getElementById('sidebarContent');
+    
+    let isHubOpen = false;
+    let activeMainIndex = null;
+
+    function setupMainButtons() {
+      const radius = 190;
+      const total = menuData.length;
+
+      menuData.forEach((item, index) => {
+        const angle = (index / total) * 2 * Math.PI - (Math.PI / 2);
+        const x = radius * Math.cos(angle);
+        const y = radius * Math.sin(angle);
+
+        const btn = document.createElement('button');
+        btn.className = 'nav-btn main-btn';
+        btn.innerText = item.category;
+        btn.style.left = `${x}px`;
+        btn.style.top = `${y}px`;
+        
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          toggleSubMenu(index);
+        };
+
+        mainRing.appendChild(btn);
+      });
+    }
+
+    function toggleMainHub() {
+      isHubOpen = !isHubOpen;
+      const mainBtns = mainRing.querySelectorAll('.main-btn');
+
+      if (isHubOpen) {
+        mainBtns.forEach((btn, i) => {
+          setTimeout(() => btn.classList.add('visible'), i * 30);
+        });
+      } else {
+        closeAll();
+      }
+    }
+
+    function toggleSubMenu(index) {
+      const mainBtns = mainRing.querySelectorAll('.main-btn');
+
+      if (activeMainIndex === index) {
+        hideSidebar();
+        mainBtns[index].classList.remove('active');
+        activeMainIndex = null;
+        return;
+      }
+
+      mainBtns.forEach((b, i) => {
+        if (i === index) b.classList.add('active');
+        else b.classList.remove('active');
+      });
+
+      activeMainIndex = index;
+      renderSidebar(menuData[index]);
+    }
+
+    function renderSidebar(categoryData) {
+      sidebarTitle.innerText = categoryData.category;
+      sidebarContent.innerHTML = '';
+
+      categoryData.subs.forEach(sub => {
+        const a = document.createElement('a');
+        a.className = 'sub-link';
+        a.innerText = sub.name;
+        a.href = sub.url;
+        sidebarContent.appendChild(a);
+      });
+
+      rightSidebar.classList.add('visible');
+    }
+
+    function hideSidebar() {
+      rightSidebar.classList.remove('visible');
+    }
+
+    function closeAll() {
+      hideSidebar();
+      activeMainIndex = null;
+      isHubOpen = false;
+
+      const mainBtns = mainRing.querySelectorAll('.main-btn');
+      mainBtns.forEach(b => {
+        b.classList.remove('visible');
+        b.classList.remove('active');
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.main-btn') && !e.target.closest('.right-sidebar') && !e.target.closest('.central-console')) {
+        hideSidebar();
+        if (activeMainIndex !== null) {
+          const mainBtns = mainRing.querySelectorAll('.main-btn');
+          mainBtns[activeMainIndex].classList.remove('active');
+          activeMainIndex = null;
+        }
+      }
+    });
+
+    setupMainButtons();
+  </script>
+</body>
+</html>
