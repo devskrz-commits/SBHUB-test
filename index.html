@@ -4,13 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sportsbook Hub - Glassmorphic Sidebar</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     :root {
@@ -23,6 +30,7 @@
       --text-sub: rgba(255, 255, 255, 0.75);
       --accent-glow: #60a5fa;
       --card-blur: blur(16px);
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
     body.light-mode {
@@ -91,9 +99,9 @@
 
     .sidebar .logo-details .logo_name {
       color: var(--text-main);
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 800;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.8px;
       opacity: 1;
       transition: opacity 0.3s ease;
       white-space: nowrap;
@@ -112,7 +120,6 @@
       transition: all 0.3s ease;
     }
 
-    /* Keep toggle button inside the sidebar track when collapsed */
     .sidebar.close .logo-details {
       justify-content: center;
     }
@@ -214,6 +221,7 @@
       color: var(--text-main);
       font-size: 12px;
       font-weight: 700;
+      letter-spacing: 0.3px;
       white-space: nowrap;
       opacity: 1;
       transition: 0.3s ease;
@@ -286,11 +294,13 @@
     .sidebar li .name {
       font-size: 11px;
       font-weight: 800;
+      letter-spacing: 0.5px;
       color: var(--text-main);
     }
 
     .sidebar li .job {
       font-size: 9px;
+      font-weight: 600;
       color: var(--text-sub);
     }
 
@@ -331,10 +341,10 @@
     }
 
     .card-header-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
       color: var(--accent-glow);
-      letter-spacing: 1px;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
       padding-bottom: 10px;
       border-bottom: 1px solid var(--glass-border);
@@ -352,10 +362,11 @@
     .drag-hint {
       font-size: 10px;
       color: var(--text-sub);
-      font-weight: normal;
+      font-weight: 600;
       display: flex;
       align-items: center;
       gap: 4px;
+      letter-spacing: 0;
     }
 
     /* Timezone Controls */
@@ -434,11 +445,15 @@
       color: var(--accent-glow);
       margin-bottom: 4px;
       text-transform: uppercase;
+      letter-spacing: 0.8px;
     }
 
+    /* Monospace Font for Clocks */
     .time-card .zone-clock {
-      font-size: 14px;
-      font-weight: 800;
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
       color: var(--text-main);
     }
 
@@ -455,6 +470,7 @@
       padding: 12px;
       font-size: 11px;
       font-weight: 700;
+      letter-spacing: 0.5px;
       border-radius: 12px;
       text-decoration: none;
       text-align: center;
@@ -513,6 +529,7 @@
       border-radius: 10px;
       font-size: 11px;
       font-weight: 800;
+      letter-spacing: 0.5px;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -658,8 +675,8 @@
         category: "INTERNAL",
         icon: "bx-home-alt",
         subs: [
-          { name: "DAILY DUTY", url: "#" },
-          { name: "ROTA", url: "#" }
+          { name: "DAILY DUTY", url: "duties.html" },
+          { name: "ROTA", url: "rota.html" }
         ]
       },
       {
@@ -679,8 +696,28 @@
           { name: "GREEN TRACKER", url: "#" },
           { name: "RED TRACKER", url: "#" },
           { name: "ORANGE TRACKER", url: "#" },
+          { name: "7A TRACKER", url: "#" },
           { name: "GREEN CRM", url: "#" },
           { name: "RED CRM", url: "#" }
+        ]
+      },
+      {
+        category: "BACK OFFICE",
+        icon: "bx-briefcase-alt-2",
+        subs: [
+          { name: "QBET/55/30", url: "#" },
+          { name: "IBET", url: "#" },
+          { name: "PUBS", url: "#" }
+        ]
+      },
+      {
+        category: "MULTI MONITOR",
+        icon: "bx-desktop",
+        subs: [
+          { name: "EDGE PREDICTION TICKER", url: "#" },
+          { name: "PUBS PREDICTION TICKER", url: "#" },
+          { name: "QBET/55/30 REJECTED", url: "#" },
+          { name: "PUBS REJECTED", url: "#" }
         ]
       },
       {
@@ -725,7 +762,7 @@
         subs: [
           { name: "WORKPLACE", url: "#" },
           { name: "CONFLUENCE", url: "#" },
-          { name: "HANDOVER", url: "#" }
+          { name: "HANDOVER", url: "handover.html" }
         ]
       }
     ];
@@ -890,6 +927,8 @@
         lkLeft: linksCard.offsetLeft
       };
 
+      localStorage.setItem("sbhub_layout", JSON.stringify(layoutData));
+
       const params = new URLSearchParams(window.location.search);
       params.set("tzTop", layoutData.tzTop);
       params.set("tzLeft", layoutData.tzLeft);
@@ -908,12 +947,25 @@
       });
     }
 
-    function restoreLayoutFromURL() {
+    function restoreLayoutFromStorage() {
       const params = new URLSearchParams(window.location.search);
-      const tzTop = params.get("tzTop");
-      const tzLeft = params.get("tzLeft");
-      const lkTop = params.get("lkTop");
-      const lkLeft = params.get("lkLeft");
+      let tzTop = params.get("tzTop");
+      let tzLeft = params.get("tzLeft");
+      let lkTop = params.get("lkTop");
+      let lkLeft = params.get("lkLeft");
+
+      if (!tzTop || !tzLeft) {
+        const saved = localStorage.getItem("sbhub_layout");
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            tzTop = parsed.tzTop;
+            tzLeft = parsed.tzLeft;
+            lkTop = parsed.lkTop;
+            lkLeft = parsed.lkLeft;
+          } catch(e) {}
+        }
+      }
 
       if (tzTop && tzLeft) {
         const tzCard = document.getElementById("timezonesCard");
@@ -963,6 +1015,16 @@
       function closeDragElement() {
         document.onmouseup = null;
         document.onmousemove = null;
+        
+        const tzCard = document.getElementById("timezonesCard");
+        const linksCard = document.getElementById("linksCard");
+        const layoutData = {
+          tzTop: tzCard.offsetTop,
+          tzLeft: tzCard.offsetLeft,
+          lkTop: linksCard.offsetTop,
+          lkLeft: linksCard.offsetLeft
+        };
+        localStorage.setItem("sbhub_layout", JSON.stringify(layoutData));
       }
     }
 
@@ -975,7 +1037,7 @@
     renderSidebar();
     selectCategory(0);
     updateClocks();
-    restoreLayoutFromURL();
+    restoreLayoutFromStorage();
     setInterval(updateClocks, 1000);
   </script>
 </body>
