@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team Monthly Rota Schedule</title>
 
+    <!-- Google Fonts for professional typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- Chart.js CDN for Pie Chart Visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -14,28 +19,28 @@
 
     <style>
         :root {
-            --bg-color: #0b2240;
-            --card-bg: #133054;
-            --text-color: #ffffff;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
             --header-text: #ffffff;
-            --border-color: #ffffff;
-            --table-header-bg: #0b2240;
+            --border-color: #334155;
+            --table-header-bg: #1e293b;
             --accent-btn: #38bdf8;
-            --accent-btn-text: #0b2240;
+            --accent-btn-text: #0f172a;
         }
 
         [data-theme="light"] {
-            --bg-color: #f4f7f6;
+            --bg-color: #f8fafc;
             --card-bg: #ffffff;
-            --text-color: #333333;
-            --header-text: #0d233a;
-            --border-color: #cbd5e0;
-            --table-header-bg: #0d233a;
-            --accent-btn: #0d233a;
+            --text-color: #1e293b;
+            --header-text: #0f172a;
+            --border-color: #e2e8f0;
+            --table-header-bg: #f1f5f9;
+            --accent-btn: #0284c7;
             --accent-btn-text: #ffffff;
         }
 
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; }
 
         body {
             background-color: var(--bg-color);
@@ -65,6 +70,50 @@
             opacity: 0.85;
         }
 
+        /* PH Holiday Container updated to wrap pills cleanly without scrollbars */
+        .ph-holiday-container {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px dashed var(--border-color);
+            padding: 8px 14px;
+            border-radius: 8px;
+            gap: 8px;
+            flex: 1;
+            max-width: 520px;
+            margin: 0 15px;
+        }
+
+        .ph-holiday-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #f43f5e;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .ph-holiday-list {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-color);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .holiday-pill {
+            background-color: rgba(244, 63, 94, 0.15);
+            color: #f43f5e;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
         .header-top-controls {
             display: flex;
             align-items: center;
@@ -76,7 +125,7 @@
             padding: 8px 14px;
             border: none;
             border-radius: 5px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
             text-decoration: none;
             display: inline-flex;
@@ -87,18 +136,18 @@
         }
         .btn:hover { opacity: 0.85; }
         .btn-back { background-color: var(--accent-btn); color: var(--accent-btn-text); }
-        .btn-secondary { background-color: rgba(255, 255, 255, 0.2); color: var(--text-color); border: 1px solid var(--border-color); }
+        .btn-secondary { background-color: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); }
         .btn-warning { background-color: #eab308; color: #000000; }
         .btn-admin { background-color: #22c55e; color: #ffffff; }
 
         .viewer-badge {
-            background-color: rgba(255, 255, 255, 0.15);
+            background-color: var(--card-bg);
             color: var(--text-color);
             border: 1px solid var(--border-color);
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 13px;
-            font-weight: bold;
+            font-weight: 600;
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -124,16 +173,17 @@
             gap: 12px;
             align-items: center;
             flex-wrap: wrap;
+            border: 1px solid var(--border-color);
         }
 
-        label { font-weight: bold; font-size: 14px; }
+        label { font-weight: 600; font-size: 14px; }
         select, input {
             padding: 6px 10px;
             border-radius: 4px;
             border: 1px solid var(--border-color);
             background: var(--bg-color);
             color: var(--text-color);
-            font-weight: bold;
+            font-weight: 600;
         }
 
         .main-layout {
@@ -161,8 +211,8 @@
 
         th {
             background-color: var(--table-header-bg);
-            color: #ffffff;
-            font-weight: bold;
+            color: var(--text-color);
+            font-weight: 700;
         }
 
         .day-col, .date-col { width: 75px; }
@@ -189,11 +239,12 @@
             width: 100%;
             padding: 5px;
             border-radius: 4px;
-            font-weight: bold;
+            font-weight: 600;
             text-align: center;
             cursor: pointer;
-            background-color: #ffffff;
-            color: #000000;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
             font-size: 12px;
             display: flex;
             align-items: center;
@@ -212,7 +263,7 @@
             top: 100%;
             left: 0;
             right: 0;
-            background-color: #1e293b;
+            background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 4px;
             box-shadow: 0 6px 16px rgba(0,0,0,0.4);
@@ -228,65 +279,64 @@
 
         .custom-dropdown-item {
             padding: 6px 8px;
-            font-weight: bold;
+            font-weight: 600;
             font-size: 11px;
             cursor: pointer;
             text-align: center;
+            color: var(--text-color);
             transition: background-color 0.15s, color 0.15s;
         }
 
-        .shift-bg-7-16 { background-color: #86efac !important; color: #064e3b !important; }
-        .shift-bg-9-18 { background-color: #a7f3d0 !important; color: #065f46 !important; }
-        .shift-bg-10-19 { background-color: #fed7aa !important; color: #7c2d12 !important; }
-        .shift-bg-12-21 { background-color: #bae6fd !important; color: #0c4a6e !important; }
-        .shift-bg-14-23 { background-color: #e9d5ff !important; color: #581c87 !important; }
-        .shift-bg-16-1 { background-color: #fca5a5 !important; color: #7f1d1d !important; }
-        .shift-bg-7-10-wfh { background-color: #fbcfe8 !important; color: #831843 !important; }
-        .shift-bg-7-16-wfh { background-color: #f472b6 !important; color: #831843 !important; }
-        .shift-bg-9-18-wfh { background-color: #fbcfe8 !important; color: #831843 !important; }
-        .shift-bg-12-21-wfh { background-color: #f472b6 !important; color: #831843 !important; }
-        .shift-bg-rd { background-color: #9ca3af !important; color: #111827 !important; }
-        .shift-bg-vl { background-color: #fde047 !important; color: #713f12 !important; }
-        .shift-bg-sl { background-color: #c084fc !important; color: #3b0764 !important; }
-        .shift-bg-adjusted { background-color: #facc15 !important; color: #000000 !important; }
+        .shift-bg-7-16 { background-color: rgba(134, 239, 172, 0.25) !important; color: #86efac !important; border: 1px solid #86efac; }
+        .shift-bg-9-18 { background-color: rgba(167, 243, 208, 0.25) !important; color: #a7f3d0 !important; border: 1px solid #a7f3d0; }
+        .shift-bg-10-19 { background-color: rgba(254, 215, 170, 0.25) !important; color: #fed7aa !important; border: 1px solid #fed7aa; }
+        .shift-bg-12-21 { background-color: rgba(186, 230, 253, 0.25) !important; color: #bae6fd !important; border: 1px solid #bae6fd; }
+        .shift-bg-14-23 { background-color: rgba(233, 213, 255, 0.25) !important; color: #e9d5ff !important; border: 1px solid #e9d5ff; }
+        .shift-bg-16-1 { background-color: rgba(252, 165, 165, 0.25) !important; color: #fca5a5 !important; border: 1px solid #fca5a5; }
+        .shift-bg-7-10-wfh { background-color: rgba(251, 207, 232, 0.25) !important; color: #fbcfe8 !important; border: 1px solid #fbcfe8; }
+        .shift-bg-7-16-wfh { background-color: rgba(244, 114, 182, 0.25) !important; color: #f472b6 !important; border: 1px solid #f472b6; }
+        .shift-bg-9-18-wfh { background-color: rgba(251, 207, 232, 0.25) !important; color: #fbcfe8 !important; border: 1px solid #fbcfe8; }
+        .shift-bg-12-21-wfh { background-color: rgba(244, 114, 182, 0.25) !important; color: #f472b6 !important; border: 1px solid #f472b6; }
+        .shift-bg-rd { background-color: rgba(156, 163, 175, 0.25) !important; color: #9ca3af !important; border: 1px solid #9ca3af; }
+        .shift-bg-vl { background-color: rgba(253, 224, 71, 0.25) !important; color: #fde047 !important; border: 1px solid #fde047; }
+        .shift-bg-sl { background-color: rgba(192, 132, 252, 0.25) !important; color: #c084fc !important; border: 1px solid #c084fc; }
+        .shift-bg-adjusted { background-color: rgba(250, 204, 21, 0.25) !important; color: #facc15 !important; border: 1px solid #facc15; }
 
-        .item-7-16:hover { background-color: #86efac !important; color: #064e3b !important; }
-        .item-9-18:hover { background-color: #a7f3d0 !important; color: #065f46 !important; }
-        .item-10-19:hover { background-color: #fed7aa !important; color: #7c2d12 !important; }
-        .item-12-21:hover { background-color: #bae6fd !important; color: #0c4a6e !important; }
-        .item-14-23:hover { background-color: #e9d5ff !important; color: #581c87 !important; }
-        .item-16-1:hover { background-color: #fca5a5 !important; color: #7f1d1d !important; }
-        .item-7-10-wfh:hover { background-color: #fbcfe8 !important; color: #831843 !important; }
-        .item-7-16-wfh:hover { background-color: #f472b6 !important; color: #831843 !important; }
-        .item-9-18-wfh:hover { background-color: #fbcfe8 !important; color: #831843 !important; }
-        .item-12-21-wfh:hover { background-color: #f472b6 !important; color: #831843 !important; }
-        .item-rd:hover { background-color: #9ca3af !important; color: #111827 !important; }
-        .item-vl:hover { background-color: #fde047 !important; color: #713f12 !important; }
-        .item-sl:hover { background-color: #c084fc !important; color: #3b0764 !important; }
-        .item-adjusted:hover { background-color: #facc15 !important; color: #000000 !important; }
+        [data-theme="light"] .shift-bg-7-16 { background-color: #dcfce7 !important; color: #166534 !important; }
+        [data-theme="light"] .shift-bg-9-18 { background-color: #d1fae5 !important; color: #065f46 !important; }
+        [data-theme="light"] .shift-bg-10-19 { background-color: #ffedd5 !important; color: #9a3412 !important; }
+        [data-theme="light"] .shift-bg-12-21 { background-color: #e0f2fe !important; color: #0369a1 !important; }
+        [data-theme="light"] .shift-bg-14-23 { background-color: #f3e8ff !important; color: #6b21a8 !important; }
+        [data-theme="light"] .shift-bg-16-1 { background-color: #fee2e2 !important; color: #991b1b !important; }
+        [data-theme="light"] .shift-bg-7-10-wfh { background-color: #fce7f3 !important; color: #9d174d !important; }
+        [data-theme="light"] .shift-bg-7-16-wfh { background-color: #fbcfe8 !important; color: #831843 !important; }
+        [data-theme="light"] .shift-bg-9-18-wfh { background-color: #fce7f3 !important; color: #9d174d !important; }
+        [data-theme="light"] .shift-bg-12-21-wfh { background-color: #fbcfe8 !important; color: #831843 !important; }
+        [data-theme="light"] .shift-bg-rd { background-color: #f3f4f6 !important; color: #374151 !important; }
+        [data-theme="light"] .shift-bg-vl { background-color: #fef9c3 !important; color: #854d0e !important; }
+        [data-theme="light"] .shift-bg-sl { background-color: #f3e8ff !important; color: #6b21a8 !important; }
+        [data-theme="light"] .shift-bg-adjusted { background-color: #fef08a !important; color: #713f12 !important; }
+
+        .custom-dropdown-item:hover { background-color: rgba(255, 255, 255, 0.1); }
 
         .custom-editable-input, .miguel-editable-cell {
             width: 100%;
             padding: 5px;
             font-size: 11px;
-            font-weight: bold;
+            font-weight: 600;
             text-align: center;
             border: 1px solid var(--border-color);
             border-radius: 4px;
-            background: #facc15;
-            color: #000000;
-            outline: none;
-        }
-
-        .miguel-editable-cell {
             background: var(--bg-color);
             color: var(--text-color);
+            outline: none;
         }
 
         .leave-section {
             background: var(--card-bg);
             padding: 15px;
             border-radius: 8px;
+            border: 1px solid var(--border-color);
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             min-width: 480px;
             flex: 1;
@@ -297,8 +347,8 @@
 
         .leave-section-title {
             font-size: 15px;
-            font-weight: bold;
-            color: #ef4444;
+            font-weight: 700;
+            color: var(--accent-btn);
             margin-bottom: 6px;
             display: flex;
             align-items: center;
@@ -329,25 +379,28 @@
         }
 
         .badge-vl {
-            background-color: #86efac;
-            color: #064e3b;
-            font-weight: bold;
+            background-color: rgba(134, 239, 172, 0.2);
+            color: #86efac;
+            border: 1px solid #86efac;
+            font-weight: 600;
             padding: 2px 6px;
             border-radius: 3px;
         }
 
         .badge-sl {
-            background-color: #ef4444;
-            color: #ffffff;
-            font-weight: bold;
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid #f87171;
+            font-weight: 600;
             padding: 2px 6px;
             border-radius: 3px;
         }
 
         .badge-wfh {
-            background-color: #38bdf8;
-            color: #0b2240;
-            font-weight: bold;
+            background-color: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+            border: 1px solid #38bdf8;
+            font-weight: 600;
             padding: 2px 6px;
             border-radius: 3px;
             display: inline-block;
@@ -379,6 +432,15 @@
             <h2>Team Monthly Rota Schedule</h2>
             <span class="title-credit">kr!ztel_2026 model</span>
         </div>
+
+        <!-- PH Holiday Box (Red Box Position) with wrapped pills and zero scrollbars -->
+        <div class="ph-holiday-container">
+            <div class="ph-holiday-label">🇵🇭 PH Holidays:</div>
+            <div id="phHolidayList" class="ph-holiday-list">
+                <!-- Dynamically populated per month -->
+            </div>
+        </div>
+
         <div class="header-top-controls">
             <span class="viewer-badge" title="Active Viewers">
                 👁️ <span id="activeViewersCount">1</span>
@@ -439,7 +501,7 @@
                 <thead>
                     <tr>
                         <th colspan="2">Date</th>
-                        <th style="color: #ffc0cb;">
+                        <th style="color: #f472b6;">
                             Ann
                             <div class="bulk-set-container">
                                 <select class="bulk-select" onchange="bulkSetShift(0, this)">
@@ -459,7 +521,7 @@
                                 </select>
                             </div>
                         </th>
-                        <th style="color: #9cc2e5;">
+                        <th style="color: #38bdf8;">
                             Dave
                             <div class="bulk-set-container">
                                 <select class="bulk-select" onchange="bulkSetShift(1, this)">
@@ -479,7 +541,7 @@
                                 </select>
                             </div>
                         </th>
-                        <th style="color: #b4c6e7;">
+                        <th style="color: #818cf8;">
                             Kenneth
                             <div class="bulk-set-container">
                                 <select class="bulk-select" onchange="bulkSetShift(2, this)">
@@ -499,7 +561,7 @@
                                 </select>
                             </div>
                         </th>
-                        <th style="color: #c6e0b4;">
+                        <th style="color: #34d399;">
                             Kriztel
                             <div class="bulk-set-container">
                                 <select class="bulk-select" onchange="bulkSetShift(3, this)">
@@ -519,7 +581,7 @@
                                 </select>
                             </div>
                         </th>
-                        <th style="color: #ffffff;">
+                        <th style="color: #f8fafc;">
                             Miguel
                             <div class="bulk-set-container">
                                 <select class="bulk-select" onchange="bulkSetShift(4, this)">
@@ -604,6 +666,22 @@
         const team = ["Ann", "Dave", "Kenneth", "Kriztel", "Miguel"];
         const leaveTrackedTeam = ["Ann", "Dave", "Kenneth", "Kriztel"];
 
+        // Official Philippine Holidays Dictionary (per month index 0-11)
+        const phHolidaysByMonth = {
+            0: [{ date: "Jan 1", name: "New Year's Day" }],
+            1: [{ date: "Feb 25", name: "EDSA People Power" }],
+            2: [], // March
+            3: [{ date: "Apr 9", name: "Day of Valor" }, { date: "Apr 2", name: "Maundy Thursday" }, { date: "Apr 3", name: "Good Friday" }],
+            4: [{ date: "May 1", name: "Labor Day" }],
+            5: [{ date: "Jun 12", name: "Independence Day" }],
+            6: [], // July
+            7: [{ date: "Aug 21", name: "Ninoy Aquino Day" }, { date: "Aug 31", name: "National Heroes Day" }],
+            8: [], // September
+            9: [{ date: "Oct 31", name: "All Saints' Eve" }], // Added sample for testing
+            10: [{ date: "Nov 1", name: "All Saints' Day" }, { date: "Nov 2", name: "All Souls' Day" }, { date: "Nov 30", name: "Bonifacio Day" }],
+            11: [{ date: "Dec 8", name: "Feast of Immaculate Conception" }, { date: "Dec 25", name: "Christmas Day" }, { date: "Dec 30", name: "Rizal Day" }, { date: "Dec 31", name: "Last Day of the Year" }]
+        };
+
         const shiftList = [
             { text: "", bgClass: "", itemClass: "", start: null, end: null },
             { text: "7:00 - 16:00", bgClass: "shift-bg-7-16", itemClass: "item-7-16", start: 7, end: 16 },
@@ -633,6 +711,7 @@
         const tbody = document.getElementById('schedule-body');
         const leaveDatesBody = document.getElementById('leave-dates-body');
         const wfhTrackerBody = document.getElementById('wfh-tracker-body');
+        const phHolidayListElem = document.getElementById('phHolidayList');
         const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thurs", "Fri", "Sat"];
 
         let vlChartInstance = null;
@@ -641,7 +720,7 @@
         let leaveMatrixData = {};
         
         let isViewOnlyMode = true;
-        const ADMIN_PASSWORD = "sportsbook2026";
+        const ADMIN_PASSWORD = "sb2026";
 
         function checkViewOnlyMode() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -729,6 +808,25 @@
             });
         }
 
+        function renderPHHolidays() {
+            const selectedMonth = parseInt(monthSelect.value);
+            const holidays = phHolidaysByMonth[selectedMonth] || [];
+
+            phHolidayListElem.innerHTML = '';
+
+            if (holidays.length === 0) {
+                phHolidayListElem.innerHTML = '<span style="opacity: 0.5; font-size:11px;">No holidays this month</span>';
+                return;
+            }
+
+            holidays.forEach(h => {
+                const pill = document.createElement('span');
+                pill.className = 'holiday-pill';
+                pill.textContent = `${h.date}: ${h.name}`;
+                phHolidayListElem.appendChild(pill);
+            });
+        }
+
         function listenToDatabase() {
             const monthKey = `${yearInput.value}_${parseInt(monthSelect.value) + 1}`;
             
@@ -792,6 +890,7 @@
 
             monthSelect.value = currentMonth;
             yearInput.value = currentYear;
+            renderPHHolidays();
             listenToDatabase();
         }
 
@@ -1079,7 +1178,7 @@
 
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td style="font-weight:bold;">${member}</td>
+                    <td style="font-weight:600;">${member}</td>
                     <td>${wfhBadges}</td>
                     <td><strong>${usedWFH} WFH</strong></td>
                 `;
@@ -1101,7 +1200,7 @@
 
             const ctx = document.getElementById('vlPieChart').getContext('2d');
             const activeTheme = document.body.getAttribute('data-theme') || 'dark';
-            const fontColor = activeTheme === 'light' ? '#333333' : '#ffffff';
+            const fontColor = activeTheme === 'light' ? '#1e293b' : '#f8fafc';
 
             if (vlChartInstance) {
                 vlChartInstance.destroy();
@@ -1120,7 +1219,7 @@
                             '#38bdf8', '#60a5fa', '#818cf8', '#c084fc'
                         ],
                         borderWidth: 1,
-                        borderColor: '#0b2240'
+                        borderColor: activeTheme === 'light' ? '#ffffff' : '#1e293b'
                     }]
                 },
                 options: {
@@ -1131,7 +1230,7 @@
                             position: 'bottom',
                             labels: {
                                 color: fontColor,
-                                font: { size: 10, weight: 'bold' },
+                                font: { size: 10, weight: '600', family: "'Plus Jakarta Sans', sans-serif" },
                                 boxWidth: 12
                             }
                         },
@@ -1150,6 +1249,7 @@
         }
 
         monthSelect.addEventListener('change', () => {
+            renderPHHolidays();
             listenToDatabase();
         });
 
@@ -1167,6 +1267,7 @@
                 document.body.setAttribute('data-theme', 'light');
             }
             setupPresenceSystem();
+            renderPHHolidays();
             listenToDatabase();
             renderVLPieChart();
         };
