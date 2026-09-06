@@ -3,217 +3,603 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sportsbook Hub Console</title>
+  <title>Sportsbook Hub - Customizable Timezones</title>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <style>
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    :root {
+      --bg-overlay: rgba(13, 17, 23, 0.65);
+      --sidebar-bg: rgba(22, 27, 34, 0.92);
+      --card-bg: rgba(22, 27, 34, 0.88);
+      --btn-bg: rgba(45, 55, 72, 0.75);
+      --text-main: #ffffff;
+      --text-sub: #9ca3af;
+      --accent-color: #60a5fa;
+      --accent-hover: #2563eb;
+      --border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    body.light-mode {
+      --bg-overlay: rgba(240, 244, 248, 0.4);
+      --sidebar-bg: rgba(255, 255, 255, 0.92);
+      --card-bg: rgba(255, 255, 255, 0.88);
+      --btn-bg: rgba(226, 232, 240, 0.85);
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --accent-color: #2563eb;
+      --accent-hover: #1d4ed8;
+      --border-color: rgba(0, 0, 0, 0.12);
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      /* Background setup explicitly referencing sb-hub.png */
-      background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('sb-hub.png') no-repeat center center fixed;
-      background-size: cover;
-      color: #ffffff;
       min-height: 100vh;
+      background-color: #0d1117;
+      background-image: linear-gradient(var(--bg-overlay), var(--bg-overlay)), 
+                        url('sb-hub.png'),
+                        url('https://raw.githubusercontent.com/devskrz-commits/SBHUB-test/main/sb-hub.png?raw=true');
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-attachment: fixed;
+      background-size: cover;
+      color: var(--text-main);
       display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
-    .viewport-center {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    /* Central Mascot / Console */
-    .central-console {
-      position: absolute;
-      width: 120px;
-      height: 120px;
-      background: rgba(37, 40, 44, 0.9);
-      border: 3px solid #4ade80;
-      border-radius: 50%;
+    /* Sidebar Layout */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 250px;
+      background: var(--sidebar-bg);
+      backdrop-filter: blur(16px);
+      padding: 12px 14px;
+      transition: all 0.4s ease;
+      z-index: 100;
+      border-right: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      box-shadow: 4px 0 25px rgba(0,0,0,0.5);
+    }
+
+    .sidebar.close {
+      width: 78px;
+    }
+
+    .sidebar .logo-details {
+      height: 50px;
+      width: 100%;
+      display: flex;
       align-items: center;
-      cursor: pointer;
-      z-index: 100;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), 0 0 12px rgba(74, 222, 128, 0.4);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      user-select: none;
-      backdrop-filter: blur(8px);
+      justify-content: space-between;
     }
 
-    .central-console:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 25px rgba(74, 222, 128, 0.6);
-    }
-
-    .mascot-icon {
-      font-size: 34px;
-    }
-
-    .console-title {
-      font-size: 10px;
-      font-weight: bold;
-      color: #9ca3af;
-      margin-top: 2px;
-      text-transform: uppercase;
+    .sidebar .logo-details .logo_name {
+      color: var(--accent-color);
+      font-size: 15px;
+      font-weight: 800;
       letter-spacing: 1px;
+      opacity: 1;
+      transition: 0.3s ease;
+      white-space: nowrap;
     }
 
-    /* Radial Main Button Ring */
-    .button-ring {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
+    .sidebar.close .logo-details .logo_name {
+      opacity: 0;
       pointer-events: none;
     }
 
-    .nav-btn {
-      position: absolute;
-      pointer-events: auto;
-      border: none;
-      border-radius: 20px;
-      padding: 10px 18px;
-      font-weight: 700;
-      font-size: 12px;
+    .sidebar #btn {
+      font-size: 24px;
       cursor: pointer;
-      text-decoration: none;
-      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      white-space: nowrap;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-      transform: translate(-50%, -50%) scale(0);
+      color: var(--text-main);
+      line-height: 50px;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar.close #btn {
+      margin: 0 auto;
+    }
+
+    .sidebar .search-box {
+      position: relative;
+      height: 46px;
+      width: 100%;
+      margin-top: 10px;
+      background: var(--btn-bg);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+
+    .sidebar .search-box i {
+      position: absolute;
+      left: 0;
+      height: 100%;
+      width: 50px;
+      text-align: center;
+      line-height: 46px;
+      font-size: 18px;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .sidebar .search-box input {
+      height: 100%;
+      width: 100%;
+      outline: none;
+      border: none;
+      background: transparent;
+      padding-left: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .sidebar.close .search-box input {
       opacity: 0;
+      pointer-events: none;
     }
 
-    /* Main Category Buttons */
-    .main-btn {
-      background: rgba(59, 130, 246, 0.9);
-      color: #ffffff;
-      border: 1px solid #60a5fa;
-      z-index: 10;
-      backdrop-filter: blur(4px);
-    }
-
-    .main-btn.visible {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-
-    .main-btn:hover, .main-btn.active {
-      background: #2563eb;
-      box-shadow: 0 0 15px rgba(59, 130, 246, 0.8);
-    }
-
-    /* Right Sidebar Box for Sub-Menu Items */
-    .right-sidebar {
-      position: fixed;
-      right: 40px;
-      top: 50%;
-      transform: translateY(-50%) translateX(20px);
-      width: 280px;
-      max-height: 80vh;
-      background: rgba(37, 40, 44, 0.92);
-      border: 1px solid #374151;
-      border-radius: 16px;
-      padding: 20px;
+    .sidebar .nav-list {
+      margin-top: 15px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      z-index: 200;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
-      backdrop-filter: blur(10px);
+      gap: 6px;
+      list-style: none;
+      overflow-y: auto;
+      max-height: calc(100vh - 190px);
     }
 
-    .right-sidebar.visible {
+    .sidebar .nav-list::-webkit-scrollbar {
+      display: none;
+    }
+
+    .sidebar li {
+      position: relative;
+      list-style: none;
+    }
+
+    .sidebar li a {
+      display: flex;
+      height: 46px;
+      width: 100%;
+      border-radius: 10px;
+      align-items: center;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+
+    .sidebar li a:hover, .sidebar li a.active {
+      background: var(--accent-hover);
+      border-color: var(--accent-color);
+    }
+
+    .sidebar li a:hover *, .sidebar li a.active * {
+      color: #ffffff !important;
+    }
+
+    .sidebar li i {
+      min-width: 50px;
+      text-align: center;
+      font-size: 19px;
+      color: var(--text-main);
+    }
+
+    .sidebar li a .links_name {
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
       opacity: 1;
-      visibility: visible;
-      transform: translateY(-50%) translateX(0);
+      transition: 0.3s ease;
     }
 
-    .sidebar-header {
+    .sidebar.close li a .links_name {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sidebar li .tooltip {
+      position: absolute;
+      top: -20px;
+      left: calc(100% + 15px);
+      z-index: 3;
+      background: var(--sidebar-bg);
+      color: var(--text-main);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      opacity: 0;
+      white-space: nowrap;
+      pointer-events: none;
+      transition: 0s;
+      border: 1px solid var(--border-color);
+    }
+
+    .sidebar.close li:hover .tooltip {
+      opacity: 1;
+      pointer-events: auto;
+      transition: all 0.3s ease;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .sidebar li.profile {
+      position: absolute;
+      height: 55px;
+      width: 100%;
+      left: 0;
+      bottom: 0;
+      padding: 10px 14px;
+      background: var(--btn-bg);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.4s ease;
+    }
+
+    .sidebar .profile-details {
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar li .name_job {
+      margin-left: 8px;
+      white-space: nowrap;
+    }
+
+    .sidebar li .name {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .sidebar li .job {
+      font-size: 9px;
+      color: var(--text-sub);
+    }
+
+    .sidebar.close .profile .name_job {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Main Container */
+    .main-content {
+      margin-left: 250px;
+      padding: 30px;
+      width: calc(100% - 250px);
+      transition: all 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .sidebar.close ~ .main-content {
+      margin-left: 78px;
+      width: calc(100% - 78px);
+    }
+
+    .content-card {
+      width: 100%;
+      max-width: 850px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      backdrop-filter: blur(16px);
+      border-radius: 14px;
+      padding: 20px 24px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    }
+
+    .card-header-title {
       font-size: 13px;
       font-weight: 800;
-      color: #60a5fa;
-      text-transform: uppercase;
+      color: var(--accent-color);
       letter-spacing: 1px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #374151;
+      text-transform: uppercase;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Dynamic Timezone Control & Grid Layout */
+    .tz-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .tz-select {
+      background: var(--btn-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .tz-select option {
+      background: #1e293b;
+      color: #fff;
+    }
+
+    .add-tz-btn {
+      background: var(--accent-hover);
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .add-tz-btn:hover {
+      background: var(--accent-color);
+    }
+
+    .timezone-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .time-card {
+      position: relative;
+      background: var(--btn-bg);
+      border: 1px solid var(--border-color);
+      padding: 12px;
+      border-radius: 8px;
       text-align: center;
     }
 
-    .sidebar-content {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      overflow-y: auto;
-      max-height: calc(80vh - 60px);
-      padding-right: 4px;
-    }
-
-    .sidebar-content::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .sidebar-content::-webkit-scrollbar-thumb {
-      background: #4b5563;
-      border-radius: 4px;
-    }
-
-    .sub-link {
-      background: #374151;
-      color: #e5e7eb;
-      padding: 10px 14px;
+    .time-card .remove-btn {
+      position: absolute;
+      top: 4px;
+      right: 6px;
       font-size: 12px;
-      font-weight: 600;
+      color: var(--text-sub);
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .time-card .remove-btn:hover {
+      color: #ef4444;
+    }
+
+    .time-card .zone-name {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--accent-color);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .time-card .zone-clock {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    /* Category Links Grid */
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 12px;
+    }
+
+    .sub-link-item {
+      background: var(--btn-bg);
+      color: var(--text-main);
+      padding: 12px;
+      font-size: 11px;
+      font-weight: 700;
       border-radius: 8px;
       text-decoration: none;
-      transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
       text-align: center;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      border: 1px solid var(--border-color);
     }
 
-    .sub-link:hover {
-      background: #3b82f6;
+    .sub-link-item:hover {
+      background: var(--accent-hover);
       color: #ffffff;
-      transform: translateX(-2px);
+      border-color: var(--accent-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+
+    /* Modal Component */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 24px;
+      border-radius: 12px;
+      width: 320px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
+
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 22px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #4b5563;
+      transition: .3s;
+      border-radius: 22px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #2563eb;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(22px);
     }
   </style>
 </head>
 <body>
 
-  <div class="viewport-center">
-    <div class="central-console" onclick="toggleMainHub()">
-      <div class="mascot-icon">🐭</div>
-      <div class="console-title">MAIN HUB</div>
+  <!-- Sidebar Component -->
+  <div class="sidebar">
+    <div class="logo-details">
+      <div class="logo_name">SPORTSBOOK HUB</div>
+      <i class='bx bx-menu' id="btn"></i>
     </div>
 
-    <div class="button-ring" id="mainRing"></div>
+    <!-- Search Bar -->
+    <div class="search-box">
+      <i class='bx bx-search' onclick="expandSidebar()"></i>
+      <input type="text" id="searchInput" placeholder="Search..." onkeyup="handleSearch()">
+    </div>
+    
+    <ul class="nav-list" id="navList"></ul>
+
+    <li class="profile">
+      <div class="profile-details">
+        <div style="font-size: 20px;">🐭</div>
+        <div class="name_job">
+          <div class="name">MAIN CONSOLE</div>
+          <div class="job">Active Operator</div>
+        </div>
+      </div>
+      <i class='bx bx-cog' id="settings_btn" style="cursor: pointer; font-size: 20px;" onclick="toggleModal()"></i>
+    </li>
   </div>
 
-  <div class="right-sidebar" id="rightSidebar">
-    <div class="sidebar-header" id="sidebarTitle">CATEGORY</div>
-    <div class="sidebar-content" id="sidebarContent"></div>
+  <!-- Main View Area -->
+  <section class="main-content">
+    
+    <!-- Timezone Control Box (Max 3 Clocks) -->
+    <div class="content-card">
+      <div class="card-header-title">
+        <span>LIVE TIMEZONES (MAX 3)</span>
+        <div class="tz-controls">
+          <select class="tz-select" id="tzPicker">
+            <option value="UTC|UTC / GMT">UTC / GMT</option>
+            <option value="Europe/London|London">London (BST/GMT)</option>
+            <option value="Europe/Berlin|Central Europe">Central Europe (CET)</option>
+            <option value="America/New_York|US East (EST)">US East (EST)</option>
+            <option value="America/Los_Angeles|US West (PST)">US West (PST)</option>
+            <option value="Asia/Singapore|Singapore (SGT)">Singapore (SGT)</option>
+            <option value="Asia/Tokyo|Tokyo (JST)">Tokyo (JST)</option>
+            <option value="Asia/Manila|Manila (PST)">Manila (PST)</option>
+            <option value="Asia/Dubai|Dubai (GST)">Dubai (GST)</option>
+            <option value="Australia/Sydney|Sydney (AEST)">Sydney (AEST)</option>
+          </select>
+          <button class="add-tz-btn" onclick="addTimezone()">+ ADD</button>
+        </div>
+      </div>
+      <div class="timezone-grid" id="timezoneGrid">
+        <!-- Up to 3 dynamic clocks -->
+      </div>
+    </div>
+
+    <!-- Active Category Links View -->
+    <div class="content-card">
+      <div class="card-header-title" id="activeCategoryTitle">
+        SELECT A CATEGORY
+      </div>
+      <div class="links-grid" id="linksGrid"></div>
+    </div>
+
+  </section>
+
+  <!-- Settings Modal Popup -->
+  <div class="modal" id="settingsModal">
+    <div class="modal-content">
+      <div class="card-header-title">
+        <span>SETTINGS</span>
+        <i class='bx bx-x' style="cursor:pointer; font-size: 22px;" onclick="toggleModal()"></i>
+      </div>
+      <div class="setting-row">
+        <span style="font-size: 12px; font-weight: 700;">Daylight Mode</span>
+        <label class="switch">
+          <input type="checkbox" id="modeToggle" onchange="toggleTheme()">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
   </div>
 
   <script>
     const menuData = [
       {
         category: "INTERNAL",
+        icon: "bx-home-alt",
         subs: [
           { name: "DAILY DUTY", url: "#" },
           { name: "ROTA", url: "#" }
@@ -221,6 +607,7 @@
       },
       {
         category: "DAILY TASK",
+        icon: "bx-task",
         subs: [
           { name: "EDGE BOOST EXCEL", url: "#" },
           { name: "IBET BOOST EXCEL", url: "#" },
@@ -230,6 +617,7 @@
       },
       {
         category: "DAILY MONITORING",
+        icon: "bx-line-chart",
         subs: [
           { name: "GREEN TRACKER", url: "#" },
           { name: "RED TRACKER", url: "#" },
@@ -240,6 +628,7 @@
       },
       {
         category: "BETRADAR",
+        icon: "bx-radar",
         subs: [
           { name: "MTS", url: "#" },
           { name: "PORTAL", url: "#" }
@@ -247,6 +636,7 @@
       },
       {
         category: "OWN BRANDS",
+        icon: "bx-layer",
         subs: [
           { name: "7A", url: "#" },
           { name: "QBET", url: "#" },
@@ -259,6 +649,7 @@
       },
       {
         category: "PRICE REFERENCES",
+        icon: "bx-data",
         subs: [
           { name: "FLASHSCORE", url: "#" },
           { name: "PINNACLE", url: "#" },
@@ -272,7 +663,8 @@
         ]
       },
       {
-        category: "SOP's",
+        category: "SOP'S",
+        icon: "bx-file",
         subs: [
           { name: "WORKPLACE", url: "#" },
           { name: "CONFLUENCE", url: "#" },
@@ -281,113 +673,167 @@
       }
     ];
 
-    const mainRing = document.getElementById('mainRing');
-    const rightSidebar = document.getElementById('rightSidebar');
-    const sidebarTitle = document.getElementById('sidebarTitle');
-    const sidebarContent = document.getElementById('sidebarContent');
-    
-    let isHubOpen = false;
-    let activeMainIndex = null;
+    // Default Selected Active Timezones (Max 3)
+    let activeTimezones = [
+      { zone: "UTC", name: "UTC / GMT" },
+      { zone: "America/New_York", name: "US East (EST)" },
+      { zone: "Europe/London", name: "London" }
+    ];
 
-    function setupMainButtons() {
-      const radius = 190;
-      const total = menuData.length;
+    const sidebar = document.querySelector(".sidebar");
+    const closeBtn = document.querySelector("#btn");
+    const navList = document.querySelector("#navList");
+    const activeCategoryTitle = document.querySelector("#activeCategoryTitle");
+    const linksGrid = document.querySelector("#linksGrid");
 
+    function renderSidebar() {
+      navList.innerHTML = "";
       menuData.forEach((item, index) => {
-        const angle = (index / total) * 2 * Math.PI - (Math.PI / 2);
-        const x = radius * Math.cos(angle);
-        const y = radius * Math.sin(angle);
-
-        const btn = document.createElement('button');
-        btn.className = 'nav-btn main-btn';
-        btn.innerText = item.category;
-        btn.style.left = `${x}px`;
-        btn.style.top = `${y}px`;
-        
-        btn.onclick = (e) => {
-          e.stopPropagation();
-          toggleSubMenu(index);
-        };
-
-        mainRing.appendChild(btn);
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <a onclick="selectCategory(${index})">
+            <i class='bx ${item.icon}'></i>
+            <span class="links_name">${item.category}</span>
+          </a>
+          <span class="tooltip">${item.category}</span>
+        `;
+        navList.appendChild(li);
       });
     }
 
-    function toggleMainHub() {
-      isHubOpen = !isHubOpen;
-      const mainBtns = mainRing.querySelectorAll('.main-btn');
+    function selectCategory(index) {
+      const activeData = menuData[index];
+      activeCategoryTitle.innerText = activeData.category;
+      
+      const allLinks = navList.querySelectorAll("a");
+      allLinks.forEach((link, i) => {
+        if (i === index) link.classList.add("active");
+        else link.classList.remove("active");
+      });
 
-      if (isHubOpen) {
-        mainBtns.forEach((btn, i) => {
-          setTimeout(() => btn.classList.add('visible'), i * 30);
-        });
-      } else {
-        closeAll();
-      }
+      renderLinks(activeData.subs);
     }
 
-    function toggleSubMenu(index) {
-      const mainBtns = mainRing.querySelectorAll('.main-btn');
+    function renderLinks(linksArr) {
+      linksGrid.innerHTML = "";
+      if(linksArr.length === 0) {
+        linksGrid.innerHTML = `<span style="font-size:12px; color:var(--text-sub);">No matching links found.</span>`;
+        return;
+      }
+      linksArr.forEach(sub => {
+        const a = document.createElement("a");
+        a.className = "sub-link-item";
+        a.innerText = sub.name;
+        a.href = sub.url;
+        linksGrid.appendChild(a);
+      });
+    }
 
-      if (activeMainIndex === index) {
-        hideSidebar();
-        mainBtns[index].classList.remove('active');
-        activeMainIndex = null;
+    function handleSearch() {
+      const query = document.getElementById("searchInput").value.toLowerCase().trim();
+      if(!query) {
+        selectCategory(0);
         return;
       }
 
-      mainBtns.forEach((b, i) => {
-        if (i === index) b.classList.add('active');
-        else b.classList.remove('active');
+      activeCategoryTitle.innerText = `SEARCH RESULTS: "${query.toUpperCase()}"`;
+      
+      let matchedLinks = [];
+      menuData.forEach(cat => {
+        cat.subs.forEach(sub => {
+          if(sub.name.toLowerCase().includes(query)) {
+            matchedLinks.push(sub);
+          }
+        });
       });
 
-      activeMainIndex = index;
-      renderSidebar(menuData[index]);
+      const allLinks = navList.querySelectorAll("a");
+      allLinks.forEach(link => link.classList.remove("active"));
+      renderLinks(matchedLinks);
     }
 
-    function renderSidebar(categoryData) {
-      sidebarTitle.innerText = categoryData.category;
-      sidebarContent.innerHTML = '';
-
-      categoryData.subs.forEach(sub => {
-        const a = document.createElement('a');
-        a.className = 'sub-link';
-        a.innerText = sub.name;
-        a.href = sub.url;
-        sidebarContent.appendChild(a);
-      });
-
-      rightSidebar.classList.add('visible');
+    function expandSidebar() {
+      sidebar.classList.remove("close");
     }
 
-    function hideSidebar() {
-      rightSidebar.classList.remove('visible');
-    }
-
-    function closeAll() {
-      hideSidebar();
-      activeMainIndex = null;
-      isHubOpen = false;
-
-      const mainBtns = mainRing.querySelectorAll('.main-btn');
-      mainBtns.forEach(b => {
-        b.classList.remove('visible');
-        b.classList.remove('active');
-      });
-    }
-
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.main-btn') && !e.target.closest('.right-sidebar') && !e.target.closest('.central-console')) {
-        hideSidebar();
-        if (activeMainIndex !== null) {
-          const mainBtns = mainRing.querySelectorAll('.main-btn');
-          mainBtns[activeMainIndex].classList.remove('active');
-          activeMainIndex = null;
-        }
+    /* Dynamic Timezone Management (Strict Max 3) */
+    function addTimezone() {
+      if (activeTimezones.length >= 3) {
+        alert("Maximum of 3 timezone clocks allowed at once. Please remove one first.");
+        return;
       }
+
+      const picker = document.getElementById("tzPicker");
+      const [zone, name] = picker.value.split("|");
+
+      // Prevent duplicate additions
+      if (activeTimezones.some(tz => tz.zone === zone)) {
+        alert("This timezone is already displayed.");
+        return;
+      }
+
+      activeTimezones.push({ zone, name });
+      updateClocks();
+    }
+
+    function removeTimezone(index) {
+      activeTimezones.splice(index, 1);
+      updateClocks();
+    }
+
+    function updateClocks() {
+      const grid = document.getElementById("timezoneGrid");
+      grid.innerHTML = "";
+
+      if(activeTimezones.length === 0) {
+        grid.innerHTML = `<span style="font-size:11px; color:var(--text-sub); grid-column: span 3; text-align: center;">No timezones selected. Add one using the menu above.</span>`;
+        return;
+      }
+
+      activeTimezones.forEach((tz, index) => {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString("en-US", {
+          timeZone: tz.zone,
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false
+        });
+
+        const card = document.createElement("div");
+        card.className = "time-card";
+        card.innerHTML = `
+          <span class="remove-btn" onclick="removeTimezone(${index})">✕</span>
+          <div class="zone-name">${tz.name}</div>
+          <div class="zone-clock">${timeString}</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function toggleModal() {
+      const modal = document.getElementById("settingsModal");
+      modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
+    }
+
+    function toggleTheme() {
+      const isLight = document.getElementById("modeToggle").checked;
+      if (isLight) {
+        document.body.classList.add("light-mode");
+      } else {
+        document.body.classList.remove("light-mode");
+      }
+    }
+
+    closeBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("close");
     });
 
-    setupMainButtons();
+    // Init Execution
+    renderSidebar();
+    selectCategory(0);
+    updateClocks();
+    setInterval(updateClocks, 1000);
   </script>
 </body>
 </html>
