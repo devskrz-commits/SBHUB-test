@@ -487,6 +487,37 @@
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
 
+    /* Context Menu / Right-Click Custom Menu */
+    .custom-context-menu {
+      display: none;
+      position: fixed;
+      background: var(--glass-bg);
+      backdrop-filter: var(--card-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 6px;
+      z-index: 1000;
+      box-shadow: var(--glass-shadow);
+      min-width: 160px;
+    }
+
+    .custom-context-item {
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-main);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .custom-context-item:hover {
+      background: var(--glass-bg-hover);
+      color: var(--accent-glow);
+    }
+
     /* Settings Modal */
     .modal {
       display: none;
@@ -587,7 +618,7 @@
     }
   </style>
 </head>
-<body>
+<body onclick="hideContextMenu()">
 
   <div class="sidebar close">
     <div class="logo-details">
@@ -614,7 +645,7 @@
     </li>
   </div>
 
-  <div class="main-workspace">
+  <div class="main-workspace" id="workspace">
     
     <div class="draggable-card" id="timezonesCard" style="top: 25px; left: 120px;">
       <div class="card-header-title">
@@ -638,14 +669,20 @@
       <div class="timezone-grid" id="timezoneGrid"></div>
     </div>
 
-    <div class="draggable-card" id="linksCard" style="top: 210px; left: 120px;">
-      <div class="card-header-title">
+    <div class="draggable-card" id="linksCard" style="top: 210px; left: 120px;" oncontextmenu="showContextMenu(event)">
+      <div class="card-header-title" oncontextmenu="event.stopPropagation()">
         <span id="activeCategoryTitle">SELECT A CATEGORY</span>
         <span class="drag-hint"><i class='bx bx-move'></i> Drag to move</span>
       </div>
       <div class="links-grid" id="linksGrid"></div>
     </div>
 
+  </div>
+
+  <div class="custom-context-menu" id="contextMenu">
+    <div class="custom-context-item" onclick="openAllCurrentLinks()">
+      <i class='bx bx-windows' style="font-size: 14px;"></i> Open All in New Tab
+    </div>
   </div>
 
   <div class="modal" id="settingsModal">
@@ -773,11 +810,14 @@
       { zone: "Europe/London", name: "London" }
     ];
 
+    let currentActiveLinks = [];
+
     const sidebar = document.querySelector(".sidebar");
     const closeBtn = document.querySelector("#btn");
     const navList = document.querySelector("#navList");
     const activeCategoryTitle = document.querySelector("#activeCategoryTitle");
     const linksGrid = document.querySelector("#linksGrid");
+    const contextMenu = document.querySelector("#contextMenu");
 
     function renderSidebar() {
       navList.innerHTML = "";
@@ -797,6 +837,7 @@
     function selectCategory(index) {
       const activeData = menuData[index];
       activeCategoryTitle.innerText = activeData.category;
+      currentActiveLinks = activeData.subs;
       
       const allLinks = navList.querySelectorAll("a");
       allLinks.forEach((link, i) => {
@@ -804,7 +845,7 @@
         else link.classList.remove("active");
       });
 
-      renderLinks(activeData.subs);
+      renderLinks(currentActiveLinks);
     }
 
     function renderLinks(linksArr) {
@@ -818,6 +859,7 @@
         a.className = "sub-link-item";
         a.innerText = sub.name;
         a.href = sub.url;
+        a.target = "_blank"; // Forces links to open in a new tab keeping console open
         linksGrid.appendChild(a);
       });
     }
@@ -840,13 +882,40 @@
         });
       });
 
+      currentActiveLinks = matchedLinks;
       const allLinks = navList.querySelectorAll("a");
       allLinks.forEach(link => link.classList.remove("active"));
-      renderLinks(matchedLinks);
+      renderLinks(currentActiveLinks);
     }
 
     function expandSidebar() {
       sidebar.classList.remove("close");
+    }
+
+    // Right-Click Context Menu Logic for "Open All in New Tab"
+    function showContextMenu(e) {
+      e.preventDefault();
+      contextMenu.style.display = "block";
+      contextMenu.style.left = `${e.clientX}px`;
+      contextMenu.style.top = `${e.clientY}px`;
+    }
+
+    function hideContextMenu() {
+      contextMenu.style.display = "none";
+    }
+
+    function openAllCurrentLinks() {
+      hideContextMenu();
+      if (currentActiveLinks.length === 0) return;
+      
+      currentActiveLinks.forEach(sub => {
+        if (sub.url && sub.url !== "#") {
+          window.open(sub.url, '_blank');
+        } else {
+          // If URL is placeholder '#', open blank or handle accordingly
+          window.open('#', '_blank');
+        }
+      });
     }
 
     function addTimezone() {
