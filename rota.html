@@ -54,6 +54,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .title-group {
@@ -81,7 +83,7 @@
             gap: 8px;
             flex: 1;
             max-width: 520px;
-            margin: 0 15px;
+            margin: 0 10px;
         }
 
         .ph-holiday-label {
@@ -139,6 +141,7 @@
         .btn-secondary { background-color: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); }
         .btn-warning { background-color: #eab308; color: #000000; }
         .btn-admin { background-color: #22c55e; color: #ffffff; }
+        .btn-mobile-toggle { background-color: #8b5cf6; color: #ffffff; }
 
         .viewer-badge {
             background-color: var(--card-bg);
@@ -193,7 +196,7 @@
             flex-wrap: wrap;
         }
 
-        .table-container { overflow-x: auto; }
+        .table-container { overflow-x: auto; flex: 2; }
 
         table {
             border-collapse: collapse;
@@ -338,7 +341,7 @@
             border-radius: 8px;
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            min-width: 480px;
+            min-width: 320px;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -418,6 +421,41 @@
             outline: none;
             border-radius: 3px;
         }
+
+        /* Mobile Card View Styles */
+        #mobile-card-view {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+        .mobile-day-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .mobile-card-header {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--accent-btn);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .mobile-card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+        .mobile-card-row span:first-child {
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -445,6 +483,7 @@
             <span class="viewer-badge" title="Active Viewers">
                 👁️ <span id="activeViewersCount">1</span>
             </span>
+            <button id="mobileViewToggleBtn" class="btn btn-mobile-toggle" onclick="toggleMobileView()">📱 Mobile View</button>
             <button id="adminAuthBtn" class="btn btn-admin" onclick="handleAdminAuth()">🔑 Admin Login</button>
             <button class="btn btn-secondary" onclick="toggleDarkMode()">🌓 Mode</button>
             <button class="btn btn-warning" onclick="copyViewOnlyLink()" title="Generate View-Only Link">🔗 Share View-Only</button>
@@ -496,7 +535,7 @@
     </div>
 
     <div class="main-layout">
-        <div class="table-container">
+        <div class="table-container" id="standardTableContainer">
             <table>
                 <thead>
                     <tr>
@@ -607,6 +646,9 @@
             </table>
         </div>
 
+        <!-- Mobile View Card Container -->
+        <div id="mobile-card-view"></div>
+
         <div class="leave-section">
             <div>
                 <div class="leave-section-title">📊 Team VL Usage by Month</div>
@@ -677,7 +719,7 @@
             6: [], // July
             7: [{ date: "Aug 21", name: "Ninoy Aquino Day" }, { date: "Aug 31", name: "National Heroes Day" }],
             8: [], // September
-            9: [{ date: "Oct 31", name: "All Saints' Eve" }], // Added sample for testing
+            9: [{ date: "Oct 31", name: "All Saints' Eve" }], 
             10: [{ date: "Nov 1", name: "All Saints' Day" }, { date: "Nov 2", name: "All Souls' Day" }, { date: "Nov 30", name: "Bonifacio Day" }],
             11: [{ date: "Dec 8", name: "Feast of Immaculate Conception" }, { date: "Dec 25", name: "Christmas Day" }, { date: "Dec 30", name: "Rizal Day" }, { date: "Dec 31", name: "Last Day of the Year" }]
         };
@@ -718,6 +760,7 @@
         let globalTzOffset = 8;
         let rotaData = {};
         let leaveMatrixData = {};
+        let isMobileViewActive = false;
         
         let isViewOnlyMode = true;
         const ADMIN_PASSWORD = "sb2026";
@@ -783,6 +826,24 @@
             });
         }
 
+        function toggleMobileView() {
+            isMobileViewActive = !isMobileViewActive;
+            const toggleBtn = document.getElementById('mobileViewToggleBtn');
+            const standardContainer = document.getElementById('standardTableContainer');
+            const mobileContainer = document.getElementById('mobile-card-view');
+
+            if (isMobileViewActive) {
+                toggleBtn.innerText = '💻 Desktop View';
+                standardContainer.style.display = 'none';
+                mobileContainer.style.display = 'flex';
+                renderMobileCards();
+            } else {
+                toggleBtn.innerText = '📱 Mobile View';
+                standardContainer.style.display = 'block';
+                mobileContainer.style.display = 'none';
+            }
+        }
+
         function setupPresenceSystem() {
             const presenceRef = db.ref('rota_active_sessions');
             const connectedRef = db.ref('.info/connected');
@@ -834,6 +895,7 @@
                 rotaData = snapshot.val() || {};
                 renderCalendar();
                 renderWFHTracker();
+                if (isMobileViewActive) renderMobileCards();
             });
 
             db.ref('leave_matrix_db').on('value', (snapshot) => {
@@ -846,6 +908,7 @@
                     globalTzOffset = parseFloat(snapshot.val());
                     timezoneSelect.value = globalTzOffset.toString();
                     renderCalendar();
+                    if (isMobileViewActive) renderMobileCards();
                 }
             });
         }
@@ -1056,6 +1119,40 @@
             syncLeavesFromSchedule();
         }
 
+        function renderMobileCards() {
+            const mobileContainer = document.getElementById('mobile-card-view');
+            mobileContainer.innerHTML = '';
+            const selectedMonth = parseInt(monthSelect.value);
+            const selectedYear = parseInt(yearInput.value);
+            const totalDays = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+            const monthLabel = monthSelect.options[selectedMonth].text.substring(0, 3);
+
+            for (let d = 1; d <= totalDays; d++) {
+                const dateObj = new Date(selectedYear, selectedMonth, d);
+                const dayName = weekdays[dateObj.getDay()];
+
+                const card = document.createElement('div');
+                card.className = 'mobile-day-card';
+
+                const header = document.createElement('div');
+                header.className = 'mobile-card-header';
+                header.innerHTML = `<span>${dayName}</span> <span>${d} ${monthLabel}</span>`;
+                card.appendChild(header);
+
+                team.forEach((member, memberIdx) => {
+                    let activeShift = (rotaData[d] && rotaData[d][memberIdx] !== undefined) ? rotaData[d][memberIdx] : "";
+                    const convertedText = formatShiftForTimezone(activeShift) || "Off / Unassigned";
+
+                    const row = document.createElement('div');
+                    row.className = 'mobile-card-row';
+                    row.innerHTML = `<span>${member}:</span> <span style="font-weight:600;">${convertedText}</span>`;
+                    card.appendChild(row);
+                });
+
+                mobileContainer.appendChild(card);
+            }
+        }
+
         function bulkSetShift(memberIdx, selectElem) {
             if (isViewOnlyMode) return;
             const shiftValue = selectElem.value;
@@ -1073,6 +1170,7 @@
 
             saveRotaToDatabase();
             renderCalendar();
+            if (isMobileViewActive) renderMobileCards();
 
             selectElem.value = "";
         }
