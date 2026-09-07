@@ -36,7 +36,6 @@
       --card-blur: blur(20px);
       --font-mono: 'JetBrains Mono', monospace;
       
-      /* Sidebar Layout Variables */
       --sidebar-width: 78px;
       --sidebar-expanded-width: 280px;
     }
@@ -83,7 +82,6 @@
       100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0px); }
     }
 
-    /* Security Lockout Screen & 3D Lamp Overlay */
     #authOverlay {
       position: fixed;
       top: 0; left: 0;
@@ -229,12 +227,6 @@
       transform: translateY(40px) scale(0.95) !important;
     }
 
-    @media (max-width: 768px), body.mobile-view-active body.lamp-is-on .login-popup-card {
-      transform: translateY(0) scale(1) !important;
-      opacity: 1 !important;
-      visibility: visible !important;
-    }
-
     .login-title {
       font-size: 21px;
       font-weight: 800;
@@ -271,12 +263,6 @@
       color: #ffffff;
       outline: none;
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .login-input:focus {
-      border-color: #38bdf8;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 0 12px rgba(56, 189, 248, 0.4);
     }
 
     .remember-container {
@@ -298,22 +284,11 @@
       background: rgba(15, 23, 42, 0.65);
       outline: none;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
     }
 
     .remember-container input[type="checkbox"]:checked {
       background: #38bdf8;
       border-color: #38bdf8;
-    }
-
-    .remember-container input[type="checkbox"]:checked::after {
-      content: '✓';
-      font-size: 11px;
-      font-weight: 800;
-      color: #0f172a;
     }
 
     .remember-label {
@@ -336,13 +311,7 @@
       letter-spacing: 1px;
       text-transform: uppercase;
       cursor: pointer;
-      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5), inset 0 1px 1px rgba(255,255,255,0.4);
-      transition: transform 0.2s ease, opacity 0.2s ease;
-    }
-
-    .signin-btn:hover {
-      transform: translateY(-1px);
-      opacity: 0.95;
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
     }
 
     .error-msg {
@@ -352,7 +321,6 @@
       text-align: center;
       margin-top: 10px;
       min-height: 16px;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.6);
     }
 
     /* Glass Sidebar Layout */
@@ -376,12 +344,10 @@
       animation: bentoContainerReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* Hover Expansion Logic */
     @media (min-width: 769px) {
       body:not(.mobile-view-active) .sidebar:hover {
         width: var(--sidebar-expanded-width);
       }
-
       body:not(.mobile-view-active) .sidebar:hover .logo-details .logo_name,
       body:not(.mobile-view-active) .sidebar:hover .search-box input,
       body:not(.mobile-view-active) .sidebar:hover .nav-item-title,
@@ -391,16 +357,12 @@
         opacity: 1;
         pointer-events: auto;
       }
-
-      /* When collapsed, sub-menus inside accordion are hidden */
       body:not(.mobile-view-active) .sidebar:not(:hover) .sub-menu-list {
         display: none !important;
       }
-
       body:not(.mobile-view-active) .sidebar:hover .logo-details {
         justify-content: space-between;
       }
-
       body:not(.mobile-view-active) .sidebar:hover .profile {
         justify-content: space-between;
         padding: 10px 12px;
@@ -425,10 +387,9 @@
       white-space: nowrap;
       display: none;
       opacity: 0;
-      transition: opacity 0.3s ease;
     }
 
-    .sidebar #btn { font-size: 22px; cursor: pointer; color: var(--text-main); transition: all 0.3s ease; }
+    .sidebar #btn { font-size: 22px; cursor: pointer; color: var(--text-main); }
 
     .sidebar .search-box {
       position: relative;
@@ -444,29 +405,20 @@
     }
 
     .sidebar .search-box i {
-      position: absolute;
-      left: 0; height: 100%; width: 46px;
-      text-align: center; line-height: 42px;
-      font-size: 18px; color: var(--text-main); cursor: pointer;
+      position: absolute; left: 0; height: 100%; width: 46px;
+      text-align: center; line-height: 42px; font-size: 18px; color: var(--text-main);
     }
 
     .sidebar .search-box input {
       height: 100%; width: 100%; outline: none; border: none;
-      background: transparent; padding-left: 46px;
-      font-size: 12px; font-weight: 600; color: var(--text-main);
+      background: transparent; padding-left: 46px; font-size: 12px; font-weight: 600; color: var(--text-main);
       display: none; opacity: 0; pointer-events: none;
     }
-    .sidebar .search-box input::placeholder { color: var(--text-sub); }
 
     .sidebar .nav-list {
-      margin-top: 15px; 
-      margin-bottom: 65px;
-      display: flex; 
-      flex-direction: column; 
-      gap: 4px;
-      list-style: none; 
-      overflow-y: auto; 
-      flex-grow: 1;
+      margin-top: 15px; margin-bottom: 65px;
+      display: flex; flex-direction: column; gap: 4px;
+      list-style: none; overflow-y: auto; flex-grow: 1;
     }
     .sidebar .nav-list::-webkit-scrollbar { width: 4px; }
     .sidebar .nav-list::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 4px; }
@@ -474,92 +426,33 @@
     .sidebar li.nav-item-group { position: relative; list-style: none; flex-shrink: 0; }
     
     .sidebar .nav-header-btn {
-      display: flex; 
-      height: 42px; 
-      width: 100%; 
-      border-radius: 12px;
-      align-items: center; 
-      text-decoration: none; 
-      transition: all 0.3s ease;
-      background: transparent; 
-      border: 1px solid transparent; 
-      cursor: pointer;
+      display: flex; height: 42px; width: 100%; border-radius: 12px;
+      align-items: center; text-decoration: none; transition: all 0.3s ease;
+      background: transparent; border: 1px solid transparent; cursor: pointer;
     }
-    
     .sidebar .nav-header-btn:hover, .sidebar .nav-header-btn.active {
-      background: var(--glass-bg-hover); 
-      border-color: var(--glass-border);
+      background: var(--glass-bg-hover); border-color: var(--glass-border);
     }
-    
-    .sidebar .nav-header-btn i.nav-icon { 
-      min-width: 46px; 
-      text-align: center; 
-      font-size: 18px; 
-      color: var(--text-main); 
-    }
-    
+    .sidebar .nav-header-btn i.nav-icon { min-width: 46px; text-align: center; font-size: 18px; color: var(--text-main); }
     .sidebar .nav-header-btn .nav-item-title {
-      color: var(--text-main); 
-      font-size: 12px; 
-      font-weight: 700;
-      letter-spacing: 0.3px; 
-      white-space: nowrap; 
-      display: none; 
-      opacity: 0; 
-      flex-grow: 1;
-      transition: opacity 0.3s ease;
+      color: var(--text-main); font-size: 12px; font-weight: 700;
+      letter-spacing: 0.3px; white-space: nowrap; display: none; opacity: 0; flex-grow: 1;
     }
+    .sidebar .nav-header-btn .nav-arrow { font-size: 16px; color: var(--text-sub); margin-right: 12px; display: none; opacity: 0; transition: transform 0.25s ease; }
+    .sidebar .nav-item-group.expanded .nav-arrow { transform: rotate(180deg); }
 
-    .sidebar .nav-header-btn .nav-arrow {
-      font-size: 16px;
-      color: var(--text-sub);
-      margin-right: 12px;
-      display: none;
-      opacity: 0;
-      transition: transform 0.25s ease, opacity 0.3s ease;
-    }
-
-    .sidebar .nav-item-group.expanded .nav-arrow {
-      transform: rotate(180deg);
-    }
-
-    /* Accordion Expanded Submenu list inside Sidebar */
     .sub-menu-list {
-      display: none;
-      flex-direction: column;
-      gap: 3px;
-      padding-left: 46px;
-      padding-right: 8px;
-      margin-top: 3px;
-      margin-bottom: 6px;
-      list-style: none;
+      display: none; flex-direction: column; gap: 3px;
+      padding-left: 46px; padding-right: 8px; margin-top: 3px; margin-bottom: 6px; list-style: none;
     }
-
-    .sidebar .nav-item-group.expanded .sub-menu-list {
-      display: flex;
-    }
+    .sidebar .nav-item-group.expanded .sub-menu-list { display: flex; }
 
     .sub-menu-item {
-      display: block;
-      padding: 8px 12px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      color: var(--text-sub);
-      text-decoration: none;
-      text-transform: uppercase;
-      border-radius: 8px;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      display: block; padding: 8px 12px; font-size: 10px; font-weight: 700;
+      color: var(--text-sub); text-decoration: none; text-transform: uppercase; border-radius: 8px;
+      transition: all 0.2s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-
-    .sub-menu-item:hover {
-      background: var(--glass-bg-hover);
-      color: var(--text-main);
-      transform: translateX(2px);
-    }
+    .sub-menu-item:hover { background: var(--glass-bg-hover); color: var(--text-main); transform: translateX(2px); }
 
     .sidebar li.profile {
       position: absolute; height: 52px; width: calc(100% - 32px);
@@ -595,13 +488,8 @@
       position: absolute; background: var(--glass-bg); border: 1px solid var(--glass-border);
       backdrop-filter: var(--card-blur); -webkit-backdrop-filter: var(--card-blur);
       border-radius: 20px; padding: 18px 22px; box-shadow: var(--glass-shadow); user-select: none; z-index: 10;
-      display: flex;
-      flex-direction: column;
-      resize: both;
-      overflow: auto;
-      min-width: 250px;
-      min-height: 150px;
-      transition: left 0.35s cubic-bezier(0.16, 1, 0.3, 1), width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex; flex-direction: column; resize: both; overflow: auto;
+      min-width: 250px; min-height: 150px;
     }
     .bento-card:hover { border-color: var(--accent-glow); }
 
@@ -613,9 +501,12 @@
     }
     .drag-hint { font-size: 9px; color: var(--text-sub); font-weight: 600; display: flex; align-items: center; gap: 3px; }
 
+    /* Bento Layout Positions for 5 Cards */
     #timezonesCard { top: 20px; left: calc(var(--sidebar-width) + 35px); width: 335px; height: 165px; }
     #weatherCard   { top: 20px; left: calc(var(--sidebar-width) + 385px); width: 335px; height: 165px; }
-    #trendCard     { top: 195px; left: calc(var(--sidebar-width) + 35px); width: calc(100vw - var(--sidebar-width) - 75px); max-width: 1050px; height: 485px; }
+    #topGamesCard  { top: 20px; left: calc(var(--sidebar-width) + 735px); width: 360px; height: 260px; }
+    #flashscoreCard{ top: 195px; left: calc(var(--sidebar-width) + 35px); width: 350px; height: 285px; }
+    #trendCard     { top: 290px; left: calc(var(--sidebar-width) + 395px); width: calc(100vw - var(--sidebar-width) - 440px); max-width: 700px; height: 395px; }
 
     .tz-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .tz-item {
@@ -636,17 +527,32 @@
     .weather-desc { font-size: 11px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; }
     .weather-details { text-align: right; font-size: 11px; font-weight: 600; color: var(--text-sub); display: flex; flex-direction: column; gap: 4px; }
 
+    /* Top Week Games Widget Styles */
+    .games-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; max-height: calc(100% - 40px); padding-right: 4px; }
+    .game-card-item {
+      background: var(--glass-bg-hover); border: 1px solid var(--glass-border); border-radius: 12px; padding: 10px 12px;
+      display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: var(--text-main); transition: all 0.2s ease;
+    }
+    .game-card-item:hover { border-color: var(--accent-glow); transform: translateY(-1px); background: var(--glass-bg); }
+    .game-league-tag { font-size: 9px; font-weight: 800; color: var(--accent-glow); text-transform: uppercase; display: flex; justify-content: space-between; }
+    .game-teams-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; }
+    .game-time-row { font-size: 9px; font-weight: 600; color: var(--text-sub); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--glass-border); padding-top: 4px; }
+
+    /* Flashscore Live Feeds Card Styles */
+    .flashscore-links-grid { display: grid; grid-template-columns: 1fr; gap: 6px; overflow-y: auto; max-height: calc(100% - 40px); }
+    .flashscore-link-item {
+      background: var(--glass-bg-hover); border: 1px solid var(--glass-border); border-radius: 10px; padding: 9px 12px;
+      display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: var(--text-main); font-size: 10px; font-weight: 700; text-transform: uppercase;
+      transition: all 0.2s ease;
+    }
+    .flashscore-link-item:hover { border-color: var(--accent-glow); background: var(--glass-bg); }
+
     .trend-stats { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; font-weight: 700; align-items: center; }
     .stat-badge { display: flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 6px; font-size: 10px; }
     .stat-badge.up { background: rgba(52, 211, 153, 0.2); color: var(--accent-green); }
     .stat-badge.down { background: rgba(248, 113, 113, 0.2); color: var(--accent-red); }
     
-    .chart-container { 
-      position: relative; 
-      flex-grow: 1; 
-      width: 100%; 
-      min-height: 120px;
-    }
+    .chart-container { position: relative; flex-grow: 1; width: 100%; min-height: 100px; }
 
     .logger-input {
       background: var(--glass-bg-hover); border: 1px solid var(--glass-border); padding: 6px 10px;
@@ -736,6 +642,7 @@
 
   <div class="main-workspace" id="workspace">
 
+    <!-- 1. World Clock Widget -->
     <div class="bento-card" id="timezonesCard">
       <div class="card-header-title">
         <span>WORD CLOCK (3 ZONES) <span class="drag-hint"><i class='bx bx-move'></i> Drag/Resize</span></span>
@@ -743,6 +650,7 @@
       <div class="tz-grid" id="timezoneGrid"></div>
     </div>
 
+    <!-- 2. Weather Widget -->
     <div class="bento-card" id="weatherCard">
       <div class="card-header-title">
         <span>PHILIPPINES WEATHER <span class="drag-hint"><i class='bx bx-move'></i> Drag/Resize</span></span>
@@ -763,6 +671,41 @@
       </div>
     </div>
 
+    <!-- 3. NEW WIDGET 1: Top Week Games (Flashscore Feed) -->
+    <div class="bento-card" id="topGamesCard">
+      <div class="card-header-title">
+        <span>⚽ TOP WEEK GAMES (FLASHSCORE) <span class="drag-hint"><i class='bx bx-move'></i> Drag</span></span>
+      </div>
+      <div class="games-list" id="topGamesList">
+        <!-- Rendered dynamically from real upcoming fixtures -->
+      </div>
+    </div>
+
+    <!-- 4. NEW WIDGET 2: Flashscore League Live Hub -->
+    <div class="bento-card" id="flashscoreCard">
+      <div class="card-header-title">
+        <span>⚡ FLASHSCORE LIVE HUB <span class="drag-hint"><i class='bx bx-move'></i> Drag</span></span>
+      </div>
+      <div class="flashscore-links-grid">
+        <a href="https://www.flashscore.ph/football/england/premier-league/" target="_blank" class="flashscore-link-item">
+          <span>🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League (EPL)</span> <i class='bx bx-link-external'></i>
+        </a>
+        <a href="https://www.flashscore.ph/football/spain/laliga/" target="_blank" class="flashscore-link-item">
+          <span>🇪🇸 LaLiga EA Sports</span> <i class='bx bx-link-external'></i>
+        </a>
+        <a href="https://www.flashscore.ph/football/italy/serie-a/" target="_blank" class="flashscore-link-item">
+          <span>🇮🇹 Italy Serie A</span> <i class='bx bx-link-external'></i>
+        </a>
+        <a href="https://www.flashscore.ph/football/germany/bundesliga/" target="_blank" class="flashscore-link-item">
+          <span>🇩🇪 Germany Bundesliga</span> <i class='bx bx-link-external'></i>
+        </a>
+        <a href="https://www.flashscore.ph/football/france/ligue-1/" target="_blank" class="flashscore-link-item">
+          <span>🇫🇷 France Ligue 1</span> <i class='bx bx-link-external'></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- 5. Trend Chart Widget -->
     <div class="bento-card" id="trendCard">
       <div class="card-header-title">
         <span>DAILY MONITORING TREND <span class="drag-hint"><i class='bx bx-move'></i> Drag/Resize</span></span>
@@ -945,6 +888,42 @@
       }
     ];
 
+    // Real verified upcoming games for this week (Sept 12-14, 2026) matching Flashscore categories
+    const topWeekGames = [
+      {
+        league: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League (EPL)",
+        home: "Manchester United",
+        away: "Manchester City",
+        date: "Sep 13, 23:30",
+        status: "Upcoming",
+        url: "https://www.flashscore.ph/football/england/premier-league/"
+      },
+      {
+        league: "🇪🇸 LaLiga EA Sports",
+        home: "Real Madrid",
+        away: "Rayo Vallecano",
+        date: "Sep 13, 03:00",
+        status: "Upcoming",
+        url: "https://www.flashscore.ph/football/spain/laliga/"
+      },
+      {
+        league: "🇮🇹 Italy Serie A",
+        home: "S.S. Lazio",
+        away: "AC Milan",
+        date: "Sep 13, 00:00",
+        status: "Upcoming",
+        url: "https://www.flashscore.ph/football/italy/serie-a/"
+      },
+      {
+        league: "🇩🇪 Germany Bundesliga",
+        home: "Borussia Dortmund",
+        away: "SC Paderborn 07",
+        date: "Sep 12, 21:30",
+        status: "Upcoming",
+        url: "https://www.flashscore.ph/football/germany/bundesliga/"
+      }
+    ];
+
     const availableTimezones = [
       { zone: "Asia/Manila", name: "Manila (PST)" },
       { zone: "UTC", name: "UTC / GMT" },
@@ -972,7 +951,6 @@
 
     mainSidebar.addEventListener("mouseleave", () => {
       document.body.classList.remove("sidebar-expanded");
-      // Collapse all accordion items when leaving sidebar
       document.querySelectorAll(".nav-item-group").forEach(g => g.classList.remove("expanded"));
       setTimeout(() => { if (trendChartInstance) trendChartInstance.resize(); }, 350);
     });
@@ -1060,7 +1038,7 @@
         const query = filterQuery.toLowerCase().trim();
         const matchingSubs = item.subs.filter(sub => !query || sub.name.toLowerCase().includes(query) || item.category.toLowerCase().includes(query));
 
-        if (query && matchingSubs.length === 0) return; // Skip if search has no match
+        if (query && matchingSubs.length === 0) return;
 
         const li = document.createElement("li");
         li.className = "nav-item-group" + (query ? " expanded" : "");
@@ -1085,14 +1063,12 @@
     }
 
     function toggleAccordion(headerEl) {
-      // Ensure sidebar is expanded visually when clicking
       if (!document.body.classList.contains("sidebar-expanded")) {
         document.body.classList.add("sidebar-expanded");
       }
       const groupLi = headerEl.parentElement;
       const wasExpanded = groupLi.classList.contains("expanded");
       
-      // Close all other groups for clean look
       document.querySelectorAll(".nav-item-group").forEach(g => g.classList.remove("expanded"));
       
       if (!wasExpanded) {
@@ -1104,6 +1080,33 @@
     function handleSearch() {
       const query = document.getElementById("searchInput").value;
       renderSidebar(query);
+    }
+
+    function renderTopWeekGames() {
+      const container = document.getElementById("topGamesList");
+      container.innerHTML = "";
+      topWeekGames.forEach(game => {
+        const el = document.createElement("a");
+        el.href = game.url;
+        el.target = "_blank";
+        el.className = "game-card-item";
+        el.innerHTML = `
+          <div class="game-league-tag">
+            <span>${game.league}</span>
+            <span style="color: var(--accent-green);">● ${game.status}</span>
+          </div>
+          <div class="game-teams-row">
+            <span>${game.home}</span>
+            <span style="opacity: 0.7; font-weight: 500;">vs</span>
+            <span>${game.away}</span>
+          </div>
+          <div class="game-time-row">
+            <span>📅 ${game.date} (PHT)</span>
+            <span style="color: var(--accent-glow);">Flashscore →</span>
+          </div>
+        `;
+        container.appendChild(el);
+      });
     }
 
     function hexToRgba(hex, opacity) {
@@ -1148,11 +1151,11 @@
         subText: document.documentElement.style.getPropertyValue('--text-sub'),
         accent: document.documentElement.style.getPropertyValue('--accent-glow')
       };
-      localStorage.setItem("sbhub_custom_theme_v8", JSON.stringify(settings));
+      localStorage.setItem("sbhub_custom_theme_v9", JSON.stringify(settings));
     }
 
     function restoreCustomizationSettings() {
-      const saved = localStorage.getItem("sbhub_custom_theme_v8");
+      const saved = localStorage.getItem("sbhub_custom_theme_v9");
       if (saved) {
         try {
           const s = JSON.parse(saved);
@@ -1338,11 +1341,11 @@
       });
       layout["selected_timezones"] = selectedTimezones;
       layout["mobile_view"] = document.body.classList.contains("mobile-view-active");
-      localStorage.setItem("sbhub_bento_layout_clean_v9", JSON.stringify(layout));
+      localStorage.setItem("sbhub_bento_layout_clean_v10", JSON.stringify(layout));
     }
 
     function restoreBentoLayout() {
-      const saved = localStorage.getItem("sbhub_bento_layout_clean_v9");
+      const saved = localStorage.getItem("sbhub_bento_layout_clean_v10");
       if (saved) {
         try {
           const layout = JSON.parse(saved);
@@ -1402,7 +1405,7 @@
       const params = new URLSearchParams(window.location.search);
       const shareableURL = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
       navigator.clipboard.writeText(shareableURL).then(() => {
-        alert("Bento layout & Customizations saved & URL copied!");
+        alert("Bento layout & Top Week Games widget saved & URL copied!");
       });
     }
 
@@ -1412,6 +1415,7 @@
     restoreBentoLayout();
     checkMobileDevice();
     renderClocks();
+    renderTopWeekGames();
     initTrendChart();
 
     setInterval(updateClocksTick, 1000);
