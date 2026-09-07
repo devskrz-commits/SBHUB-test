@@ -19,11 +19,11 @@
 
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-color: #f8fafc;
+            --bg-color: #121826;
+            --card-bg: #1a2234;
+            --text-color: #f1f5f9;
             --header-text: #ffffff;
-            --border-color: #334155;
+            --border-color: #2a364f;
             --table-header-bg: #1e293b;
             --accent-btn: #38bdf8;
             --accent-btn-text: #0f172a;
@@ -69,7 +69,7 @@
             font-weight: 600;
             color: var(--accent-btn);
             letter-spacing: 0.2px;
-            opacity: 0.85;
+            opacity: 0.9;
         }
 
         .ph-holiday-container {
@@ -88,7 +88,7 @@
         .ph-holiday-label {
             font-size: 12px;
             font-weight: 700;
-            color: #f43f5e;
+            color: #fb7185;
             white-space: nowrap;
             display: flex;
             align-items: center;
@@ -106,11 +106,11 @@
         }
 
         .holiday-pill {
-            background-color: rgba(244, 63, 94, 0.15);
-            color: #f43f5e;
+            background-color: rgba(251, 113, 133, 0.15);
+            color: #fb7185;
             padding: 2px 6px;
             border-radius: 4px;
-            border: 1px solid rgba(244, 63, 94, 0.3);
+            border: 1px solid rgba(251, 113, 133, 0.3);
             font-size: 11px;
             white-space: nowrap;
         }
@@ -138,10 +138,10 @@
         .btn:hover { opacity: 0.85; }
         .btn-back { background-color: var(--accent-btn); color: var(--accent-btn-text); }
         .btn-secondary { background-color: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); }
-        .btn-warning { background-color: #eab308; color: #000000; }
-        .btn-admin { background-color: #22c55e; color: #ffffff; }
-        .btn-mobile-toggle { background-color: #8b5cf6; color: #ffffff; }
-        .btn-danger { background-color: #ef4444; color: #ffffff; }
+        .btn-warning { background-color: #facc15; color: #1e293b; }
+        .btn-admin { background-color: #4ade80; color: #0f172a; }
+        .btn-mobile-toggle { background-color: #a78bfa; color: #0f172a; }
+        .btn-danger { background-color: #f87171; color: #0f172a; }
 
         .viewer-badge {
             background-color: var(--card-bg);
@@ -157,9 +157,9 @@
         }
 
         .view-only-banner {
-            background-color: #ef4444;
-            color: #ffffff;
-            font-weight: bold;
+            background-color: #f87171;
+            color: #0f172a;
+            font-weight: 700;
             text-align: center;
             padding: 8px;
             border-radius: 6px;
@@ -216,7 +216,7 @@
 
         th, td {
             border: 1px solid var(--border-color);
-            padding: 5px;
+            padding: 6px;
             text-align: center;
             font-size: 13px;
             position: relative;
@@ -279,7 +279,7 @@
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 4px;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
             z-index: 1000;
             max-height: 220px;
             overflow-y: auto;
@@ -300,37 +300,39 @@
             transition: background-color 0.15s, color 0.15s;
         }
 
-        .shift-bg-7-16 { background-color: rgba(134, 239, 172, 0.25) !important; color: #86efac !important; border: 1px solid #86efac; }
-        .shift-bg-9-18 { background-color: rgba(167, 243, 208, 0.25) !important; color: #a7f3d0 !important; border: 1px solid #a7f3d0; }
-        .shift-bg-10-19 { background-color: rgba(254, 215, 170, 0.25) !important; color: #fed7aa !important; border: 1px solid #fed7aa; }
-        .shift-bg-12-21 { background-color: rgba(186, 230, 253, 0.25) !important; color: #bae6fd !important; border: 1px solid #bae6fd; }
-        .shift-bg-14-23 { background-color: rgba(233, 213, 255, 0.25) !important; color: #e9d5ff !important; border: 1px solid #e9d5ff; }
-        .shift-bg-16-1 { background-color: rgba(252, 165, 165, 0.25) !important; color: #fca5a5 !important; border: 1px solid #fca5a5; }
-        .shift-bg-7-10-wfh { background-color: rgba(251, 207, 232, 0.25) !important; color: #fbcfe8 !important; border: 1px solid #fbcfe8; }
-        .shift-bg-7-16-wfh { background-color: rgba(244, 114, 182, 0.25) !important; color: #f472b6 !important; border: 1px solid #f472b6; }
-        .shift-bg-9-18-wfh { background-color: rgba(251, 207, 232, 0.25) !important; color: #fbcfe8 !important; border: 1px solid #fbcfe8; }
-        .shift-bg-12-21-wfh { background-color: rgba(244, 114, 182, 0.25) !important; color: #f472b6 !important; border: 1px solid #f472b6; }
-        .shift-bg-rd { background-color: rgba(156, 163, 175, 0.25) !important; color: #9ca3af !important; border: 1px solid #9ca3af; }
-        .shift-bg-vl { background-color: rgba(253, 224, 71, 0.25) !important; color: #fde047 !important; border: 1px solid #fde047; }
-        .shift-bg-sl { background-color: rgba(192, 132, 252, 0.25) !important; color: #c084fc !important; border: 1px solid #c084fc; }
-        .shift-bg-adjusted { background-color: rgba(250, 204, 21, 0.25) !important; color: #facc15 !important; border: 1px solid #facc15; }
+        /* Systematic Dark Theme Shift Palette */
+        .shift-bg-7-16 { background-color: #143323 !important; color: #4ade80 !important; border: 1px solid #1e4630; }
+        .shift-bg-9-18 { background-color: #133a2d !important; color: #34d399 !important; border: 1px solid #1b4d3c; }
+        .shift-bg-10-19 { background-color: #3b2814 !important; color: #fbbf24 !important; border: 1px solid #4d351b; }
+        .shift-bg-12-21 { background-color: #153147 !important; color: #38bdf8 !important; border: 1px solid #1d4361; }
+        .shift-bg-14-23 { background-color: #2b1d42 !important; color: #c084fc !important; border: 1px solid #3b285c; }
+        .shift-bg-16-1 { background-color: #421d22 !important; color: #f87171 !important; border: 1px solid #59262e; }
+        .shift-bg-7-10-wfh { background-color: #421e33 !important; color: #f472b6 !important; border: 1px solid #592945; }
+        .shift-bg-7-16-wfh { background-color: #421e33 !important; color: #f472b6 !important; border: 1px solid #592945; }
+        .shift-bg-9-18-wfh { background-color: #421e33 !important; color: #f472b6 !important; border: 1px solid #592945; }
+        .shift-bg-12-21-wfh { background-color: #421e33 !important; color: #f472b6 !important; border: 1px solid #592945; }
+        .shift-bg-rd { background-color: #242c3d !important; color: #94a3b8 !important; border: 1px solid #333f57; }
+        .shift-bg-vl { background-color: #423814 !important; color: #facc15 !important; border: 1px solid #594c1c; }
+        .shift-bg-sl { background-color: #321d42 !important; color: #d8b4fe !important; border: 1px solid #45265c; }
+        .shift-bg-adjusted { background-color: #423814 !important; color: #fde047 !important; border: 1px solid #594c1c; }
 
-        [data-theme="light"] .shift-bg-7-16 { background-color: #dcfce7 !important; color: #166534 !important; }
-        [data-theme="light"] .shift-bg-9-18 { background-color: #d1fae5 !important; color: #065f46 !important; }
-        [data-theme="light"] .shift-bg-10-19 { background-color: #ffedd5 !important; color: #9a3412 !important; }
-        [data-theme="light"] .shift-bg-12-21 { background-color: #e0f2fe !important; color: #0369a1 !important; }
-        [data-theme="light"] .shift-bg-14-23 { background-color: #f3e8ff !important; color: #6b21a8 !important; }
-        [data-theme="light"] .shift-bg-16-1 { background-color: #fee2e2 !important; color: #991b1b !important; }
-        [data-theme="light"] .shift-bg-7-10-wfh { background-color: #fce7f3 !important; color: #9d174d !important; }
-        [data-theme="light"] .shift-bg-7-16-wfh { background-color: #fbcfe8 !important; color: #831843 !important; }
-        [data-theme="light"] .shift-bg-9-18-wfh { background-color: #fce7f3 !important; color: #9d174d !important; }
-        [data-theme="light"] .shift-bg-12-21-wfh { background-color: #fbcfe8 !important; color: #831843 !important; }
-        [data-theme="light"] .shift-bg-rd { background-color: #f3f4f6 !important; color: #374151 !important; }
-        [data-theme="light"] .shift-bg-vl { background-color: #fef9c3 !important; color: #854d0e !important; }
-        [data-theme="light"] .shift-bg-sl { background-color: #f3e8ff !important; color: #6b21a8 !important; }
-        [data-theme="light"] .shift-bg-adjusted { background-color: #fef08a !important; color: #713f12 !important; }
+        /* Light Theme Overrides */
+        [data-theme="light"] .shift-bg-7-16 { background-color: #dcfce7 !important; color: #166534 !important; border: 1px solid #bbf7d0; }
+        [data-theme="light"] .shift-bg-9-18 { background-color: #d1fae5 !important; color: #065f46 !important; border: 1px solid #a7f3d0; }
+        [data-theme="light"] .shift-bg-10-19 { background-color: #ffedd5 !important; color: #9a3412 !important; border: 1px solid #fed7aa; }
+        [data-theme="light"] .shift-bg-12-21 { background-color: #e0f2fe !important; color: #0369a1 !important; border: 1px solid #bae6fd; }
+        [data-theme="light"] .shift-bg-14-23 { background-color: #f3e8ff !important; color: #6b21a8 !important; border: 1px solid #e9d5ff; }
+        [data-theme="light"] .shift-bg-16-1 { background-color: #fee2e2 !important; color: #991b1b !important; border: 1px solid #fecaca; }
+        [data-theme="light"] .shift-bg-7-10-wfh { background-color: #fce7f3 !important; color: #9d174d !important; border: 1px solid #fbcfe8; }
+        [data-theme="light"] .shift-bg-7-16-wfh { background-color: #fbcfe8 !important; color: #831843 !important; border: 1px solid #f472b6; }
+        [data-theme="light"] .shift-bg-9-18-wfh { background-color: #fce7f3 !important; color: #9d174d !important; border: 1px solid #fbcfe8; }
+        [data-theme="light"] .shift-bg-12-21-wfh { background-color: #fbcfe8 !important; color: #831843 !important; border: 1px solid #f472b6; }
+        [data-theme="light"] .shift-bg-rd { background-color: #f1f5f9 !important; color: #475569 !important; border: 1px solid #e2e8f0; }
+        [data-theme="light"] .shift-bg-vl { background-color: #fef9c3 !important; color: #854d0e !important; border: 1px solid #fef08a; }
+        [data-theme="light"] .shift-bg-sl { background-color: #f3e8ff !important; color: #6b21a8 !important; border: 1px solid #e9d5ff; }
+        [data-theme="light"] .shift-bg-adjusted { background-color: #fef08a !important; color: #713f12 !important; border: 1px solid #fde047; }
 
-        .custom-dropdown-item:hover { background-color: rgba(255, 255, 255, 0.1); }
+        .custom-dropdown-item:hover { background-color: rgba(255, 255, 255, 0.08); }
 
         .custom-editable-input, .miguel-editable-cell {
             width: 100%;
@@ -350,7 +352,7 @@
             padding: 15px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             min-width: 320px;
             flex: 1;
             display: flex;
@@ -392,27 +394,27 @@
         }
 
         .badge-vl {
-            background-color: rgba(134, 239, 172, 0.2);
-            color: #86efac;
-            border: 1px solid #86efac;
+            background-color: #143323;
+            color: #4ade80;
+            border: 1px solid #1e4630;
             font-weight: 600;
             padding: 2px 6px;
             border-radius: 3px;
         }
 
         .badge-sl {
-            background-color: rgba(239, 68, 68, 0.2);
+            background-color: #421d22;
             color: #f87171;
-            border: 1px solid #f87171;
+            border: 1px solid #59262e;
             font-weight: 600;
             padding: 2px 6px;
             border-radius: 3px;
         }
 
         .badge-wfh {
-            background-color: rgba(56, 189, 248, 0.2);
+            background-color: #153147;
             color: #38bdf8;
-            border: 1px solid #38bdf8;
+            border: 1px solid #1d4361;
             font-weight: 600;
             padding: 2px 6px;
             border-radius: 3px;
@@ -465,6 +467,47 @@
         }
         .mobile-card-row span:first-child {
             font-weight: 600;
+        }
+
+        /* Media Query for Automatic/Responsive Mobile Layout Fitment */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .header-top {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .ph-holiday-container {
+                max-width: 100%;
+                margin: 0;
+            }
+            .header-top-controls {
+                justify-content: space-between;
+            }
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .controls > div, .controls > button, .team-manager-group {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .main-layout {
+                flex-direction: column;
+            }
+            .table-container {
+                width: 100%;
+            }
+            #mobile-card-view {
+                display: flex !important;
+            }
+            #standardTableContainer {
+                display: none !important;
+            }
+            #mobileViewToggleBtn {
+                display: none; /* Auto-forced on mobile screens */
+            }
         }
     </style>
 </head>
@@ -666,7 +709,7 @@
         let globalTzOffset = 8;
         let rotaData = {};
         let leaveMatrixData = {};
-        let allYearRotaData = {}; // Stores all months data for yearly accumulation (Jan-Dec)
+        let allYearRotaData = {};
         let isMobileViewActive = false;
         let isViewOnlyMode = true;
         const ADMIN_PASSWORD = "sb2026";
@@ -793,13 +836,11 @@
                 renderAll();
             });
 
-            // Listen to active month rota data for schedule editing
             db.ref(`rota_data/${monthKey}`).on('value', (snapshot) => {
                 rotaData = snapshot.val() || {};
                 renderAll();
             });
 
-            // Listen to ALL months of the active year to compute Jan-Dec cumulative counts correctly
             db.ref(`rota_data`).on('value', (snapshot) => {
                 const allData = snapshot.val() || {};
                 allYearRotaData = {};
@@ -953,7 +994,7 @@
             buildLeaveTables();
             renderWFHTracker();
             renderVLPieChart();
-            if (isMobileViewActive) renderMobileCards();
+            if (isMobileViewActive || window.innerWidth <= 768) renderMobileCards();
         }
 
         function renderHeaders() {
@@ -1137,7 +1178,6 @@
             let tempMatrix = {};
             team.forEach(m => tempMatrix[m] = { vl: [], sl: [] });
 
-            // Iterate across all months recorded for the active year (e.g., 2026_1 through 2026_12)
             Object.keys(allYearRotaData).forEach(monthKey => {
                 const monthParts = monthKey.split("_");
                 const mIndex = parseInt(monthParts[1]) - 1;
@@ -1160,10 +1200,10 @@
             });
 
             team.forEach(m => {
-                while (tempMatrix[m].vl.length < 15) tempMatrix[m].vl.push('');
-                while (tempMatrix[m].sl.length < 10) tempMatrix[m].sl.push('');
-                tempMatrix[m].vl = tempMatrix[m].vl.slice(0, 15);
-                tempMatrix[m].sl = tempMatrix[m].sl.slice(0, 10);
+                while (tempMatrix[m].vl.length < 10) tempMatrix[m].vl.push('');
+                while (tempMatrix[m].sl.length < 5) tempMatrix[m].sl.push('');
+                tempMatrix[m].vl = tempMatrix[m].vl.slice(0, 10);
+                tempMatrix[m].sl = tempMatrix[m].sl.slice(0, 5);
             });
 
             leaveMatrixData = tempMatrix;
@@ -1174,11 +1214,12 @@
 
         function buildLeaveTables() {
             leaveDatesBody.innerHTML = '';
-            for (let rowIdx = 0; rowIdx < 25; rowIdx++) {
+            // Total rows: 10 for VL + 5 for SL = 15 total rows
+            for (let rowIdx = 0; rowIdx < 15; rowIdx++) {
                 let tr = document.createElement('tr');
-                let isVL = rowIdx < 15;
+                let isVL = rowIdx < 10;
                 let leaveType = isVL ? 'vl' : 'sl';
-                let arrayIdx = isVL ? rowIdx : rowIdx - 15;
+                let arrayIdx = isVL ? rowIdx : rowIdx - 10;
 
                 let tdType = document.createElement('td');
                 tdType.innerHTML = isVL ? '<span class="badge-vl">VL</span>' : '<span class="badge-sl">SL</span>';
@@ -1195,8 +1236,8 @@
                     input.value = val;
 
                     input.addEventListener('input', () => {
-                        if (!leaveMatrixData[member]) leaveMatrixData[member] = { vl: Array(15).fill(''), sl: Array(10).fill('') };
-                        if (!leaveMatrixData[member][leaveType]) leaveMatrixData[member][leaveType] = isVL ? Array(15).fill('') : Array(10).fill('');
+                        if (!leaveMatrixData[member]) leaveMatrixData[member] = { vl: Array(10).fill(''), sl: Array(5).fill('') };
+                        if (!leaveMatrixData[member][leaveType]) leaveMatrixData[member][leaveType] = isVL ? Array(10).fill('') : Array(5).fill('');
 
                         leaveMatrixData[member][leaveType][arrayIdx] = input.value;
                         saveLeaveMatrixToDatabase();
@@ -1254,7 +1295,7 @@
 
             const ctx = document.getElementById('vlPieChart').getContext('2d');
             const activeTheme = document.body.getAttribute('data-theme') || 'dark';
-            const fontColor = activeTheme === 'light' ? '#1e293b' : '#f8fafc';
+            const fontColor = activeTheme === 'light' ? '#1e293b' : '#f1f5f9';
 
             if (vlChartInstance) vlChartInstance.destroy();
 
@@ -1270,7 +1311,7 @@
                             '#fbbf24', '#c084fc', '#f472b6', '#a3e635'
                         ],
                         borderWidth: 1,
-                        borderColor: activeTheme === 'light' ? '#ffffff' : '#1e293b'
+                        borderColor: activeTheme === 'light' ? '#ffffff' : '#1a2234'
                     }]
                 },
                 options: {
