@@ -75,6 +75,41 @@
       100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0px); }
     }
 
+    /* Top Right Mobile View Toggle Button */
+    .mobile-fit-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      z-index: 10000;
+      background: var(--glass-bg);
+      border: 1.5px solid var(--glass-border);
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--glass-shadow);
+      transition: all 0.2s ease;
+    }
+
+    .mobile-fit-btn:hover {
+      border-color: var(--accent-glow);
+      transform: translateY(-1px);
+    }
+
+    .mobile-fit-btn.active {
+      background: var(--accent-glow);
+      color: #080c14;
+      border-color: var(--accent-glow);
+    }
+
     /* Security Lockout Screen & 3D Lamp Overlay */
     #authOverlay {
       position: fixed;
@@ -520,6 +555,11 @@
 </head>
 <body onclick="hideContextMenu()" onmousemove="resetInactivityTimer()" onkeypress="resetInactivityTimer()">
 
+  <!-- Top Right Mobile View Toggle Button -->
+  <button class="mobile-fit-btn" id="mobileFitBtn" onclick="toggleMobileViewButton()">
+    <i class='bx bx-mobile-alt' style="font-size: 14px;"></i> <span id="mobileBtnText">MOBILE VIEW</span>
+  </button>
+
   <!-- 3D Lamp & Security Lockout Overlay -->
   <div id="authOverlay">
     <div class="lamp-login-container">
@@ -567,7 +607,7 @@
 
     <li class="profile">
       <div class="profile-details">
-        <div style="font-size: 20px;">👤</div>
+        <div style="font-size: 20px;">側</div>
         <div class="name_job">
           <div class="name">MAIN CONSOLE</div>
           <div class="job">Active Operator</div>
@@ -597,12 +637,12 @@
         <div class="weather-main">
           <i class='bx bx-sun weather-icon' id="weatherIcon"></i>
           <div>
-            <div class="weather-temp" id="phTemp">31°C</div>
+            <div class="weather-temp" id="phTemp">31ﾂｰC</div>
             <div class="weather-desc" id="phDesc">Partly Cloudy</div>
           </div>
         </div>
         <div class="weather-details">
-          <span>📍 Metro Manila, PH</span>
+          <span>桃 Metro Manila, PH</span>
           <span>Humidity: 78%</span>
           <span>Wind: 14 km/h</span>
         </div>
@@ -616,7 +656,7 @@
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
         <select id="trackerSelector" class="logger-input" style="padding: 4px 8px; font-size: 10px; max-width: 175px;" onchange="switchTrackerData()">
-          <option value="all">📊 ALL (IBET vs EDGE vs 7A)</option>
+          <option value="all">投 ALL (IBET vs EDGE vs 7A)</option>
           <option value="ibet">IBET TRACKER</option>
           <option value="edge">EDGE TRACKER</option>
           <option value="tracker7a">7A TRACKER</option>
@@ -1107,6 +1147,8 @@
           if (layout["mobile_view"]) {
             document.body.classList.add("mobile-view-active");
             document.getElementById("mobileViewToggle").checked = true;
+            document.getElementById("mobileFitBtn").classList.add("active");
+            document.getElementById("mobileBtnText").innerText = "DESKTOP VIEW";
           }
           for (const id in layout) {
             if (id === "selected_timezones" || id === "mobile_view") continue;
@@ -1133,6 +1175,8 @@
         if (mobileToggle) {
           mobileToggle.checked = true;
         }
+        document.getElementById("mobileFitBtn").classList.add("active");
+        document.getElementById("mobileBtnText").innerText = "DESKTOP VIEW";
       }
     }
 
@@ -1150,8 +1194,38 @@
 
     function toggleMobileView() {
       const isMobile = document.getElementById("mobileViewToggle").checked;
-      if (isMobile) document.body.classList.add("mobile-view-active");
-      else document.body.classList.remove("mobile-view-active");
+      if (isMobile) {
+        document.body.classList.add("mobile-view-active");
+        document.getElementById("mobileFitBtn").classList.add("active");
+        document.getElementById("mobileBtnText").innerText = "DESKTOP VIEW";
+      } else {
+        document.body.classList.remove("mobile-view-active");
+        document.getElementById("mobileFitBtn").classList.remove("active");
+        document.getElementById("mobileBtnText").innerText = "MOBILE VIEW";
+      }
+      saveBentoLayout();
+      setTimeout(() => { if(trendChartInstance) trendChartInstance.resize(); }, 300);
+    }
+
+    function toggleMobileViewButton() {
+      const isCurrentlyMobile = document.body.classList.contains("mobile-view-active");
+      const newState = !isCurrentlyMobile;
+      
+      if (newState) {
+        document.body.classList.add("mobile-view-active");
+        document.getElementById("mobileFitBtn").classList.add("active");
+        document.getElementById("mobileBtnText").innerText = "DESKTOP VIEW";
+      } else {
+        document.body.classList.remove("mobile-view-active");
+        document.getElementById("mobileFitBtn").classList.remove("active");
+        document.getElementById("mobileBtnText").innerText = "MOBILE VIEW";
+      }
+      
+      const mobileToggle = document.getElementById("mobileViewToggle");
+      if (mobileToggle) {
+        mobileToggle.checked = newState;
+      }
+      
       saveBentoLayout();
       setTimeout(() => { if(trendChartInstance) trendChartInstance.resize(); }, 300);
     }
