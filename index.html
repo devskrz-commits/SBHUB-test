@@ -518,7 +518,7 @@
     input:checked + .slider:before { transform: translateX(22px); }
   </style>
 </head>
-<body class="lamp-is-on" onclick="hideContextMenu()" onmousemove="resetInactivityTimer()" onkeypress="resetInactivityTimer()">
+<body onclick="hideContextMenu()" onmousemove="resetInactivityTimer()" onkeypress="resetInactivityTimer()">
 
   <!-- 3D Lamp & Security Lockout Overlay -->
   <div id="authOverlay">
@@ -567,7 +567,7 @@
 
     <li class="profile">
       <div class="profile-details">
-        <div style="font-size: 20px;">政</div>
+        <div style="font-size: 20px;">👤</div>
         <div class="name_job">
           <div class="name">MAIN CONSOLE</div>
           <div class="job">Active Operator</div>
@@ -602,7 +602,7 @@
           </div>
         </div>
         <div class="weather-details">
-          <span>桃 Metro Manila, PH</span>
+          <span>📍 Metro Manila, PH</span>
           <span>Humidity: 78%</span>
           <span>Wind: 14 km/h</span>
         </div>
@@ -616,7 +616,7 @@
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
         <select id="trackerSelector" class="logger-input" style="padding: 4px 8px; font-size: 10px; max-width: 175px;" onchange="switchTrackerData()">
-          <option value="all">投 ALL (IBET vs EDGE vs 7A)</option>
+          <option value="all">📊 ALL (IBET vs EDGE vs 7A)</option>
           <option value="ibet">IBET TRACKER</option>
           <option value="edge">EDGE TRACKER</option>
           <option value="tracker7a">7A TRACKER</option>
@@ -848,8 +848,7 @@
     function triggerLogout() {
       toggleModal();
       document.getElementById("authOverlay").classList.remove("unlocked");
-      document.body.classList.add("lamp-is-on");
-      setTimeout(() => document.getElementById("loginPassword").focus(), 300);
+      document.body.classList.remove("lamp-is-on"); // Ensure lamp starts off upon logout
     }
 
     function resetInactivityTimer() {
@@ -857,7 +856,7 @@
       if (!document.getElementById("authOverlay").classList.contains("unlocked")) return;
       inactivityTimer = setTimeout(() => {
         document.getElementById("authOverlay").classList.remove("unlocked");
-        document.body.classList.add("lamp-is-on");
+        document.body.classList.remove("lamp-is-on");
       }, INACTIVITY_LIMIT);
     }
 
@@ -1124,6 +1123,19 @@
       }
     }
 
+    function checkMobileDevice() {
+      const isMobileScreen = window.innerWidth <= 768;
+      const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      if (isMobileScreen || isMobileUA) {
+        document.body.classList.add("mobile-view-active");
+        const mobileToggle = document.getElementById("mobileViewToggle");
+        if (mobileToggle) {
+          mobileToggle.checked = true;
+        }
+      }
+    }
+
     function toggleModal() {
       const modal = document.getElementById("settingsModal");
       modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
@@ -1158,6 +1170,7 @@
     renderSidebar();
     selectCategory(0);
     restoreBentoLayout();
+    checkMobileDevice();
     renderClocks();
     initTrendChart();
     setInterval(updateClocksTick, 1000);
