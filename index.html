@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sportsbook Hub - Glassmorphic Sidebar</title>
+  <title>Sportsbook Hub - Secured Animated Lamp Login</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <!-- Chart.js for Data Trends & Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     * {
       margin: 0;
@@ -21,33 +24,38 @@
     }
 
     :root {
-      --bg-overlay: rgba(10, 15, 26, 0.25);
-      --glass-bg: rgba(22, 27, 34, 0.45);
-      --glass-bg-hover: rgba(255, 255, 255, 0.20);
-      --glass-border: rgba(255, 255, 255, 0.22);
-      --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      --bg-overlay: rgba(10, 15, 26, 0.35);
+      --glass-bg: rgba(22, 27, 34, 0.55);
+      --glass-bg-hover: rgba(255, 255, 255, 0.15);
+      --glass-border: rgba(255, 255, 255, 0.18);
+      --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
       --text-main: #ffffff;
-      --text-sub: rgba(255, 255, 255, 0.75);
-      --accent-glow: #60a5fa;
-      --card-blur: blur(16px);
+      --text-sub: rgba(255, 255, 255, 0.65);
+      --accent-glow: #38bdf8;
+      --accent-green: #34d399;
+      --accent-red: #f87171;
+      --card-blur: blur(20px);
       --font-mono: 'JetBrains Mono', monospace;
+      --lamp-glow: 0 0 0 rgba(255, 255, 255, 0);
     }
 
     body.light-mode {
-      --bg-overlay: rgba(240, 244, 248, 0.15);
-      --glass-bg: rgba(255, 255, 255, 0.40);
-      --glass-bg-hover: rgba(255, 255, 255, 0.75);
-      --glass-border: rgba(255, 255, 255, 0.5);
-      --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-      --text-main: #0f172a;
-      --text-sub: #475569;
-      --accent-glow: #2563eb;
+      --bg-overlay: rgba(255, 255, 255, 0.4);
+      --glass-bg: rgba(255, 255, 255, 0.85);
+      --glass-bg-hover: rgba(15, 23, 42, 0.08);
+      --glass-border: rgba(15, 23, 42, 0.2);
+      --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      --text-main: #080c14;
+      --text-sub: #1e293b;
+      --accent-glow: #0284c7;
+      --accent-green: #047857;
+      --accent-red: #b91c1c;
       --card-blur: blur(20px);
     }
 
     body {
       min-height: 100vh;
-      background-color: #0d1117;
+      background-color: #080c14;
       background-image: linear-gradient(var(--bg-overlay), var(--bg-overlay)), 
                         url('sb-hub.jpg'),
                         url('sb-hub.jpeg'),
@@ -59,8 +67,227 @@
       background-size: cover;
       color: var(--text-main);
       display: flex;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
       transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    @keyframes bentoContainerReveal {
+      0% {
+        opacity: 0;
+        transform: scale(0.88) translateY(30px);
+        filter: blur(16px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0px);
+      }
+    }
+
+    /* Security Lockout Screen & Animated Lamp Overlay */
+    #authOverlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(8, 12, 20, 0.88);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    #authOverlay.unlocked {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .lamp-login-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 60px;
+    }
+
+    /* Animated Lamp Styles */
+    .lamp-scene {
+      position: relative;
+      width: 220px;
+      height: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .lamp-shade {
+      width: 160px;
+      height: 90px;
+      background: #e2e8f0;
+      border-radius: 120px 120px 0 0;
+      position: relative;
+      box-shadow: var(--lamp-glow);
+      transition: box-shadow 0.4s ease, background 0.4s ease;
+      z-index: 3;
+    }
+
+    body.lamp-is-on .lamp-shade {
+      background: #ffffff;
+      box-shadow: 0 0 60px 20px rgba(255, 241, 150, 0.6), 0 0 120px 40px rgba(255, 215, 0, 0.3);
+    }
+
+    .lamp-stand-rod {
+      width: 14px;
+      height: 200px;
+      background: #cbd5e1;
+      border-radius: 4px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .lamp-base {
+      width: 120px;
+      height: 18px;
+      background: #cbd5e1;
+      border-radius: 10px 10px 0 0;
+      z-index: 2;
+    }
+
+    /* Pull Cord / Rod Switch - Positioned & Extended per exact reference image */
+    .pull-cord-wrapper {
+      position: absolute;
+      top: 90px;
+      right: 46px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .pull-cord-wrapper:hover {
+      transform: scale(1.08);
+    }
+
+    .cord-string {
+      width: 2px;
+      height: 125px;
+      background: rgba(255, 255, 255, 0.7);
+      transition: height 0.3s ease;
+    }
+
+    body.lamp-is-on .cord-string {
+      height: 155px;
+    }
+
+    .cord-handle {
+      width: 22px;
+      height: 22px;
+      background: #f59e0b;
+      border-radius: 50%;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.6);
+    }
+
+    /* Side Popup Login Form Card */
+    .login-popup-card {
+      width: 360px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: var(--glass-shadow);
+      transform: translateX(40px) scale(0.95);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    body.lamp-is-on .login-popup-card {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .login-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 20px;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--accent-glow);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .login-input {
+      width: 100%;
+      background: var(--glass-bg-hover);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .login-input:focus {
+      border-color: var(--accent-glow);
+    }
+
+    .login-input::placeholder {
+      color: var(--text-sub);
+    }
+
+    .signin-btn {
+      width: 100%;
+      margin-top: 10px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #ffffff;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .signin-btn:hover {
+      transform: translateY(-1px);
+      opacity: 0.95;
+    }
+
+    .error-msg {
+      color: var(--accent-red);
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 10px;
+      min-height: 16px;
     }
 
     /* Glass Sidebar Layout */
@@ -81,9 +308,9 @@
       display: flex;
       flex-direction: column;
       box-shadow: var(--glass-shadow);
+      animation: bentoContainerReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* Collapsed Sidebar State */
     .sidebar.close {
       width: 78px;
     }
@@ -95,6 +322,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 4px;
+      flex-shrink: 0;
     }
 
     .sidebar .logo-details .logo_name {
@@ -102,9 +330,8 @@
       font-size: 13px;
       font-weight: 800;
       letter-spacing: 1.8px;
-      opacity: 1;
-      transition: opacity 0.3s ease;
       white-space: nowrap;
+      transition: opacity 0.3s ease;
     }
 
     .sidebar.close .logo-details .logo_name {
@@ -134,12 +361,12 @@
       height: 42px;
       width: 100%;
       margin-top: 12px;
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--glass-bg-hover);
       border-radius: 12px;
       display: flex;
       align-items: center;
       border: 1px solid var(--glass-border);
-      transition: all 0.3s ease;
+      flex-shrink: 0;
     }
 
     .sidebar .search-box i {
@@ -164,6 +391,11 @@
       font-size: 12px;
       font-weight: 600;
       color: var(--text-main);
+      transition: opacity 0.3s ease;
+    }
+
+    .sidebar .search-box input::placeholder {
+      color: var(--text-sub);
     }
 
     .sidebar.close .search-box input {
@@ -171,29 +403,35 @@
       pointer-events: none;
     }
 
-    /* Navigation Items */
+    /* Navigation Items Container */
     .sidebar .nav-list {
       margin-top: 15px;
+      margin-bottom: 60px;
       display: flex;
       flex-direction: column;
       gap: 6px;
       list-style: none;
       overflow-y: auto;
-      max-height: calc(100vh - 190px);
+      flex-grow: 1;
     }
 
     .sidebar .nav-list::-webkit-scrollbar {
-      display: none;
+      width: 4px;
+    }
+    .sidebar .nav-list::-webkit-scrollbar-thumb {
+      background: var(--glass-border);
+      border-radius: 4px;
     }
 
     .sidebar li {
       position: relative;
       list-style: none;
+      flex-shrink: 0;
     }
 
     .sidebar li a {
       display: flex;
-      height: 44px;
+      height: 42px;
       width: 100%;
       border-radius: 12px;
       align-items: center;
@@ -207,7 +445,7 @@
     .sidebar li a:hover, .sidebar li a.active {
       background: var(--glass-bg-hover);
       border-color: var(--glass-border);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
 
     .sidebar li i {
@@ -223,8 +461,7 @@
       font-weight: 700;
       letter-spacing: 0.3px;
       white-space: nowrap;
-      opacity: 1;
-      transition: 0.3s ease;
+      transition: opacity 0.3s ease;
     }
 
     .sidebar.close li a .links_name {
@@ -247,7 +484,6 @@
       opacity: 0;
       white-space: nowrap;
       pointer-events: none;
-      transition: 0s;
       border: 1px solid var(--glass-border);
       box-shadow: var(--glass-shadow);
     }
@@ -262,7 +498,7 @@
 
     .sidebar li.profile {
       position: absolute;
-      height: 55px;
+      height: 52px;
       width: calc(100% - 32px);
       left: 16px;
       bottom: 16px;
@@ -273,7 +509,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: all 0.4s ease;
+      flex-shrink: 0;
     }
 
     .sidebar.close li.profile {
@@ -289,6 +525,7 @@
     .sidebar li .name_job {
       margin-left: 8px;
       white-space: nowrap;
+      transition: opacity 0.3s ease;
     }
 
     .sidebar li .name {
@@ -310,7 +547,7 @@
       pointer-events: none;
     }
 
-    /* Main Workspace */
+    /* Main Bento Dashboard Workspace */
     .main-workspace {
       position: absolute;
       top: 0;
@@ -318,41 +555,126 @@
       width: 100vw;
       height: 100vh;
       overflow: hidden;
+      animation: bentoContainerReveal 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      transition: all 0.3s ease;
     }
 
-    /* Draggable Glass Cards */
-    .draggable-card {
+    /* Mobile View Mode Classes - Fully responsive without hidden letters */
+    body.mobile-view-active {
+      overflow-x: hidden !important;
+    }
+    body.mobile-view-active .sidebar {
+      position: relative !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: auto !important;
+      margin-bottom: 12px;
+      border-radius: 16px;
+      box-sizing: border-box;
+    }
+    body.mobile-view-active .sidebar.close {
+      width: 100% !important;
+    }
+    body.mobile-view-active .sidebar .logo-details .logo_name,
+    body.mobile-view-active .sidebar .search-box input,
+    body.mobile-view-active .sidebar li a .links_name,
+    body.mobile-view-active .sidebar li .name_job {
+      display: block !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+    }
+    body.mobile-view-active .sidebar .logo-details {
+      justify-content: space-between !important;
+      padding: 0 8px !important;
+    }
+    body.mobile-view-active .sidebar.close #btn {
+      margin: 0 !important;
+    }
+    body.mobile-view-active .sidebar .nav-list {
+      max-height: 240px;
+      margin-bottom: 15px;
+      overflow-y: auto;
+    }
+    body.mobile-view-active .sidebar li.profile {
+      position: relative !important;
+      width: 100% !important;
+      left: 0 !important;
+      bottom: 0 !important;
+      box-sizing: border-box;
+    }
+    body.mobile-view-active .main-workspace {
+      position: relative !important;
+      width: 100% !important;
+      height: auto !important;
+      padding: 12px !important;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      overflow: visible !important;
+      box-sizing: border-box;
+    }
+    body.mobile-view-active .bento-card {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      width: 100% !important;
+      height: auto !important;
+      margin-bottom: 0 !important;
+      max-width: 100% !important;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    body.mobile-view-active .tz-grid {
+      grid-template-columns: 1fr !important;
+    }
+    body.mobile-view-active .links-grid {
+      grid-template-columns: 1fr !important;
+      max-height: none !important;
+    }
+
+    /* Bento Grid Layout Cards */
+    .bento-card {
       position: absolute;
-      width: 700px;
-      max-width: calc(100vw - 140px);
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
       backdrop-filter: var(--card-blur);
       -webkit-backdrop-filter: var(--card-blur);
       border-radius: 20px;
-      padding: 20px 24px;
+      padding: 18px 22px;
       box-shadow: var(--glass-shadow);
       user-select: none;
       z-index: 10;
+      transition: border-color 0.2s ease;
     }
 
-    .draggable-card:active {
+    .bento-card:hover {
+      border-color: var(--accent-glow);
+    }
+
+    .bento-card:active {
       cursor: grabbing;
     }
 
     .card-header-title {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
       color: var(--accent-glow);
       letter-spacing: 1.2px;
       text-transform: uppercase;
-      padding-bottom: 10px;
+      padding-bottom: 8px;
       border-bottom: 1px solid var(--glass-border);
-      margin-bottom: 16px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       cursor: grab;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .card-header-title:active {
@@ -360,134 +682,200 @@
     }
 
     .drag-hint {
-      font-size: 10px;
+      font-size: 9px;
       color: var(--text-sub);
       font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       letter-spacing: 0;
     }
 
-    /* Timezone Controls */
-    .tz-controls {
-      display: flex;
+    /* Optimal & Balanced Bento Positions & Dimensions */
+    #timezonesCard { top: 20px; left: 285px; width: 440px; height: 165px; }
+    #weatherCard   { top: 20px; left: 740px; width: 360px; height: 165px; }
+    #trendCard     { top: 195px; left: 285px; width: 550px; height: 485px; }
+    #linksCard     { top: 195px; left: 850px; width: 440px; height: 485px; }
+
+    /* Timezones Styles with Select Dropdown Support */
+    .tz-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      align-items: center;
+    }
+
+    .tz-item {
+      background: var(--glass-bg-hover);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 8px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .tz-select {
       background: var(--glass-bg);
-      color: var(--text-main);
+      color: var(--accent-glow);
       border: 1px solid var(--glass-border);
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      outline: none;
-      cursor: pointer;
-    }
-
-    .tz-select option {
-      background: #0f172a;
-      color: #fff;
-    }
-
-    .add-tz-btn {
-      background: var(--accent-glow);
-      color: #fff;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 11px;
+      border-radius: 6px;
+      font-size: 9px;
       font-weight: 800;
+      padding: 3px 4px;
+      outline: none;
+      text-transform: uppercase;
       cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .add-tz-btn:hover {
-      opacity: 0.9;
-      transform: scale(1.02);
-    }
-
-    .timezone-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-
-    .time-card {
-      position: relative;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--glass-border);
-      padding: 12px;
-      border-radius: 12px;
+      width: 100%;
+      margin-bottom: 4px;
       text-align: center;
     }
 
-    .time-card .remove-btn {
-      position: absolute;
-      top: 4px;
-      right: 8px;
-      font-size: 12px;
-      color: var(--text-sub);
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .time-card .remove-btn:hover {
-      color: #ef4444;
-    }
-
-    .time-card .zone-name {
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--accent-glow);
-      margin-bottom: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
-
-    /* Monospace Font for Clocks */
-    .time-card .zone-clock {
-      font-family: var(--font-mono);
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
+    .tz-select option {
+      background: var(--glass-bg);
       color: var(--text-main);
     }
 
-    /* Links Grid */
+    .tz-clock {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* Weather Widget Styles */
+    .weather-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: calc(100% - 30px);
+    }
+
+    .weather-main {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .weather-icon {
+      font-size: 38px;
+      color: #f59e0b;
+    }
+
+    .weather-temp {
+      font-family: var(--font-mono);
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .weather-desc {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-sub);
+      text-transform: uppercase;
+    }
+
+    .weather-details {
+      text-align: right;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-sub);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* Daily Monitoring Trend Analytics */
+    .trend-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      align-items: center;
+    }
+
+    .stat-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+    }
+
+    .stat-badge.up { background: rgba(52, 211, 153, 0.2); color: var(--accent-green); }
+    .stat-badge.down { background: rgba(248, 113, 113, 0.2); color: var(--accent-red); }
+
+    .chart-container {
+      position: relative;
+      height: 330px;
+      width: 100%;
+    }
+
+    /* Links & Buttons Grid */
     .links-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      max-height: 405px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .links-grid::-webkit-scrollbar {
+      width: 4px;
+    }
+    .links-grid::-webkit-scrollbar-thumb {
+      background: var(--glass-border);
+      border-radius: 4px;
     }
 
     .sub-link-item {
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--glass-bg-hover);
       color: var(--text-main);
-      padding: 12px;
-      font-size: 11px;
+      padding: 10px;
+      font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.5px;
-      border-radius: 12px;
+      letter-spacing: 0.3px;
+      border-radius: 10px;
       text-decoration: none;
       text-align: center;
       transition: all 0.2s ease;
       text-transform: uppercase;
       border: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .sub-link-item:hover {
-      background: var(--glass-bg-hover);
-      color: #ffffff;
+      background: var(--glass-bg);
       border-color: var(--accent-glow);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transform: translateY(-1px);
     }
 
-    /* Context Menu / Right-Click Custom Menu */
+    .logger-input {
+      background: var(--glass-bg-hover);
+      border: 1px solid var(--glass-border);
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-main);
+      outline: none;
+    }
+
+    .logger-input option {
+      background: var(--glass-bg);
+      color: var(--text-main);
+    }
+
+    /* Context Menu */
     .custom-context-menu {
       display: none;
       position: fixed;
@@ -498,7 +886,7 @@
       padding: 6px;
       z-index: 1000;
       box-shadow: var(--glass-shadow);
-      min-width: 160px;
+      min-width: 150px;
     }
 
     .custom-context-item {
@@ -522,11 +910,9 @@
     .modal {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.6);
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
       backdrop-filter: blur(10px);
       z-index: 200;
       justify-content: center;
@@ -539,7 +925,7 @@
       backdrop-filter: var(--card-blur);
       padding: 24px;
       border-radius: 16px;
-      width: 340px;
+      width: 360px;
       box-shadow: var(--glass-shadow);
     }
 
@@ -552,74 +938,83 @@
 
     .action-btn {
       width: 100%;
-      margin-top: 18px;
+      margin-top: 14px;
       background: var(--accent-glow);
-      color: #fff;
+      color: #ffffff;
       border: none;
       padding: 10px 14px;
       border-radius: 10px;
       font-size: 11px;
       font-weight: 800;
-      letter-spacing: 0.5px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
     }
 
-    .action-btn:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
+    .action-btn.logout-btn {
+      background: linear-gradient(135deg, #f87171, #dc2626);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
     }
 
     .switch {
       position: relative;
       display: inline-block;
-      width: 44px;
-      height: 22px;
+      width: 44px; height: 22px;
     }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
+    .switch input { opacity: 0; width: 0; height: 0; }
     .slider {
-      position: absolute;
-      cursor: pointer;
+      position: absolute; cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(255, 255, 255, 0.2);
-      transition: .3s;
-      border-radius: 22px;
+      background-color: var(--glass-bg-hover);
+      transition: .3s; border-radius: 22px;
       border: 1px solid var(--glass-border);
     }
-
     .slider:before {
-      position: absolute;
-      content: "";
-      height: 16px;
-      width: 16px;
-      left: 2px;
-      bottom: 2px;
-      background-color: white;
-      transition: .3s;
-      border-radius: 50%;
+      position: absolute; content: "";
+      height: 16px; width: 16px; left: 2px; bottom: 2px;
+      background-color: var(--text-main); transition: .3s; border-radius: 50%;
     }
-
-    input:checked + .slider {
-      background-color: #2563eb;
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(22px);
-    }
+    input:checked + .slider { background-color: var(--accent-glow); }
+    input:checked + .slider:before { transform: translateX(22px); }
   </style>
 </head>
-<body onclick="hideContextMenu()">
+<body onclick="hideContextMenu()" onmousemove="resetInactivityTimer()" onkeypress="resetInactivityTimer()">
 
+  <!-- Animated Lamp Login Overlay -->
+  <div id="authOverlay">
+    <div class="lamp-login-container">
+      <!-- Animated Lamp -->
+      <div class="lamp-scene">
+        <div class="pull-cord-wrapper" onclick="toggleLamp()">
+          <div class="cord-string"></div>
+          <div class="cord-handle" title="Toggle Lamp Switch"></div>
+        </div>
+        <div class="lamp-shade"></div>
+        <div class="lamp-stand-rod"></div>
+        <div class="lamp-base"></div>
+      </div>
+
+      <!-- Side Popup Login Form Card -->
+      <div class="login-popup-card">
+        <div class="login-title">Welcome to Sportsbook Hub</div>
+        <div class="input-group">
+          <label class="input-label">Username</label>
+          <input type="text" id="loginUsername" class="login-input" value="sportsbookhub" readonly>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Password</label>
+          <input type="password" id="loginPassword" class="login-input" placeholder="Enter password" onkeydown="if(event.key==='Enter') verifyLogin()">
+        </div>
+        <button class="signin-btn" onclick="verifyLogin()">Sign In</button>
+        <div class="error-msg" id="loginError"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
   <div class="sidebar close">
     <div class="logo-details">
       <div class="logo_name">SPORTSBOOK HUB</div>
@@ -635,7 +1030,7 @@
 
     <li class="profile">
       <div class="profile-details">
-        <div style="font-size: 20px;">🐭</div>
+        <div style="font-size: 20px;">政</div>
         <div class="name_job">
           <div class="name">MAIN CONSOLE</div>
           <div class="job">Active Operator</div>
@@ -645,53 +1040,84 @@
     </li>
   </div>
 
+  <!-- Main Bento Dashboard Workspace -->
   <div class="main-workspace" id="workspace">
     
-    <div class="draggable-card" id="timezonesCard" style="top: 25px; left: 120px;">
+    <!-- Widget 1: Word Clock (3 Selectable Zones) -->
+    <div class="bento-card" id="timezonesCard">
       <div class="card-header-title">
-        <span>LIVE TIMEZONES (MAX 3) <span class="drag-hint"><i class='bx bx-move'></i> Drag to move</span></span>
-        <div class="tz-controls">
-          <select class="tz-select" id="tzPicker">
-            <option value="UTC|UTC / GMT">UTC / GMT</option>
-            <option value="Europe/London|London">London (BST/GMT)</option>
-            <option value="Europe/Berlin|Central Europe">Central Europe (CET)</option>
-            <option value="America/New_York|US East (EST)">US East (EST)</option>
-            <option value="America/Los_Angeles|US West (PST)">US West (PST)</option>
-            <option value="Asia/Singapore|Singapore (SGT)">Singapore (SGT)</option>
-            <option value="Asia/Tokyo|Tokyo (JST)">Tokyo (JST)</option>
-            <option value="Asia/Manila|Manila (PST)">Manila (PST)</option>
-            <option value="Asia/Dubai|Dubai (GST)">Dubai (GST)</option>
-            <option value="Australia/Sydney|Sydney (AEST)">Sydney (AEST)</option>
-          </select>
-          <button class="add-tz-btn" onclick="addTimezone()">+ ADD</button>
-        </div>
+        <span>WORD CLOCK (3 ZONES) <span class="drag-hint"><i class='bx bx-move'></i> Drag</span></span>
       </div>
-      <div class="timezone-grid" id="timezoneGrid"></div>
+      <div class="tz-grid" id="timezoneGrid"></div>
     </div>
 
-    <div class="draggable-card" id="linksCard" style="top: 210px; left: 120px;" oncontextmenu="showContextMenu(event)">
+    <!-- Widget 2: Weather Forecast in the Philippines -->
+    <div class="bento-card" id="weatherCard">
+      <div class="card-header-title">
+        <span>PHILIPPINES WEATHER <span class="drag-hint"><i class='bx bx-move'></i> Drag</span></span>
+      </div>
+      <div class="weather-container">
+        <div class="weather-main">
+          <i class='bx bx-sun weather-icon' id="weatherIcon"></i>
+          <div>
+            <div class="weather-temp" id="phTemp">31ﾂｰC</div>
+            <div class="weather-desc" id="phDesc">Partly Cloudy</div>
+          </div>
+        </div>
+        <div class="weather-details">
+          <span>桃 Metro Manila, PH</span>
+          <span>Humidity: 78%</span>
+          <span>Wind: 14 km/h</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Widget 3: Daily Monitoring Trend (IBET vs EDGE vs 7A Trackers Comparison) -->
+    <div class="bento-card" id="trendCard">
+      <div class="card-header-title">
+        <span>DAILY MONITORING TREND <span class="drag-hint"><i class='bx bx-move'></i> Drag</span></span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <select id="trackerSelector" class="logger-input" style="padding: 4px 8px; font-size: 10px; max-width: 175px;" onchange="switchTrackerData()">
+          <option value="all">投 ALL (IBET vs EDGE vs 7A)</option>
+          <option value="ibet">IBET TRACKER</option>
+          <option value="edge">EDGE TRACKER</option>
+          <option value="tracker7a">7A TRACKER</option>
+        </select>
+        <div class="trend-stats" style="margin-bottom: 0;">
+          <div class="stat-badge up" id="trendBadge"><i class='bx bx-trending-up'></i> <span id="trendPercent">Active</span></div>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="trendChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Widget 4: Dynamic Buttons/Links -->
+    <div class="bento-card" id="linksCard" oncontextmenu="showContextMenu(event)">
       <div class="card-header-title" oncontextmenu="event.stopPropagation()">
-        <span id="activeCategoryTitle">SELECT A CATEGORY</span>
-        <span class="drag-hint"><i class='bx bx-move'></i> Drag to move</span>
+        <span id="activeCategoryTitle">INTERNAL LINKS</span>
+        <span class="drag-hint"><i class='bx bx-move'></i> Drag</span>
       </div>
       <div class="links-grid" id="linksGrid"></div>
     </div>
 
   </div>
 
+  <!-- Context Menu -->
   <div class="custom-context-menu" id="contextMenu">
     <div class="custom-context-item" onclick="openAllCurrentLinks()">
       <i class='bx bx-windows' style="font-size: 14px;"></i> Open All in New Tab
     </div>
   </div>
 
+  <!-- Settings Modal -->
   <div class="modal" id="settingsModal">
     <div class="modal-content">
       <div class="card-header-title">
         <span>SETTINGS</span>
         <i class='bx bx-x' style="cursor:pointer; font-size: 22px;" onclick="toggleModal()"></i>
       </div>
-
       <div class="setting-row">
         <span style="font-size: 12px; font-weight: 700;">Daylight Mode</span>
         <label class="switch">
@@ -699,9 +1125,18 @@
           <span class="slider"></span>
         </label>
       </div>
-
-      <button class="action-btn" id="saveLayoutBtn" onclick="saveLayoutToURL()">
+      <div class="setting-row">
+        <span style="font-size: 12px; font-weight: 700;">Mobile View Mode</span>
+        <label class="switch">
+          <input type="checkbox" id="mobileViewToggle" onchange="toggleMobileView()">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <button class="action-btn" onclick="saveLayoutToURL()">
         <i class='bx bx-link-external'></i> SAVE LAYOUT & COPY LINK
+      </button>
+      <button class="action-btn logout-btn" onclick="triggerLogout()">
+        <i class='bx bx-log-out'></i> LOGOUT NOW
       </button>
     </div>
   </div>
@@ -804,13 +1239,23 @@
       }
     ];
 
-    let activeTimezones = [
+    const availableTimezones = [
+      { zone: "Asia/Manila", name: "Manila (PST)" },
       { zone: "UTC", name: "UTC / GMT" },
       { zone: "America/New_York", name: "US East (EST)" },
-      { zone: "Europe/London", name: "London" }
+      { zone: "America/Los_Angeles", name: "US West (PST)" },
+      { zone: "Europe/London", name: "London (GMT/BST)" },
+      { zone: "Europe/Paris", name: "Central Europe" },
+      { zone: "Asia/Tokyo", name: "Tokyo (JST)" },
+      { zone: "Asia/Singapore", name: "Singapore (SGT)" },
+      { zone: "Australia/Sydney", name: "Sydney (AEST)" }
     ];
 
+    let selectedTimezones = ["Asia/Manila", "UTC", "America/New_York"];
     let currentActiveLinks = [];
+    let trendChartInstance = null;
+    let inactivityTimer = null;
+    const INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 minutes
 
     const sidebar = document.querySelector(".sidebar");
     const closeBtn = document.querySelector("#btn");
@@ -818,6 +1263,43 @@
     const activeCategoryTitle = document.querySelector("#activeCategoryTitle");
     const linksGrid = document.querySelector("#linksGrid");
     const contextMenu = document.querySelector("#contextMenu");
+
+    function toggleLamp() {
+      document.body.classList.toggle("lamp-is-on");
+      if (document.body.classList.contains("lamp-is-on")) {
+        setTimeout(() => document.getElementById("loginPassword").focus(), 300);
+      }
+    }
+
+    function verifyLogin() {
+      const pwd = document.getElementById("loginPassword").value;
+      const errEl = document.getElementById("loginError");
+      if (pwd === "sb2026") {
+        errEl.innerText = "";
+        document.getElementById("authOverlay").classList.add("unlocked");
+        document.body.classList.remove("lamp-is-on");
+        document.getElementById("loginPassword").value = "";
+        resetInactivityTimer();
+      } else {
+        errEl.innerText = "Incorrect password!";
+      }
+    }
+
+    function triggerLogout() {
+      toggleModal();
+      document.getElementById("authOverlay").classList.remove("unlocked");
+      document.body.classList.add("lamp-is-on");
+      setTimeout(() => document.getElementById("loginPassword").focus(), 300);
+    }
+
+    function resetInactivityTimer() {
+      clearTimeout(inactivityTimer);
+      if (!document.getElementById("authOverlay").classList.contains("unlocked")) return;
+      inactivityTimer = setTimeout(() => {
+        document.getElementById("authOverlay").classList.remove("unlocked");
+        document.body.classList.add("lamp-is-on");
+      }, INACTIVITY_LIMIT);
+    }
 
     function renderSidebar() {
       navList.innerHTML = "";
@@ -851,7 +1333,7 @@
     function renderLinks(linksArr) {
       linksGrid.innerHTML = "";
       if(linksArr.length === 0) {
-        linksGrid.innerHTML = `<span style="font-size:12px; color:var(--text-sub);">No matching links found.</span>`;
+        linksGrid.innerHTML = `<span style="font-size:10px; color:var(--text-sub);">No matching links.</span>`;
         return;
       }
       linksArr.forEach(sub => {
@@ -859,7 +1341,7 @@
         a.className = "sub-link-item";
         a.innerText = sub.name;
         a.href = sub.url;
-        a.target = "_blank"; // Forces links to open in a new tab keeping console open
+        a.target = "_blank";
         linksGrid.appendChild(a);
       });
     }
@@ -870,29 +1352,20 @@
         selectCategory(0);
         return;
       }
-
-      activeCategoryTitle.innerText = `SEARCH RESULTS: "${query.toUpperCase()}"`;
-      
+      activeCategoryTitle.innerText = `SEARCH: "${query.toUpperCase()}"`;
       let matchedLinks = [];
       menuData.forEach(cat => {
         cat.subs.forEach(sub => {
-          if(sub.name.toLowerCase().includes(query)) {
-            matchedLinks.push(sub);
-          }
+          if(sub.name.toLowerCase().includes(query)) matchedLinks.push(sub);
         });
       });
-
       currentActiveLinks = matchedLinks;
-      const allLinks = navList.querySelectorAll("a");
-      allLinks.forEach(link => link.classList.remove("active"));
+      navList.querySelectorAll("a").forEach(link => link.classList.remove("active"));
       renderLinks(currentActiveLinks);
     }
 
-    function expandSidebar() {
-      sidebar.classList.remove("close");
-    }
+    function expandSidebar() { sidebar.classList.remove("close"); }
 
-    // Right-Click Context Menu Logic for "Open All in New Tab"
     function showContextMenu(e) {
       e.preventDefault();
       contextMenu.style.display = "block";
@@ -900,74 +1373,250 @@
       contextMenu.style.top = `${e.clientY}px`;
     }
 
-    function hideContextMenu() {
-      contextMenu.style.display = "none";
-    }
+    function hideContextMenu() { contextMenu.style.display = "none"; }
 
     function openAllCurrentLinks() {
       hideContextMenu();
-      if (currentActiveLinks.length === 0) return;
-      
       currentActiveLinks.forEach(sub => {
-        if (sub.url && sub.url !== "#") {
-          window.open(sub.url, '_blank');
-        } else {
-          window.open('#', '_blank');
+        if (sub.url && sub.url !== "#") window.open(sub.url, '_blank');
+      });
+    }
+
+    function renderClocks() {
+      const grid = document.getElementById("timezoneGrid");
+      grid.innerHTML = "";
+      
+      selectedTimezones.forEach((tzZone, index) => {
+        const timeString = new Date().toLocaleTimeString("en-US", {
+          timeZone: tzZone, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+        });
+
+        const item = document.createElement("div");
+        item.className = "tz-item";
+
+        let optionsHtml = "";
+        availableTimezones.forEach(t => {
+          const selected = (t.zone === tzZone) ? "selected" : "";
+          optionsHtml += `<option value="${t.zone}" ${selected}>${t.name}</option>`;
+        });
+
+        item.innerHTML = `
+          <select class="tz-select" onchange="changeTimezone(${index}, this.value)">
+            ${optionsHtml}
+          </select>
+          <div class="tz-clock" id="clock_${index}">${timeString}</div>
+        `;
+        grid.appendChild(item);
+      });
+    }
+
+    function updateClocksTick() {
+      selectedTimezones.forEach((tzZone, index) => {
+        const clockEl = document.getElementById(`clock_${index}`);
+        if (clockEl) {
+          clockEl.innerText = new Date().toLocaleTimeString("en-US", {
+            timeZone: tzZone, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+          });
         }
       });
     }
 
-    function addTimezone() {
-      if (activeTimezones.length >= 3) {
-        alert("Maximum of 3 timezone clocks allowed at once. Please remove one first.");
-        return;
-      }
-
-      const picker = document.getElementById("tzPicker");
-      const [zone, name] = picker.value.split("|");
-
-      if (activeTimezones.some(tz => tz.zone === zone)) {
-        alert("This timezone is already displayed.");
-        return;
-      }
-
-      activeTimezones.push({ zone, name });
-      updateClocks();
+    function changeTimezone(index, newZone) {
+      selectedTimezones[index] = newZone;
+      updateClocksTick();
+      saveBentoLayout();
     }
 
-    function removeTimezone(index) {
-      activeTimezones.splice(index, 1);
-      updateClocks();
+    function getRecentDateLabels() {
+      const labels = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const formatted = d.toLocaleDateString("en-US", { month: 'short', day: 'numeric' });
+        labels.push(formatted);
+      }
+      return labels;
     }
 
-    function updateClocks() {
-      const grid = document.getElementById("timezoneGrid");
-      grid.innerHTML = "";
+    function getTrackerData() {
+      return {
+        ibet: {
+          increased: [35, 42, 38, 50, 55, 48, 62],
+          limited: [10, 12, 8, 15, 11, 14, 18]
+        },
+        edge: {
+          increased: [45, 52, 48, 60, 65, 58, 72],
+          limited: [12, 15, 10, 18, 14, 16, 20]
+        },
+        tracker7a: {
+          increased: [25, 30, 32, 40, 42, 39, 48],
+          limited: [6, 9, 7, 11, 8, 10, 12]
+        }
+      };
+    }
 
-      if(activeTimezones.length === 0) {
-        grid.innerHTML = `<span style="font-size:11px; color:var(--text-sub); grid-column: span 3; text-align: center;">No timezones selected. Add one using the menu above.</span>`;
-        return;
+    function initTrendChart() {
+      const viewMode = document.getElementById("trackerSelector")?.value || "all";
+      const dataStore = getTrackerData();
+      const dateLabels = getRecentDateLabels();
+      const isLight = document.body.classList.contains("light-mode");
+      const textColor = isLight ? '#080c14' : 'rgba(255,255,255,0.75)';
+      const gridColor = isLight ? 'rgba(8, 12, 20, 0.1)' : 'rgba(255,255,255,0.08)';
+
+      const ctx = document.getElementById("trendChart").getContext("2d");
+      if (trendChartInstance) trendChartInstance.destroy();
+
+      let chartConfigData = { labels: dateLabels, datasets: [] };
+
+      if (viewMode === "all") {
+        chartConfigData.datasets = [
+          {
+            label: 'IBET (Inc)',
+            data: dataStore.ibet.increased,
+            borderColor: '#0284c7',
+            backgroundColor: 'rgba(2, 132, 199, 0.08)',
+            borderWidth: 2.5,
+            tension: 0.4
+          },
+          {
+            label: 'EDGE (Inc)',
+            data: dataStore.edge.increased,
+            borderColor: '#059669',
+            backgroundColor: 'rgba(5, 150, 105, 0.08)',
+            borderWidth: 2.5,
+            tension: 0.4
+          },
+          {
+            label: '7A (Inc)',
+            data: dataStore.tracker7a.increased,
+            borderColor: '#d97706',
+            backgroundColor: 'rgba(217, 119, 6, 0.08)',
+            borderWidth: 2.5,
+            tension: 0.4
+          }
+        ];
+        document.getElementById("trendBadge").className = "stat-badge up";
+        document.getElementById("trendBadge").innerHTML = `<i class='bx bx-bar-chart-alt-2'></i> Comparative`;
+      } else {
+        const cur = dataStore[viewMode];
+        const latestInc = cur.increased[cur.increased.length - 1];
+        const prevInc = cur.increased[cur.increased.length - 2] || latestInc;
+        const diff = latestInc - prevInc;
+        const pct = prevInc !== 0 ? ((diff / prevInc) * 100).toFixed(1) : 0;
+
+        const badge = document.getElementById("trendBadge");
+        if (diff >= 0) {
+          badge.className = "stat-badge up";
+          badge.innerHTML = `<i class='bx bx-trending-up'></i> +${pct}%`;
+        } else {
+          badge.className = "stat-badge down";
+          badge.innerHTML = `<i class='bx bx-trending-down'></i> ${pct}%`;
+        }
+
+        chartConfigData.datasets = [
+          {
+            label: `Increased`,
+            data: cur.increased,
+            borderColor: isLight ? '#059669' : '#34d399',
+            backgroundColor: isLight ? 'rgba(5, 150, 105, 0.15)' : 'rgba(52, 211, 153, 0.15)',
+            borderWidth: 2.5,
+            fill: true,
+            tension: 0.4
+          },
+          {
+            label: `Limited`,
+            data: cur.limited,
+            borderColor: isLight ? '#dc2626' : '#f87171',
+            backgroundColor: isLight ? 'rgba(220, 38, 38, 0.15)' : 'rgba(248, 113, 113, 0.15)',
+            borderWidth: 2.5,
+            fill: true,
+            tension: 0.4
+          }
+        ];
       }
 
-      activeTimezones.forEach((tz, index) => {
-        const now = new Date();
-        const timeString = now.toLocaleTimeString("en-US", {
-          timeZone: tz.zone,
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false
-        });
-
-        const card = document.createElement("div");
-        card.className = "time-card";
-        card.innerHTML = `
-          <span class="remove-btn" onclick="removeTimezone(${index})">✕</span>
-          <div class="zone-name">${tz.name}</div>
-          <div class="zone-clock">${timeString}</div>
-        `;
-        grid.appendChild(card);
+      trendChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: chartConfigData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { 
+            legend: { 
+              labels: { color: textColor, font: { size: 9, weight: '700' } },
+              display: true 
+            } 
+          },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: textColor, font: { size: 9, weight: '700' } } },
+            y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 9, weight: '700' } } }
+          }
+        }
       });
+    }
+
+    function switchTrackerData() {
+      initTrendChart();
+    }
+
+    function makeElementDraggable(element) {
+      let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+      element.onmousedown = function(e) {
+        if (document.body.classList.contains("mobile-view-active")) return;
+        if (['INPUT', 'SELECT', 'BUTTON', 'A', 'CANVAS', 'OPTION'].includes(e.target.tagName)) return;
+        e.preventDefault();
+        element.style.zIndex = 100;
+        pos3 = e.clientX; pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+      };
+      function elementDrag(e) {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY;
+        pos3 = e.clientX; pos4 = e.clientY;
+        element.style.top = (element.offsetTop - pos2) + "px";
+        element.style.left = (element.offsetLeft - pos1) + "px";
+      }
+      function closeDragElement() {
+        document.onmouseup = null; document.onmousemove = null;
+        saveBentoLayout();
+      }
+    }
+
+    document.querySelectorAll(".bento-card").forEach(makeElementDraggable);
+
+    function saveBentoLayout() {
+      const layout = {};
+      document.querySelectorAll(".bento-card").forEach(card => {
+        layout[card.id] = { top: card.style.top, left: card.style.left };
+      });
+      layout["selected_timezones"] = selectedTimezones;
+      layout["mobile_view"] = document.body.classList.contains("mobile-view-active");
+      localStorage.setItem("sbhub_bento_layout_clean_v5", JSON.stringify(layout));
+    }
+
+    function restoreBentoLayout() {
+      const saved = localStorage.getItem("sbhub_bento_layout_clean_v5");
+      if (saved) {
+        try {
+          const layout = JSON.parse(saved);
+          if (layout["mobile_view"]) {
+            document.body.classList.add("mobile-view-active");
+            document.getElementById("mobileViewToggle").checked = true;
+          }
+          for (const id in layout) {
+            if (id === "selected_timezones" || id === "mobile_view") continue;
+            const el = document.getElementById(id);
+            if (el && layout[id].top) {
+              el.style.top = layout[id].top;
+              el.style.left = layout[id].left;
+            }
+          }
+          if (layout["selected_timezones"]) {
+            selectedTimezones = layout["selected_timezones"];
+          }
+        } catch(e){}
+      }
     }
 
     function toggleModal() {
@@ -982,131 +1631,38 @@
       } else {
         document.body.classList.remove("light-mode");
       }
+      initTrendChart();
+    }
+
+    function toggleMobileView() {
+      const isMobile = document.getElementById("mobileViewToggle").checked;
+      if (isMobile) {
+        document.body.classList.add("mobile-view-active");
+      } else {
+        document.body.classList.remove("mobile-view-active");
+      }
+      saveBentoLayout();
+      setTimeout(() => { if(trendChartInstance) trendChartInstance.resize(); }, 300);
     }
 
     function saveLayoutToURL() {
-      const tzCard = document.getElementById("timezonesCard");
-      const linksCard = document.getElementById("linksCard");
-
-      const layoutData = {
-        tzTop: tzCard.offsetTop,
-        tzLeft: tzCard.offsetLeft,
-        lkTop: linksCard.offsetTop,
-        lkLeft: linksCard.offsetLeft
-      };
-
-      localStorage.setItem("sbhub_layout", JSON.stringify(layoutData));
-
+      saveBentoLayout();
       const params = new URLSearchParams(window.location.search);
-      params.set("tzTop", layoutData.tzTop);
-      params.set("tzLeft", layoutData.tzLeft);
-      params.set("lkTop", layoutData.lkTop);
-      params.set("lkLeft", layoutData.lkLeft);
-
       const shareableURL = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
-      window.history.replaceState({}, '', shareableURL);
-
       navigator.clipboard.writeText(shareableURL).then(() => {
-        const btn = document.getElementById("saveLayoutBtn");
-        btn.innerHTML = "<i class='bx bx-check'></i> COPIED TO CLIPBOARD!";
-        setTimeout(() => {
-          btn.innerHTML = "<i class='bx bx-link-external'></i> SAVE LAYOUT & COPY LINK";
-        }, 2000);
+        alert("Bento layout & Mobile setting saved & URL copied!");
       });
     }
 
-    function restoreLayoutFromStorage() {
-      const params = new URLSearchParams(window.location.search);
-      let tzTop = params.get("tzTop");
-      let tzLeft = params.get("tzLeft");
-      let lkTop = params.get("lkTop");
-      let lkLeft = params.get("lkLeft");
+    closeBtn.addEventListener("click", () => sidebar.classList.toggle("close"));
 
-      if (!tzTop || !tzLeft) {
-        const saved = localStorage.getItem("sbhub_layout");
-        if (saved) {
-          try {
-            const parsed = JSON.parse(saved);
-            tzTop = parsed.tzTop;
-            tzLeft = parsed.tzLeft;
-            lkTop = parsed.lkTop;
-            lkLeft = parsed.lkLeft;
-          } catch(e) {}
-        }
-      }
-
-      if (tzTop && tzLeft) {
-        const tzCard = document.getElementById("timezonesCard");
-        tzCard.style.top = `${tzTop}px`;
-        tzCard.style.left = `${tzLeft}px`;
-      }
-
-      if (lkTop && lkLeft) {
-        const linksCard = document.getElementById("linksCard");
-        linksCard.style.top = `${lkTop}px`;
-        linksCard.style.left = `${lkLeft}px`;
-      }
-    }
-
-    let zIndexCounter = 10;
-
-    function makeElementDraggable(element) {
-      let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-
-      element.onmousedown = function(e) {
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
-          return;
-        }
-
-        e.preventDefault();
-        zIndexCounter++;
-        element.style.zIndex = zIndexCounter;
-
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-
-        document.onmouseup = closeDragElement;
-        document.onmousemove = elementDrag;
-      };
-
-      function elementDrag(e) {
-        e.preventDefault();
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-
-        element.style.top = (element.offsetTop - pos2) + "px";
-        element.style.left = (element.offsetLeft - pos1) + "px";
-      }
-
-      function closeDragElement() {
-        document.onmouseup = null;
-        document.onmousemove = null;
-        
-        const tzCard = document.getElementById("timezonesCard");
-        const linksCard = document.getElementById("linksCard");
-        const layoutData = {
-          tzTop: tzCard.offsetTop,
-          tzLeft: tzCard.offsetLeft,
-          lkTop: linksCard.offsetTop,
-          lkLeft: linksCard.offsetLeft
-        };
-        localStorage.setItem("sbhub_layout", JSON.stringify(layoutData));
-      }
-    }
-
-    document.querySelectorAll(".draggable-card").forEach(makeElementDraggable);
-
-    closeBtn.addEventListener("click", () => {
-      sidebar.classList.toggle("close");
-    });
-
+    // Initializers
     renderSidebar();
     selectCategory(0);
-    updateClocks();
-    restoreLayoutFromStorage();
-    setInterval(updateClocks, 1000);
+    restoreBentoLayout();
+    renderClocks();
+    initTrendChart();
+    setInterval(updateClocksTick, 1000);
   </script>
 </body>
 </html>
