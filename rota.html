@@ -72,7 +72,6 @@
             opacity: 0.85;
         }
 
-        /* PH Holiday Container updated to wrap pills cleanly without scrollbars */
         .ph-holiday-container {
             display: flex;
             align-items: center;
@@ -142,6 +141,7 @@
         .btn-warning { background-color: #eab308; color: #000000; }
         .btn-admin { background-color: #22c55e; color: #ffffff; }
         .btn-mobile-toggle { background-color: #8b5cf6; color: #ffffff; }
+        .btn-danger { background-color: #ef4444; color: #ffffff; }
 
         .viewer-badge {
             background-color: var(--card-bg);
@@ -187,6 +187,16 @@
             background: var(--bg-color);
             color: var(--text-color);
             font-weight: 600;
+        }
+
+        .team-manager-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-color);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
         }
 
         .main-layout {
@@ -471,12 +481,10 @@
             <span class="title-credit">kr!ztel_2026 model</span>
         </div>
 
-        <!-- PH Holiday Box (Red Box Position) with wrapped pills and zero scrollbars -->
+        <!-- PH Holiday Box -->
         <div class="ph-holiday-container">
             <div class="ph-holiday-label">🇵🇭 PH Holidays:</div>
-            <div id="phHolidayList" class="ph-holiday-list">
-                <!-- Dynamically populated per month -->
-            </div>
+            <div id="phHolidayList" class="ph-holiday-list"></div>
         </div>
 
         <div class="header-top-controls">
@@ -486,13 +494,13 @@
             <button id="mobileViewToggleBtn" class="btn btn-mobile-toggle" onclick="toggleMobileView()">📱 Mobile View</button>
             <button id="adminAuthBtn" class="btn btn-admin" onclick="handleAdminAuth()">🔑 Admin Login</button>
             <button class="btn btn-secondary" onclick="toggleDarkMode()">🌓 Mode</button>
-            <button class="btn btn-warning" onclick="copyViewOnlyLink()" title="Generate View-Only Link">🔗 Share View-Only</button>
-            <a id="btnBackToDashboard" href="index.html" class="btn btn-back">🏠 Back to Dashboard</a>
+            <button class="btn btn-warning" onclick="copyViewOnlyLink()" title="Generate View-Only Link">🔗 Share</button>
+            <a id="btnBackToDashboard" href="index.html" class="btn btn-back">🏠 Dashboard</a>
         </div>
     </div>
     
     <div class="controls">
-        <button class="btn btn-secondary" onclick="changeMonth(-1)">◀ Prev Month</button>
+        <button class="btn btn-secondary" onclick="changeMonth(-1)">◀ Prev</button>
         <div>
             <label for="month-select">Month: </label>
             <select id="month-select">
@@ -506,140 +514,40 @@
         </div>
         <div>
             <label for="year-input">Year: </label>
-            <input type="number" id="year-input" value="2026" min="2020" max="2035" style="width: 80px;">
+            <input type="number" id="year-input" value="2026" min="2020" max="2040" style="width: 80px;">
         </div>
         <div>
-            <label for="timezone-select">🌐 Global Timezone: </label>
+            <label for="timezone-select">🌐 Timezone: </label>
             <select id="timezone-select" onchange="changeTimezoneGlobal(this.value)">
-                <option value="-10">HST - Hawaii (-10)</option>
                 <option value="-8">PST / PDT (-8)</option>
-                <option value="-7">MST / MDT (-7)</option>
-                <option value="-6">CST / CDT (-6)</option>
-                <option value="-5">EST / EDT (-5)</option>
                 <option value="0">UTC / GMT (+0)</option>
-                <option value="1">CET / CEST (+1)</option>
-                <option value="2">EET / EEST (+2)</option>
-                <option value="4">GST - Gulf (+4)</option>
-                <option value="5.5">IST - India (+5.5)</option>
                 <option value="7">WIB - Jakarta (+7)</option>
-                <option value="8" selected>SGT / PHT / HKT (+8)</option>
+                <option value="8" selected>SGT / PHT (+8)</option>
                 <option value="9">JST / KST (+9)</option>
-                <option value="10">AEST - Sydney (+10)</option>
-                <option value="12">NZST - New Zealand (+12)</option>
             </select>
         </div>
-        <button class="btn btn-secondary" onclick="changeMonth(1)">Next Month ▶</button>
-        <div style="margin-left: auto; font-size: 12px; opacity: 0.9;">
-            ⚡ Realtime Synced to Firebase
+
+        <!-- Compact Employee Manager Dropdown & Action -->
+        <div class="team-manager-group">
+            <label for="manage-member-select" style="font-size: 12px;">👥 Member:</label>
+            <select id="manage-member-select" style="font-size: 12px; padding: 4px;">
+                <!-- Populated dynamically -->
+            </select>
+            <button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;" onclick="removeSelectedMember()">🗑️ Delete</button>
+            <button class="btn btn-admin" style="padding: 4px 8px; font-size: 11px;" onclick="addNewMemberPrompt()">➕ Add</button>
         </div>
+
+        <button class="btn btn-secondary" onclick="changeMonth(1)">Next ▶</button>
     </div>
 
     <div class="main-layout">
         <div class="table-container" id="standardTableContainer">
             <table>
                 <thead>
-                    <tr>
-                        <th colspan="2">Date</th>
-                        <th style="color: #f472b6;">
-                            Ann
-                            <div class="bulk-set-container">
-                                <select class="bulk-select" onchange="bulkSetShift(0, this)">
-                                    <option value="">-- Set All Month --</option>
-                                    <option value="CLEAR">-- Clear Month --</option>
-                                    <option value="7:00 - 16:00">7:00 - 16:00</option>
-                                    <option value="9:00 - 18:00">9:00 - 18:00</option>
-                                    <option value="10:00 - 19:00">10:00 - 19:00</option>
-                                    <option value="12:00 - 21:00">12:00 - 21:00</option>
-                                    <option value="14:00 - 23:00">14:00 - 23:00</option>
-                                    <option value="16:00 - 1:00">16:00 - 1:00</option>
-                                    <option value="7:00 - 10:00 (WFH)">7:00 - 10:00 (WFH)</option>
-                                    <option value="7:00 - 16:00 (WFH)">7:00 - 16:00 (WFH)</option>
-                                    <option value="9:00 - 18:00 (WFH)">9:00 - 18:00 (WFH)</option>
-                                    <option value="12:00 - 21:00 (WFH)">12:00 - 21:00 (WFH)</option>
-                                    <option value="RD">RD</option>
-                                </select>
-                            </div>
-                        </th>
-                        <th style="color: #38bdf8;">
-                            Dave
-                            <div class="bulk-set-container">
-                                <select class="bulk-select" onchange="bulkSetShift(1, this)">
-                                    <option value="">-- Set All Month --</option>
-                                    <option value="CLEAR">-- Clear Month --</option>
-                                    <option value="7:00 - 16:00">7:00 - 16:00</option>
-                                    <option value="9:00 - 18:00">9:00 - 18:00</option>
-                                    <option value="10:00 - 19:00">10:00 - 19:00</option>
-                                    <option value="12:00 - 21:00">12:00 - 21:00</option>
-                                    <option value="14:00 - 23:00">14:00 - 23:00</option>
-                                    <option value="16:00 - 1:00">16:00 - 1:00</option>
-                                    <option value="7:00 - 10:00 (WFH)">7:00 - 10:00 (WFH)</option>
-                                    <option value="7:00 - 16:00 (WFH)">7:00 - 16:00 (WFH)</option>
-                                    <option value="9:00 - 18:00 (WFH)">9:00 - 18:00 (WFH)</option>
-                                    <option value="12:00 - 21:00 (WFH)">12:00 - 21:00 (WFH)</option>
-                                    <option value="RD">RD</option>
-                                </select>
-                            </div>
-                        </th>
-                        <th style="color: #818cf8;">
-                            Kenneth
-                            <div class="bulk-set-container">
-                                <select class="bulk-select" onchange="bulkSetShift(2, this)">
-                                    <option value="">-- Set All Month --</option>
-                                    <option value="CLEAR">-- Clear Month --</option>
-                                    <option value="7:00 - 16:00">7:00 - 16:00</option>
-                                    <option value="9:00 - 18:00">9:00 - 18:00</option>
-                                    <option value="10:00 - 19:00">10:00 - 19:00</option>
-                                    <option value="12:00 - 21:00">12:00 - 21:00</option>
-                                    <option value="14:00 - 23:00">14:00 - 23:00</option>
-                                    <option value="16:00 - 1:00">16:00 - 1:00</option>
-                                    <option value="7:00 - 10:00 (WFH)">7:00 - 10:00 (WFH)</option>
-                                    <option value="7:00 - 16:00 (WFH)">7:00 - 16:00 (WFH)</option>
-                                    <option value="9:00 - 18:00 (WFH)">9:00 - 18:00 (WFH)</option>
-                                    <option value="12:00 - 21:00 (WFH)">12:00 - 21:00 (WFH)</option>
-                                    <option value="RD">RD</option>
-                                </select>
-                            </div>
-                        </th>
-                        <th style="color: #34d399;">
-                            Kriztel
-                            <div class="bulk-set-container">
-                                <select class="bulk-select" onchange="bulkSetShift(3, this)">
-                                    <option value="">-- Set All Month --</option>
-                                    <option value="CLEAR">-- Clear Month --</option>
-                                    <option value="7:00 - 16:00">7:00 - 16:00</option>
-                                    <option value="9:00 - 18:00">9:00 - 18:00</option>
-                                    <option value="10:00 - 19:00">10:00 - 19:00</option>
-                                    <option value="12:00 - 21:00">12:00 - 21:00</option>
-                                    <option value="14:00 - 23:00">14:00 - 23:00</option>
-                                    <option value="16:00 - 1:00">16:00 - 1:00</option>
-                                    <option value="7:00 - 10:00 (WFH)">7:00 - 10:00 (WFH)</option>
-                                    <option value="7:00 - 16:00 (WFH)">7:00 - 16:00 (WFH)</option>
-                                    <option value="9:00 - 18:00 (WFH)">9:00 - 18:00 (WFH)</option>
-                                    <option value="12:00 - 21:00 (WFH)">12:00 - 21:00 (WFH)</option>
-                                    <option value="RD">RD</option>
-                                </select>
-                            </div>
-                        </th>
-                        <th style="color: #f8fafc;">
-                            Miguel
-                            <div class="bulk-set-container">
-                                <select class="bulk-select" onchange="bulkSetShift(4, this)">
-                                    <option value="">-- Set All Month --</option>
-                                    <option value="CLEAR">-- Clear Month --</option>
-                                    <option value="7:00 - 16:00">7:00 - 16:00</option>
-                                    <option value="9:00 - 18:00">9:00 - 18:00</option>
-                                    <option value="10:00 - 19:00">10:00 - 19:00</option>
-                                    <option value="12:00 - 21:00">12:00 - 21:00</option>
-                                    <option value="14:00 - 23:00">14:00 - 23:00</option>
-                                    <option value="16:00 - 1:00">16:00 - 1:00</option>
-                                    <option value="7:00 - 10:00 (WFH)">7:00 - 10:00 (WFH)</option>
-                                    <option value="7:00 - 16:00 (WFH)">7:00 - 16:00 (WFH)</option>
-                                    <option value="9:00 - 18:00 (WFH)">9:00 - 18:00 (WFH)</option>
-                                    <option value="12:00 - 21:00 (WFH)">12:00 - 21:00 (WFH)</option>
-                                    <option value="RD">RD</option>
-                                </select>
-                            </div>
-                        </th>
+                    <tr id="schedule-header-row">
+                        <th class="day-col" rowspan="2">Day</th>
+                        <th class="date-col" rowspan="2">Date</th>
+                        <!-- Dynamically filled headers with bulk selectors -->
                     </tr>
                 </thead>
                 <tbody id="schedule-body"></tbody>
@@ -651,7 +559,7 @@
 
         <div class="leave-section">
             <div>
-                <div class="leave-section-title">📊 Team VL Usage by Month</div>
+                <div class="leave-section-title">📊 Team VL Usage Tracker (<span id="vlChartYearLabel">2026</span>)</div>
                 <div class="chart-box">
                     <div class="chart-container-inner">
                         <canvas id="vlPieChart"></canvas>
@@ -660,15 +568,12 @@
             </div>
 
             <div>
-                <div class="leave-section-title">🎋 Vacation & Sick Leave Dates</div>
+                <div class="leave-section-title">🎋 Vacation & Sick Leave Dates (Jan - Dec)</div>
                 <table class="leave-table">
                     <thead>
-                        <tr>
+                        <tr id="leave-header-row">
                             <th style="width: 50px;">Type</th>
-                            <th>Ann</th>
-                            <th>Dave</th>
-                            <th>Kenneth</th>
-                            <th>Kriztel</th>
+                            <!-- Dynamically populated member columns -->
                         </tr>
                     </thead>
                     <tbody id="leave-dates-body"></tbody>
@@ -705,20 +610,18 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        const team = ["Ann", "Dave", "Kenneth", "Kriztel", "Miguel"];
-        const leaveTrackedTeam = ["Ann", "Dave", "Kenneth", "Kriztel"];
+        let team = ["Ann", "Dave", "Kenneth", "Kriztel", "Miguel"];
 
-        // Official Philippine Holidays Dictionary (per month index 0-11)
         const phHolidaysByMonth = {
             0: [{ date: "Jan 1", name: "New Year's Day" }],
             1: [{ date: "Feb 25", name: "EDSA People Power" }],
-            2: [], // March
+            2: [],
             3: [{ date: "Apr 9", name: "Day of Valor" }, { date: "Apr 2", name: "Maundy Thursday" }, { date: "Apr 3", name: "Good Friday" }],
             4: [{ date: "May 1", name: "Labor Day" }],
             5: [{ date: "Jun 12", name: "Independence Day" }],
-            6: [], // July
+            6: [],
             7: [{ date: "Aug 21", name: "Ninoy Aquino Day" }, { date: "Aug 31", name: "National Heroes Day" }],
-            8: [], // September
+            8: [],
             9: [{ date: "Oct 31", name: "All Saints' Eve" }], 
             10: [{ date: "Nov 1", name: "All Saints' Day" }, { date: "Nov 2", name: "All Souls' Day" }, { date: "Nov 30", name: "Bonifacio Day" }],
             11: [{ date: "Dec 8", name: "Feast of Immaculate Conception" }, { date: "Dec 25", name: "Christmas Day" }, { date: "Dec 30", name: "Rizal Day" }, { date: "Dec 31", name: "Last Day of the Year" }]
@@ -751,17 +654,20 @@
         const yearInput = document.getElementById('year-input');
         const timezoneSelect = document.getElementById('timezone-select');
         const tbody = document.getElementById('schedule-body');
+        const scheduleHeaderRow = document.getElementById('schedule-header-row');
+        const leaveHeaderRow = document.getElementById('leave-header-row');
         const leaveDatesBody = document.getElementById('leave-dates-body');
         const wfhTrackerBody = document.getElementById('wfh-tracker-body');
         const phHolidayListElem = document.getElementById('phHolidayList');
+        const manageMemberSelect = document.getElementById('manage-member-select');
         const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thurs", "Fri", "Sat"];
 
         let vlChartInstance = null;
         let globalTzOffset = 8;
         let rotaData = {};
         let leaveMatrixData = {};
+        let allYearRotaData = {}; // Stores all months data for yearly accumulation (Jan-Dec)
         let isMobileViewActive = false;
-        
         let isViewOnlyMode = true;
         const ADMIN_PASSWORD = "sb2026";
 
@@ -781,10 +687,9 @@
                 if (password === ADMIN_PASSWORD) {
                     isViewOnlyMode = false;
                     sessionStorage.setItem("admin_authenticated", "true");
-                    alert("Admin Mode Unlocked! Editing permissions granted.");
+                    alert("Admin Mode Unlocked!");
                     updateAdminUI();
-                    renderCalendar();
-                    buildLeaveTables();
+                    renderAll();
                 } else if (password !== null) {
                     alert("Incorrect Password!");
                 }
@@ -793,8 +698,7 @@
                 sessionStorage.removeItem("admin_authenticated");
                 alert("Locked to View-Only Mode.");
                 updateAdminUI();
-                renderCalendar();
-                buildLeaveTables();
+                renderAll();
             }
         }
 
@@ -813,7 +717,7 @@
             } else {
                 banner.style.display = 'none';
                 if (btnBackToDashboard) btnBackToDashboard.style.display = 'inline-flex';
-                authBtn.innerText = '🔒 Lock Schedule';
+                authBtn.innerText = '🔒 Lock';
                 authBtn.className = 'btn btn-warning';
                 bulkSelects.forEach(el => el.disabled = false);
             }
@@ -822,7 +726,7 @@
         function copyViewOnlyLink() {
             const viewOnlyUrl = `${window.location.origin}${window.location.pathname}?viewonly=true`;
             navigator.clipboard.writeText(viewOnlyUrl).then(() => {
-                alert("✓ View-Only Rota Link copied to clipboard!\nShare this link to restrict edits.");
+                alert("✓ View-Only Link copied to clipboard!");
             });
         }
 
@@ -846,40 +750,28 @@
 
         function setupPresenceSystem() {
             const presenceRef = db.ref('rota_active_sessions');
-            const connectedRef = db.ref('.info/connected');
-
-            connectedRef.on('value', (snap) => {
+            db.ref('.info/connected').on('value', (snap) => {
                 if (snap.val() === true) {
                     const userSessionRef = presenceRef.push();
                     userSessionRef.onDisconnect().remove();
-
-                    userSessionRef.set({
-                        online: true,
-                        joinedAt: firebase.database.ServerValue.TIMESTAMP
-                    });
+                    userSessionRef.set({ online: true, joinedAt: firebase.database.ServerValue.TIMESTAMP });
                 }
             });
-
             presenceRef.on('value', (snap) => {
                 const count = snap.numChildren();
                 const countElem = document.getElementById('activeViewersCount');
-                if (countElem) {
-                    countElem.innerText = count > 0 ? count : 1;
-                }
+                if (countElem) countElem.innerText = count > 0 ? count : 1;
             });
         }
 
         function renderPHHolidays() {
             const selectedMonth = parseInt(monthSelect.value);
             const holidays = phHolidaysByMonth[selectedMonth] || [];
-
             phHolidayListElem.innerHTML = '';
-
             if (holidays.length === 0) {
                 phHolidayListElem.innerHTML = '<span style="opacity: 0.5; font-size:11px;">No holidays this month</span>';
                 return;
             }
-
             holidays.forEach(h => {
                 const pill = document.createElement('span');
                 pill.className = 'holiday-pill';
@@ -889,26 +781,47 @@
         }
 
         function listenToDatabase() {
-            const monthKey = `${yearInput.value}_${parseInt(monthSelect.value) + 1}`;
+            const year = yearInput.value;
+            const month = parseInt(monthSelect.value) + 1;
+            const monthKey = `${year}_${month}`;
             
-            db.ref(`rota_data/${monthKey}`).on('value', (snapshot) => {
-                rotaData = snapshot.val() || {};
-                renderCalendar();
-                renderWFHTracker();
-                if (isMobileViewActive) renderMobileCards();
+            db.ref(`team_members`).on('value', (snapshot) => {
+                if (snapshot.val()) {
+                    team = snapshot.val();
+                }
+                updateMemberDropdown();
+                renderAll();
             });
 
-            db.ref('leave_matrix_db').on('value', (snapshot) => {
+            // Listen to active month rota data for schedule editing
+            db.ref(`rota_data/${monthKey}`).on('value', (snapshot) => {
+                rotaData = snapshot.val() || {};
+                renderAll();
+            });
+
+            // Listen to ALL months of the active year to compute Jan-Dec cumulative counts correctly
+            db.ref(`rota_data`).on('value', (snapshot) => {
+                const allData = snapshot.val() || {};
+                allYearRotaData = {};
+                Object.keys(allData).forEach(key => {
+                    if (key.startsWith(`${year}_`)) {
+                        allYearRotaData[key] = allData[key];
+                    }
+                });
+                syncLeavesFromFullYearSchedule();
+            });
+
+            db.ref(`leave_matrix_db/${year}`).on('value', (snapshot) => {
                 leaveMatrixData = snapshot.val() || {};
                 buildLeaveTables();
+                renderVLPieChart();
             });
 
             db.ref('rota_global_timezone').on('value', (snapshot) => {
                 if (snapshot.val() !== null) {
                     globalTzOffset = parseFloat(snapshot.val());
                     timezoneSelect.value = globalTzOffset.toString();
-                    renderCalendar();
-                    if (isMobileViewActive) renderMobileCards();
+                    renderAll();
                 }
             });
         }
@@ -921,7 +834,56 @@
 
         function saveLeaveMatrixToDatabase() {
             if (isViewOnlyMode) return;
-            db.ref('leave_matrix_db').set(leaveMatrixData);
+            const year = yearInput.value;
+            db.ref(`leave_matrix_db/${year}`).set(leaveMatrixData);
+        }
+
+        function saveTeamToDatabase() {
+            if (isViewOnlyMode) return;
+            db.ref('team_members').set(team);
+        }
+
+        function updateMemberDropdown() {
+            manageMemberSelect.innerHTML = '';
+            team.forEach(member => {
+                const opt = document.createElement('option');
+                opt.value = member;
+                opt.textContent = member;
+                manageMemberSelect.appendChild(opt);
+            });
+        }
+
+        function addNewMemberPrompt() {
+            if (isViewOnlyMode) return;
+            const newName = prompt("Enter new team member name:");
+            if (newName && newName.trim() !== "") {
+                const trimmed = newName.trim();
+                if (!team.includes(trimmed)) {
+                    team.push(trimmed);
+                    saveTeamToDatabase();
+                    renderAll();
+                } else {
+                    alert("Team member already exists.");
+                }
+            }
+        }
+
+        function removeSelectedMember() {
+            if (isViewOnlyMode) return;
+            const selectedMember = manageMemberSelect.value;
+            if (!selectedMember) return;
+            if (team.length <= 1) {
+                alert("Cannot delete the last remaining team member.");
+                return;
+            }
+            if (confirm(`Are you sure you want to remove ${selectedMember} from the Rota?`)) {
+                const index = team.indexOf(selectedMember);
+                if (index > -1) {
+                    team.splice(index, 1);
+                    saveTeamToDatabase();
+                    renderAll();
+                }
+            }
         }
 
         function changeTimezoneGlobal(val) {
@@ -959,7 +921,6 @@
 
         function formatShiftForTimezone(shiftText) {
             if (!shiftText || ["RD", "VL", "SL", "Adjusted"].includes(shiftText)) return shiftText;
-
             if (shiftText.includes("-") && !shiftList.some(s => s.text === shiftText)) {
                 const parts = shiftText.split("-").map(p => p.trim());
                 if (parts.length === 2 && parts[0].includes(":") && parts[1].includes(":")) {
@@ -972,14 +933,11 @@
                 }
                 return shiftText;
             }
-
             const baseShift = shiftList.find(s => s.text === shiftText);
             if (!baseShift || baseShift.start === null) return shiftText;
-
             const diff = globalTzOffset - 8;
             let newStart = (baseShift.start + diff + 24) % 24;
             let newEnd = (baseShift.end + diff + 24) % 24;
-
             const isWFH = shiftText.includes("(WFH)") ? " (WFH)" : "";
             return `${newStart}:00 - ${newEnd}:00${isWFH}`;
         }
@@ -989,18 +947,55 @@
             return shiftList.find(s => s.text === val) || shiftList[0];
         }
 
+        function renderAll() {
+            renderHeaders();
+            renderCalendar();
+            buildLeaveTables();
+            renderWFHTracker();
+            renderVLPieChart();
+            if (isMobileViewActive) renderMobileCards();
+        }
+
+        function renderHeaders() {
+            let html = '<th class="day-col" rowspan="2">Day</th><th class="date-col" rowspan="2">Date</th>';
+            team.forEach((member, memberIdx) => {
+                html += `
+                    <th>
+                        ${member}
+                        <div class="bulk-set-container">
+                            <select class="bulk-select" onchange="bulkSetShift(${memberIdx}, this)">
+                                <option value="">-- Set All Month --</option>
+                                <option value="CLEAR">-- Clear --</option>
+                                <option value="7:00 - 16:00">7:00 - 16:00</option>
+                                <option value="9:00 - 18:00">9:00 - 18:00</option>
+                                <option value="10:00 - 19:00">10:00 - 19:00</option>
+                                <option value="12:00 - 21:00">12:00 - 21:00</option>
+                                <option value="14:00 - 23:00">14:00 - 23:00</option>
+                                <option value="RD">RD</option>
+                            </select>
+                        </div>
+                    </th>
+                `;
+            });
+            scheduleHeaderRow.innerHTML = html;
+
+            let leaveHtml = '<th style="width: 50px;">Type</th>';
+            team.forEach(member => {
+                leaveHtml += `<th>${member}</th>`;
+            });
+            leaveHeaderRow.innerHTML = leaveHtml;
+        }
+
         function renderCalendar() {
             tbody.innerHTML = '';
             const selectedMonth = parseInt(monthSelect.value);
             const selectedYear = parseInt(yearInput.value);
-
             const totalDays = new Date(selectedYear, selectedMonth + 1, 0).getDate();
             const monthLabel = monthSelect.options[selectedMonth].text.substring(0, 3);
 
             for (let d = 1; d <= totalDays; d++) {
                 const dateObj = new Date(selectedYear, selectedMonth, d);
                 const dayName = weekdays[dateObj.getDay()];
-
                 const tr = document.createElement('tr');
 
                 const tdDay = document.createElement('td');
@@ -1015,7 +1010,6 @@
 
                 team.forEach((member, memberIdx) => {
                     const tdShift = document.createElement('td');
-                    
                     let activeShift = (rotaData[d] && rotaData[d][memberIdx] !== undefined) ? rotaData[d][memberIdx] : "";
 
                     if (member === "Miguel") {
@@ -1031,26 +1025,8 @@
                             rotaData[d][memberIdx] = input.value;
                             saveRotaToDatabase();
                         });
-
                         tdShift.appendChild(input);
-                    } 
-                    else if (activeShift.startsWith("Adjusted:") || activeShift === "Adjusted") {
-                        const customVal = activeShift.replace("Adjusted:", "").trim();
-                        const input = document.createElement('input');
-                        input.type = 'text';
-                        input.className = 'custom-editable-input';
-                        input.value = customVal || "e.g. 13:30 - 22:30";
-                        if (isViewOnlyMode) input.disabled = true;
-
-                        input.addEventListener('change', () => {
-                            if (!rotaData[d]) rotaData[d] = Array(team.length).fill("");
-                            rotaData[d][memberIdx] = `Adjusted: ${input.value}`;
-                            saveRotaToDatabase();
-                        });
-
-                        tdShift.appendChild(input);
-                    }
-                    else {
+                    } else {
                         const activeInfo = getShiftInfo(activeShift);
                         const convertedText = formatShiftForTimezone(activeShift);
 
@@ -1073,14 +1049,6 @@
                             item.addEventListener('click', (e) => {
                                 if (isViewOnlyMode) return;
                                 e.stopPropagation();
-                                
-                                if (s.text === "Adjusted") {
-                                    if (!rotaData[d]) rotaData[d] = Array(team.length).fill("");
-                                    rotaData[d][memberIdx] = "Adjusted: ";
-                                    saveRotaToDatabase();
-                                    renderCalendar();
-                                    return;
-                                }
 
                                 btn.textContent = displayShift === "" ? "-- Select --" : displayShift;
                                 btn.className = `custom-dropdown-btn ${s.bgClass}`;
@@ -1090,9 +1058,8 @@
                                 rotaData[d][memberIdx] = s.text;
 
                                 saveRotaToDatabase();
-                                syncLeavesFromSchedule();
+                                syncLeavesFromFullYearSchedule();
                             });
-
                             menu.appendChild(item);
                         });
 
@@ -1109,14 +1076,11 @@
                         dropdownContainer.appendChild(menu);
                         tdShift.appendChild(dropdownContainer);
                     }
-
                     tr.appendChild(tdShift);
                 });
-
                 tbody.appendChild(tr);
             }
-
-            syncLeavesFromSchedule();
+            syncLeavesFromFullYearSchedule();
         }
 
         function renderMobileCards() {
@@ -1130,7 +1094,6 @@
             for (let d = 1; d <= totalDays; d++) {
                 const dateObj = new Date(selectedYear, selectedMonth, d);
                 const dayName = weekdays[dateObj.getDay()];
-
                 const card = document.createElement('div');
                 card.className = 'mobile-day-card';
 
@@ -1142,13 +1105,11 @@
                 team.forEach((member, memberIdx) => {
                     let activeShift = (rotaData[d] && rotaData[d][memberIdx] !== undefined) ? rotaData[d][memberIdx] : "";
                     const convertedText = formatShiftForTimezone(activeShift) || "Off / Unassigned";
-
                     const row = document.createElement('div');
                     row.className = 'mobile-card-row';
                     row.innerHTML = `<span>${member}:</span> <span style="font-weight:600;">${convertedText}</span>`;
                     card.appendChild(row);
                 });
-
                 mobileContainer.appendChild(card);
             }
         }
@@ -1160,7 +1121,6 @@
             const selectedMonth = parseInt(monthSelect.value);
             const selectedYear = parseInt(yearInput.value);
             const totalDays = new Date(selectedYear, selectedMonth + 1, 0).getDate();
-
             let applyValue = (shiftValue === 'CLEAR') ? '' : shiftValue;
 
             for (let d = 1; d <= totalDays; d++) {
@@ -1170,37 +1130,40 @@
 
             saveRotaToDatabase();
             renderCalendar();
-            if (isMobileViewActive) renderMobileCards();
-
             selectElem.value = "";
         }
 
-        function syncLeavesFromSchedule() {
+        function syncLeavesFromFullYearSchedule() {
             let tempMatrix = {};
-            leaveTrackedTeam.forEach(m => tempMatrix[m] = { vl: [], sl: [] });
+            team.forEach(m => tempMatrix[m] = { vl: [], sl: [] });
 
-            const selectedMonth = parseInt(monthSelect.value);
-            const monthLabel = monthSelect.options[selectedMonth].text.substring(0, 3);
+            // Iterate across all months recorded for the active year (e.g., 2026_1 through 2026_12)
+            Object.keys(allYearRotaData).forEach(monthKey => {
+                const monthParts = monthKey.split("_");
+                const mIndex = parseInt(monthParts[1]) - 1;
+                if (mIndex >= 0 && mIndex < 12) {
+                    const mLabel = monthNames[mIndex].substring(0, 3);
+                    const monthDaysData = allYearRotaData[monthKey];
 
-            Object.keys(rotaData).forEach(day => {
-                let row = rotaData[day];
-                team.forEach((member, memberIdx) => {
-                    if (member === "Miguel") return;
-
-                    let shiftVal = row[memberIdx];
-                    if (shiftVal === 'VL') {
-                        tempMatrix[member].vl.push(`${day}-${monthLabel}`);
-                    } else if (shiftVal === 'SL') {
-                        tempMatrix[member].sl.push(`${day}-${monthLabel}`);
-                    }
-                });
+                    Object.keys(monthDaysData).forEach(day => {
+                        let row = monthDaysData[day];
+                        team.forEach((member, memberIdx) => {
+                            let shiftVal = row[memberIdx];
+                            if (shiftVal === 'VL') {
+                                tempMatrix[member].vl.push(`${day}-${mLabel}`);
+                            } else if (shiftVal === 'SL') {
+                                tempMatrix[member].sl.push(`${day}-${mLabel}`);
+                            }
+                        });
+                    });
+                }
             });
 
-            leaveTrackedTeam.forEach(m => {
-                while (tempMatrix[m].vl.length < 10) tempMatrix[m].vl.push('');
-                while (tempMatrix[m].sl.length < 5) tempMatrix[m].sl.push('');
-                tempMatrix[m].vl = tempMatrix[m].vl.slice(0, 10);
-                tempMatrix[m].sl = tempMatrix[m].sl.slice(0, 5);
+            team.forEach(m => {
+                while (tempMatrix[m].vl.length < 15) tempMatrix[m].vl.push('');
+                while (tempMatrix[m].sl.length < 10) tempMatrix[m].sl.push('');
+                tempMatrix[m].vl = tempMatrix[m].vl.slice(0, 15);
+                tempMatrix[m].sl = tempMatrix[m].sl.slice(0, 10);
             });
 
             leaveMatrixData = tempMatrix;
@@ -1211,18 +1174,17 @@
 
         function buildLeaveTables() {
             leaveDatesBody.innerHTML = '';
-
-            for (let rowIdx = 0; rowIdx < 15; rowIdx++) {
+            for (let rowIdx = 0; rowIdx < 25; rowIdx++) {
                 let tr = document.createElement('tr');
-                let isVL = rowIdx < 10;
+                let isVL = rowIdx < 15;
                 let leaveType = isVL ? 'vl' : 'sl';
-                let arrayIdx = isVL ? rowIdx : rowIdx - 10;
+                let arrayIdx = isVL ? rowIdx : rowIdx - 15;
 
                 let tdType = document.createElement('td');
                 tdType.innerHTML = isVL ? '<span class="badge-vl">VL</span>' : '<span class="badge-sl">SL</span>';
                 tr.appendChild(tdType);
 
-                leaveTrackedTeam.forEach((member) => {
+                team.forEach((member) => {
                     let tdDate = document.createElement('td');
                     let input = document.createElement('input');
                     input.type = 'text';
@@ -1233,31 +1195,28 @@
                     input.value = val;
 
                     input.addEventListener('input', () => {
-                        if (!leaveMatrixData[member]) leaveMatrixData[member] = { vl: Array(10).fill(''), sl: Array(5).fill('') };
-                        if (!leaveMatrixData[member][leaveType]) leaveMatrixData[member][leaveType] = isVL ? Array(10).fill('') : Array(5).fill('');
+                        if (!leaveMatrixData[member]) leaveMatrixData[member] = { vl: Array(15).fill(''), sl: Array(10).fill('') };
+                        if (!leaveMatrixData[member][leaveType]) leaveMatrixData[member][leaveType] = isVL ? Array(15).fill('') : Array(10).fill('');
 
                         leaveMatrixData[member][leaveType][arrayIdx] = input.value;
                         saveLeaveMatrixToDatabase();
                         renderVLPieChart();
                     });
-
                     tdDate.appendChild(input);
                     tr.appendChild(tdDate);
                 });
-
                 leaveDatesBody.appendChild(tr);
             }
         }
 
         function renderWFHTracker() {
             wfhTrackerBody.innerHTML = '';
-
             const selectedMonth = parseInt(monthSelect.value);
             const selectedYear = parseInt(yearInput.value);
             const totalDays = new Date(selectedYear, selectedMonth + 1, 0).getDate();
             const monthLabel = monthSelect.options[selectedMonth].text.substring(0, 3);
 
-            leaveTrackedTeam.forEach((member) => {
+            team.forEach((member) => {
                 const memberIdx = team.indexOf(member);
                 let wfhDates = [];
 
@@ -1268,8 +1227,6 @@
                     }
                 }
 
-                const usedWFH = wfhDates.length;
-
                 let wfhBadges = wfhDates.length > 0 
                     ? wfhDates.map(dStr => `<span class="badge-wfh">${dStr}</span>`).join(' ')
                     : '<span style="opacity: 0.6;">None</span>';
@@ -1278,43 +1235,39 @@
                 tr.innerHTML = `
                     <td style="font-weight:600;">${member}</td>
                     <td>${wfhBadges}</td>
-                    <td><strong>${usedWFH} WFH</strong></td>
+                    <td><strong>${wfhDates.length} WFH</strong></td>
                 `;
                 wfhTrackerBody.appendChild(tr);
             });
         }
 
         function renderVLPieChart() {
-            let monthVLCounts = Array(12).fill(0);
+            document.getElementById('vlChartYearLabel').innerText = yearInput.value;
+            let memberVLCounts = team.map(() => 0);
 
-            Object.keys(rotaData).forEach(day => {
-                let row = rotaData[day];
-                team.forEach((member, memberIdx) => {
-                    if (row[memberIdx] === 'VL') {
-                        monthVLCounts[parseInt(monthSelect.value)]++;
-                    }
-                });
+            team.forEach((member, memberIdx) => {
+                if (leaveMatrixData[member] && leaveMatrixData[member].vl) {
+                    let count = leaveMatrixData[member].vl.filter(v => v && v.trim() !== "").length;
+                    memberVLCounts[memberIdx] = count;
+                }
             });
 
             const ctx = document.getElementById('vlPieChart').getContext('2d');
             const activeTheme = document.body.getAttribute('data-theme') || 'dark';
             const fontColor = activeTheme === 'light' ? '#1e293b' : '#f8fafc';
 
-            if (vlChartInstance) {
-                vlChartInstance.destroy();
-            }
+            if (vlChartInstance) vlChartInstance.destroy();
 
             vlChartInstance = new Chart(ctx, {
                 type: 'pie',
                 data: {
-                    labels: monthNames,
+                    labels: team,
                     datasets: [{
-                        label: 'Total Team VL Days',
-                        data: monthVLCounts,
+                        label: 'VL Days Taken',
+                        data: memberVLCounts,
                         backgroundColor: [
-                            '#f87171', '#fb923c', '#fbbf24', '#facc15',
-                            '#a3e635', '#4ade80', '#34d399', '#2dd4bf',
-                            '#38bdf8', '#60a5fa', '#818cf8', '#c084fc'
+                            '#f87171', '#38bdf8', '#818cf8', '#34d399', 
+                            '#fbbf24', '#c084fc', '#f472b6', '#a3e635'
                         ],
                         borderWidth: 1,
                         borderColor: activeTheme === 'light' ? '#ffffff' : '#1e293b'
@@ -1328,17 +1281,8 @@
                             position: 'bottom',
                             labels: {
                                 color: fontColor,
-                                font: { size: 10, weight: '600', family: "'Plus Jakarta Sans', sans-serif" },
+                                font: { size: 11, weight: '600', family: "'Plus Jakarta Sans', sans-serif" },
                                 boxWidth: 12
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.label || '';
-                                    let value = context.parsed || 0;
-                                    return `${label}: ${value} VL Day(s)`;
-                                }
                             }
                         }
                     }
@@ -1346,18 +1290,8 @@
             });
         }
 
-        monthSelect.addEventListener('change', () => {
-            renderPHHolidays();
-            listenToDatabase();
-        });
-
-        yearInput.addEventListener('input', () => {
-            listenToDatabase();
-        });
-
-        window.addEventListener('click', () => {
-            document.querySelectorAll('.custom-dropdown-menu').forEach(m => m.classList.remove('show'));
-        });
+        monthSelect.addEventListener('change', () => { renderPHHolidays(); listenToDatabase(); });
+        yearInput.addEventListener('input', () => { listenToDatabase(); });
 
         window.onload = function() {
             checkViewOnlyMode();
@@ -1367,7 +1301,6 @@
             setupPresenceSystem();
             renderPHHolidays();
             listenToDatabase();
-            renderVLPieChart();
         };
     </script>
 </body>
