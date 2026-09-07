@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sportsbook Hub - Secured Animated Lamp Login</title>
+  <title>Sportsbook Hub - Secured 3D Lamp Login</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <!-- Chart.js for Data Trends & Analytics -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -36,7 +35,6 @@
       --accent-red: #f87171;
       --card-blur: blur(20px);
       --font-mono: 'JetBrains Mono', monospace;
-      --lamp-glow: 0 0 0 rgba(255, 255, 255, 0);
     }
 
     body.light-mode {
@@ -73,26 +71,18 @@
     }
 
     @keyframes bentoContainerReveal {
-      0% {
-        opacity: 0;
-        transform: scale(0.88) translateY(30px);
-        filter: blur(16px);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-        filter: blur(0px);
-      }
+      0% { opacity: 0; transform: scale(0.88) translateY(30px); filter: blur(16px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0px); }
     }
 
-    /* Security Lockout Screen & Animated Lamp Overlay */
+    /* Security Lockout Screen & 3D Lamp Overlay */
     #authOverlay {
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
-      background: rgba(8, 12, 20, 0.88);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
+      background: rgba(4, 7, 14, 0.85);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
       z-index: 9999;
       display: flex;
       align-items: center;
@@ -110,99 +100,111 @@
       position: relative;
       display: flex;
       align-items: center;
-      gap: 60px;
+      gap: 70px;
     }
 
-    /* Animated Lamp Styles */
+    /* 3D Realistic Lamp Scene Matching Reference */
     .lamp-scene {
       position: relative;
-      width: 220px;
+      width: 240px;
       height: 380px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-end;
+      filter: drop-shadow(0 25px 30px rgba(0, 0, 0, 0.6));
     }
 
+    /* Solid Matte Domed Lampshade */
     .lamp-shade {
-      width: 160px;
-      height: 90px;
-      background: #e2e8f0;
-      border-radius: 120px 120px 0 0;
+      width: 210px;
+      height: 110px;
+      background: radial-gradient(circle at 40% 30%, #475569 0%, #1e293b 60%, #0f172a 100%);
+      border-radius: 130px 130px 12px 12px;
       position: relative;
-      box-shadow: var(--lamp-glow);
-      transition: box-shadow 0.4s ease, background 0.4s ease;
+      box-shadow: inset 0 8px 16px rgba(255, 255, 255, 0.18), inset 0 -8px 20px rgba(0, 0, 0, 0.5);
       z-index: 3;
+      transition: box-shadow 0.4s ease;
     }
 
     body.lamp-is-on .lamp-shade {
-      background: #ffffff;
-      box-shadow: 0 0 60px 20px rgba(255, 241, 150, 0.6), 0 0 120px 40px rgba(255, 215, 0, 0.3);
+      box-shadow: inset 0 8px 16px rgba(255, 255, 255, 0.25), 
+                  0 0 60px 20px rgba(245, 158, 11, 0.5), 
+                  0 0 120px 40px rgba(217, 119, 6, 0.25);
     }
 
+    /* Golden Stand Rod */
     .lamp-stand-rod {
       width: 14px;
-      height: 200px;
-      background: #cbd5e1;
+      height: 190px;
+      background: linear-gradient(90deg, #b45309, #fbbf24, #92400e);
       border-radius: 4px;
       position: relative;
       z-index: 2;
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.5), 0 0 10px rgba(245, 158, 11, 0.2);
     }
 
+    /* Golden Lamp Base */
     .lamp-base {
-      width: 120px;
-      height: 18px;
-      background: #cbd5e1;
-      border-radius: 10px 10px 0 0;
+      width: 140px;
+      height: 22px;
+      background: linear-gradient(180deg, #f59e0b, #b45309, #78350f);
+      border-radius: 12px 12px 2px 2px;
       z-index: 2;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     }
 
-    /* Pull Cord / Rod Switch - Positioned & Extended per exact reference image */
+    /* Pull Cord positioned precisely under the right side of the lampshade matching the purple line */
     .pull-cord-wrapper {
       position: absolute;
-      top: 90px;
-      right: 46px;
+      bottom: 175px;
+      right: 35px;
       display: flex;
       flex-direction: column;
       align-items: center;
       cursor: pointer;
       z-index: 10;
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-origin: top center;
     }
 
-    .pull-cord-wrapper:hover {
-      transform: scale(1.08);
+    /* Bouncing Animation on Toggle */
+    @keyframes cordBounce {
+      0% { transform: translateY(0) scaleY(1); }
+      30% { transform: translateY(18px) scaleY(1.1); }
+      50% { transform: translateY(-8px) scaleY(0.95); }
+      70% { transform: translateY(6px) scaleY(1.02); }
+      100% { transform: translateY(0) scaleY(1); }
+    }
+
+    .pull-cord-wrapper.bouncing {
+      animation: cordBounce 0.55s cubic-bezier(0.36, 0.07, 0.19, 0.97);
     }
 
     .cord-string {
       width: 2px;
-      height: 125px;
-      background: rgba(255, 255, 255, 0.7);
-      transition: height 0.3s ease;
-    }
-
-    body.lamp-is-on .cord-string {
-      height: 155px;
+      height: 65px;
+      background: linear-gradient(180deg, #cbd5e1, #64748b);
+      box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
     }
 
     .cord-handle {
-      width: 22px;
+      width: 18px;
       height: 22px;
-      background: #f59e0b;
+      background: radial-gradient(circle at 35% 30%, #fde047, #d97706);
       border-radius: 50%;
-      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.6);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.7), inset 0 2px 3px rgba(255, 255, 255, 0.6);
     }
 
-    /* Side Popup Login Form Card */
+    /* Side Popup 3D Login Card */
     .login-popup-card {
-      width: 360px;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: var(--card-blur);
-      -webkit-backdrop-filter: var(--card-blur);
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: var(--glass-shadow);
+      width: 380px;
+      background: rgba(20, 26, 38, 0.72);
+      border: 1.5px solid rgba(255, 255, 255, 0.28);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.35);
       transform: translateX(40px) scale(0.95);
       opacity: 0;
       visibility: hidden;
@@ -216,10 +218,11 @@
     }
 
     .login-title {
-      font-size: 20px;
+      font-size: 21px;
       font-weight: 800;
-      color: var(--text-main);
-      margin-bottom: 20px;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      margin-bottom: 22px;
       text-align: center;
       letter-spacing: 0.5px;
     }
@@ -231,48 +234,47 @@
     .input-label {
       font-size: 10px;
       font-weight: 800;
-      color: var(--accent-glow);
-      letter-spacing: 1px;
+      color: #38bdf8;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
       margin-bottom: 6px;
       display: block;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
     }
 
     .login-input {
       width: 100%;
-      background: var(--glass-bg-hover);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 12px;
       padding: 12px 14px;
       font-size: 13px;
       font-weight: 600;
-      color: var(--text-main);
+      color: #ffffff;
       outline: none;
-      transition: border-color 0.2s ease;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .login-input:focus {
-      border-color: var(--accent-glow);
-    }
-
-    .login-input::placeholder {
-      color: var(--text-sub);
+      border-color: #38bdf8;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 0 12px rgba(56, 189, 248, 0.4);
     }
 
     .signin-btn {
       width: 100%;
-      margin-top: 10px;
+      margin-top: 12px;
       background: linear-gradient(135deg, #f59e0b, #d97706);
       color: #ffffff;
       border: none;
-      padding: 12px;
-      border-radius: 10px;
+      padding: 13px;
+      border-radius: 12px;
       font-size: 12px;
       font-weight: 800;
       letter-spacing: 1px;
       text-transform: uppercase;
       cursor: pointer;
-      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5), inset 0 1px 1px rgba(255,255,255,0.4);
       transition: transform 0.2s ease, opacity 0.2s ease;
     }
 
@@ -288,6 +290,7 @@
       text-align: center;
       margin-top: 10px;
       min-height: 16px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.6);
     }
 
     /* Glass Sidebar Layout */
@@ -311,9 +314,7 @@
       animation: bentoContainerReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    .sidebar.close {
-      width: 78px;
-    }
+    .sidebar.close { width: 78px; }
 
     .sidebar .logo-details {
       height: 45px;
@@ -334,28 +335,11 @@
       transition: opacity 0.3s ease;
     }
 
-    .sidebar.close .logo-details .logo_name {
-      display: none;
-      opacity: 0;
-      pointer-events: none;
-    }
+    .sidebar.close .logo-details .logo_name { display: none; opacity: 0; pointer-events: none; }
+    .sidebar #btn { font-size: 22px; cursor: pointer; color: var(--text-main); transition: all 0.3s ease; }
+    .sidebar.close .logo-details { justify-content: center; }
+    .sidebar.close #btn { margin: 0 auto; }
 
-    .sidebar #btn {
-      font-size: 22px;
-      cursor: pointer;
-      color: var(--text-main);
-      transition: all 0.3s ease;
-    }
-
-    .sidebar.close .logo-details {
-      justify-content: center;
-    }
-
-    .sidebar.close #btn {
-      margin: 0 auto;
-    }
-
-    /* Search Box */
     .sidebar .search-box {
       position: relative;
       height: 42px;
@@ -371,628 +355,181 @@
 
     .sidebar .search-box i {
       position: absolute;
-      left: 0;
-      height: 100%;
-      width: 46px;
-      text-align: center;
-      line-height: 42px;
-      font-size: 18px;
-      color: var(--text-main);
-      cursor: pointer;
+      left: 0; height: 100%; width: 46px;
+      text-align: center; line-height: 42px;
+      font-size: 18px; color: var(--text-main); cursor: pointer;
     }
 
     .sidebar .search-box input {
-      height: 100%;
-      width: 100%;
-      outline: none;
-      border: none;
-      background: transparent;
-      padding-left: 46px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-main);
-      transition: opacity 0.3s ease;
+      height: 100%; width: 100%; outline: none; border: none;
+      background: transparent; padding-left: 46px;
+      font-size: 12px; font-weight: 600; color: var(--text-main);
     }
+    .sidebar .search-box input::placeholder { color: var(--text-sub); }
+    .sidebar.close .search-box input { opacity: 0; pointer-events: none; }
 
-    .sidebar .search-box input::placeholder {
-      color: var(--text-sub);
-    }
-
-    .sidebar.close .search-box input {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    /* Navigation Items Container */
     .sidebar .nav-list {
-      margin-top: 15px;
-      margin-bottom: 60px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      list-style: none;
-      overflow-y: auto;
-      flex-grow: 1;
+      margin-top: 15px; margin-bottom: 60px;
+      display: flex; flex-direction: column; gap: 6px;
+      list-style: none; overflow-y: auto; flex-grow: 1;
     }
+    .sidebar .nav-list::-webkit-scrollbar { width: 4px; }
+    .sidebar .nav-list::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 4px; }
 
-    .sidebar .nav-list::-webkit-scrollbar {
-      width: 4px;
-    }
-    .sidebar .nav-list::-webkit-scrollbar-thumb {
-      background: var(--glass-border);
-      border-radius: 4px;
-    }
-
-    .sidebar li {
-      position: relative;
-      list-style: none;
-      flex-shrink: 0;
-    }
-
+    .sidebar li { position: relative; list-style: none; flex-shrink: 0; }
     .sidebar li a {
-      display: flex;
-      height: 42px;
-      width: 100%;
-      border-radius: 12px;
-      align-items: center;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      background: transparent;
-      border: 1px solid transparent;
-      cursor: pointer;
+      display: flex; height: 42px; width: 100%; border-radius: 12px;
+      align-items: center; text-decoration: none; transition: all 0.3s ease;
+      background: transparent; border: 1px solid transparent; cursor: pointer;
     }
-
     .sidebar li a:hover, .sidebar li a.active {
-      background: var(--glass-bg-hover);
-      border-color: var(--glass-border);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      background: var(--glass-bg-hover); border-color: var(--glass-border);
     }
-
-    .sidebar li i {
-      min-width: 46px;
-      text-align: center;
-      font-size: 18px;
-      color: var(--text-main);
-    }
-
+    .sidebar li i { min-width: 46px; text-align: center; font-size: 18px; color: var(--text-main); }
     .sidebar li a .links_name {
-      color: var(--text-main);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      white-space: nowrap;
-      transition: opacity 0.3s ease;
+      color: var(--text-main); font-size: 12px; font-weight: 700;
+      letter-spacing: 0.3px; white-space: nowrap; transition: opacity 0.3s ease;
     }
-
-    .sidebar.close li a .links_name {
-      opacity: 0;
-      pointer-events: none;
-    }
+    .sidebar.close li a .links_name { opacity: 0; pointer-events: none; }
 
     .sidebar li .tooltip {
-      position: absolute;
-      top: -20px;
-      left: calc(100% + 15px);
-      z-index: 3;
-      background: var(--glass-bg);
-      backdrop-filter: var(--card-blur);
-      color: var(--text-main);
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      opacity: 0;
-      white-space: nowrap;
-      pointer-events: none;
-      border: 1px solid var(--glass-border);
-      box-shadow: var(--glass-shadow);
+      position: absolute; top: -20px; left: calc(100% + 15px); z-index: 3;
+      background: var(--glass-bg); backdrop-filter: var(--card-blur);
+      color: var(--text-main); padding: 6px 14px; border-radius: 8px;
+      font-size: 11px; font-weight: 700; opacity: 0; white-space: nowrap;
+      pointer-events: none; border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);
     }
-
-    .sidebar.close li:hover .tooltip {
-      opacity: 1;
-      pointer-events: auto;
-      transition: all 0.3s ease;
-      top: 50%;
-      transform: translateY(-50%);
-    }
+    .sidebar.close li:hover .tooltip { opacity: 1; pointer-events: auto; top: 50%; transform: translateY(-50%); }
 
     .sidebar li.profile {
-      position: absolute;
-      height: 52px;
-      width: calc(100% - 32px);
-      left: 16px;
-      bottom: 16px;
-      padding: 10px 12px;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
+      position: absolute; height: 52px; width: calc(100% - 32px);
+      left: 16px; bottom: 16px; padding: 10px 12px;
+      background: var(--glass-bg); border: 1px solid var(--glass-border);
+      border-radius: 12px; display: flex; align-items: center; justify-content: space-between;
     }
-
-    .sidebar.close li.profile {
-      justify-content: center;
-      padding: 10px 0;
-    }
-
-    .sidebar .profile-details {
-      display: flex;
-      align-items: center;
-    }
-
-    .sidebar li .name_job {
-      margin-left: 8px;
-      white-space: nowrap;
-      transition: opacity 0.3s ease;
-    }
-
-    .sidebar li .name {
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      color: var(--text-main);
-    }
-
-    .sidebar li .job {
-      font-size: 9px;
-      font-weight: 600;
-      color: var(--text-sub);
-    }
-
-    .sidebar.close .profile .name_job {
-      display: none;
-      opacity: 0;
-      pointer-events: none;
-    }
+    .sidebar.close li.profile { justify-content: center; padding: 10px 0; }
+    .sidebar .profile-details { display: flex; align-items: center; }
+    .sidebar li .name_job { margin-left: 8px; white-space: nowrap; }
+    .sidebar li .name { font-size: 11px; font-weight: 800; color: var(--text-main); }
+    .sidebar li .job { font-size: 9px; font-weight: 600; color: var(--text-sub); }
+    .sidebar.close .profile .name_job { display: none; opacity: 0; pointer-events: none; }
 
     /* Main Bento Dashboard Workspace */
     .main-workspace {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      animation: bentoContainerReveal 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      transition: all 0.3s ease;
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+      overflow: hidden; animation: bentoContainerReveal 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* Mobile View Mode Classes - Fully responsive without hidden letters */
-    body.mobile-view-active {
-      overflow-x: hidden !important;
-    }
-    body.mobile-view-active .sidebar {
-      position: relative !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100% !important;
-      height: auto !important;
-      margin-bottom: 12px;
-      border-radius: 16px;
-      box-sizing: border-box;
-    }
-    body.mobile-view-active .sidebar.close {
-      width: 100% !important;
-    }
+    body.mobile-view-active { overflow-x: hidden !important; }
+    body.mobile-view-active .sidebar { position: relative !important; width: 100% !important; height: auto !important; margin-bottom: 12px; border-radius: 16px; }
+    body.mobile-view-active .sidebar.close { width: 100% !important; }
     body.mobile-view-active .sidebar .logo-details .logo_name,
     body.mobile-view-active .sidebar .search-box input,
     body.mobile-view-active .sidebar li a .links_name,
-    body.mobile-view-active .sidebar li .name_job {
-      display: block !important;
-      opacity: 1 !important;
-      pointer-events: auto !important;
-      white-space: normal !important;
-      overflow: visible !important;
-      text-overflow: clip !important;
-    }
-    body.mobile-view-active .sidebar .logo-details {
-      justify-content: space-between !important;
-      padding: 0 8px !important;
-    }
-    body.mobile-view-active .sidebar.close #btn {
-      margin: 0 !important;
-    }
-    body.mobile-view-active .sidebar .nav-list {
-      max-height: 240px;
-      margin-bottom: 15px;
-      overflow-y: auto;
-    }
-    body.mobile-view-active .sidebar li.profile {
-      position: relative !important;
-      width: 100% !important;
-      left: 0 !important;
-      bottom: 0 !important;
-      box-sizing: border-box;
-    }
-    body.mobile-view-active .main-workspace {
-      position: relative !important;
-      width: 100% !important;
-      height: auto !important;
-      padding: 12px !important;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      overflow: visible !important;
-      box-sizing: border-box;
-    }
-    body.mobile-view-active .bento-card {
-      position: relative !important;
-      top: auto !important;
-      left: auto !important;
-      width: 100% !important;
-      height: auto !important;
-      margin-bottom: 0 !important;
-      max-width: 100% !important;
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-    body.mobile-view-active .tz-grid {
-      grid-template-columns: 1fr !important;
-    }
-    body.mobile-view-active .links-grid {
-      grid-template-columns: 1fr !important;
-      max-height: none !important;
-    }
+    body.mobile-view-active .sidebar li .name_job { display: block !important; opacity: 1 !important; pointer-events: auto !important; }
+    body.mobile-view-active .sidebar .logo-details { justify-content: space-between !important; padding: 0 8px !important; }
+    body.mobile-view-active .sidebar.close #btn { margin: 0 !important; }
+    body.mobile-view-active .sidebar .nav-list { max-height: 240px; margin-bottom: 15px; }
+    body.mobile-view-active .sidebar li.profile { position: relative !important; width: 100% !important; left: 0 !important; bottom: 0 !important; }
+    body.mobile-view-active .main-workspace { position: relative !important; width: 100% !important; height: auto !important; padding: 12px !important; display: flex; flex-direction: column; gap: 15px; }
+    body.mobile-view-active .bento-card { position: relative !important; top: auto !important; left: auto !important; width: 100% !important; height: auto !important; }
 
-    /* Bento Grid Layout Cards */
     .bento-card {
-      position: absolute;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: var(--card-blur);
-      -webkit-backdrop-filter: var(--card-blur);
-      border-radius: 20px;
-      padding: 18px 22px;
-      box-shadow: var(--glass-shadow);
-      user-select: none;
-      z-index: 10;
-      transition: border-color 0.2s ease;
+      position: absolute; background: var(--glass-bg); border: 1px solid var(--glass-border);
+      backdrop-filter: var(--card-blur); -webkit-backdrop-filter: var(--card-blur);
+      border-radius: 20px; padding: 18px 22px; box-shadow: var(--glass-shadow); user-select: none; z-index: 10;
     }
-
-    .bento-card:hover {
-      border-color: var(--accent-glow);
-    }
-
-    .bento-card:active {
-      cursor: grabbing;
-    }
+    .bento-card:hover { border-color: var(--accent-glow); }
 
     .card-header-title {
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--accent-glow);
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--glass-border);
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: grab;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 11px; font-weight: 800; color: var(--accent-glow); letter-spacing: 1.2px;
+      text-transform: uppercase; padding-bottom: 8px; border-bottom: 1px solid var(--glass-border);
+      margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: grab;
     }
+    .drag-hint { font-size: 9px; color: var(--text-sub); font-weight: 600; display: flex; align-items: center; gap: 3px; }
 
-    .card-header-title:active {
-      cursor: grabbing;
-    }
-
-    .drag-hint {
-      font-size: 9px;
-      color: var(--text-sub);
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      letter-spacing: 0;
-    }
-
-    /* Optimal & Balanced Bento Positions & Dimensions */
     #timezonesCard { top: 20px; left: 285px; width: 440px; height: 165px; }
     #weatherCard   { top: 20px; left: 740px; width: 360px; height: 165px; }
     #trendCard     { top: 195px; left: 285px; width: 550px; height: 485px; }
     #linksCard     { top: 195px; left: 850px; width: 440px; height: 485px; }
 
-    /* Timezones Styles with Select Dropdown Support */
-    .tz-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
+    .tz-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .tz-item {
-      background: var(--glass-bg-hover);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 8px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      background: var(--glass-bg-hover); border: 1px solid var(--glass-border);
+      border-radius: 12px; padding: 8px; text-align: center; display: flex; flex-direction: column; justify-content: space-between;
     }
-
     .tz-select {
-      background: var(--glass-bg);
-      color: var(--accent-glow);
-      border: 1px solid var(--glass-border);
-      border-radius: 6px;
-      font-size: 9px;
-      font-weight: 800;
-      padding: 3px 4px;
-      outline: none;
-      text-transform: uppercase;
-      cursor: pointer;
-      width: 100%;
-      margin-bottom: 4px;
-      text-align: center;
+      background: var(--glass-bg); color: var(--accent-glow); border: 1px solid var(--glass-border);
+      border-radius: 6px; font-size: 9px; font-weight: 800; padding: 3px 4px; outline: none; text-transform: uppercase; cursor: pointer; width: 100%; margin-bottom: 4px; text-align: center;
     }
+    .tz-select option { background: var(--glass-bg); color: var(--text-main); }
+    .tz-clock { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--text-main); }
 
-    .tz-select option {
-      background: var(--glass-bg);
-      color: var(--text-main);
-    }
+    .weather-container { display: flex; align-items: center; justify-content: space-between; height: calc(100% - 30px); }
+    .weather-main { display: flex; align-items: center; gap: 14px; }
+    .weather-icon { font-size: 38px; color: #f59e0b; }
+    .weather-temp { font-family: var(--font-mono); font-size: 26px; font-weight: 800; color: var(--text-main); }
+    .weather-desc { font-size: 11px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; }
+    .weather-details { text-align: right; font-size: 11px; font-weight: 600; color: var(--text-sub); display: flex; flex-direction: column; gap: 4px; }
 
-    .tz-clock {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    /* Weather Widget Styles */
-    .weather-container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: calc(100% - 30px);
-    }
-
-    .weather-main {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .weather-icon {
-      font-size: 38px;
-      color: #f59e0b;
-    }
-
-    .weather-temp {
-      font-family: var(--font-mono);
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--text-main);
-    }
-
-    .weather-desc {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-sub);
-      text-transform: uppercase;
-    }
-
-    .weather-details {
-      text-align: right;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-sub);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    /* Daily Monitoring Trend Analytics */
-    .trend-stats {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      align-items: center;
-    }
-
-    .stat-badge {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 10px;
-    }
-
+    .trend-stats { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; font-weight: 700; align-items: center; }
+    .stat-badge { display: flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 6px; font-size: 10px; }
     .stat-badge.up { background: rgba(52, 211, 153, 0.2); color: var(--accent-green); }
     .stat-badge.down { background: rgba(248, 113, 113, 0.2); color: var(--accent-red); }
+    .chart-container { position: relative; height: 330px; width: 100%; }
 
-    .chart-container {
-      position: relative;
-      height: 330px;
-      width: 100%;
-    }
-
-    /* Links & Buttons Grid */
-    .links-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      max-height: 405px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-
-    .links-grid::-webkit-scrollbar {
-      width: 4px;
-    }
-    .links-grid::-webkit-scrollbar-thumb {
-      background: var(--glass-border);
-      border-radius: 4px;
-    }
-
+    .links-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; max-height: 405px; overflow-y: auto; padding-right: 4px; }
     .sub-link-item {
-      background: var(--glass-bg-hover);
-      color: var(--text-main);
-      padding: 10px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      border-radius: 10px;
-      text-decoration: none;
-      text-align: center;
-      transition: all 0.2s ease;
-      text-transform: uppercase;
-      border: 1px solid var(--glass-border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      background: var(--glass-bg-hover); color: var(--text-main); padding: 10px; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.3px; border-radius: 10px; text-decoration: none; text-align: center; transition: all 0.2s ease;
+      text-transform: uppercase; border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: center;
     }
-
-    .sub-link-item:hover {
-      background: var(--glass-bg);
-      border-color: var(--accent-glow);
-      transform: translateY(-1px);
-    }
+    .sub-link-item:hover { background: var(--glass-bg); border-color: var(--accent-glow); transform: translateY(-1px); }
 
     .logger-input {
-      background: var(--glass-bg-hover);
-      border: 1px solid var(--glass-border);
-      padding: 6px 10px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-main);
-      outline: none;
+      background: var(--glass-bg-hover); border: 1px solid var(--glass-border); padding: 6px 10px;
+      border-radius: 10px; font-size: 11px; font-weight: 700; color: var(--text-main); outline: none;
     }
+    .logger-input option { background: var(--glass-bg); color: var(--text-main); }
 
-    .logger-input option {
-      background: var(--glass-bg);
-      color: var(--text-main);
-    }
-
-    /* Context Menu */
     .custom-context-menu {
-      display: none;
-      position: fixed;
-      background: var(--glass-bg);
-      backdrop-filter: var(--card-blur);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      padding: 6px;
-      z-index: 1000;
-      box-shadow: var(--glass-shadow);
-      min-width: 150px;
+      display: none; position: fixed; background: var(--glass-bg); backdrop-filter: var(--card-blur);
+      border: 1px solid var(--glass-border); border-radius: 10px; padding: 6px; z-index: 1000; box-shadow: var(--glass-shadow); min-width: 150px;
     }
-
     .custom-context-item {
-      padding: 8px 12px;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-main);
-      border-radius: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      padding: 8px 12px; font-size: 11px; font-weight: 700; color: var(--text-main); border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px;
     }
+    .custom-context-item:hover { background: var(--glass-bg-hover); color: var(--accent-glow); }
 
-    .custom-context-item:hover {
-      background: var(--glass-bg-hover);
-      color: var(--accent-glow);
-    }
-
-    /* Settings Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(10px);
-      z-index: 200;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: var(--card-blur);
-      padding: 24px;
-      border-radius: 16px;
-      width: 360px;
-      box-shadow: var(--glass-shadow);
-    }
-
-    .setting-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 15px;
-    }
-
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); z-index: 200; justify-content: center; align-items: center; }
+    .modal-content { background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: var(--card-blur); padding: 24px; border-radius: 16px; width: 360px; box-shadow: var(--glass-shadow); }
+    .setting-row { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
     .action-btn {
-      width: 100%;
-      margin-top: 14px;
-      background: var(--accent-glow);
-      color: #ffffff;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+      width: 100%; margin-top: 14px; background: var(--accent-glow); color: #ffffff; border: none; padding: 10px 14px;
+      border-radius: 10px; font-size: 11px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
     }
+    .action-btn.logout-btn { background: linear-gradient(135deg, #f87171, #dc2626); }
 
-    .action-btn.logout-btn {
-      background: linear-gradient(135deg, #f87171, #dc2626);
-      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-    }
-
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 44px; height: 22px;
-    }
+    .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
     .switch input { opacity: 0; width: 0; height: 0; }
-    .slider {
-      position: absolute; cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: var(--glass-bg-hover);
-      transition: .3s; border-radius: 22px;
-      border: 1px solid var(--glass-border);
-    }
-    .slider:before {
-      position: absolute; content: "";
-      height: 16px; width: 16px; left: 2px; bottom: 2px;
-      background-color: var(--text-main); transition: .3s; border-radius: 50%;
-    }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--glass-bg-hover); transition: .3s; border-radius: 22px; border: 1px solid var(--glass-border); }
+    .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: var(--text-main); transition: .3s; border-radius: 50%; }
     input:checked + .slider { background-color: var(--accent-glow); }
     input:checked + .slider:before { transform: translateX(22px); }
   </style>
 </head>
-<body onclick="hideContextMenu()" onmousemove="resetInactivityTimer()" onkeypress="resetInactivityTimer()">
+<body class="lamp-is-on" onclick="hideContextMenu()" onmousemove="resetInactivityTimer()" onkeypress="resetInactivityTimer()">
 
-  <!-- Animated Lamp Login Overlay -->
+  <!-- 3D Lamp & Security Lockout Overlay -->
   <div id="authOverlay">
     <div class="lamp-login-container">
-      <!-- Animated Lamp -->
+      <!-- 3D Lamp Scene -->
       <div class="lamp-scene">
-        <div class="pull-cord-wrapper" onclick="toggleLamp()">
+        <div class="lamp-shade"></div>
+        <div class="pull-cord-wrapper" id="pullCord" onclick="toggleLamp()">
           <div class="cord-string"></div>
           <div class="cord-handle" title="Toggle Lamp Switch"></div>
         </div>
-        <div class="lamp-shade"></div>
         <div class="lamp-stand-rod"></div>
         <div class="lamp-base"></div>
       </div>
@@ -1060,7 +597,7 @@
         <div class="weather-main">
           <i class='bx bx-sun weather-icon' id="weatherIcon"></i>
           <div>
-            <div class="weather-temp" id="phTemp">31ﾂｰC</div>
+            <div class="weather-temp" id="phTemp">31°C</div>
             <div class="weather-desc" id="phDesc">Partly Cloudy</div>
           </div>
         </div>
@@ -1072,7 +609,7 @@
       </div>
     </div>
 
-    <!-- Widget 3: Daily Monitoring Trend (IBET vs EDGE vs 7A Trackers Comparison) -->
+    <!-- Widget 3: Daily Monitoring Trend -->
     <div class="bento-card" id="trendCard">
       <div class="card-header-title">
         <span>DAILY MONITORING TREND <span class="drag-hint"><i class='bx bx-move'></i> Drag</span></span>
@@ -1255,7 +792,7 @@
     let currentActiveLinks = [];
     let trendChartInstance = null;
     let inactivityTimer = null;
-    const INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 minutes
+    const INACTIVITY_LIMIT = 30 * 60 * 1000;
 
     const sidebar = document.querySelector(".sidebar");
     const closeBtn = document.querySelector("#btn");
@@ -1264,7 +801,30 @@
     const linksGrid = document.querySelector("#linksGrid");
     const contextMenu = document.querySelector("#contextMenu");
 
+    // Web Audio API Sound Synthesizer for Switch Click
+    function playClickSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(520, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.08);
+      } catch(e) {}
+    }
+
     function toggleLamp() {
+      playClickSound();
+      const cordEl = document.getElementById("pullCord");
+      cordEl.classList.add("bouncing");
+      setTimeout(() => cordEl.classList.remove("bouncing"), 550);
+
       document.body.classList.toggle("lamp-is-on");
       if (document.body.classList.contains("lamp-is-on")) {
         setTimeout(() => document.getElementById("loginPassword").focus(), 300);
@@ -1385,7 +945,6 @@
     function renderClocks() {
       const grid = document.getElementById("timezoneGrid");
       grid.innerHTML = "";
-      
       selectedTimezones.forEach((tzZone, index) => {
         const timeString = new Date().toLocaleTimeString("en-US", {
           timeZone: tzZone, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
@@ -1432,26 +991,16 @@
       for (let i = 6; i >= 0; i--) {
         const d = new Date();
         d.setDate(d.getDate() - i);
-        const formatted = d.toLocaleDateString("en-US", { month: 'short', day: 'numeric' });
-        labels.push(formatted);
+        labels.push(d.toLocaleDateString("en-US", { month: 'short', day: 'numeric' }));
       }
       return labels;
     }
 
     function getTrackerData() {
       return {
-        ibet: {
-          increased: [35, 42, 38, 50, 55, 48, 62],
-          limited: [10, 12, 8, 15, 11, 14, 18]
-        },
-        edge: {
-          increased: [45, 52, 48, 60, 65, 58, 72],
-          limited: [12, 15, 10, 18, 14, 16, 20]
-        },
-        tracker7a: {
-          increased: [25, 30, 32, 40, 42, 39, 48],
-          limited: [6, 9, 7, 11, 8, 10, 12]
-        }
+        ibet: { increased: [35, 42, 38, 50, 55, 48, 62], limited: [10, 12, 8, 15, 11, 14, 18] },
+        edge: { increased: [45, 52, 48, 60, 65, 58, 72], limited: [12, 15, 10, 18, 14, 16, 20] },
+        tracker7a: { increased: [25, 30, 32, 40, 42, 39, 48], limited: [6, 9, 7, 11, 8, 10, 12] }
       };
     }
 
@@ -1470,30 +1019,9 @@
 
       if (viewMode === "all") {
         chartConfigData.datasets = [
-          {
-            label: 'IBET (Inc)',
-            data: dataStore.ibet.increased,
-            borderColor: '#0284c7',
-            backgroundColor: 'rgba(2, 132, 199, 0.08)',
-            borderWidth: 2.5,
-            tension: 0.4
-          },
-          {
-            label: 'EDGE (Inc)',
-            data: dataStore.edge.increased,
-            borderColor: '#059669',
-            backgroundColor: 'rgba(5, 150, 105, 0.08)',
-            borderWidth: 2.5,
-            tension: 0.4
-          },
-          {
-            label: '7A (Inc)',
-            data: dataStore.tracker7a.increased,
-            borderColor: '#d97706',
-            backgroundColor: 'rgba(217, 119, 6, 0.08)',
-            borderWidth: 2.5,
-            tension: 0.4
-          }
+          { label: 'IBET (Inc)', data: dataStore.ibet.increased, borderColor: '#0284c7', backgroundColor: 'rgba(2, 132, 199, 0.08)', borderWidth: 2.5, tension: 0.4 },
+          { label: 'EDGE (Inc)', data: dataStore.edge.increased, borderColor: '#059669', backgroundColor: 'rgba(5, 150, 105, 0.08)', borderWidth: 2.5, tension: 0.4 },
+          { label: '7A (Inc)', data: dataStore.tracker7a.increased, borderColor: '#d97706', backgroundColor: 'rgba(217, 119, 6, 0.08)', borderWidth: 2.5, tension: 0.4 }
         ];
         document.getElementById("trendBadge").className = "stat-badge up";
         document.getElementById("trendBadge").innerHTML = `<i class='bx bx-bar-chart-alt-2'></i> Comparative`;
@@ -1514,24 +1042,8 @@
         }
 
         chartConfigData.datasets = [
-          {
-            label: `Increased`,
-            data: cur.increased,
-            borderColor: isLight ? '#059669' : '#34d399',
-            backgroundColor: isLight ? 'rgba(5, 150, 105, 0.15)' : 'rgba(52, 211, 153, 0.15)',
-            borderWidth: 2.5,
-            fill: true,
-            tension: 0.4
-          },
-          {
-            label: `Limited`,
-            data: cur.limited,
-            borderColor: isLight ? '#dc2626' : '#f87171',
-            backgroundColor: isLight ? 'rgba(220, 38, 38, 0.15)' : 'rgba(248, 113, 113, 0.15)',
-            borderWidth: 2.5,
-            fill: true,
-            tension: 0.4
-          }
+          { label: `Increased`, data: cur.increased, borderColor: isLight ? '#059669' : '#34d399', backgroundColor: isLight ? 'rgba(5, 150, 105, 0.15)' : 'rgba(52, 211, 153, 0.15)', borderWidth: 2.5, fill: true, tension: 0.4 },
+          { label: `Limited`, data: cur.limited, borderColor: isLight ? '#dc2626' : '#f87171', backgroundColor: isLight ? 'rgba(220, 38, 38, 0.15)' : 'rgba(248, 113, 113, 0.15)', borderWidth: 2.5, fill: true, tension: 0.4 }
         ];
       }
 
@@ -1541,12 +1053,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { 
-            legend: { 
-              labels: { color: textColor, font: { size: 9, weight: '700' } },
-              display: true 
-            } 
-          },
+          plugins: { legend: { labels: { color: textColor, font: { size: 9, weight: '700' } }, display: true } },
           scales: {
             x: { grid: { display: false }, ticks: { color: textColor, font: { size: 9, weight: '700' } } },
             y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 9, weight: '700' } } }
@@ -1555,9 +1062,7 @@
       });
     }
 
-    function switchTrackerData() {
-      initTrendChart();
-    }
+    function switchTrackerData() { initTrendChart(); }
 
     function makeElementDraggable(element) {
       let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -1592,11 +1097,11 @@
       });
       layout["selected_timezones"] = selectedTimezones;
       layout["mobile_view"] = document.body.classList.contains("mobile-view-active");
-      localStorage.setItem("sbhub_bento_layout_clean_v5", JSON.stringify(layout));
+      localStorage.setItem("sbhub_bento_layout_clean_v7", JSON.stringify(layout));
     }
 
     function restoreBentoLayout() {
-      const saved = localStorage.getItem("sbhub_bento_layout_clean_v5");
+      const saved = localStorage.getItem("sbhub_bento_layout_clean_v7");
       if (saved) {
         try {
           const layout = JSON.parse(saved);
@@ -1626,21 +1131,15 @@
 
     function toggleTheme() {
       const isLight = document.getElementById("modeToggle").checked;
-      if (isLight) {
-        document.body.classList.add("light-mode");
-      } else {
-        document.body.classList.remove("light-mode");
-      }
+      if (isLight) document.body.classList.add("light-mode");
+      else document.body.classList.remove("light-mode");
       initTrendChart();
     }
 
     function toggleMobileView() {
       const isMobile = document.getElementById("mobileViewToggle").checked;
-      if (isMobile) {
-        document.body.classList.add("mobile-view-active");
-      } else {
-        document.body.classList.remove("mobile-view-active");
-      }
+      if (isMobile) document.body.classList.add("mobile-view-active");
+      else document.body.classList.remove("mobile-view-active");
       saveBentoLayout();
       setTimeout(() => { if(trendChartInstance) trendChartInstance.resize(); }, 300);
     }
@@ -1656,7 +1155,6 @@
 
     closeBtn.addEventListener("click", () => sidebar.classList.toggle("close"));
 
-    // Initializers
     renderSidebar();
     selectCategory(0);
     restoreBentoLayout();
