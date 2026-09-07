@@ -38,11 +38,11 @@
       
       /* Sidebar Layout Variables */
       --sidebar-width: 78px;
-      --sidebar-expanded-width: 250px;
+      --sidebar-expanded-width: 280px;
     }
 
     body.sidebar-expanded {
-      --sidebar-width: 250px;
+      --sidebar-width: 280px;
     }
 
     body.light-mode {
@@ -384,11 +384,17 @@
 
       body:not(.mobile-view-active) .sidebar:hover .logo-details .logo_name,
       body:not(.mobile-view-active) .sidebar:hover .search-box input,
-      body:not(.mobile-view-active) .sidebar:hover li a .links_name,
+      body:not(.mobile-view-active) .sidebar:hover .nav-item-title,
+      body:not(.mobile-view-active) .sidebar:hover .nav-arrow,
       body:not(.mobile-view-active) .sidebar:hover .profile .name_job {
         display: block;
         opacity: 1;
         pointer-events: auto;
+      }
+
+      /* When collapsed, sub-menus inside accordion are hidden */
+      body:not(.mobile-view-active) .sidebar:not(:hover) .sub-menu-list {
+        display: none !important;
       }
 
       body:not(.mobile-view-active) .sidebar:hover .logo-details {
@@ -453,37 +459,107 @@
     .sidebar .search-box input::placeholder { color: var(--text-sub); }
 
     .sidebar .nav-list {
-      margin-top: 15px; margin-bottom: 60px;
-      display: flex; flex-direction: column; gap: 6px;
-      list-style: none; overflow-y: auto; flex-grow: 1;
+      margin-top: 15px; 
+      margin-bottom: 65px;
+      display: flex; 
+      flex-direction: column; 
+      gap: 4px;
+      list-style: none; 
+      overflow-y: auto; 
+      flex-grow: 1;
     }
     .sidebar .nav-list::-webkit-scrollbar { width: 4px; }
     .sidebar .nav-list::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 4px; }
 
-    .sidebar li { position: relative; list-style: none; flex-shrink: 0; }
-    .sidebar li a {
-      display: flex; height: 42px; width: 100%; border-radius: 12px;
-      align-items: center; text-decoration: none; transition: all 0.3s ease;
-      background: transparent; border: 1px solid transparent; cursor: pointer;
-    }
-    .sidebar li a:hover, .sidebar li a.active {
-      background: var(--glass-bg-hover); border-color: var(--glass-border);
-    }
-    .sidebar li i { min-width: 46px; text-align: center; font-size: 18px; color: var(--text-main); }
-    .sidebar li a .links_name {
-      color: var(--text-main); font-size: 12px; font-weight: 700;
-      letter-spacing: 0.3px; white-space: nowrap; display: none; opacity: 0; transition: opacity 0.3s ease;
-    }
-
-    .sidebar li .tooltip {
-      position: absolute; top: -20px; left: calc(100% + 15px); z-index: 3;
-      background: var(--glass-bg); backdrop-filter: var(--card-blur);
-      color: var(--text-main); padding: 6px 14px; border-radius: 8px;
-      font-size: 11px; font-weight: 700; opacity: 0; white-space: nowrap;
-      pointer-events: none; border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);
+    .sidebar li.nav-item-group { position: relative; list-style: none; flex-shrink: 0; }
+    
+    .sidebar .nav-header-btn {
+      display: flex; 
+      height: 42px; 
+      width: 100%; 
+      border-radius: 12px;
+      align-items: center; 
+      text-decoration: none; 
+      transition: all 0.3s ease;
+      background: transparent; 
+      border: 1px solid transparent; 
+      cursor: pointer;
     }
     
-    .sidebar:not(:hover) li:hover .tooltip { opacity: 1; pointer-events: auto; top: 50%; transform: translateY(-50%); }
+    .sidebar .nav-header-btn:hover, .sidebar .nav-header-btn.active {
+      background: var(--glass-bg-hover); 
+      border-color: var(--glass-border);
+    }
+    
+    .sidebar .nav-header-btn i.nav-icon { 
+      min-width: 46px; 
+      text-align: center; 
+      font-size: 18px; 
+      color: var(--text-main); 
+    }
+    
+    .sidebar .nav-header-btn .nav-item-title {
+      color: var(--text-main); 
+      font-size: 12px; 
+      font-weight: 700;
+      letter-spacing: 0.3px; 
+      white-space: nowrap; 
+      display: none; 
+      opacity: 0; 
+      flex-grow: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    .sidebar .nav-header-btn .nav-arrow {
+      font-size: 16px;
+      color: var(--text-sub);
+      margin-right: 12px;
+      display: none;
+      opacity: 0;
+      transition: transform 0.25s ease, opacity 0.3s ease;
+    }
+
+    .sidebar .nav-item-group.expanded .nav-arrow {
+      transform: rotate(180deg);
+    }
+
+    /* Accordion Expanded Submenu list inside Sidebar */
+    .sub-menu-list {
+      display: none;
+      flex-direction: column;
+      gap: 3px;
+      padding-left: 46px;
+      padding-right: 8px;
+      margin-top: 3px;
+      margin-bottom: 6px;
+      list-style: none;
+    }
+
+    .sidebar .nav-item-group.expanded .sub-menu-list {
+      display: flex;
+    }
+
+    .sub-menu-item {
+      display: block;
+      padding: 8px 12px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: var(--text-sub);
+      text-decoration: none;
+      text-transform: uppercase;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sub-menu-item:hover {
+      background: var(--glass-bg-hover);
+      color: var(--text-main);
+      transform: translateX(2px);
+    }
 
     .sidebar li.profile {
       position: absolute; height: 52px; width: calc(100% - 32px);
@@ -505,10 +581,12 @@
     body.mobile-view-active .sidebar { position: relative !important; width: 100% !important; height: auto !important; margin-bottom: 12px; border-radius: 16px; }
     body.mobile-view-active .sidebar .logo-details .logo_name,
     body.mobile-view-active .sidebar .search-box input,
-    body.mobile-view-active .sidebar li a .links_name,
-    body.mobile-view-active .sidebar li .name_job { display: block !important; opacity: 1 !important; pointer-events: auto !important; }
+    body.mobile-view-active .sidebar .nav-item-title,
+    body.mobile-view-active .sidebar .nav-arrow,
+    body.mobile-view-active .sidebar .sub-menu-list,
+    body.mobile-view-active .sidebar li .name_job { display: flex !important; opacity: 1 !important; pointer-events: auto !important; }
     body.mobile-view-active .sidebar .logo-details { justify-content: space-between !important; padding: 0 8px !important; }
-    body.mobile-view-active .sidebar .nav-list { max-height: 240px; margin-bottom: 15px; }
+    body.mobile-view-active .sidebar .nav-list { max-height: none; margin-bottom: 15px; }
     body.mobile-view-active .sidebar li.profile { position: relative !important; width: 100% !important; left: 0 !important; bottom: 0 !important; justify-content: space-between !important; padding: 10px 12px !important; }
     body.mobile-view-active .main-workspace { position: relative !important; width: 100% !important; height: auto !important; padding: 12px !important; display: flex; flex-direction: column; gap: 15px; }
     body.mobile-view-active .bento-card { position: relative !important; top: auto !important; left: auto !important; width: 100% !important; height: auto !important; }
@@ -535,55 +613,9 @@
     }
     .drag-hint { font-size: 9px; color: var(--text-sub); font-weight: 600; display: flex; align-items: center; gap: 3px; }
 
-    #timezonesCard { top: 20px; left: calc(var(--sidebar-width) + 225px); width: 335px; height: 165px; }
-    #weatherCard   { top: 20px; left: calc(var(--sidebar-width) + 575px); width: 335px; height: 165px; }
-
-    /* Dynamic Auto-Shifting INTERNAL Links Panel */
-    #linksCard { 
-      top: 20px; 
-      left: calc(var(--sidebar-width) + 25px); 
-      width: 185px; 
-      height: 660px; 
-      opacity: 0;
-      pointer-events: none;
-      transform: translateX(-15px) scale(0.96);
-      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
-                  transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-                  left 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-                  border-color 0.2s ease;
-    }
-
-    #linksCard.visible {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateX(0) scale(1);
-    }
-
-    /* Dynamic Auto-Adjusting TREND Chart Panel */
-    #trendCard { 
-      top: 195px; 
-      left: calc(var(--sidebar-width) + 225px); 
-      width: calc(100vw - var(--sidebar-width) - 265px); 
-      max-width: 950px;
-      height: 485px; 
-    }
-
-    /* Shift Trend left if Internal is hidden */
-    #linksCard:not(.visible) ~ #trendCard {
-      left: calc(var(--sidebar-width) + 25px);
-      width: calc(100vw - var(--sidebar-width) - 65px);
-    }
-
-    .close-card-btn {
-      font-size: 16px;
-      cursor: pointer;
-      color: var(--text-sub);
-      transition: color 0.2s ease, transform 0.2s ease;
-    }
-    .close-card-btn:hover {
-      color: var(--accent-red);
-      transform: scale(1.15);
-    }
+    #timezonesCard { top: 20px; left: calc(var(--sidebar-width) + 35px); width: 335px; height: 165px; }
+    #weatherCard   { top: 20px; left: calc(var(--sidebar-width) + 385px); width: 335px; height: 165px; }
+    #trendCard     { top: 195px; left: calc(var(--sidebar-width) + 35px); width: calc(100vw - var(--sidebar-width) - 75px); max-width: 1050px; height: 485px; }
 
     .tz-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .tz-item {
@@ -616,32 +648,19 @@
       min-height: 120px;
     }
 
-    .links-grid { display: grid; grid-template-columns: 1fr; gap: 8px; max-height: calc(100% - 50px); overflow-y: auto; padding-right: 4px; }
-    .sub-link-item {
-      background: var(--glass-bg-hover); color: var(--text-main); padding: 10px; font-size: 10px; font-weight: 700;
-      letter-spacing: 0.3px; border-radius: 10px; text-decoration: none; text-align: center; transition: all 0.2s ease;
-      text-transform: uppercase; border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: center;
-    }
-    .sub-link-item:hover { background: var(--glass-bg); border-color: var(--accent-glow); transform: translateY(-1px); }
-
     .logger-input {
       background: var(--glass-bg-hover); border: 1px solid var(--glass-border); padding: 6px 10px;
       border-radius: 10px; font-size: 11px; font-weight: 700; color: var(--text-main); outline: none;
     }
     .logger-input option { background: var(--glass-bg); color: var(--text-main); }
 
-    .custom-context-menu {
-      display: none; position: fixed; background: var(--glass-bg); backdrop-filter: var(--card-blur);
-      border: 1px solid var(--glass-border); border-radius: 10px; padding: 6px; z-index: 1000; box-shadow: var(--glass-shadow); min-width: 150px;
-    }
-    .custom-context-item {
-      padding: 8px 12px; font-size: 11px; font-weight: 700; color: var(--text-main); border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px;
-    }
-    .custom-context-item:hover { background: var(--glass-bg-hover); color: var(--accent-glow); }
-
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); z-index: 200; justify-content: center; align-items: center; }
-    .modal-content { background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: var(--card-blur); padding: 24px; border-radius: 16px; width: 360px; box-shadow: var(--glass-shadow); }
+    .modal-content { background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: var(--card-blur); padding: 24px; border-radius: 16px; width: 400px; max-height: 90vh; overflow-y: auto; box-shadow: var(--glass-shadow); }
     .setting-row { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+    .palette-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
+    .palette-btn { height: 32px; border-radius: 8px; border: 2px solid var(--glass-border); cursor: pointer; transition: transform 0.2s ease; }
+    .palette-btn:hover { transform: scale(1.05); border-color: var(--accent-glow); }
+
     .action-btn {
       width: 100%; margin-top: 14px; background: var(--accent-glow); color: #ffffff; border: none; padding: 10px 14px;
       border-radius: 10px; font-size: 11px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -656,7 +675,7 @@
     input:checked + .slider:before { transform: translateX(22px); }
   </style>
 </head>
-<body onclick="hideContextMenu()" onmousemove="resetInactivityTimer()" onkeypress="resetInactivityTimer()">
+<body onmousemove="resetInactivityTimer()" onkeypress="resetInactivityTimer()">
 
   <div id="authOverlay">
     <div class="lamp-login-container">
@@ -698,7 +717,7 @@
 
     <div class="search-box">
       <i class='bx bx-search'></i>
-      <input type="text" id="searchInput" placeholder="Search..." onkeyup="handleSearch()">
+      <input type="text" id="searchInput" placeholder="Search categories & links..." onkeyup="handleSearch()">
     </div>
     
     <ul class="nav-list" id="navList"></ul>
@@ -716,18 +735,6 @@
   </div>
 
   <div class="main-workspace" id="workspace">
-    
-    <!-- Links Card Panel (Placed first to enable CSS general sibling selector) -->
-    <div class="bento-card" id="linksCard" oncontextmenu="showContextMenu(event)">
-      <div class="card-header-title" oncontextmenu="event.stopPropagation()">
-        <span id="activeCategoryTitle">INTERNAL</span>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span class="drag-hint"><i class='bx bx-move'></i> Drag</span>
-          <i class='bx bx-x close-card-btn' title="Close section" onclick="hideLinksCard()"></i>
-        </div>
-      </div>
-      <div class="links-grid" id="linksGrid"></div>
-    </div>
 
     <div class="bento-card" id="timezonesCard">
       <div class="card-header-title">
@@ -778,18 +785,13 @@
 
   </div>
 
-  <div class="custom-context-menu" id="contextMenu">
-    <div class="custom-context-item" onclick="openAllCurrentLinks()">
-      <i class='bx bx-windows' style="font-size: 14px;"></i> Open All in New Tab
-    </div>
-  </div>
-
   <div class="modal" id="settingsModal">
     <div class="modal-content">
       <div class="card-header-title">
-        <span>SETTINGS</span>
+        <span>SETTINGS & CUSTOMIZATION</span>
         <i class='bx bx-x' style="cursor:pointer; font-size: 22px;" onclick="toggleModal()"></i>
       </div>
+      
       <div class="setting-row">
         <span style="font-size: 12px; font-weight: 700;">Daylight Mode</span>
         <label class="switch">
@@ -797,6 +799,7 @@
           <span class="slider"></span>
         </label>
       </div>
+
       <div class="setting-row">
         <span style="font-size: 12px; font-weight: 700;">Mobile View Mode</span>
         <label class="switch">
@@ -804,6 +807,37 @@
           <span class="slider"></span>
         </label>
       </div>
+
+      <div style="margin-top: 18px; border-top: 1px solid var(--glass-border); padding-top: 12px;">
+        <span style="font-size: 11px; font-weight: 800; color: var(--accent-glow); text-transform: uppercase;">Color Palettes</span>
+        <div class="palette-grid">
+          <div class="palette-btn" style="background: rgba(22, 27, 34, 0.8);" title="Midnight Dark" onclick="setPalette('rgba(22, 27, 34, 0.8)', '#ffffff', '#38bdf8')"></div>
+          <div class="palette-btn" style="background: rgba(15, 23, 42, 0.9);" title="Deep Navy" onclick="setPalette('rgba(15, 23, 42, 0.9)', '#f8fafc', '#60a5fa')"></div>
+          <div class="palette-btn" style="background: rgba(45, 27, 60, 0.85);" title="Royal Obsidian" onclick="setPalette('rgba(45, 27, 60, 0.85)', '#fdf4ff', '#c084fc')"></div>
+          <div class="palette-btn" style="background: rgba(255, 255, 255, 0.9);" title="Clean Ice" onclick="setPalette('rgba(255, 255, 255, 0.9)', '#0f172a', '#0284c7')"></div>
+        </div>
+      </div>
+
+      <div class="setting-row" style="margin-top: 14px;">
+        <span style="font-size: 11px; font-weight: 700;">Menu Background Color</span>
+        <input type="color" id="bgColorPicker" value="#161b22" onchange="updateCustomColors()" style="background:transparent; border:none; width:32px; height:24px; cursor:pointer;">
+      </div>
+
+      <div class="setting-row">
+        <span style="font-size: 11px; font-weight: 700;">Menu Opacity</span>
+        <input type="range" id="bgOpacityRange" min="0.2" max="1" step="0.05" value="0.7" oninput="updateCustomColors()" style="cursor:pointer;">
+      </div>
+
+      <div class="setting-row">
+        <span style="font-size: 11px; font-weight: 700;">Font / Text Color</span>
+        <input type="color" id="fontColorPicker" value="#ffffff" onchange="updateCustomColors()" style="background:transparent; border:none; width:32px; height:24px; cursor:pointer;">
+      </div>
+
+      <div class="setting-row">
+        <span style="font-size: 11px; font-weight: 700;">Accent Glow Color</span>
+        <input type="color" id="accentColorPicker" value="#38bdf8" onchange="updateCustomColors()" style="background:transparent; border:none; width:32px; height:24px; cursor:pointer;">
+      </div>
+
       <button class="action-btn" onclick="saveLayoutToURL()">
         <i class='bx bx-link-external'></i> SAVE LAYOUT & COPY LINK
       </button>
@@ -924,19 +958,13 @@
     ];
 
     let selectedTimezones = ["Asia/Manila", "UTC", "America/New_York"];
-    let currentActiveLinks = [];
     let trendChartInstance = null;
     let inactivityTimer = null;
     const INACTIVITY_LIMIT = 30 * 60 * 1000;
 
     const mainSidebar = document.querySelector("#mainSidebar");
     const navList = document.querySelector("#navList");
-    const activeCategoryTitle = document.querySelector("#activeCategoryTitle");
-    const linksGrid = document.querySelector("#linksGrid");
-    const contextMenu = document.querySelector("#contextMenu");
-    const linksCard = document.querySelector("#linksCard");
 
-    // Track Sidebar Hover Expansion
     mainSidebar.addEventListener("mouseenter", () => {
       document.body.classList.add("sidebar-expanded");
       setTimeout(() => { if (trendChartInstance) trendChartInstance.resize(); }, 350);
@@ -944,6 +972,8 @@
 
     mainSidebar.addEventListener("mouseleave", () => {
       document.body.classList.remove("sidebar-expanded");
+      // Collapse all accordion items when leaving sidebar
+      document.querySelectorAll(".nav-item-group").forEach(g => g.classList.remove("expanded"));
       setTimeout(() => { if (trendChartInstance) trendChartInstance.resize(); }, 350);
     });
 
@@ -1000,7 +1030,6 @@
         } else {
           localStorage.removeItem("sbhub_remember_me");
         }
-
         resetInactivityTimer();
       } else {
         errEl.innerText = "Incorrect password!";
@@ -1025,96 +1054,117 @@
       }, INACTIVITY_LIMIT);
     }
 
-    function renderSidebar() {
+    function renderSidebar(filterQuery = "") {
       navList.innerHTML = "";
       menuData.forEach((item, index) => {
+        const query = filterQuery.toLowerCase().trim();
+        const matchingSubs = item.subs.filter(sub => !query || sub.name.toLowerCase().includes(query) || item.category.toLowerCase().includes(query));
+
+        if (query && matchingSubs.length === 0) return; // Skip if search has no match
+
         const li = document.createElement("li");
+        li.className = "nav-item-group" + (query ? " expanded" : "");
+
+        let subsHtml = "";
+        matchingSubs.forEach(sub => {
+          subsHtml += `<li><a href="${sub.url}" target="_blank" class="sub-menu-item">${sub.name}</a></li>`;
+        });
+
         li.innerHTML = `
-          <a onclick="selectCategory(${index})">
-            <i class='bx ${item.icon}'></i>
-            <span class="links_name">${item.category}</span>
-          </a>
-          <span class="tooltip">${item.category}</span>
+          <div class="nav-header-btn" onclick="toggleAccordion(this)">
+            <i class='bx ${item.icon} nav-icon'></i>
+            <span class="nav-item-title">${item.category}</span>
+            <i class='bx bx-chevron-down nav-arrow'></i>
+          </div>
+          <ul class="sub-menu-list">
+            ${subsHtml}
+          </ul>
         `;
         navList.appendChild(li);
       });
     }
 
-    function selectCategory(index) {
-      const activeData = menuData[index];
-      activeCategoryTitle.innerText = activeData.category;
-      currentActiveLinks = activeData.subs;
-      
-      const allLinks = navList.querySelectorAll("a");
-      allLinks.forEach((link, i) => {
-        if (i === index) link.classList.add("active");
-        else link.classList.remove("active");
-      });
-
-      renderLinks(currentActiveLinks);
-      showLinksCard();
-    }
-
-    function showLinksCard() {
-      linksCard.classList.add("visible");
-      setTimeout(() => { if(trendChartInstance) trendChartInstance.resize(); }, 350);
-    }
-
-    function hideLinksCard() {
-      linksCard.classList.remove("visible");
-      navList.querySelectorAll("a").forEach(link => link.classList.remove("active"));
-      setTimeout(() => { if(trendChartInstance) trendChartInstance.resize(); }, 350);
-    }
-
-    function renderLinks(linksArr) {
-      linksGrid.innerHTML = "";
-      if(linksArr.length === 0) {
-        linksGrid.innerHTML = `<span style="font-size:10px; color:var(--text-sub);">No matching links.</span>`;
-        return;
+    function toggleAccordion(headerEl) {
+      // Ensure sidebar is expanded visually when clicking
+      if (!document.body.classList.contains("sidebar-expanded")) {
+        document.body.classList.add("sidebar-expanded");
       }
-      linksArr.forEach(sub => {
-        const a = document.createElement("a");
-        a.className = "sub-link-item";
-        a.innerText = sub.name;
-        a.href = sub.url;
-        a.target = "_blank";
-        linksGrid.appendChild(a);
-      });
+      const groupLi = headerEl.parentElement;
+      const wasExpanded = groupLi.classList.contains("expanded");
+      
+      // Close all other groups for clean look
+      document.querySelectorAll(".nav-item-group").forEach(g => g.classList.remove("expanded"));
+      
+      if (!wasExpanded) {
+        groupLi.classList.add("expanded");
+      }
+      setTimeout(() => { if(trendChartInstance) trendChartInstance.resize(); }, 300);
     }
 
     function handleSearch() {
-      const query = document.getElementById("searchInput").value.toLowerCase().trim();
-      if(!query) {
-        hideLinksCard();
-        return;
+      const query = document.getElementById("searchInput").value;
+      renderSidebar(query);
+    }
+
+    function hexToRgba(hex, opacity) {
+      let c = hex.replace('#','');
+      if(c.length===3) c = c.split('').map(x => x + x).join('');
+      const num = parseInt(c, 16);
+      return `rgba(${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}, ${opacity})`;
+    }
+
+    function setPalette(bgRgba, textColor, accentColor) {
+      document.documentElement.style.setProperty('--glass-bg', bgRgba);
+      document.documentElement.style.setProperty('--text-main', textColor);
+      document.documentElement.style.setProperty('--accent-glow', accentColor);
+      
+      document.getElementById("fontColorPicker").value = textColor.startsWith('#') ? textColor : '#ffffff';
+      document.getElementById("accentColorPicker").value = accentColor;
+      
+      saveCustomizationSettings();
+      initTrendChart();
+    }
+
+    function updateCustomColors() {
+      const bgHex = document.getElementById("bgColorPicker").value;
+      const opacity = document.getElementById("bgOpacityRange").value;
+      const fontColor = document.getElementById("fontColorPicker").value;
+      const accentColor = document.getElementById("accentColorPicker").value;
+
+      const rgbaBg = hexToRgba(bgHex, opacity);
+      document.documentElement.style.setProperty('--glass-bg', rgbaBg);
+      document.documentElement.style.setProperty('--text-main', fontColor);
+      document.documentElement.style.setProperty('--text-sub', hexToRgba(fontColor, 0.7));
+      document.documentElement.style.setProperty('--accent-glow', accentColor);
+
+      saveCustomizationSettings();
+      initTrendChart();
+    }
+
+    function saveCustomizationSettings() {
+      const settings = {
+        bg: document.documentElement.style.getPropertyValue('--glass-bg'),
+        text: document.documentElement.style.getPropertyValue('--text-main'),
+        subText: document.documentElement.style.getPropertyValue('--text-sub'),
+        accent: document.documentElement.style.getPropertyValue('--accent-glow')
+      };
+      localStorage.setItem("sbhub_custom_theme_v8", JSON.stringify(settings));
+    }
+
+    function restoreCustomizationSettings() {
+      const saved = localStorage.getItem("sbhub_custom_theme_v8");
+      if (saved) {
+        try {
+          const s = JSON.parse(saved);
+          if (s.bg) document.documentElement.style.setProperty('--glass-bg', s.bg);
+          if (s.text) document.documentElement.style.setProperty('--text-main', s.text);
+          if (s.subText) document.documentElement.style.setProperty('--text-sub', s.subText);
+          if (s.accent) {
+            document.documentElement.style.setProperty('--accent-glow', s.accent);
+            document.getElementById("accentColorPicker").value = s.accent;
+          }
+        } catch(e){}
       }
-      activeCategoryTitle.innerText = `SEARCH: "${query.toUpperCase()}"`;
-      let matchedLinks = [];
-      menuData.forEach(cat => {
-        cat.subs.forEach(sub => {
-          if(sub.name.toLowerCase().includes(query)) matchedLinks.push(sub);
-        });
-      });
-      currentActiveLinks = matchedLinks;
-      navList.querySelectorAll("a").forEach(link => link.classList.remove("active"));
-      renderLinks(currentActiveLinks);
-      showLinksCard();
-    }
-
-    function showContextMenu(e) {
-      e.preventDefault();
-      contextMenu.style.display = "block";
-      contextMenu.style.left = `${e.clientX}px`;
-      contextMenu.style.top = `${e.clientY}px`;
-    }
-
-    function hideContextMenu() { contextMenu.style.display = "none"; }
-
-    function openAllCurrentLinks() {
-      hideContextMenu();
-      currentActiveLinks.forEach(sub => {
-        if (sub.url && sub.url !== "#") window.open(sub.url, '_blank');
-      });
     }
 
     function renderClocks() {
@@ -1184,7 +1234,7 @@
       const dataStore = getTrackerData();
       const dateLabels = getRecentDateLabels();
       const isLight = document.body.classList.contains("light-mode");
-      const textColor = isLight ? '#080c14' : 'rgba(255,255,255,0.75)';
+      const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-main').trim() || (isLight ? '#080c14' : 'rgba(255,255,255,0.75)');
       const gridColor = isLight ? 'rgba(8, 12, 20, 0.1)' : 'rgba(255,255,255,0.08)';
 
       const ctx = document.getElementById("trendChart").getContext("2d");
@@ -1271,9 +1321,7 @@
 
     if (window.ResizeObserver) {
       const resizeObserver = new ResizeObserver(() => {
-        if (trendChartInstance) {
-          trendChartInstance.resize();
-        }
+        if (trendChartInstance) trendChartInstance.resize();
       });
       document.querySelectorAll(".bento-card").forEach(card => resizeObserver.observe(card));
     }
@@ -1290,11 +1338,11 @@
       });
       layout["selected_timezones"] = selectedTimezones;
       layout["mobile_view"] = document.body.classList.contains("mobile-view-active");
-      localStorage.setItem("sbhub_bento_layout_clean_v8", JSON.stringify(layout));
+      localStorage.setItem("sbhub_bento_layout_clean_v9", JSON.stringify(layout));
     }
 
     function restoreBentoLayout() {
-      const saved = localStorage.getItem("sbhub_bento_layout_clean_v8");
+      const saved = localStorage.getItem("sbhub_bento_layout_clean_v9");
       if (saved) {
         try {
           const layout = JSON.parse(saved);
@@ -1322,13 +1370,10 @@
     function checkMobileDevice() {
       const isMobileScreen = window.innerWidth <= 768;
       const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      
       if (isMobileScreen || isMobileUA) {
         document.body.classList.add("mobile-view-active");
         const mobileToggle = document.getElementById("mobileViewToggle");
-        if (mobileToggle) {
-          mobileToggle.checked = true;
-        }
+        if (mobileToggle) mobileToggle.checked = true;
       }
     }
 
@@ -1357,19 +1402,17 @@
       const params = new URLSearchParams(window.location.search);
       const shareableURL = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
       navigator.clipboard.writeText(shareableURL).then(() => {
-        alert("Bento layout & Mobile setting saved & URL copied!");
+        alert("Bento layout & Customizations saved & URL copied!");
       });
     }
 
     checkRememberedSession();
+    restoreCustomizationSettings();
     renderSidebar();
     restoreBentoLayout();
     checkMobileDevice();
     renderClocks();
     initTrendChart();
-    
-    // Auto Select internal category to match screenshot layout on open
-    selectCategory(0);
 
     setInterval(updateClocksTick, 1000);
   </script>
