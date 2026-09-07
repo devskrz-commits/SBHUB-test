@@ -189,14 +189,8 @@
             font-weight: 600;
         }
 
-        .team-manager-group {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--bg-color);
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid var(--border-color);
+        .team-manager-dropdown {
+            position: relative;
         }
 
         .main-layout {
@@ -204,9 +198,10 @@
             gap: 25px;
             align-items: flex-start;
             flex-wrap: wrap;
+            width: 100%;
         }
 
-        .table-container { overflow-x: auto; flex: 2; }
+        .table-container { overflow-x: auto; flex: 2; width: 100%; }
 
         table {
             border-collapse: collapse;
@@ -244,7 +239,6 @@
 
         .custom-dropdown {
             position: relative;
-            width: 100%;
             user-select: none;
         }
 
@@ -275,13 +269,12 @@
             position: absolute;
             top: 100%;
             left: 0;
-            right: 0;
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 4px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.6);
             z-index: 1000;
-            max-height: 220px;
+            max-height: 250px;
             overflow-y: auto;
             margin-top: 2px;
         }
@@ -353,11 +346,12 @@
             border-radius: 8px;
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            min-width: 320px;
+            min-width: 300px;
             flex: 1;
             display: flex;
             flex-direction: column;
             gap: 20px;
+            width: 100%;
         }
 
         .leave-section-title {
@@ -434,12 +428,13 @@
             border-radius: 3px;
         }
 
-        /* Mobile Card View Styles */
+        /* Responsive Mobile Card View Styles */
         #mobile-card-view {
             display: none;
             flex-direction: column;
             gap: 12px;
             width: 100%;
+            max-width: 100%;
         }
         .mobile-day-card {
             background: var(--card-bg);
@@ -449,13 +444,15 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            width: 100%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
         .mobile-card-header {
             font-weight: 700;
             font-size: 14px;
             color: var(--accent-btn);
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 4px;
+            padding-bottom: 6px;
             display: flex;
             justify-content: space-between;
         }
@@ -464,12 +461,19 @@
             justify-content: space-between;
             align-items: center;
             font-size: 13px;
+            padding: 2px 0;
+            gap: 10px;
         }
         .mobile-card-row span:first-child {
             font-weight: 600;
         }
+        .mobile-shift-val {
+            font-weight: 600;
+            text-align: right;
+            word-break: break-word;
+        }
 
-        /* Media Query for Automatic/Responsive Mobile Layout Fitment */
+        /* Mobile View Alignment & Screen Fitment Overrides */
         @media screen and (max-width: 768px) {
             body {
                 padding: 10px;
@@ -484,29 +488,34 @@
             }
             .header-top-controls {
                 justify-content: space-between;
+                width: 100%;
             }
             .controls {
                 flex-direction: column;
                 align-items: stretch;
             }
-            .controls > div, .controls > button, .team-manager-group {
+            .controls > div, .controls > button, .team-manager-dropdown {
                 width: 100%;
+                display: flex;
                 justify-content: space-between;
+                align-items: center;
+            }
+            .controls .btn {
+                width: 100%;
+                justify-content: center;
             }
             .main-layout {
                 flex-direction: column;
+                width: 100%;
             }
             .table-container {
                 width: 100%;
             }
-            #mobile-card-view {
-                display: flex !important;
-            }
-            #standardTableContainer {
-                display: none !important;
+            .leave-section {
+                min-width: 100%;
             }
             #mobileViewToggleBtn {
-                display: none; /* Auto-forced on mobile screens */
+                display: inline-flex !important;
             }
         }
     </style>
@@ -570,14 +579,20 @@
             </select>
         </div>
 
-        <!-- Compact Employee Manager Dropdown & Action -->
-        <div class="team-manager-group">
-            <label for="manage-member-select" style="font-size: 12px;">👥 Member:</label>
-            <select id="manage-member-select" style="font-size: 12px; padding: 4px;">
-                <!-- Populated dynamically -->
-            </select>
-            <button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;" onclick="removeSelectedMember()">🗑️ Delete</button>
-            <button class="btn btn-admin" style="padding: 4px 8px; font-size: 11px;" onclick="addNewMemberPrompt()">➕ Add</button>
+        <!-- Space-Saving Member Manager Dropdown -->
+        <div class="custom-dropdown team-manager-dropdown">
+            <button id="memberDropdownBtn" class="btn btn-secondary" onclick="toggleMemberDropdown(event)">👥 Manage Members ▾</button>
+            <div id="memberDropdownMenu" class="custom-dropdown-menu" style="min-width: 220px; padding: 10px; right: 0; left: auto;">
+                <button class="btn btn-admin" style="width: 100%; margin-bottom: 8px; justify-content: center; font-size: 11px;" onclick="addNewMemberPrompt()">➕ Add New Member</button>
+                <div style="border-top: 1px solid var(--border-color); margin: 8px 0;"></div>
+                <label for="manage-member-select" style="font-size: 11px; font-weight: 700; margin-bottom: 4px; display: block;">Delete Member:</label>
+                <div style="display: flex; gap: 6px;">
+                    <select id="manage-member-select" style="font-size: 11px; padding: 4px; flex: 1; max-width: 130px;">
+                        <!-- Populated dynamically -->
+                    </select>
+                    <button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;" onclick="removeSelectedMember()">🗑️ Delete</button>
+                </div>
+            </div>
         </div>
 
         <button class="btn btn-secondary" onclick="changeMonth(1)">Next ▶</button>
@@ -597,7 +612,7 @@
             </table>
         </div>
 
-        <!-- Mobile View Card Container -->
+        <!-- Mobile View Responsive Card Container -->
         <div id="mobile-card-view"></div>
 
         <div class="leave-section">
@@ -772,6 +787,22 @@
                 alert("✓ View-Only Link copied to clipboard!");
             });
         }
+
+        function toggleMemberDropdown(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('memberDropdownMenu');
+            menu.classList.toggle('show');
+        }
+
+        document.addEventListener('click', function(e) {
+            const memberMenu = document.getElementById('memberDropdownMenu');
+            const memberBtn = document.getElementById('memberDropdownBtn');
+            if (memberMenu && memberMenu.classList.contains('show')) {
+                if (!memberMenu.contains(e.target) && e.target !== memberBtn) {
+                    memberMenu.classList.remove('show');
+                }
+            }
+        });
 
         function toggleMobileView() {
             isMobileViewActive = !isMobileViewActive;
@@ -1148,7 +1179,7 @@
                     const convertedText = formatShiftForTimezone(activeShift) || "Off / Unassigned";
                     const row = document.createElement('div');
                     row.className = 'mobile-card-row';
-                    row.innerHTML = `<span>${member}:</span> <span style="font-weight:600;">${convertedText}</span>`;
+                    row.innerHTML = `<span>${member}:</span> <span class="mobile-shift-val">${convertedText}</span>`;
                     card.appendChild(row);
                 });
                 mobileContainer.appendChild(card);
@@ -1214,7 +1245,6 @@
 
         function buildLeaveTables() {
             leaveDatesBody.innerHTML = '';
-            // Total rows: 10 for VL + 5 for SL = 15 total rows
             for (let rowIdx = 0; rowIdx < 15; rowIdx++) {
                 let tr = document.createElement('tr');
                 let isVL = rowIdx < 10;
@@ -1338,6 +1368,15 @@
             checkViewOnlyMode();
             if (localStorage.getItem('rota_theme') === 'light') {
                 document.body.setAttribute('data-theme', 'light');
+            }
+            if (window.innerWidth <= 768) {
+                isMobileViewActive = true;
+                const toggleBtn = document.getElementById('mobileViewToggleBtn');
+                if (toggleBtn) toggleBtn.innerText = '💻 Desktop View';
+                const standardContainer = document.getElementById('standardTableContainer');
+                const mobileContainer = document.getElementById('mobile-card-view');
+                if (standardContainer) standardContainer.style.display = 'none';
+                if (mobileContainer) mobileContainer.style.display = 'flex';
             }
             setupPresenceSystem();
             renderPHHolidays();
