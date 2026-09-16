@@ -1367,7 +1367,7 @@ function toggleModal() { const modal = document.getElementById("settingsModal");
 function toggleTheme() { const isLight = document.getElementById("modeToggle").checked; if (isLight) document.body.classList.add("light-mode"); else document.body.classList.remove("light-mode"); initTrendChart(); }
 function toggleMobileView() { const mobileToggle = document.getElementById("mobileViewToggle"); if (mobileToggle && mobileToggle.checked) document.body.classList.add("mobile-view-active"); else document.body.classList.remove("mobile-view-active"); setTimeout(() => { if(trendChartInstance) trendChartInstance.resize(); }, 300); }
 
-/* Live Snow Overlay Effect */
+/* Live Interactive Snow & Organic Snowman Engine */
 function initSnowEffect() {
   const canvas = document.getElementById('snowCanvas');
   if (!canvas) return;
@@ -1376,32 +1376,192 @@ function initSnowEffect() {
   let width = (canvas.width = window.innerWidth);
   let height = (canvas.height = window.innerHeight);
 
-  const numFlakes = 60;
+  // --- TIMING CONFIGURATION ---
+  // Set to 60 for real 1-hour cycle, or set to 1 for 1-minute test mode
+  const CYCLE_MINUTES = 60; 
+  const CYCLE_MS = CYCLE_MINUTES * 60 * 1000;
+
+  let cycleStart = Date.now();
+  let snowmanXRatio = 0.25 + Math.random() * 0.5;
+
+  const numFlakes = 65;
   const flakes = Array.from({ length: numFlakes }, () => ({
     x: Math.random() * width,
     y: Math.random() * height,
     r: Math.random() * 3 + 1,
-    d: Math.random() * 1 + 0.5,
-    opacity: Math.random() * 0.7 + 0.3
+    d: Math.random() * 0.7 + 0.3,
+    opacity: Math.random() * 0.7 + 0.3,
+    sway: Math.random() * Math.PI * 2
   }));
 
-  function drawFlakes() {
+  function getNewSnowmanX() {
+    let newRatio;
+    do {
+      newRatio = 0.2 + Math.random() * 0.6;
+    } while (Math.abs(newRatio - snowmanXRatio) < 0.25);
+    return newRatio;
+  }
+
+  function drawSnowman(x, baseY, buildProgress, meltProgress) {
+    if (buildProgress <= 0) return;
+
+    ctx.save();
+    
+    const bottomMaxR = 26;
+    const middleMaxR = 18;
+    const headMaxR = 12;
+
+    const bottomR = Math.min(bottomMaxR, buildProgress * 2.5 * bottomMaxR);
+    const middleR = buildProgress > 0.3 ? Math.min(middleMaxR, (buildProgress - 0.3) * 2.5 * middleMaxR) : 0;
+    const headR = buildProgress > 0.6 ? Math.min(headMaxR, (buildProgress - 0.6) * 2.5 * headMaxR) : 0;
+
+    const meltYOffset = meltProgress * 22;
+    const alpha = Math.max(0, 1 - meltProgress * 0.95);
+
+    ctx.globalAlpha = alpha;
+
+    // 1. Base Puddle / Ground Mound
+    const groundMoundR = Math.max(bottomR * 1.4, 10);
+    ctx.beginPath();
+    ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+    ctx.ellipse(x, baseY + 4, groundMoundR * (1 + meltProgress * 0.8), (bottomR * 0.3) * (1 - meltProgress * 0.5), 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 2. Bottom Snowball
+    if (bottomR > 2) {
+      const bY = baseY - bottomR * 0.7 + meltYOffset * 0.3;
+      ctx.beginPath();
+      ctx.fillStyle = "#ffffff";
+      ctx.arc(x, bY, bottomR * (1 - meltProgress * 0.3), 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // 3. Middle Snowball & Stick Arms
+    if (middleR > 2) {
+      const mY = baseY - bottomR * 1.4 - middleR * 0.7 + meltYOffset * 0.6;
+      ctx.beginPath();
+      ctx.fillStyle = "#f8fafc";
+      ctx.arc(x, mY, middleR * (1 - meltProgress * 0.4), 0, Math.PI * 2);
+      ctx.fill();
+
+      if (buildProgress > 0.45) {
+        const armMelt = meltProgress * 15;
+        ctx.strokeStyle = "#78350f";
+        ctx.lineWidth = 2;
+        // Left arm
+        ctx.beginPath();
+        ctx.moveTo(x - middleR * 0.8, mY);
+        ctx.lineTo(x - middleR - 16, mY - 8 + armMelt);
+        ctx.stroke();
+        // Right arm
+        ctx.beginPath();
+        ctx.moveTo(x + middleR * 0.8, mY);
+        ctx.lineTo(x + middleR + 16, mY - 10 + armMelt);
+        ctx.stroke();
+      }
+    }
+
+    // 4. Head & Face Details
+    if (headR > 2) {
+      const hY = baseY - bottomR * 1.4 - middleR * 1.4 - headR * 0.7 + meltYOffset;
+      ctx.beginPath();
+      ctx.fillStyle = "#ffffff";
+      ctx.arc(x, hY, headR * (1 - meltProgress * 0.5), 0, Math.PI * 2);
+      ctx.fill();
+
+      if (buildProgress > 0.75) {
+        // Coal Eyes
+        ctx.fillStyle = "#0f172a";
+        ctx.beginPath();
+        ctx.arc(x - 4, hY - 2, 1.5, 0, Math.PI * 2);
+        ctx.arc(x + 4, hY - 2, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Drooping Carrot Nose
+        ctx.fillStyle = "#f97316";
+        ctx.beginPath();
+        ctx.moveTo(x, hY + 1);
+        ctx.lineTo(x + 12, hY + 3 + meltProgress * 10);
+        ctx.lineTo(x, hY + 4);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    ctx.restore();
+  }
+
+  function drawGroundDrifts(buildProgress, meltProgress) {
+    const totalAccumulation = Math.max(0, (buildProgress * 16) - (meltProgress * 16));
+    if (totalAccumulation <= 0.5) return;
+
+    ctx.save();
+    ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+    ctx.beginPath();
+    ctx.moveTo(0, height);
+    
+    for (let x = 0; x <= width; x += 40) {
+      const wave = Math.sin(x * 0.01) * 3;
+      const h = height - totalAccumulation - wave;
+      ctx.lineTo(x, h);
+    }
+    
+    ctx.lineTo(width, height);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function render() {
+    const elapsed = (Date.now() - cycleStart) % CYCLE_MS;
+    const progress = elapsed / CYCLE_MS;
+
+    if (elapsed < 50 && progress < 0.01) {
+      snowmanXRatio = getNewSnowmanX();
+    }
+
+    let buildProgress = 0;
+    let meltProgress = 0;
+
+    if (progress < 0.75) {
+      buildProgress = progress / 0.75;
+      meltProgress = 0;
+    } else if (progress < 0.85) {
+      buildProgress = 1.0;
+      meltProgress = 0;
+    } else {
+      buildProgress = 1.0;
+      meltProgress = (progress - 0.85) / 0.15;
+    }
+
     ctx.clearRect(0, 0, width, height);
+
+    // Falling Flakes
     flakes.forEach((f) => {
       ctx.beginPath();
       ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`;
       ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
       ctx.fill();
 
+      f.sway += 0.02;
       f.y += f.d;
-      f.x += Math.sin(f.y / 30) * 0.5;
+      f.x += Math.sin(f.sway) * 0.5;
 
       if (f.y > height) {
         f.y = -10;
         f.x = Math.random() * width;
       }
     });
-    requestAnimationFrame(drawFlakes);
+
+    // Ground Accumulation
+    drawGroundDrifts(buildProgress, meltProgress);
+
+    // Snowman Assembly & Melt
+    const actualSnowmanX = width * snowmanXRatio;
+    const groundY = height - Math.max(0, buildProgress * 16 - meltProgress * 16);
+    drawSnowman(actualSnowmanX, groundY, buildProgress, meltProgress);
+
+    requestAnimationFrame(render);
   }
 
   window.addEventListener('resize', () => {
@@ -1409,7 +1569,7 @@ function initSnowEffect() {
     height = canvas.height = window.innerHeight;
   });
 
-  drawFlakes();
+  render();
 }
 
 restoreBentoLayout(); 
