@@ -1367,7 +1367,7 @@ function toggleModal() { const modal = document.getElementById("settingsModal");
 function toggleTheme() { const isLight = document.getElementById("modeToggle").checked; if (isLight) document.body.classList.add("light-mode"); else document.body.classList.remove("light-mode"); initTrendChart(); }
 function toggleMobileView() { const mobileToggle = document.getElementById("mobileViewToggle"); if (mobileToggle && mobileToggle.checked) document.body.classList.add("mobile-view-active"); else document.body.classList.remove("mobile-view-active"); setTimeout(() => { if(trendChartInstance) trendChartInstance.resize(); }, 300); }
 
-/* Live Interactive Snow & Organic Snowman Engine */
+/* Collision-Based Real Physics Snow & Dynamic Snowman Building Engine */
 function initSnowEffect() {
   const canvas = document.getElementById('snowCanvas');
   if (!canvas) return;
@@ -1376,24 +1376,27 @@ function initSnowEffect() {
   let width = (canvas.width = window.innerWidth);
   let height = (canvas.height = window.innerHeight);
 
-  // Set to 60 for full 1-hour cycle (or 1 for 1-minute test mode)
-  const CYCLE_MINUTES = 60; 
-  const CYCLE_MS = CYCLE_MINUTES * 60 * 1000;
+  const colWidth = 4;
+  let numCols = Math.ceil(width / colWidth);
+  let groundHeights = new Float32Array(numCols).fill(0);
 
-  let cycleStart = Date.now();
   let snowmanXRatio = 0.25 + Math.random() * 0.5;
+  let snowmanVolume = 0;
+  const maxSnowmanVolume = 450;
+  let isMelting = false;
+  let meltTimer = 0;
 
-  const numFlakes = 65;
+  const numFlakes = 80;
   const flakes = Array.from({ length: numFlakes }, () => ({
     x: Math.random() * width,
-    y: Math.random() * height,
-    r: Math.random() * 3 + 1,
-    d: Math.random() * 0.7 + 0.3,
+    y: Math.random() * (height * 0.8),
+    r: Math.random() * 2.5 + 1.5,
+    d: Math.random() * 0.9 + 0.4,
     opacity: Math.random() * 0.7 + 0.3,
     sway: Math.random() * Math.PI * 2
   }));
 
-  function getNewSnowmanX() {
+  function getNewSnowmanXRatio() {
     let newRatio;
     do {
       newRatio = 0.2 + Math.random() * 0.6;
@@ -1401,87 +1404,117 @@ function initSnowEffect() {
     return newRatio;
   }
 
-  function drawSnowman(x, baseY, buildProgress, meltProgress) {
-    if (buildProgress <= 0) return;
+  function handleFlakeCollision(f) {
+    let col = Math.floor(f.x / colWidth);
+    if (col < 0) col = 0;
+    if (col >= numCols) col = numCols - 1;
+
+    let currentGroundY = height - groundHeights[col];
+
+    if (f.y >= currentGroundY) {
+      if (!isMelting) {
+        // Accumulate snow at impact site and spread to adjacent columns
+        if (groundHeights[col] < 50) {
+          groundHeights[col] += 0.6;
+          if (col > 0) groundHeights[col - 1] += 0.3;
+          if (col < numCols - 1) groundHeights[col + 1] += 0.3;
+        }
+
+        // Build snowman if flake lands within its site
+        const snowmanCol = Math.floor((width * snowmanXRatio) / colWidth);
+        if (Math.abs(col - snowmanCol) <= 12) {
+          if (snowmanVolume < maxSnowmanVolume) {
+            snowmanVolume += 0.8;
+          }
+        }
+      }
+
+      // Reset flake to sky
+      f.y = -10;
+      f.x = Math.random() * width;
+    }
+  }
+
+  function drawSnowman(x, baseY, volume, meltRatio) {
+    if (volume <= 0) return;
 
     ctx.save();
     
-    const bottomMaxR = 40;
-    const middleMaxR = 28;
-    const headMaxR = 18;
+    const buildProgress = Math.min(1.0, volume / maxSnowmanVolume);
+    const bottomMaxR = 36;
+    const middleMaxR = 25;
+    const headMaxR = 16;
 
-    const bottomR = Math.min(bottomMaxR, buildProgress * 2.5 * bottomMaxR);
-    const middleR = buildProgress > 0.2 ? Math.min(middleMaxR, (buildProgress - 0.2) * 2.5 * middleMaxR) : 0;
-    const headR = buildProgress > 0.4 ? Math.min(headMaxR, (buildProgress - 0.4) * 2.5 * headMaxR) : 0;
+    const bottomR = Math.min(bottomMaxR, buildProgress * 2.2 * bottomMaxR);
+    const middleR = buildProgress > 0.25 ? Math.min(middleMaxR, (buildProgress - 0.25) * 2.2 * middleMaxR) : 0;
+    const headR = buildProgress > 0.55 ? Math.min(headMaxR, (buildProgress - 0.55) * 2.2 * headMaxR) : 0;
 
-    const meltYOffset = meltProgress * 30;
-    const alpha = Math.max(0, 1 - meltProgress * 0.95);
+    const meltYOffset = meltRatio * 25;
+    ctx.globalAlpha = Math.max(0, 1 - meltRatio * 0.9);
 
-    ctx.globalAlpha = alpha;
-
-    // 1. Base Puddle / Ground Mound
-    const groundMoundR = Math.max(bottomR * 1.4, 15);
+    // Base Mound
+    const moundR = Math.max(bottomR * 1.3, 12);
     ctx.beginPath();
-    ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
-    ctx.ellipse(x, baseY + 4, groundMoundR * (1 + meltProgress * 0.8), (bottomR * 0.3) * (1 - meltProgress * 0.5), 0, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+    ctx.ellipse(x, baseY + 4, moundR * (1 + meltRatio * 0.6), (bottomR * 0.3) * (1 - meltRatio * 0.5), 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // 2. Bottom Snowball
+    // Bottom Sphere
     if (bottomR > 1) {
       const bY = baseY - bottomR * 0.7 + meltYOffset * 0.3;
       ctx.beginPath();
       ctx.fillStyle = "#ffffff";
-      ctx.arc(x, bY, bottomR * (1 - meltProgress * 0.3), 0, Math.PI * 2);
+      ctx.arc(x, bY, bottomR * (1 - meltRatio * 0.3), 0, Math.PI * 2);
       ctx.fill();
     }
 
-    // 3. Middle Snowball & Stick Arms
+    // Middle Sphere & Stick Arms
     if (middleR > 1) {
-      const mY = baseY - bottomR * 1.4 - middleR * 0.7 + meltYOffset * 0.6;
+      const mY = baseY - bottomR * 1.3 - middleR * 0.7 + meltYOffset * 0.6;
       ctx.beginPath();
       ctx.fillStyle = "#f8fafc";
-      ctx.arc(x, mY, middleR * (1 - meltProgress * 0.4), 0, Math.PI * 2);
+      ctx.arc(x, mY, middleR * (1 - meltRatio * 0.4), 0, Math.PI * 2);
       ctx.fill();
 
-      if (buildProgress > 0.35) {
-        const armMelt = meltProgress * 20;
+      if (buildProgress > 0.4) {
+        const armMelt = meltRatio * 18;
         ctx.strokeStyle = "#78350f";
         ctx.lineWidth = 3;
         // Left arm
         ctx.beginPath();
         ctx.moveTo(x - middleR * 0.8, mY);
-        ctx.lineTo(x - middleR - 22, mY - 12 + armMelt);
+        ctx.lineTo(x - middleR - 20, mY - 10 + armMelt);
         ctx.stroke();
         // Right arm
         ctx.beginPath();
         ctx.moveTo(x + middleR * 0.8, mY);
-        ctx.lineTo(x + middleR + 22, mY - 14 + armMelt);
+        ctx.lineTo(x + middleR + 20, mY - 12 + armMelt);
         ctx.stroke();
       }
     }
 
-    // 4. Head & Face Details
+    // Head & Face
     if (headR > 1) {
-      const hY = baseY - bottomR * 1.4 - middleR * 1.4 - headR * 0.7 + meltYOffset;
+      const hY = baseY - bottomR * 1.3 - middleR * 1.3 - headR * 0.7 + meltYOffset;
       ctx.beginPath();
       ctx.fillStyle = "#ffffff";
-      ctx.arc(x, hY, headR * (1 - meltProgress * 0.5), 0, Math.PI * 2);
+      ctx.arc(x, hY, headR * (1 - meltRatio * 0.5), 0, Math.PI * 2);
       ctx.fill();
 
-      if (buildProgress > 0.5) {
-        // Coal Eyes
+      if (buildProgress > 0.7) {
+        // Eyes
         ctx.fillStyle = "#0f172a";
         ctx.beginPath();
-        ctx.arc(x - 6, hY - 3, 2.5, 0, Math.PI * 2);
-        ctx.arc(x + 6, hY - 3, 2.5, 0, Math.PI * 2);
+        ctx.arc(x - 5, hY - 3, 2, 0, Math.PI * 2);
+        ctx.arc(x + 5, hY - 3, 2, 0, Math.PI * 2);
         ctx.fill();
 
-        // Drooping Carrot Nose
+        // Carrot Nose
         ctx.fillStyle = "#f97316";
         ctx.beginPath();
-        ctx.moveTo(x, hY + 1);
-        ctx.lineTo(x + 18, hY + 4 + meltProgress * 15);
-        ctx.lineTo(x, hY + 6);
+        ctx.moveTo(x, hY);
+        ctx.lineTo(x + 16, hY + 3 + meltRatio * 12);
+        ctx.lineTo(x, hY + 5);
         ctx.closePath();
         ctx.fill();
       }
@@ -1490,21 +1523,18 @@ function initSnowEffect() {
     ctx.restore();
   }
 
-  function drawGroundDrifts(buildProgress, meltProgress) {
-    const totalAccumulation = Math.max(0, (buildProgress * 40) - (meltProgress * 40));
-    if (totalAccumulation <= 0.1) return;
-
+  function drawGroundTerrain() {
     ctx.save();
-    ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
     ctx.beginPath();
     ctx.moveTo(0, height);
-    
-    for (let x = 0; x <= width; x += 40) {
-      const wave = Math.sin(x * 0.01) * 6;
-      const h = height - totalAccumulation - wave;
+
+    for (let c = 0; c < numCols; c++) {
+      const x = c * colWidth;
+      const h = height - groundHeights[c];
       ctx.lineTo(x, h);
     }
-    
+
     ctx.lineTo(width, height);
     ctx.closePath();
     ctx.fill();
@@ -1512,30 +1542,38 @@ function initSnowEffect() {
   }
 
   function render() {
-    const elapsed = (Date.now() - cycleStart) % CYCLE_MS;
-    const progress = elapsed / CYCLE_MS;
-
-    if (elapsed < 50 && progress < 0.01) {
-      snowmanXRatio = getNewSnowmanX();
-    }
-
-    let buildProgress = 0;
-    let meltProgress = 0;
-
-    if (progress < 0.75) {
-      buildProgress = progress / 0.75;
-      meltProgress = 0;
-    } else if (progress < 0.85) {
-      buildProgress = 1.0;
-      meltProgress = 0;
-    } else {
-      buildProgress = 1.0;
-      meltProgress = (progress - 0.85) / 0.15;
-    }
-
     ctx.clearRect(0, 0, width, height);
 
-    // Falling Flakes
+    // Check if fully built to trigger hold and eventual melt cycle
+    if (snowmanVolume >= maxSnowmanVolume && !isMelting) {
+      meltTimer += 1;
+      if (meltTimer > 800) { // Holds fully built snowman before melting
+        isMelting = true;
+      }
+    }
+
+    // Melting Process
+    let meltRatio = 0;
+    if (isMelting) {
+      meltTimer += 1;
+      meltRatio = Math.min(1.0, (meltTimer - 800) / 400);
+
+      // Recede ground snow & melt snowman
+      snowmanVolume = Math.max(0, maxSnowmanVolume * (1 - meltRatio));
+      for (let c = 0; c < numCols; c++) {
+        groundHeights[c] *= 0.995;
+      }
+
+      // Once completely melted, relocate to a new position
+      if (meltRatio >= 1.0) {
+        isMelting = false;
+        meltTimer = 0;
+        snowmanVolume = 0;
+        snowmanXRatio = getNewSnowmanXRatio();
+      }
+    }
+
+    // Render Flakes & Collision
     flakes.forEach((f) => {
       ctx.beginPath();
       ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`;
@@ -1544,21 +1582,19 @@ function initSnowEffect() {
 
       f.sway += 0.02;
       f.y += f.d;
-      f.x += Math.sin(f.sway) * 0.5;
+      f.x += Math.sin(f.sway) * 0.4;
 
-      if (f.y > height) {
-        f.y = -10;
-        f.x = Math.random() * width;
-      }
+      handleFlakeCollision(f);
     });
 
-    // Ground Accumulation
-    drawGroundDrifts(buildProgress, meltProgress);
+    // Render Ground Snow
+    drawGroundTerrain();
 
-    // Snowman Assembly & Melt
-    const actualSnowmanX = width * snowmanXRatio;
-    const groundY = height - Math.max(0, buildProgress * 40 - meltProgress * 40);
-    drawSnowman(actualSnowmanX, groundY, buildProgress, meltProgress);
+    // Render Snowman at current position
+    const snowmanX = width * snowmanXRatio;
+    const snowmanCol = Math.floor(snowmanX / colWidth);
+    const groundHeightAtSite = groundHeights[snowmanCol] || 0;
+    drawSnowman(snowmanX, height - groundHeightAtSite, snowmanVolume, meltRatio);
 
     requestAnimationFrame(render);
   }
@@ -1566,6 +1602,8 @@ function initSnowEffect() {
   window.addEventListener('resize', () => {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
+    numCols = Math.ceil(width / colWidth);
+    groundHeights = new Float32Array(numCols).fill(0);
   });
 
   render();
