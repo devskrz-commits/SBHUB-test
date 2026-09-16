@@ -88,7 +88,7 @@ const INACTIVITY_LIMIT = 30 * 60 * 1000;
 let handoverItems = [];
 let isSidebarLocked = localStorage.getItem('sbhub_sidebar_locked') === 'true';
 
-/* Global Navigation State for Top Games Widget (Default 1 = Next Day, range 0..7) */
+/* Global Navigation State for Top Games Widget */
 let selectedGameDayOffset = 1;
 
 function changeGameDayOffset(delta) {
@@ -1303,6 +1303,36 @@ function renderSidebar() {
     item.subs.forEach(sub => subsHtml += `<li><a href="${sub.url}" target="_blank" onclick="closeMobileSidebar()" class="sub-menu-item">${sub.name}</a></li>`);
     li.innerHTML = `<div class="nav-header-btn" onclick="this.parentElement.classList.toggle('expanded')"><i class='bx ${item.icon} nav-icon'></i><span class="nav-item-title">${item.category}</span><i class='bx bx-chevron-down nav-arrow'></i></div><ul class="sub-menu-list">${subsHtml}</ul>`;
     navList.appendChild(li);
+  });
+}
+
+function handleSearch() {
+  const query = document.getElementById("searchInput").value.toLowerCase();
+  const navItems = document.querySelectorAll(".nav-item-group");
+
+  navItems.forEach(group => {
+    const subs = group.querySelectorAll(".sub-menu-item");
+    let matchFound = false;
+
+    subs.forEach(sub => {
+      if (sub.innerText.toLowerCase().includes(query)) {
+        sub.parentElement.style.display = "block";
+        matchFound = true;
+      } else {
+        sub.parentElement.style.display = "none";
+      }
+    });
+
+    if (matchFound) {
+      group.style.display = "block";
+      group.classList.add("expanded");
+    } else if (query === "") {
+      group.style.display = "block";
+      group.classList.remove("expanded");
+      subs.forEach(sub => sub.parentElement.style.display = "block");
+    } else {
+      group.style.display = "none";
+    }
   });
 }
 
