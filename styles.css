@@ -649,7 +649,7 @@ input:checked + .slider:before { transform: translateX(22px); }
 .mobile-nav-bar { display: none; }
 #mobileBackdropOverlay { display: none; }
 
-/* Snow Overlay Styles */
+/* Interactive Snow Layer Canvas */
 #snowCanvas {
   position: fixed;
   top: 0;
