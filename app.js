@@ -1376,8 +1376,7 @@ function initSnowEffect() {
   let width = (canvas.width = window.innerWidth);
   let height = (canvas.height = window.innerHeight);
 
-  // --- TIMING CONFIGURATION ---
-  // Set to 60 for real 1-hour cycle, or set to 1 for 1-minute test mode
+  // Set to 60 for full 1-hour cycle (or 1 for 1-minute test mode)
   const CYCLE_MINUTES = 60; 
   const CYCLE_MS = CYCLE_MINUTES * 60 * 1000;
 
@@ -1407,28 +1406,28 @@ function initSnowEffect() {
 
     ctx.save();
     
-    const bottomMaxR = 26;
-    const middleMaxR = 18;
-    const headMaxR = 12;
+    const bottomMaxR = 40;
+    const middleMaxR = 28;
+    const headMaxR = 18;
 
     const bottomR = Math.min(bottomMaxR, buildProgress * 2.5 * bottomMaxR);
-    const middleR = buildProgress > 0.3 ? Math.min(middleMaxR, (buildProgress - 0.3) * 2.5 * middleMaxR) : 0;
-    const headR = buildProgress > 0.6 ? Math.min(headMaxR, (buildProgress - 0.6) * 2.5 * headMaxR) : 0;
+    const middleR = buildProgress > 0.2 ? Math.min(middleMaxR, (buildProgress - 0.2) * 2.5 * middleMaxR) : 0;
+    const headR = buildProgress > 0.4 ? Math.min(headMaxR, (buildProgress - 0.4) * 2.5 * headMaxR) : 0;
 
-    const meltYOffset = meltProgress * 22;
+    const meltYOffset = meltProgress * 30;
     const alpha = Math.max(0, 1 - meltProgress * 0.95);
 
     ctx.globalAlpha = alpha;
 
     // 1. Base Puddle / Ground Mound
-    const groundMoundR = Math.max(bottomR * 1.4, 10);
+    const groundMoundR = Math.max(bottomR * 1.4, 15);
     ctx.beginPath();
     ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
     ctx.ellipse(x, baseY + 4, groundMoundR * (1 + meltProgress * 0.8), (bottomR * 0.3) * (1 - meltProgress * 0.5), 0, 0, Math.PI * 2);
     ctx.fill();
 
     // 2. Bottom Snowball
-    if (bottomR > 2) {
+    if (bottomR > 1) {
       const bY = baseY - bottomR * 0.7 + meltYOffset * 0.3;
       ctx.beginPath();
       ctx.fillStyle = "#ffffff";
@@ -1437,52 +1436,52 @@ function initSnowEffect() {
     }
 
     // 3. Middle Snowball & Stick Arms
-    if (middleR > 2) {
+    if (middleR > 1) {
       const mY = baseY - bottomR * 1.4 - middleR * 0.7 + meltYOffset * 0.6;
       ctx.beginPath();
       ctx.fillStyle = "#f8fafc";
       ctx.arc(x, mY, middleR * (1 - meltProgress * 0.4), 0, Math.PI * 2);
       ctx.fill();
 
-      if (buildProgress > 0.45) {
-        const armMelt = meltProgress * 15;
+      if (buildProgress > 0.35) {
+        const armMelt = meltProgress * 20;
         ctx.strokeStyle = "#78350f";
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 3;
         // Left arm
         ctx.beginPath();
         ctx.moveTo(x - middleR * 0.8, mY);
-        ctx.lineTo(x - middleR - 16, mY - 8 + armMelt);
+        ctx.lineTo(x - middleR - 22, mY - 12 + armMelt);
         ctx.stroke();
         // Right arm
         ctx.beginPath();
         ctx.moveTo(x + middleR * 0.8, mY);
-        ctx.lineTo(x + middleR + 16, mY - 10 + armMelt);
+        ctx.lineTo(x + middleR + 22, mY - 14 + armMelt);
         ctx.stroke();
       }
     }
 
     // 4. Head & Face Details
-    if (headR > 2) {
+    if (headR > 1) {
       const hY = baseY - bottomR * 1.4 - middleR * 1.4 - headR * 0.7 + meltYOffset;
       ctx.beginPath();
       ctx.fillStyle = "#ffffff";
       ctx.arc(x, hY, headR * (1 - meltProgress * 0.5), 0, Math.PI * 2);
       ctx.fill();
 
-      if (buildProgress > 0.75) {
+      if (buildProgress > 0.5) {
         // Coal Eyes
         ctx.fillStyle = "#0f172a";
         ctx.beginPath();
-        ctx.arc(x - 4, hY - 2, 1.5, 0, Math.PI * 2);
-        ctx.arc(x + 4, hY - 2, 1.5, 0, Math.PI * 2);
+        ctx.arc(x - 6, hY - 3, 2.5, 0, Math.PI * 2);
+        ctx.arc(x + 6, hY - 3, 2.5, 0, Math.PI * 2);
         ctx.fill();
 
         // Drooping Carrot Nose
         ctx.fillStyle = "#f97316";
         ctx.beginPath();
         ctx.moveTo(x, hY + 1);
-        ctx.lineTo(x + 12, hY + 3 + meltProgress * 10);
-        ctx.lineTo(x, hY + 4);
+        ctx.lineTo(x + 18, hY + 4 + meltProgress * 15);
+        ctx.lineTo(x, hY + 6);
         ctx.closePath();
         ctx.fill();
       }
@@ -1492,16 +1491,16 @@ function initSnowEffect() {
   }
 
   function drawGroundDrifts(buildProgress, meltProgress) {
-    const totalAccumulation = Math.max(0, (buildProgress * 16) - (meltProgress * 16));
-    if (totalAccumulation <= 0.5) return;
+    const totalAccumulation = Math.max(0, (buildProgress * 40) - (meltProgress * 40));
+    if (totalAccumulation <= 0.1) return;
 
     ctx.save();
-    ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+    ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
     ctx.beginPath();
     ctx.moveTo(0, height);
     
     for (let x = 0; x <= width; x += 40) {
-      const wave = Math.sin(x * 0.01) * 3;
+      const wave = Math.sin(x * 0.01) * 6;
       const h = height - totalAccumulation - wave;
       ctx.lineTo(x, h);
     }
@@ -1558,7 +1557,7 @@ function initSnowEffect() {
 
     // Snowman Assembly & Melt
     const actualSnowmanX = width * snowmanXRatio;
-    const groundY = height - Math.max(0, buildProgress * 16 - meltProgress * 16);
+    const groundY = height - Math.max(0, buildProgress * 40 - meltProgress * 40);
     drawSnowman(actualSnowmanX, groundY, buildProgress, meltProgress);
 
     requestAnimationFrame(render);
