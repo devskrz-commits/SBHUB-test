@@ -1305,7 +1305,7 @@ function initSnowEffect() {
   let numCols = Math.ceil(width / colWidth);
   let groundHeights = new Float32Array(numCols).fill(0);
 
-  let snowmanXRatio = 0.65;
+  let snowmanXRatio = 0.25 + Math.random() * 0.5;
   let snowmanVolume = 0;
   const maxSnowmanVolume = 450;
   let isMelting = false;
@@ -1412,6 +1412,45 @@ function initSnowEffect() {
     }
   }
 
+  // Organic Lumpy Snowball Renderer with Perturbed Radial Offset
+  function drawLumpySnowball(cx, cy, radius, rotation) {
+    if (radius <= 0) return;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(rotation);
+
+    // Build 12-point irregular packed ice/snow chunk
+    ctx.beginPath();
+    const points = 12;
+    for (let i = 0; i < points; i++) {
+      const angle = (i / points) * Math.PI * 2;
+      const noise = Math.sin(angle * 3) * (radius * 0.08) + Math.cos(angle * 5) * (radius * 0.06);
+      const r = Math.max(2, radius + noise);
+      const px = Math.cos(angle) * r;
+      const py = Math.sin(angle) * r;
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+
+    // 3D Shading
+    const grad = ctx.createRadialGradient(-radius * 0.3, -radius * 0.3, radius * 0.1, 0, 0, radius * 1.1);
+    grad.addColorStop(0, "#ffffff");
+    grad.addColorStop(0.65, "#f1f5f9");
+    grad.addColorStop(0.85, "#cbd5e1");
+    grad.addColorStop(1, "#94a3b8");
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Frost Surface Lumps
+    ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+    ctx.beginPath();
+    ctx.arc(-radius * 0.2, -radius * 0.2, radius * 0.35, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+
   function drawSnowman(x, baseY, volume, meltRatio) {
     if (volume <= 0) return;
     ctx.save();
@@ -1423,41 +1462,46 @@ function initSnowEffect() {
     const meltYOffset = meltRatio * 25;
     ctx.globalAlpha = Math.max(0, 1 - meltRatio * 0.9);
 
-    function draw3DSphere(cx, cy, radius) {
-      const grad = ctx.createRadialGradient(cx - radius * 0.3, cy - radius * 0.3, radius * 0.1, cx, cy, radius);
-      grad.addColorStop(0, "#ffffff"); grad.addColorStop(0.65, "#f1f5f9"); grad.addColorStop(1, "#94a3b8");
-      ctx.beginPath(); ctx.fillStyle = grad; ctx.arc(cx, cy, radius, 0, Math.PI * 2); ctx.fill();
+    // Snow Puddle on Floor when Melting
+    if (meltRatio > 0.1) {
+      ctx.fillStyle = "rgba(241, 245, 249, 0.85)";
+      ctx.beginPath();
+      ctx.ellipse(x, baseY + 2, (bottomR + 15) * meltRatio, 4 * meltRatio, 0, 0, Math.PI * 2);
+      ctx.fill();
     }
 
-    if (bottomR > 1) draw3DSphere(x, baseY - bottomR * 0.7 + meltYOffset * 0.3, bottomR);
+    if (bottomR > 1) {
+      drawLumpySnowball(x, baseY - bottomR * 0.7 + meltYOffset * 0.3, bottomR * (1 - meltRatio * 0.2), meltRatio);
+    }
     if (middleR > 1) {
       const mY = baseY - bottomR * 1.3 - middleR * 0.7 + meltYOffset * 0.6;
-      draw3DSphere(x, mY, middleR);
+      drawLumpySnowball(x, mY, middleR * (1 - meltRatio * 0.3), -meltRatio * 2);
       if (hasDecorations) {
         ctx.strokeStyle = "#582f0e"; ctx.lineWidth = 3.5; ctx.lineCap = "round";
-        ctx.beginPath(); ctx.moveTo(x - middleR * 0.8, mY); ctx.lineTo(x - middleR - 22, mY - 12); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(x + middleR * 0.8, mY); ctx.lineTo(x + middleR + 22, mY - 14); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x - middleR * 0.8, mY); ctx.lineTo(x - middleR - 22, mY - 12 + meltRatio * 15); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x + middleR * 0.8, mY); ctx.lineTo(x + middleR + 22, mY - 14 + meltRatio * 15); ctx.stroke();
       }
     }
     if (headR > 1) {
       const hY = baseY - bottomR * 1.3 - middleR * 1.3 - headR * 0.7 + meltYOffset;
-      draw3DSphere(x, hY, headR);
+      drawLumpySnowball(x, hY, headR * (1 - meltRatio * 0.4), meltRatio * 1.5);
       if (buildProgress > 0.4) {
         ctx.fillStyle = "#0f172a"; ctx.beginPath();
         ctx.arc(x - 5, hY - 3, 2, 0, Math.PI * 2); ctx.arc(x + 5, hY - 3, 2, 0, Math.PI * 2); ctx.fill();
       }
       if (hasDecorations) {
         ctx.fillStyle = "#ea580c"; ctx.beginPath();
-        ctx.moveTo(x, hY); ctx.lineTo(x + 18, hY + 3); ctx.lineTo(x, hY + 5); ctx.closePath(); ctx.fill();
+        ctx.moveTo(x, hY); ctx.lineTo(x + 18, hY + 3 + meltRatio * 10); ctx.lineTo(x, hY + 5); ctx.closePath(); ctx.fill();
       }
     }
     ctx.restore();
   }
 
-  // Cartoon Girl Character Render Engine (Faithful Recreation of image_44cfc8.png)
+  // Cartoon Girl Character Render Engine (Detailed Profile View)
   function drawGirl(x, y, state, frame, facingRight = true, ballRadius = 0) {
     ctx.save();
-    ctx.translate(x, y);
+    // Feet submerged 6px into the snow line
+    ctx.translate(x, y + 6);
     ctx.scale(1.2, 1.2);
     if (!facingRight) ctx.scale(-1, 1);
 
@@ -1468,10 +1512,10 @@ function initSnowEffect() {
 
     ctx.translate(0, -bounce);
 
-    // Floor Shadow
-    ctx.fillStyle = "rgba(15, 23, 42, 0.3)";
+    // Floor Submerged Shadow
+    ctx.fillStyle = "rgba(15, 23, 42, 0.35)";
     ctx.beginPath();
-    ctx.ellipse(0, 2, 14, 4.5, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 0, 14, 4, 0, 0, Math.PI * 2);
     ctx.fill();
 
     const isCrawling = (state === 'ROLL_SNOW' && ballRadius < 10);
@@ -1525,15 +1569,14 @@ function initSnowEffect() {
       ctx.beginPath(); ctx.moveTo(4, -24); ctx.lineTo(14, -12); ctx.stroke();
       ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.5; ctx.stroke();
 
-      // Rolling Snowball
+      // Lumpy Crawling Snowball
       if (ballRadius > 0) {
         let bx = 14 + ballRadius; let by = -ballRadius + 2;
-        ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#cbd5e1"; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.arc(bx, by, ballRadius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        drawLumpySnowball(bx, by, ballRadius, frame * 0.1);
       }
 
     } else {
-      // Standing Cartoon Girl Pose (Matches image_44cfc8.png)
+      // Standing Cartoon Girl Stance
       ctx.strokeStyle = "#000000";
       ctx.lineWidth = 1.8;
 
@@ -1558,7 +1601,7 @@ function initSnowEffect() {
       ctx.beginPath(); ctx.arc(11, -38, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       ctx.beginPath(); ctx.ellipse(0, -36, 7, 5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      // Purple Pinafore Dress with Scalloped Bottom
+      // Purple Pinafore Dress
       ctx.fillStyle = "#9333ea";
       ctx.beginPath();
       ctx.moveTo(-6, -38);
@@ -1609,7 +1652,7 @@ function initSnowEffect() {
       ctx.beginPath(); ctx.arc(-13, -52, 3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       ctx.beginPath(); ctx.arc(13, -52, 3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      // Blonde Hair (Top & Flipped Ends)
+      // Blonde Hair
       ctx.fillStyle = "#fde047";
       ctx.beginPath();
       ctx.arc(0, -55, 16, Math.PI * 0.85, Math.PI * 0.15, true);
@@ -1652,8 +1695,7 @@ function initSnowEffect() {
 
         if (ballRadius > 0) {
           let bx = 12 + ballRadius; let by = -ballRadius + 2;
-          ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#cbd5e1"; ctx.lineWidth = 1.8;
-          ctx.beginPath(); ctx.arc(bx, by, ballRadius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+          drawLumpySnowball(bx, by, ballRadius, frame * 0.08);
         }
       } else {
         ctx.strokeStyle = "#ffe4d6"; ctx.lineWidth = 3.8;
@@ -1807,7 +1849,8 @@ function initSnowEffect() {
       if (meltRatio >= 1.0) {
         isMelting = false; meltTimer = 0; snowmanVolume = 0;
         hasDecorations = false; girl.state = 'ROLL_SNOW'; girl.x = 60;
-        snowmanXRatio = 0.65; saveSnowState();
+        snowmanXRatio = 0.2 + Math.random() * 0.6; // Pick new dynamic location!
+        saveSnowState();
       }
     }
 
