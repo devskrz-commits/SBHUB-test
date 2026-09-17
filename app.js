@@ -29,7 +29,7 @@ window.toggleLamp = function(event) {
   const cordEl = document.getElementById("pullCord");
   if (cordEl) {
     cordEl.classList.remove("bouncing");
-    void cordEl.offsetWidth; // Force CSS reflow to re-trigger spring animation
+    void cordEl.offsetWidth; // Force CSS reflow
     cordEl.classList.add("bouncing");
   }
 
@@ -1305,7 +1305,7 @@ function initSnowEffect() {
   let numCols = Math.ceil(width / colWidth);
   let groundHeights = new Float32Array(numCols).fill(0);
 
-  let snowmanXRatio = 0.65; // Fixed site near right side for clear view
+  let snowmanXRatio = 0.65;
   let snowmanVolume = 0;
   const maxSnowmanVolume = 450;
   let isMelting = false;
@@ -1318,7 +1318,11 @@ function initSnowEffect() {
       try {
         const data = JSON.parse(saved);
         if (data.groundHeights && Array.isArray(data.groundHeights)) {
-          for (let i = 0; i < numCols; i++) groundHeights[i] = data.groundHeights[i] || 0;
+          const oldArr = data.groundHeights;
+          for (let i = 0; i < numCols; i++) {
+            const srcIdx = Math.floor((i / numCols) * oldArr.length);
+            groundHeights[i] = oldArr[srcIdx] || 0;
+          }
         }
         if (typeof data.snowmanVolume === 'number') snowmanVolume = data.snowmanVolume;
         if (typeof data.snowmanXRatio === 'number') snowmanXRatio = data.snowmanXRatio;
@@ -1358,7 +1362,18 @@ function initSnowEffect() {
     swaySpeed: Math.random() * 0.02 + 0.01
   }));
 
-  const girl = { x: 80, targetX: 80, state: 'ROLL_SNOW', prevState: 'ROLL_SNOW', timer: 0, frame: 0, speed: 1.8, facingRight: true, snowBallRadius: 2 };
+  const girl = { 
+    x: 80, 
+    targetX: 80, 
+    minRollX: width * 0.2, 
+    state: 'ROLL_SNOW', 
+    prevState: 'ROLL_SNOW', 
+    timer: 0, 
+    frame: 0, 
+    speed: 0.85, 
+    facingRight: true, 
+    snowBallRadius: 3 
+  };
 
   function handleFlakeCollision(f) {
     let col = Math.floor(f.x / colWidth);
@@ -1417,79 +1432,117 @@ function initSnowEffect() {
     ctx.restore();
   }
 
-  function drawGirl(x, y, state, frame, facingRight = true) {
-    ctx.save(); ctx.translate(x, y);
-    ctx.scale(1.3, 1.3); // Scale up girl slightly for enhanced visibility
+  function drawGirl(x, y, state, frame, facingRight = true, ballRadius = 0) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(1.25, 1.25);
+    
+    const isWalking = (state === 'ROLL_SNOW' || state === 'FETCH_ITEMS' || state === 'ROAMING');
+    const bounce = isWalking ? Math.abs(Math.sin(frame * 0.18)) * 2.5 : 0;
+    const legAngle = isWalking ? Math.sin(frame * 0.18) * 0.4 : 0;
+    
+    ctx.translate(0, -bounce);
     if (!facingRight) ctx.scale(-1, 1);
 
-    const isWalking = (state === 'ROAMING' || state === 'ROLL_SNOW' || state === 'FETCH_ITEMS');
-    const legSwing = isWalking ? Math.sin(frame * 0.28) * 8 : 0;
-    const armSwing = isWalking ? Math.sin(frame * 0.28) * 10 : 0;
+    // Floor Shadow
+    const shadowGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, 16);
+    shadowGrad.addColorStop(0, "rgba(15, 23, 42, 0.4)");
+    shadowGrad.addColorStop(1, "rgba(15, 23, 42, 0)");
+    ctx.fillStyle = shadowGrad;
+    ctx.beginPath(); ctx.ellipse(0, 2, 16, 5, 0, 0, Math.PI * 2); ctx.fill();
 
-    // Shadow
-    ctx.fillStyle = "rgba(15, 23, 42, 0.35)";
-    ctx.beginPath(); ctx.ellipse(0, 0, 14, 4.5, 0, 0, Math.PI * 2); ctx.fill();
+    // 3D Legs & Shoes
+    const legGrad = ctx.createLinearGradient(0, -22, 0, 0);
+    legGrad.addColorStop(0, "#ffedd5"); legGrad.addColorStop(1, "#fed7aa");
 
-    // Legs & Purple Shoes
-    ctx.strokeStyle = "#fed7aa"; ctx.lineWidth = 4; ctx.lineCap = "round";
-    ctx.beginPath(); ctx.moveTo(-3, -22); ctx.lineTo(-3 - legSwing, -4); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(3, -22); ctx.lineTo(3 + legSwing, -4); ctx.stroke();
+    // Left Leg
+    ctx.save(); ctx.translate(-4, -22); ctx.rotate(-legAngle);
+    ctx.fillStyle = legGrad; ctx.beginPath(); ctx.fillRect(-2.5, 0, 5, 20); ctx.fill();
+    ctx.fillStyle = "#7e22ce"; ctx.beginPath(); ctx.arc(0, 18, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
 
-    ctx.fillStyle = "#7e22ce";
-    ctx.beginPath(); ctx.arc(-3 - legSwing, -2, 4, 0, Math.PI * 2); ctx.arc(3 + legSwing, -2, 4, 0, Math.PI * 2); ctx.fill();
+    // Right Leg
+    ctx.save(); ctx.translate(4, -22); ctx.rotate(legAngle);
+    ctx.fillStyle = legGrad; ctx.beginPath(); ctx.fillRect(-2.5, 0, 5, 20); ctx.fill();
+    ctx.fillStyle = "#7e22ce"; ctx.beginPath(); ctx.arc(0, 18, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
 
-    // Purple Dress with Daisy
-    ctx.fillStyle = "#a855f7";
-    ctx.beginPath(); ctx.moveTo(0, -42); ctx.lineTo(-14, -20); ctx.quadraticCurveTo(0, -16, 14, -20); ctx.closePath(); ctx.fill();
+    // 3D Purple Dress with Folds
+    const dressGrad = ctx.createLinearGradient(-15, -45, 15, -20);
+    dressGrad.addColorStop(0, "#c084fc");
+    dressGrad.addColorStop(0.5, "#a855f7");
+    dressGrad.addColorStop(1, "#7e22ce");
+    ctx.fillStyle = dressGrad;
+    ctx.beginPath();
+    ctx.moveTo(-6, -42); ctx.lineTo(-15, -20); ctx.quadraticCurveTo(0, -16, 15, -20); ctx.lineTo(6, -42);
+    ctx.closePath(); ctx.fill();
 
-    // White Daisy
+    // Daisy Ornament
     ctx.fillStyle = "#ffffff";
     for (let i = 0; i < 5; i++) {
-      const angle = (i * Math.PI * 2) / 5;
-      ctx.beginPath(); ctx.arc(Math.cos(angle) * 3, -29 + Math.sin(angle) * 3, 2, 0, Math.PI * 2); ctx.fill();
+      const a = (i * Math.PI * 2) / 5;
+      ctx.beginPath(); ctx.arc(Math.cos(a) * 3, -29 + Math.sin(a) * 3, 2, 0, Math.PI * 2); ctx.fill();
     }
-    ctx.fillStyle = "#f59e0b"; ctx.beginPath(); ctx.arc(0, -29, 2, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#fbbf24"; ctx.beginPath(); ctx.arc(0, -29, 2.2, 0, Math.PI * 2); ctx.fill();
 
-    // Head, Face & Blonde Hair
-    ctx.fillStyle = "#fed7aa"; ctx.fillRect(-2, -46, 4, 6);
-    ctx.beginPath(); ctx.arc(0, -54, 12, 0, Math.PI * 2); ctx.fill();
+    // Head, Face & Hair
+    ctx.fillStyle = "#fed7aa"; ctx.fillRect(-2.5, -46, 5, 6);
 
-    ctx.fillStyle = "#0f172a";
-    ctx.beginPath(); ctx.arc(4, -56, 1.8, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = "#9a3412"; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.arc(4, -52, 3.2, 0.1, Math.PI - 0.2); ctx.stroke();
+    const headGrad = ctx.createRadialGradient(-2, -56, 2, 0, -53, 14);
+    headGrad.addColorStop(0, "#fff7ed"); headGrad.addColorStop(0.7, "#fed7aa"); headGrad.addColorStop(1, "#fdba74");
+    ctx.fillStyle = headGrad;
+    ctx.beginPath(); ctx.arc(0, -53, 12.5, 0, Math.PI * 2); ctx.fill();
 
-    ctx.fillStyle = "#facc15";
-    ctx.beginPath(); ctx.arc(-2, -54, 15, Math.PI * 0.5, Math.PI * 1.8); ctx.fill();
-    ctx.beginPath(); ctx.arc(3, -60, 9, 0, Math.PI); ctx.fill();
+    // Cheek Blush & Eye Expression
+    ctx.fillStyle = "rgba(244, 63, 94, 0.35)"; ctx.beginPath(); ctx.arc(5, -50, 3, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#0f172a"; ctx.beginPath(); ctx.arc(5, -55, 2, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(5.7, -56, 0.8, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#9a3412"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(4, -50, 3, 0.2, Math.PI - 0.3); ctx.stroke();
 
-    ctx.strokeStyle = "#ec4899"; ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.arc(0, -56, 13, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
+    // 3D Blonde Hair
+    const hairGrad = ctx.createLinearGradient(-15, -70, 15, -40);
+    hairGrad.addColorStop(0, "#fef08a"); hairGrad.addColorStop(0.5, "#facc15"); hairGrad.addColorStop(1, "#eab308");
+    ctx.fillStyle = hairGrad;
+    ctx.beginPath(); ctx.arc(-2, -54, 15.5, Math.PI * 0.45, Math.PI * 1.8); ctx.fill();
+    ctx.beginPath(); ctx.arc(3, -61, 9.5, 0, Math.PI); ctx.fill();
 
-    // Arms / Waving / Pushing
-    ctx.strokeStyle = "#fed7aa"; ctx.lineWidth = 3.5;
+    // Pink Headband
+    ctx.strokeStyle = "#ec4899"; ctx.lineWidth = 3.5;
+    ctx.beginPath(); ctx.arc(0, -55, 13.5, Math.PI * 1.05, Math.PI * 1.95); ctx.stroke();
+
+    // Arms & Rolling Snowball Physics
+    ctx.strokeStyle = "#fed7aa"; ctx.lineWidth = 3.5; ctx.lineCap = "round";
+
     if (state === 'WAVING') {
-      ctx.beginPath(); ctx.moveTo(-6, -40); ctx.lineTo(-10, -28); ctx.stroke();
-      const waveAngle = Math.sin(frame * 0.35) * 0.5;
-      ctx.beginPath(); ctx.moveTo(6, -40); ctx.lineTo(14 + waveAngle * 10, -58 + Math.cos(waveAngle) * 5); ctx.stroke();
-      ctx.fillStyle = "#fed7aa"; ctx.beginPath(); ctx.arc(14 + waveAngle * 10, -58 + Math.cos(waveAngle) * 5, 2.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(-5, -38); ctx.lineTo(-9, -26); ctx.stroke();
+      const wave = Math.sin(frame * 0.3) * 6;
+      ctx.beginPath(); ctx.moveTo(5, -38); ctx.lineTo(15 + wave, -56); ctx.stroke();
+      ctx.fillStyle = "#fed7aa"; ctx.beginPath(); ctx.arc(15 + wave, -56, 2.5, 0, Math.PI * 2); ctx.fill();
     } else if (state === 'ROLL_SNOW') {
-      ctx.beginPath(); ctx.moveTo(2, -38); ctx.lineTo(14, -28); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(-2, -38); ctx.lineTo(12, -24); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(2, -36); ctx.lineTo(12, -26); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-2, -36); ctx.lineTo(10, -22); ctx.stroke();
 
-      const sR = Math.min(18, 6 + girl.snowBallRadius);
-      const grad = ctx.createRadialGradient(18 + sR, -sR + 4, 2, 18 + sR, -sR + 4, sR);
-      grad.addColorStop(0, "#ffffff"); grad.addColorStop(0.8, "#cbd5e1");
-      ctx.fillStyle = grad;
-      ctx.beginPath(); ctx.arc(18 + sR, -sR + 4, sR, 0, Math.PI * 2); ctx.fill();
+      // Expanding 3D Snowball
+      if (ballRadius > 0) {
+        const bx = 12 + ballRadius;
+        const by = -ballRadius + 2;
+
+        const bShadow = ctx.createRadialGradient(bx, 2, 1, bx, 2, ballRadius);
+        bShadow.addColorStop(0, "rgba(15, 23, 42, 0.4)"); bShadow.addColorStop(1, "rgba(15, 23, 42, 0)");
+        ctx.fillStyle = bShadow; ctx.beginPath(); ctx.ellipse(bx, 2, ballRadius, ballRadius * 0.3, 0, 0, Math.PI * 2); ctx.fill();
+
+        const ballGrad = ctx.createRadialGradient(bx - ballRadius * 0.3, by - ballRadius * 0.3, ballRadius * 0.1, bx, by, ballRadius);
+        ballGrad.addColorStop(0, "#ffffff"); ballGrad.addColorStop(0.7, "#f1f5f9"); ballGrad.addColorStop(1, "#cbd5e1");
+        ctx.fillStyle = ballGrad; ctx.beginPath(); ctx.arc(bx, by, ballRadius, 0, Math.PI * 2); ctx.fill();
+      }
     } else if (state === 'FETCH_ITEMS') {
-      ctx.beginPath(); ctx.moveTo(-4, -40); ctx.lineTo(-4 - armSwing, -28); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(4, -40); ctx.lineTo(12, -32); ctx.stroke();
-      ctx.fillStyle = "#f97316"; ctx.fillRect(12, -35, 6, 3);
-      ctx.strokeStyle = "#582f0e"; ctx.beginPath(); ctx.moveTo(14, -32); ctx.lineTo(18, -38); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-4, -38); ctx.lineTo(-4, -26); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(4, -38); ctx.lineTo(12, -30); ctx.stroke();
+      ctx.fillStyle = "#f97316"; ctx.fillRect(12, -33, 7, 3);
+      ctx.strokeStyle = "#582f0e"; ctx.beginPath(); ctx.moveTo(14, -30); ctx.lineTo(18, -36); ctx.stroke();
     } else {
-      ctx.beginPath(); ctx.moveTo(-4, -40); ctx.lineTo(-4 - armSwing, -28); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(4, -40); ctx.lineTo(4 + armSwing, -28); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-4, -38); ctx.lineTo(-4, -26); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(4, -38); ctx.lineTo(4, -26); ctx.stroke();
     }
 
     ctx.restore();
@@ -1498,8 +1551,9 @@ function initSnowEffect() {
   function updateGirl(snowmanX) {
     girl.frame++;
     const siteX = snowmanX - 45;
+    const minX = Math.max(60, width * 0.2);
 
-    // React to Mouse Movement with Waving
+    // Mouse Waving Reactivity
     if (isMouseActive && girl.state !== 'WAVING') {
       girl.prevState = girl.state;
       girl.state = 'WAVING';
@@ -1515,30 +1569,40 @@ function initSnowEffect() {
       return;
     }
 
-    // Snowman Building Process
+    // Vice-Versa Snowball Rolling Logic
     if (snowmanVolume < maxSnowmanVolume) {
       if (girl.state === 'ROAMING' || girl.state === 'ADMIRING') {
-        girl.state = 'ROLL_SNOW'; girl.x = 60; girl.snowBallRadius = 2;
+        girl.state = 'ROLL_SNOW'; girl.x = minX; girl.facingRight = true; girl.snowBallRadius = 3;
       }
 
       if (girl.state === 'ROLL_SNOW') {
-        girl.facingRight = true;
-        girl.snowBallRadius += 0.08;
-        if (girl.x < siteX) {
-          girl.x += girl.speed * 1.2;
-        } else {
-          snowmanVolume = Math.min(maxSnowmanVolume, snowmanVolume + 60);
-          saveSnowState();
-          girl.x = 60; girl.snowBallRadius = 2;
+        const moveDir = girl.facingRight ? girl.speed : -girl.speed;
+        girl.x += moveDir;
 
-          if (snowmanVolume >= maxSnowmanVolume && !hasDecorations) {
-            girl.state = 'FETCH_ITEMS'; girl.x = 30;
+        // Continuously expand snowball size while rolling back and forth
+        if (girl.snowBallRadius < 20) {
+          girl.snowBallRadius += 0.04;
+        }
+
+        // Reached Snowman Construction Site -> Deposit Snow
+        if (girl.facingRight && girl.x >= siteX) {
+          snowmanVolume = Math.min(maxSnowmanVolume, snowmanVolume + 65);
+          saveSnowState();
+          
+          if (snowmanVolume < maxSnowmanVolume) {
+            girl.facingRight = false; // Turn around to roll back!
+          } else {
+            girl.state = 'FETCH_ITEMS'; girl.x = 40;
           }
+        } 
+        // Reached Left Bounds -> Turn around to roll forward!
+        else if (!girl.facingRight && girl.x <= minX) {
+          girl.facingRight = true;
         }
       }
     } else if (!hasDecorations) {
       if (girl.state !== 'FETCH_ITEMS' && girl.state !== 'DECORATING') {
-        girl.state = 'FETCH_ITEMS'; girl.x = 30;
+        girl.state = 'FETCH_ITEMS'; girl.x = 40;
       }
 
       if (girl.state === 'FETCH_ITEMS') {
@@ -1569,7 +1633,7 @@ function initSnowEffect() {
       if (girl.state === 'ROAMING') {
         if (Math.abs(girl.x - girl.targetX) > 6) {
           girl.facingRight = (girl.targetX > girl.x);
-          girl.x += girl.facingRight ? girl.speed * 0.9 : -girl.speed * 0.9;
+          girl.x += girl.facingRight ? girl.speed * 0.8 : -girl.speed * 0.8;
         } else {
           girl.timer++;
           if (girl.timer > 100) {
@@ -1626,7 +1690,7 @@ function initSnowEffect() {
       }
     }
 
-    // Render Continuous Falling Flakes
+    // Render Flakes
     flakes.forEach((f) => {
       ctx.beginPath(); ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`;
       ctx.arc(f.x, f.y, f.r * f.z, 0, Math.PI * 2); ctx.fill();
@@ -1648,7 +1712,7 @@ function initSnowEffect() {
     updateGirl(snowmanX);
     const girlCol = Math.floor(Math.max(0, girl.x) / colWidth);
     const girlGroundY = height - (groundHeights[girlCol] || 0) - 15;
-    drawGirl(girl.x, girlGroundY, girl.state, girl.frame, girl.facingRight);
+    drawGirl(girl.x, girlGroundY, girl.state, girl.frame, girl.facingRight, girl.snowBallRadius);
 
     requestAnimationFrame(render);
   }
