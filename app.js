@@ -1,4 +1,4 @@
-/* Collision-Based Real Physics Snow & Dynamic Snowman Building Engine with Persistence & Animated Girl */
+/* Collision-Based Real Physics 3D Snow & Dynamic Snowman Engine */
 function initSnowEffect() {
   const canvas = document.getElementById('snowCanvas');
   if (!canvas) return;
@@ -18,7 +18,7 @@ function initSnowEffect() {
   let meltTimer = 0;
   let hasDecorations = false;
 
-  // 1. Persistence Engine: Load Saved Snow Data
+  // Persistence Engine
   function loadSnowState() {
     const saved = localStorage.getItem('sbhub_snow_data');
     if (saved) {
@@ -53,20 +53,23 @@ function initSnowEffect() {
   loadSnowState();
   window.addEventListener('beforeunload', saveSnowState);
 
-  const numFlakes = 80;
+  // 3D Parallax Snowflake Generation
+  const numFlakes = 110;
   const flakes = Array.from({ length: numFlakes }, () => ({
     x: Math.random() * width,
     y: Math.random() * (height * 0.8),
-    r: Math.random() * 2.5 + 1.5,
-    d: Math.random() * 0.9 + 0.4,
-    opacity: Math.random() * 0.7 + 0.3,
-    sway: Math.random() * Math.PI * 2
+    r: Math.random() * 2.5 + 1.2,
+    z: Math.random() * 0.9 + 0.3, // Depth multiplier
+    d: Math.random() * 0.8 + 0.4,
+    opacity: Math.random() * 0.6 + 0.4,
+    sway: Math.random() * Math.PI * 2,
+    swaySpeed: Math.random() * 0.02 + 0.01
   }));
 
   // Girl Character State Engine
   const girl = {
     x: -50,
-    state: 'IDLE', // IDLE, WALKING_TO, DECORATING, WAVING, WALKING_BACK, DONE
+    state: 'IDLE',
     timer: 0,
     frame: 0,
     speed: 1.2
@@ -89,16 +92,16 @@ function initSnowEffect() {
 
     if (f.y >= currentGroundY) {
       if (!isMelting) {
-        if (groundHeights[col] < 50) {
-          groundHeights[col] += 0.6;
-          if (col > 0) groundHeights[col - 1] += 0.3;
-          if (col < numCols - 1) groundHeights[col + 1] += 0.3;
+        if (groundHeights[col] < 55) {
+          groundHeights[col] += 0.5 * f.z;
+          if (col > 0) groundHeights[col - 1] += 0.25 * f.z;
+          if (col < numCols - 1) groundHeights[col + 1] += 0.25 * f.z;
         }
 
         const snowmanCol = Math.floor((width * snowmanXRatio) / colWidth);
         if (Math.abs(col - snowmanCol) <= 12) {
           if (snowmanVolume < maxSnowmanVolume) {
-            snowmanVolume += 0.8;
+            snowmanVolume += 0.8 * f.z;
           }
         }
       }
@@ -108,6 +111,7 @@ function initSnowEffect() {
     }
   }
 
+  // Render 3D Snowman with Depth Shading
   function drawSnowman(x, baseY, volume, meltRatio) {
     if (volume <= 0) return;
 
@@ -125,52 +129,63 @@ function initSnowEffect() {
     const meltYOffset = meltRatio * 25;
     ctx.globalAlpha = Math.max(0, 1 - meltRatio * 0.9);
 
-    // Base Mound
+    // Base Mound Shadow
     const moundR = Math.max(bottomR * 1.3, 12);
+    const moundGrad = ctx.createRadialGradient(x, baseY + 4, 2, x, baseY + 4, moundR);
+    moundGrad.addColorStop(0, "rgba(255, 255, 255, 0.95)");
+    moundGrad.addColorStop(0.7, "rgba(226, 232, 240, 0.9)");
+    moundGrad.addColorStop(1, "rgba(148, 163, 184, 0)");
+    
     ctx.beginPath();
-    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-    ctx.ellipse(x, baseY + 4, moundR * (1 + meltRatio * 0.6), (bottomR * 0.3) * (1 - meltRatio * 0.5), 0, 0, Math.PI * 2);
+    ctx.fillStyle = moundGrad;
+    ctx.ellipse(x, baseY + 4, moundR * (1 + meltRatio * 0.6), (bottomR * 0.35) * (1 - meltRatio * 0.5), 0, 0, Math.PI * 2);
     ctx.fill();
+
+    // Helper for 3D Sphere Shading
+    function draw3DSphere(cx, cy, radius, scaleY = 1) {
+      const grad = ctx.createRadialGradient(cx - radius * 0.3, cy - radius * 0.3, radius * 0.1, cx, cy, radius);
+      grad.addColorStop(0, "#ffffff");
+      grad.addColorStop(0.65, "#f1f5f9");
+      grad.addColorStop(0.9, "#cbd5e1");
+      grad.addColorStop(1, "#94a3b8");
+
+      ctx.beginPath();
+      ctx.fillStyle = grad;
+      ctx.arc(cx, cy, radius * scaleY, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
     // Bottom Sphere
     if (bottomR > 1) {
       const bY = baseY - bottomR * 0.7 + meltYOffset * 0.3;
-      ctx.beginPath();
-      ctx.fillStyle = "#ffffff";
-      ctx.arc(x, bY, bottomR * (1 - meltRatio * 0.3), 0, Math.PI * 2);
-      ctx.fill();
+      draw3DSphere(x, bY, bottomR, (1 - meltRatio * 0.3));
     }
 
-    // Middle Sphere & Stick Arms (Rendered only after Girl decorates)
+    // Middle Sphere & Arms
     if (middleR > 1) {
       const mY = baseY - bottomR * 1.3 - middleR * 0.7 + meltYOffset * 0.6;
-      ctx.beginPath();
-      ctx.fillStyle = "#f8fafc";
-      ctx.arc(x, mY, middleR * (1 - meltRatio * 0.4), 0, Math.PI * 2);
-      ctx.fill();
+      draw3DSphere(x, mY, middleR, (1 - meltRatio * 0.4));
 
       if (hasDecorations) {
         const armMelt = meltRatio * 18;
-        ctx.strokeStyle = "#78350f";
-        ctx.lineWidth = 3;
+        ctx.strokeStyle = "#582f0e";
+        ctx.lineWidth = 3.5;
+        ctx.lineCap = "round";
         ctx.beginPath();
         ctx.moveTo(x - middleR * 0.8, mY);
-        ctx.lineTo(x - middleR - 20, mY - 10 + armMelt);
+        ctx.lineTo(x - middleR - 22, mY - 12 + armMelt);
         ctx.stroke();
         ctx.beginPath();
         ctx.moveTo(x + middleR * 0.8, mY);
-        ctx.lineTo(x + middleR + 20, mY - 12 + armMelt);
+        ctx.lineTo(x + middleR + 22, mY - 14 + armMelt);
         ctx.stroke();
       }
     }
 
-    // Head & Face (Carrot Nose rendered only after Girl decorates)
+    // Head & Face
     if (headR > 1) {
       const hY = baseY - bottomR * 1.3 - middleR * 1.3 - headR * 0.7 + meltYOffset;
-      ctx.beginPath();
-      ctx.fillStyle = "#ffffff";
-      ctx.arc(x, hY, headR * (1 - meltRatio * 0.5), 0, Math.PI * 2);
-      ctx.fill();
+      draw3DSphere(x, hY, headR, (1 - meltRatio * 0.5));
 
       if (buildProgress > 0.5) {
         ctx.fillStyle = "#0f172a";
@@ -181,10 +196,14 @@ function initSnowEffect() {
       }
 
       if (hasDecorations) {
-        ctx.fillStyle = "#f97316";
+        const carrotGrad = ctx.createLinearGradient(x, hY, x + 18, hY + 4);
+        carrotGrad.addColorStop(0, "#fb923c");
+        carrotGrad.addColorStop(1, "#ea580c");
+
+        ctx.fillStyle = carrotGrad;
         ctx.beginPath();
         ctx.moveTo(x, hY);
-        ctx.lineTo(x + 16, hY + 3 + meltRatio * 12);
+        ctx.lineTo(x + 18, hY + 3 + meltRatio * 12);
         ctx.lineTo(x, hY + 5);
         ctx.closePath();
         ctx.fill();
@@ -204,9 +223,9 @@ function initSnowEffect() {
     const armSwing = (state === 'WALKING_TO' || state === 'WALKING_BACK') ? Math.sin(frame * 0.2) * 10 : 0;
 
     // Shadow
-    ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+    ctx.fillStyle = "rgba(15, 23, 42, 0.25)";
     ctx.beginPath();
-    ctx.ellipse(0, 0, 14, 5, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 0, 14, 4.5, 0, 0, Math.PI * 2);
     ctx.fill();
 
     // Legs & Shoes
@@ -219,7 +238,7 @@ function initSnowEffect() {
     ctx.fillStyle = "#7e22ce";
     ctx.beginPath(); ctx.arc(-3 - legSwing, -2, 4, 0, Math.PI * 2); ctx.arc(3 + legSwing, -2, 4, 0, Math.PI * 2); ctx.fill();
 
-    // Purple Dress
+    // Dress
     ctx.fillStyle = "#a855f7";
     ctx.beginPath();
     ctx.moveTo(0, -42);
@@ -228,18 +247,7 @@ function initSnowEffect() {
     ctx.closePath();
     ctx.fill();
 
-    // Flower on Dress
-    ctx.fillStyle = "#ffffff";
-    for (let i = 0; i < 5; i++) {
-      const angle = (i * Math.PI * 2) / 5;
-      ctx.beginPath();
-      ctx.arc(Math.cos(angle) * 3, -30 + Math.sin(angle) * 3, 2, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.fillStyle = "#f59e0b";
-    ctx.beginPath(); ctx.arc(0, -30, 2, 0, Math.PI * 2); ctx.fill();
-
-    // Head, Face & Blonde Hair
+    // Head, Face & Hair
     ctx.fillStyle = "#fed7aa";
     ctx.fillRect(-2, -46, 4, 6);
     ctx.beginPath(); ctx.arc(0, -54, 12, 0, Math.PI * 2); ctx.fill();
@@ -253,7 +261,6 @@ function initSnowEffect() {
     ctx.beginPath(); ctx.arc(-2, -54, 15, Math.PI * 0.5, Math.PI * 1.8); ctx.fill();
     ctx.beginPath(); ctx.arc(3, -60, 9, 0, Math.PI); ctx.fill();
 
-    // Headband
     ctx.strokeStyle = "#ec4899"; ctx.lineWidth = 3;
     ctx.beginPath(); ctx.arc(0, -56, 13, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
 
@@ -275,9 +282,8 @@ function initSnowEffect() {
       ctx.beginPath(); ctx.moveTo(4, -40); ctx.lineTo(4 + armSwing, -28); ctx.stroke();
 
       if (state === 'WALKING_TO' && !hasDecorations) {
-        ctx.fillStyle = "#b45309"; ctx.fillRect(8, -32, 8, 6);
-        ctx.fillStyle = "#f97316"; ctx.fillRect(10, -35, 4, 3);
-        ctx.strokeStyle = "#78350f"; ctx.beginPath(); ctx.moveTo(12, -32); ctx.lineTo(16, -38); ctx.stroke();
+        ctx.fillStyle = "#f97316"; ctx.fillRect(10, -35, 6, 3);
+        ctx.strokeStyle = "#582f0e"; ctx.beginPath(); ctx.moveTo(12, -32); ctx.lineTo(16, -38); ctx.stroke();
       }
     }
 
@@ -334,9 +340,23 @@ function initSnowEffect() {
     }
   }
 
+  // 3D Shaded Realistic Snow Ground Engine
   function drawGroundTerrain() {
     ctx.save();
-    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+    
+    // Find maximum ground height for lighting gradient bounds
+    let maxH = 15;
+    for (let c = 0; c < numCols; c++) {
+      if (groundHeights[c] > maxH) maxH = groundHeights[c];
+    }
+
+    const groundGrad = ctx.createLinearGradient(0, height - maxH - 10, 0, height);
+    groundGrad.addColorStop(0, "#ffffff");            // Top ridge crisp highlight
+    groundGrad.addColorStop(0.2, "#f1f5f9");          // Bright snow surface
+    groundGrad.addColorStop(0.65, "#cbd5e1");         // Ambient icy depth shadow
+    groundGrad.addColorStop(1, "rgba(148, 163, 184, 0.95)");
+
+    ctx.fillStyle = groundGrad;
     ctx.beginPath();
     ctx.moveTo(0, height);
 
@@ -349,6 +369,29 @@ function initSnowEffect() {
     ctx.lineTo(width, height);
     ctx.closePath();
     ctx.fill();
+
+    // Specular Crisp Ridge Top Line
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.95)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let c = 0; c < numCols; c++) {
+      const x = c * colWidth;
+      const h = height - groundHeights[c];
+      if (c === 0) ctx.moveTo(x, h);
+      else ctx.lineTo(x, h);
+    }
+    ctx.stroke();
+
+    // Frost Sparkle / Glitter Effect on Ground
+    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+    for (let c = 0; c < numCols; c += 3) {
+      if (groundHeights[c] > 2 && (c + Math.floor(Date.now() / 400)) % 7 === 0) {
+        const x = c * colWidth;
+        const h = height - groundHeights[c] + Math.random() * 4;
+        ctx.fillRect(x, h, 1.5, 1.5);
+      }
+    }
+
     ctx.restore();
   }
 
@@ -358,15 +401,11 @@ function initSnowEffect() {
     ctx.clearRect(0, 0, width, height);
 
     saveCounter++;
-    if (saveCounter % 180 === 0) {
-      saveSnowState();
-    }
+    if (saveCounter % 180 === 0) saveSnowState();
 
     if (snowmanVolume >= maxSnowmanVolume && !isMelting) {
       meltTimer += 1;
-      if (meltTimer > 800) {
-        isMelting = true;
-      }
+      if (meltTimer > 800) isMelting = true;
     }
 
     let meltRatio = 0;
@@ -390,15 +429,22 @@ function initSnowEffect() {
       }
     }
 
+    // Render 3D Soft Flakes
     flakes.forEach((f) => {
+      const size = f.r * f.z;
+      const flakeGrad = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, size);
+      flakeGrad.addColorStop(0, `rgba(255, 255, 255, ${f.opacity})`);
+      flakeGrad.addColorStop(0.5, `rgba(241, 245, 249, ${f.opacity * 0.7})`);
+      flakeGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
+
       ctx.beginPath();
-      ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`;
-      ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+      ctx.fillStyle = flakeGrad;
+      ctx.arc(f.x, f.y, size, 0, Math.PI * 2);
       ctx.fill();
 
-      f.sway += 0.02;
-      f.y += f.d;
-      f.x += Math.sin(f.sway) * 0.4;
+      f.sway += f.swaySpeed;
+      f.y += f.d * f.z;
+      f.x += Math.sin(f.sway) * 0.4 * f.z;
 
       handleFlakeCollision(f);
     });
