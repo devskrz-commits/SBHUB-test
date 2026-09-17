@@ -1305,7 +1305,7 @@ function initSnowEffect() {
   let numCols = Math.ceil(width / colWidth);
   let groundHeights = new Float32Array(numCols).fill(0);
 
-  let snowmanXRatio = 0.35 + Math.random() * 0.3;
+  let snowmanXRatio = 0.65; // Fixed site near right side for clear view
   let snowmanVolume = 0;
   const maxSnowmanVolume = 450;
   let isMelting = false;
@@ -1346,15 +1346,19 @@ function initSnowEffect() {
     mouseTimer = setTimeout(() => { isMouseActive = false; }, 2200);
   });
 
-  const numFlakes = 100;
+  const numFlakes = 120;
   const flakes = Array.from({ length: numFlakes }, () => ({
-    x: Math.random() * width, y: Math.random() * (height * 0.8),
-    r: Math.random() * 2.5 + 1.2, z: Math.random() * 0.9 + 0.3,
-    d: Math.random() * 0.8 + 0.4, opacity: Math.random() * 0.6 + 0.4,
-    sway: Math.random() * Math.PI * 2, swaySpeed: Math.random() * 0.02 + 0.01
+    x: Math.random() * width,
+    y: Math.random() * height,
+    r: Math.random() * 2.2 + 1.2,
+    z: Math.random() * 0.8 + 0.4,
+    speed: Math.random() * 1.2 + 0.8,
+    opacity: Math.random() * 0.6 + 0.4,
+    sway: Math.random() * Math.PI * 2,
+    swaySpeed: Math.random() * 0.02 + 0.01
   }));
 
-  const girl = { x: 60, targetX: 60, state: 'ROAMING', prevState: 'ROAMING', timer: 0, frame: 0, speed: 1.6, facingRight: true, snowBallRadius: 0 };
+  const girl = { x: 80, targetX: 80, state: 'ROLL_SNOW', prevState: 'ROLL_SNOW', timer: 0, frame: 0, speed: 1.8, facingRight: true, snowBallRadius: 2 };
 
   function handleFlakeCollision(f) {
     let col = Math.floor(f.x / colWidth);
@@ -1362,12 +1366,12 @@ function initSnowEffect() {
     let currentGroundY = height - groundHeights[col];
 
     if (f.y >= currentGroundY) {
-      if (!isMelting && groundHeights[col] < 55) {
-        groundHeights[col] += 0.4 * f.z;
-        if (col > 0) groundHeights[col - 1] += 0.2 * f.z;
-        if (col < numCols - 1) groundHeights[col + 1] += 0.2 * f.z;
+      if (!isMelting && groundHeights[col] < 45) {
+        groundHeights[col] += 0.3 * f.z;
+        if (col > 0) groundHeights[col - 1] += 0.15 * f.z;
+        if (col < numCols - 1) groundHeights[col + 1] += 0.15 * f.z;
       }
-      f.y = -10; f.x = Math.random() * width;
+      f.y = -15; f.x = Math.random() * width;
     }
   }
 
@@ -1415,44 +1419,77 @@ function initSnowEffect() {
 
   function drawGirl(x, y, state, frame, facingRight = true) {
     ctx.save(); ctx.translate(x, y);
+    ctx.scale(1.3, 1.3); // Scale up girl slightly for enhanced visibility
     if (!facingRight) ctx.scale(-1, 1);
 
     const isWalking = (state === 'ROAMING' || state === 'ROLL_SNOW' || state === 'FETCH_ITEMS');
-    const legSwing = isWalking ? Math.sin(frame * 0.25) * 8 : 0;
+    const legSwing = isWalking ? Math.sin(frame * 0.28) * 8 : 0;
+    const armSwing = isWalking ? Math.sin(frame * 0.28) * 10 : 0;
 
     // Shadow
-    ctx.fillStyle = "rgba(15, 23, 42, 0.28)";
+    ctx.fillStyle = "rgba(15, 23, 42, 0.35)";
     ctx.beginPath(); ctx.ellipse(0, 0, 14, 4.5, 0, 0, Math.PI * 2); ctx.fill();
 
-    // Body & Dress
-    ctx.strokeStyle = "#fed7aa"; ctx.lineWidth = 4;
+    // Legs & Purple Shoes
+    ctx.strokeStyle = "#fed7aa"; ctx.lineWidth = 4; ctx.lineCap = "round";
     ctx.beginPath(); ctx.moveTo(-3, -22); ctx.lineTo(-3 - legSwing, -4); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(3, -22); ctx.lineTo(3 + legSwing, -4); ctx.stroke();
 
+    ctx.fillStyle = "#7e22ce";
+    ctx.beginPath(); ctx.arc(-3 - legSwing, -2, 4, 0, Math.PI * 2); ctx.arc(3 + legSwing, -2, 4, 0, Math.PI * 2); ctx.fill();
+
+    // Purple Dress with Daisy
     ctx.fillStyle = "#a855f7";
     ctx.beginPath(); ctx.moveTo(0, -42); ctx.lineTo(-14, -20); ctx.quadraticCurveTo(0, -16, 14, -20); ctx.closePath(); ctx.fill();
 
-    // Head
+    // White Daisy
+    ctx.fillStyle = "#ffffff";
+    for (let i = 0; i < 5; i++) {
+      const angle = (i * Math.PI * 2) / 5;
+      ctx.beginPath(); ctx.arc(Math.cos(angle) * 3, -29 + Math.sin(angle) * 3, 2, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.fillStyle = "#f59e0b"; ctx.beginPath(); ctx.arc(0, -29, 2, 0, Math.PI * 2); ctx.fill();
+
+    // Head, Face & Blonde Hair
     ctx.fillStyle = "#fed7aa"; ctx.fillRect(-2, -46, 4, 6);
     ctx.beginPath(); ctx.arc(0, -54, 12, 0, Math.PI * 2); ctx.fill();
 
+    ctx.fillStyle = "#0f172a";
+    ctx.beginPath(); ctx.arc(4, -56, 1.8, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#9a3412"; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(4, -52, 3.2, 0.1, Math.PI - 0.2); ctx.stroke();
+
     ctx.fillStyle = "#facc15";
     ctx.beginPath(); ctx.arc(-2, -54, 15, Math.PI * 0.5, Math.PI * 1.8); ctx.fill();
+    ctx.beginPath(); ctx.arc(3, -60, 9, 0, Math.PI); ctx.fill();
+
     ctx.strokeStyle = "#ec4899"; ctx.lineWidth = 3;
     ctx.beginPath(); ctx.arc(0, -56, 13, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
 
-    // Arms / Waving
+    // Arms / Waving / Pushing
     ctx.strokeStyle = "#fed7aa"; ctx.lineWidth = 3.5;
     if (state === 'WAVING') {
+      ctx.beginPath(); ctx.moveTo(-6, -40); ctx.lineTo(-10, -28); ctx.stroke();
       const waveAngle = Math.sin(frame * 0.35) * 0.5;
-      ctx.beginPath(); ctx.moveTo(6, -40); ctx.lineTo(14 + waveAngle * 10, -58); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(6, -40); ctx.lineTo(14 + waveAngle * 10, -58 + Math.cos(waveAngle) * 5); ctx.stroke();
+      ctx.fillStyle = "#fed7aa"; ctx.beginPath(); ctx.arc(14 + waveAngle * 10, -58 + Math.cos(waveAngle) * 5, 2.5, 0, Math.PI * 2); ctx.fill();
     } else if (state === 'ROLL_SNOW') {
       ctx.beginPath(); ctx.moveTo(2, -38); ctx.lineTo(14, -28); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-2, -38); ctx.lineTo(12, -24); ctx.stroke();
+
       const sR = Math.min(18, 6 + girl.snowBallRadius);
-      ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(18 + sR, -sR + 4, sR, 0, Math.PI * 2); ctx.fill();
+      const grad = ctx.createRadialGradient(18 + sR, -sR + 4, 2, 18 + sR, -sR + 4, sR);
+      grad.addColorStop(0, "#ffffff"); grad.addColorStop(0.8, "#cbd5e1");
+      ctx.fillStyle = grad;
+      ctx.beginPath(); ctx.arc(18 + sR, -sR + 4, sR, 0, Math.PI * 2); ctx.fill();
+    } else if (state === 'FETCH_ITEMS') {
+      ctx.beginPath(); ctx.moveTo(-4, -40); ctx.lineTo(-4 - armSwing, -28); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(4, -40); ctx.lineTo(12, -32); ctx.stroke();
+      ctx.fillStyle = "#f97316"; ctx.fillRect(12, -35, 6, 3);
+      ctx.strokeStyle = "#582f0e"; ctx.beginPath(); ctx.moveTo(14, -32); ctx.lineTo(18, -38); ctx.stroke();
     } else {
-      ctx.beginPath(); ctx.moveTo(-4, -40); ctx.lineTo(-4, -28); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(4, -40); ctx.lineTo(4, -28); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-4, -40); ctx.lineTo(-4 - armSwing, -28); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(4, -40); ctx.lineTo(4 + armSwing, -28); ctx.stroke();
     }
 
     ctx.restore();
@@ -1460,8 +1497,9 @@ function initSnowEffect() {
 
   function updateGirl(snowmanX) {
     girl.frame++;
-    const siteX = snowmanX - 35;
+    const siteX = snowmanX - 45;
 
+    // React to Mouse Movement with Waving
     if (isMouseActive && girl.state !== 'WAVING') {
       girl.prevState = girl.state;
       girl.state = 'WAVING';
@@ -1470,37 +1508,46 @@ function initSnowEffect() {
 
     if (girl.state === 'WAVING') {
       girl.timer++;
-      if (girl.timer > 75 && !isMouseActive) {
+      if (girl.timer > 70 && !isMouseActive) {
         girl.state = girl.prevState || 'ROAMING';
+        girl.timer = 0;
       }
       return;
     }
 
+    // Snowman Building Process
     if (snowmanVolume < maxSnowmanVolume) {
       if (girl.state === 'ROAMING' || girl.state === 'ADMIRING') {
-        girl.state = 'ROLL_SNOW'; girl.x = 40; girl.snowBallRadius = 2;
+        girl.state = 'ROLL_SNOW'; girl.x = 60; girl.snowBallRadius = 2;
       }
 
       if (girl.state === 'ROLL_SNOW') {
         girl.facingRight = true;
-        girl.snowBallRadius += 0.05;
+        girl.snowBallRadius += 0.08;
         if (girl.x < siteX) {
-          girl.x += girl.speed * 1.1;
+          girl.x += girl.speed * 1.2;
         } else {
-          snowmanVolume = Math.min(maxSnowmanVolume, snowmanVolume + 45);
+          snowmanVolume = Math.min(maxSnowmanVolume, snowmanVolume + 60);
           saveSnowState();
-          girl.x = 40; girl.snowBallRadius = 2;
+          girl.x = 60; girl.snowBallRadius = 2;
+
+          if (snowmanVolume >= maxSnowmanVolume && !hasDecorations) {
+            girl.state = 'FETCH_ITEMS'; girl.x = 30;
+          }
         }
       }
     } else if (!hasDecorations) {
       if (girl.state !== 'FETCH_ITEMS' && girl.state !== 'DECORATING') {
-        girl.state = 'FETCH_ITEMS'; girl.x = 20;
+        girl.state = 'FETCH_ITEMS'; girl.x = 30;
       }
 
       if (girl.state === 'FETCH_ITEMS') {
         girl.facingRight = true;
-        if (girl.x < siteX) girl.x += girl.speed;
-        else { girl.state = 'DECORATING'; girl.timer = 0; }
+        if (girl.x < siteX) {
+          girl.x += girl.speed;
+        } else {
+          girl.state = 'DECORATING'; girl.timer = 0;
+        }
       }
 
       if (girl.state === 'DECORATING') {
@@ -1513,20 +1560,20 @@ function initSnowEffect() {
     } else {
       if (girl.state === 'ADMIRING') {
         girl.timer++;
-        if (girl.timer > 90) {
+        if (girl.timer > 80) {
           girl.state = 'ROAMING';
-          girl.targetX = Math.random() * (width - 120) + 40;
+          girl.targetX = Math.random() * (width - 160) + 60;
         }
       }
 
       if (girl.state === 'ROAMING') {
-        if (Math.abs(girl.x - girl.targetX) > 5) {
+        if (Math.abs(girl.x - girl.targetX) > 6) {
           girl.facingRight = (girl.targetX > girl.x);
-          girl.x += girl.facingRight ? girl.speed * 0.8 : -girl.speed * 0.8;
+          girl.x += girl.facingRight ? girl.speed * 0.9 : -girl.speed * 0.9;
         } else {
           girl.timer++;
-          if (girl.timer > 120) {
-            girl.targetX = Math.random() * (width - 120) + 40;
+          if (girl.timer > 100) {
+            girl.targetX = Math.random() * (width - 160) + 60;
             girl.timer = 0;
           }
         }
@@ -1536,39 +1583,71 @@ function initSnowEffect() {
 
   function drawGroundTerrain() {
     ctx.save();
-    let maxH = 15;
+    let maxH = 20;
     for (let c = 0; c < numCols; c++) { if (groundHeights[c] > maxH) maxH = groundHeights[c]; }
 
-    const groundGrad = ctx.createLinearGradient(0, height - maxH - 10, 0, height);
-    groundGrad.addColorStop(0, "#ffffff"); groundGrad.addColorStop(1, "rgba(148, 163, 184, 0.95)");
+    const groundGrad = ctx.createLinearGradient(0, height - maxH - 12, 0, height);
+    groundGrad.addColorStop(0, "#ffffff");
+    groundGrad.addColorStop(0.3, "#f1f5f9");
+    groundGrad.addColorStop(1, "rgba(148, 163, 184, 0.95)");
 
     ctx.fillStyle = groundGrad; ctx.beginPath(); ctx.moveTo(0, height);
-    for (let c = 0; c < numCols; c++) { ctx.lineTo(c * colWidth, height - groundHeights[c]); }
+    for (let c = 0; c < numCols; c++) { ctx.lineTo(c * colWidth, height - groundHeights[c] - 15); }
     ctx.lineTo(width, height); ctx.closePath(); ctx.fill();
-    ctx.restore();
+
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.95)"; ctx.lineWidth = 2; ctx.beginPath();
+    for (let c = 0; c < numCols; c++) {
+      const h = height - groundHeights[c] - 15;
+      if (c === 0) ctx.moveTo(0, h); else ctx.lineTo(c * colWidth, h);
+    }
+    ctx.stroke(); ctx.restore();
   }
 
+  let saveCounter = 0;
   function render() {
     ctx.clearRect(0, 0, width, height);
 
+    saveCounter++; if (saveCounter % 180 === 0) saveSnowState();
+
+    if (snowmanVolume >= maxSnowmanVolume && !isMelting) {
+      meltTimer++; if (meltTimer > 1500) isMelting = true;
+    }
+
+    let meltRatio = 0;
+    if (isMelting) {
+      meltTimer++; meltRatio = Math.min(1.0, (meltTimer - 1500) / 400);
+      snowmanVolume = Math.max(0, maxSnowmanVolume * (1 - meltRatio));
+      for (let c = 0; c < numCols; c++) groundHeights[c] *= 0.995;
+
+      if (meltRatio >= 1.0) {
+        isMelting = false; meltTimer = 0; snowmanVolume = 0;
+        hasDecorations = false; girl.state = 'ROLL_SNOW'; girl.x = 60;
+        snowmanXRatio = 0.65; saveSnowState();
+      }
+    }
+
+    // Render Continuous Falling Flakes
     flakes.forEach((f) => {
       ctx.beginPath(); ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`;
       ctx.arc(f.x, f.y, f.r * f.z, 0, Math.PI * 2); ctx.fill();
-      f.sway += f.swaySpeed; f.y += f.d * f.z;
-      f.x += Math.sin(f.sway) * 0.4 * f.z;
+
+      f.sway += f.swaySpeed;
+      f.y += f.speed * f.z;
+      f.x += Math.sin(f.sway) * 0.6 * f.z;
+
       handleFlakeCollision(f);
     });
 
     drawGroundTerrain();
     const snowmanX = width * snowmanXRatio;
     const snowmanCol = Math.floor(snowmanX / colWidth);
-    const groundY = height - (groundHeights[snowmanCol] || 0);
+    const groundY = height - (groundHeights[snowmanCol] || 0) - 15;
 
     drawSnowman(snowmanX, groundY, snowmanVolume, meltRatio);
 
     updateGirl(snowmanX);
     const girlCol = Math.floor(Math.max(0, girl.x) / colWidth);
-    const girlGroundY = height - (groundHeights[girlCol] || 0);
+    const girlGroundY = height - (groundHeights[girlCol] || 0) - 15;
     drawGirl(girl.x, girlGroundY, girl.state, girl.frame, girl.facingRight);
 
     requestAnimationFrame(render);
