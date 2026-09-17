@@ -26,13 +26,16 @@
   <!-- Authentication Overlay -->
   <div id="authOverlay">
     <div class="lamp-login-container">
-      <div class="lamp-scene" onclick="toggleLamp()">
+      <div class="lamp-scene">
         <div class="lamp-light-beam"></div>
         <div class="lamp-shade"></div>
-        <div class="pull-cord-wrapper" id="pullCord" onclick="event.stopPropagation(); toggleLamp();">
-          <div class="cord-string" onclick="event.stopPropagation(); toggleLamp();"></div>
-          <div class="cord-handle" id="cordHandle" title="Toggle Lamp Switch" onclick="event.stopPropagation(); toggleLamp();"></div>
+        
+        <!-- Clean Pull Cord Target -->
+        <div class="pull-cord-wrapper" id="pullCord" onclick="toggleLamp(event)" title="Pull Lamp Cord">
+          <div class="cord-string"></div>
+          <div class="cord-handle"></div>
         </div>
+        
         <div class="lamp-stand-rod"></div>
         <div class="lamp-base"></div>
       </div>
