@@ -1290,22 +1290,7 @@ window.toggleMobileView = function() {
 
 
 /* ==========================================
-   4. High-Res SVG Vector Winter Kitty Assets
-   ========================================== */
-
-const catStandingSvg = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><ellipse cx="50" cy="92" rx="22" ry="5" fill="rgba(15,23,42,0.3)"/><path d="M20,65 Q10,40 18,30 C22,25 25,35 22,55" fill="%23f97316" stroke="%23000000" stroke-width="2" stroke-linecap="round"/><ellipse cx="30" cy="80" rx="8" ry="10" fill="%23f97316" stroke="%23000000" stroke-width="2"/><ellipse cx="28" cy="88" rx="6" ry="4" fill="%23ffffff" stroke="%23000000" stroke-width="1.8"/><ellipse cx="45" cy="70" rx="18" ry="14" fill="%23f97316" stroke="%23000000" stroke-width="2.2"/><path d="M35,62 Q45,68 55,62 L52,78 Q42,82 35,76 Z" fill="%23ffffff"/><path d="M52,65 L72,68 C76,69 76,73 72,74 L54,73" fill="%23f97316" stroke="%23000000" stroke-width="2"/><ellipse cx="73" cy="71" rx="4" ry="3" fill="%23ffffff" stroke="%23000000" stroke-width="1.8"/><path d="M52,50 C48,58 64,58 60,50 Z" fill="%23ec4899" stroke="%23000000" stroke-width="2"/><rect x="56" y="52" width="6" height="14" rx="2" fill="%23ec4899" stroke="%23000000" stroke-width="1.5" transform="rotate(15 56 52)"/><circle cx="58" cy="38" r="16" fill="%23f97316" stroke="%23000000" stroke-width="2.2"/><path d="M46,28 L42,12 L54,23 Z" fill="%23f97316" stroke="%23000000" stroke-width="2" stroke-linejoin="round"/><path d="M46,25 L44,16 L52,22 Z" fill="%23f472b6"/><path d="M62,23 L72,12 L68,28 Z" fill="%23f97316" stroke="%23000000" stroke-width="2" stroke-linejoin="round"/><path d="M64,22 L70,16 L67,25 Z" fill="%23f472b6"/><ellipse cx="64" cy="42" rx="8" ry="6" fill="%23ffffff"/><polygon points="65,39 68,39 66.5,41" fill="%23f472b6" stroke="%23000000" stroke-width="1"/><path d="M64,42 Q66.5,45 69,42" fill="none" stroke="%23000000" stroke-width="1.5" stroke-linecap="round"/><path d="M70,40 L82,38 M70,42 L83,42 M70,44 L81,46" stroke="%23000000" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="60" cy="35" rx="3.5" ry="5" fill="%23000000"/><circle cx="61" cy="33" r="1.5" fill="%23ffffff"/><ellipse cx="52" cy="38" rx="2" ry="1.2" fill="%23f472b6" opacity="0.6"/></svg>`;
-
-const catCrawlingSvg = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><ellipse cx="50" cy="92" rx="25" ry="4" fill="rgba(15,23,42,0.3)"/><path d="M15,70 Q5,50 15,40" fill="none" stroke="%23f97316" stroke-width="4.5" stroke-linecap="round"/><ellipse cx="42" cy="76" rx="22" ry="11" fill="%23f97316" stroke="%23000000" stroke-width="2"/><path d="M55,78 L72,78" stroke="%23f97316" stroke-width="5" stroke-linecap="round"/><circle cx="73" cy="78" r="3.5" fill="%23ffffff" stroke="%23000000" stroke-width="1.5"/><circle cx="60" cy="65" r="4" fill="%23ec4899" stroke="%23000000" stroke-width="1.5"/><circle cx="66" cy="54" r="15" fill="%23f97316" stroke="%23000000" stroke-width="2.2"/><path d="M56,44 L52,30 L64,40 Z" fill="%23f97316" stroke="%23000000" stroke-width="2"/><path d="M72,42 L78,28 L78,41 Z" fill="%23f97316" stroke="%23000000" stroke-width="2"/><ellipse cx="72" cy="58" rx="6" ry="4.5" fill="%23ffffff"/><polygon points="73,56 75,56 74,57.5" fill="%23f472b6"/><ellipse cx="68" cy="50" rx="3" ry="4.5" fill="%23000000"/><circle cx="69" cy="48.5" r="1.2" fill="%23ffffff"/><path d="M76,57 L86,55 M76,59 L85,60" stroke="%23000000" stroke-width="1.2" stroke-linecap="round"/></svg>`;
-
-const catWavingSvg = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><ellipse cx="50" cy="92" rx="20" ry="5" fill="rgba(15,23,42,0.3)"/><path d="M30,75 Q15,65 18,45 Q20,35 25,48" fill="none" stroke="%23f97316" stroke-width="5" stroke-linecap="round"/><ellipse cx="50" cy="72" rx="18" ry="18" fill="%23f97316" stroke="%23000000" stroke-width="2.2"/><ellipse cx="50" cy="74" rx="11" ry="12" fill="%23ffffff"/><ellipse cx="36" cy="86" rx="7" ry="4" fill="%23ffffff" stroke="%23000000" stroke-width="1.8"/><ellipse cx="64" cy="86" rx="7" ry="4" fill="%23ffffff" stroke="%23000000" stroke-width="1.8"/><path d="M38,62 L36,78" stroke="%23f97316" stroke-width="6" stroke-linecap="round"/><circle cx="36" cy="79" r="3.5" fill="%23ffffff" stroke="%23000000" stroke-width="1.5"/><path d="M62,62 L74,42" stroke="%23f97316" stroke-width="6" stroke-linecap="round"/><circle cx="75" cy="40" r="4.5" fill="%23ffffff" stroke="%23000000" stroke-width="1.8"/><path d="M40,52 Q50,58 60,52" fill="none" stroke="%23ec4899" stroke-width="5" stroke-linecap="round"/><circle cx="50" cy="38" r="17" fill="%23f97316" stroke="%23000000" stroke-width="2.2"/><path d="M36,28 L30,10 L44,22 Z" fill="%23f97316" stroke="%23000000" stroke-width="2" stroke-linejoin="round"/><path d="M36,25 L32,14 L42,21 Z" fill="%23f472b6"/><path d="M64,28 L70,10 L56,22 Z" fill="%23f97316" stroke="%23000000" stroke-width="2" stroke-linejoin="round"/><path d="M64,25 L68,14 L58,21 Z" fill="%23f472b6"/><ellipse cx="50" cy="42" rx="7" ry="5" fill="%23ffffff"/><polygon points="48.5,39 51.5,39 50,41" fill="%23f472b6" stroke="%23000000" stroke-width="0.8"/><path d="M47,42 Q50,45 53,42" fill="none" stroke="%23000000" stroke-width="1.4" stroke-linecap="round"/><path d="M43,41 L31,39 M43,43 L30,43 M57,41 L69,39 M57,43 L70,43" stroke="%23000000" stroke-width="1.4" stroke-linecap="round"/><ellipse cx="42" cy="34" rx="3.5" ry="5" fill="%23000000"/><circle cx="43" cy="32" r="1.5" fill="%23ffffff"/><ellipse cx="58" cy="34" rx="3.5" ry="5" fill="%23000000"/><circle cx="59" cy="32" r="1.5" fill="%23ffffff"/><ellipse cx="36" cy="38" rx="3" ry="1.5" fill="%23f472b6" opacity="0.6"/><ellipse cx="64" cy="38" rx="3" ry="1.5" fill="%23f472b6" opacity="0.6"/></svg>`;
-
-const imgStandingCat = new Image(); imgStandingCat.src = catStandingSvg;
-const imgCrawlingCat = new Image(); imgCrawlingCat.src = catCrawlingSvg;
-const imgWavingCat = new Image(); imgWavingCat.src = catWavingSvg;
-
-
-/* ==========================================
-   5. 3D PHYSICS SNOW, KITTY & PAWPRINT ENGINE
+   4. 3D PHYSICS SNOW, KITTY & PAWPRINT ENGINE
    ========================================== */
 
 function initSnowEffect() {
@@ -1515,33 +1500,223 @@ function initSnowEffect() {
     ctx.restore();
   }
 
-  // Cute Winter Kitty Vector Character Renderer
+  /* Fully Articulated Animated Cartoon Cat Character */
   function drawCatCharacter(x, y, state, frame, facingRight = true, ballRadius = 0) {
     ctx.save();
     // Submerge paws 6px into top snow layer
     ctx.translate(x, y + 6);
-    ctx.scale(0.85, 0.85);
+    ctx.scale(1.15, 1.15);
     
     if (!facingRight) {
       ctx.scale(-1, 1);
     }
 
-    const isCrawling = (state === 'ROLL_SNOW' && ballRadius < 10);
+    const isWalking = (state === 'ROLL_SNOW' || state === 'FETCH_ITEMS' || state === 'ROAMING');
+    const gaitCycle = isWalking ? Math.sin(frame * 0.25) * 12 : 0;
+    const bounce = isWalking ? Math.abs(Math.sin(frame * 0.25)) * 2.5 : 0;
+    const tailSway = Math.sin(frame * 0.15) * 0.25;
 
-    let activeImg = imgStandingCat;
-    if (state === 'WAVING') activeImg = imgWavingCat;
-    else if (isCrawling) activeImg = imgCrawlingCat;
+    ctx.translate(0, -bounce);
 
-    const renderW = isCrawling ? 75 : 65;
-    const renderH = isCrawling ? 60 : 65;
+    // Floor Shadow
+    ctx.fillStyle = "rgba(15, 23, 42, 0.35)";
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 18, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
 
-    ctx.drawImage(activeImg, -renderW / 2, -renderH, renderW, renderH);
+    ctx.lineWidth = 2.0;
+    ctx.strokeStyle = "#000000";
 
-    // Draw Rolling Snowball in front of cat paws
-    if (state === 'ROLL_SNOW' && ballRadius > 0) {
-      let bx = renderW / 2 - 8 + ballRadius;
-      let by = -ballRadius - 2;
-      drawLumpySnowball(bx, by, ballRadius, frame * 0.08);
+    if (state === 'WAVING') {
+      // Sitting & Enthusiastically Waving Front Paws
+      
+      // Animated Tail
+      ctx.save(); ctx.translate(-14, -12); ctx.rotate(-0.5 + tailSway);
+      ctx.fillStyle = "#f97316";
+      ctx.beginPath(); ctx.quadraticCurveTo(-15, -25, -5, -35); ctx.quadraticCurveTo(-18, -20, 0, 0); ctx.fill(); ctx.stroke();
+      ctx.restore();
+
+      // Rear Legs (Sitting Folded)
+      ctx.fillStyle = "#f97316";
+      ctx.beginPath(); ctx.ellipse(-12, -8, 8, 5, 0.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(12, -8, 8, 5, -0.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath(); ctx.ellipse(-14, -4, 5, 3, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(14, -4, 5, 3, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // Main Torso
+      ctx.fillStyle = "#f97316";
+      ctx.beginPath(); ctx.ellipse(0, -18, 14, 16, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // White Chest Patch
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath(); ctx.ellipse(0, -16, 9, 11, 0, 0, Math.PI * 2); ctx.fill();
+
+      // Pink Collar & Bell
+      ctx.fillStyle = "#ec4899"; ctx.fillRect(-10, -32, 20, 4); ctx.strokeRect(-10, -32, 20, 4);
+      ctx.fillStyle = "#f59e0b"; ctx.beginPath(); ctx.arc(0, -29, 3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // Head
+      ctx.fillStyle = "#f97316";
+      ctx.beginPath(); ctx.arc(0, -42, 15, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // Ears
+      ctx.beginPath(); ctx.moveTo(-11, -52); ctx.lineTo(-17, -68); ctx.lineTo(-2, -55); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#f472b6"; ctx.beginPath(); ctx.moveTo(-10, -53); ctx.lineTo(-15, -64); ctx.lineTo(-4, -55); ctx.closePath(); ctx.fill();
+
+      ctx.fillStyle = "#f97316";
+      ctx.beginPath(); ctx.moveTo(11, -52); ctx.lineTo(17, -68); ctx.lineTo(2, -55); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#f472b6"; ctx.beginPath(); ctx.moveTo(10, -53); ctx.lineTo(15, -64); ctx.lineTo(4, -55); ctx.closePath(); ctx.fill();
+
+      // Muzzle, Eyes, Nose
+      ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(0, -38, 7, 5, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#f472b6"; ctx.beginPath(); ctx.polygon ? ctx.polygon() : ctx.arc(0, -41, 2, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.arc(-2, -39, 2, 0, Math.PI); ctx.stroke();
+      ctx.beginPath(); ctx.arc(2, -39, 2, 0, Math.PI); ctx.stroke();
+
+      // Eyes & Shine
+      ctx.fillStyle = "#000000";
+      ctx.beginPath(); ctx.ellipse(-6, -45, 3, 4.5, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(6, -45, 3, 4.5, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath(); ctx.arc(-5, -47, 1.2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(7, -47, 1.2, 0, Math.PI * 2); ctx.fill();
+
+      // Whiskers
+      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(-6, -40); ctx.lineTo(-18, -42); stroke();
+      ctx.beginPath(); ctx.moveTo(-6, -38); ctx.lineTo(-18, -37); stroke();
+      ctx.beginPath(); ctx.moveTo(6, -40); ctx.lineTo(18, -42); stroke();
+      ctx.beginPath(); ctx.moveTo(6, -38); ctx.lineTo(18, -37); stroke();
+
+      // Animated Waving Front Paws
+      const waveAngle = Math.sin(frame * 0.3) * 12;
+
+      // Left Waving Paw
+      ctx.strokeStyle = "#f97316"; ctx.lineWidth = 6; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(-8, -26); ctx.lineTo(-18 - waveAngle, -40); ctx.stroke();
+      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8; ctx.stroke();
+      ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(-18 - waveAngle, -40, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // Right Waving Paw
+      ctx.strokeStyle = "#f97316"; ctx.lineWidth = 6; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(8, -26); ctx.lineTo(18 + waveAngle, -40); ctx.stroke();
+      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8; ctx.stroke();
+      ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(18 + waveAngle, -40, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+    } else {
+      // 4-Leg Animated Walking & Pushing Stance
+      
+      // Animated Tail
+      ctx.save(); ctx.translate(-16, -14); ctx.rotate(0.2 + tailSway);
+      ctx.fillStyle = "#f97316";
+      ctx.beginPath(); ctx.quadraticCurveTo(-15, -20, -10, -32); ctx.quadraticCurveTo(-2, -15, 0, 0); ctx.fill(); ctx.stroke();
+      ctx.restore();
+
+      // HIND LEGS (Alternating Stride)
+      const rearLeftX = -12 + gaitCycle * 0.6;
+      const rearRightX = -6 - gaitCycle * 0.6;
+
+      // Left Rear Leg
+      ctx.strokeStyle = "#f97316"; ctx.lineWidth = 6; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(-12, -12); ctx.lineTo(rearLeftX, -2); ctx.stroke();
+      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8; ctx.stroke();
+      ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(rearLeftX, -1, 4.5, 2.8, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // Right Rear Leg
+      ctx.strokeStyle = "#f97316"; ctx.lineWidth = 6; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(-6, -12); ctx.lineTo(rearRightX, -2); ctx.stroke();
+      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8; ctx.stroke();
+      ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(rearRightX, -1, 4.5, 2.8, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // Main Torso (Horizontal Cat Body)
+      ctx.fillStyle = "#f97316";
+      ctx.beginPath(); ctx.ellipse(-2, -16, 16, 11, -0.1, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // White Belly Patch
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath(); ctx.ellipse(2, -13, 10, 7, 0, 0, Math.PI * 2); ctx.fill();
+
+      // FRONT LEGS / PAWS (Alternating Pushing & Walking Motion)
+      const frontLeftX = 8 - gaitCycle * 0.8;
+      const frontRightX = 14 + gaitCycle * 0.8;
+
+      if (state === 'ROLL_SNOW') {
+        // Front paws extend forward onto the snowball and roll continuously
+        const rollPushLeft = Math.sin(frame * 0.3) * 4;
+        const rollPushRight = -Math.sin(frame * 0.3) * 4;
+
+        // Left Front Paw Pushing
+        ctx.strokeStyle = "#f97316"; ctx.lineWidth = 5.5; ctx.lineCap = "round";
+        ctx.beginPath(); ctx.moveTo(6, -14); ctx.lineTo(14 + rollPushLeft, -8); ctx.stroke();
+        ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8; ctx.stroke();
+        ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(14 + rollPushLeft, -8, 3.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+        // Right Front Paw Pushing
+        ctx.strokeStyle = "#f97316"; ctx.lineWidth = 5.5; ctx.lineCap = "round";
+        ctx.beginPath(); ctx.moveTo(10, -14); ctx.lineTo(18 + rollPushRight, -10); ctx.stroke();
+        ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8; ctx.stroke();
+        ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(18 + rollPushRight, -10, 3.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+        // Draw Rolling Lumpy Snowball in front of pushing paws
+        if (ballRadius > 0) {
+          const bx = 16 + ballRadius; const by = -ballRadius + 2;
+          drawLumpySnowball(bx, by, ballRadius, frame * 0.08);
+        }
+
+      } else {
+        // Normal 4-Leg Walking Stride
+        // Left Front Leg
+        ctx.strokeStyle = "#f97316"; ctx.lineWidth = 5.5; ctx.lineCap = "round";
+        ctx.beginPath(); ctx.moveTo(6, -12); ctx.lineTo(frontLeftX, -2); ctx.stroke();
+        ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8; ctx.stroke();
+        ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(frontLeftX, -1, 4, 2.5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+        // Right Front Leg
+        ctx.strokeStyle = "#f97316"; ctx.lineWidth = 5.5; ctx.lineCap = "round";
+        ctx.beginPath(); ctx.moveTo(12, -12); ctx.lineTo(frontRightX, -2); ctx.stroke();
+        ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8; ctx.stroke();
+        ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(frontRightX, -1, 4, 2.5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      }
+
+      // Pink Collar & Bell
+      ctx.fillStyle = "#ec4899"; ctx.fillRect(10, -26, 4, 10); ctx.strokeRect(10, -26, 4, 10);
+      ctx.fillStyle = "#f59e0b"; ctx.beginPath(); ctx.arc(12, -16, 2.8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // Head
+      ctx.fillStyle = "#f97316";
+      ctx.beginPath(); ctx.arc(15, -28, 13, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // Ears
+      ctx.beginPath(); ctx.moveTo(6, -36); ctx.lineTo(4, -50); ctx.lineTo(14, -40); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#f472b6"; ctx.beginPath(); ctx.moveTo(7, -37); ctx.lineTo(5, -46); ctx.lineTo(13, -39); ctx.closePath(); ctx.fill();
+
+      ctx.fillStyle = "#f97316";
+      ctx.beginPath(); ctx.moveTo(18, -38); ctx.lineTo(24, -52); ctx.lineTo(26, -36); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#f472b6"; ctx.beginPath(); ctx.moveTo(19, -38); ctx.lineTo(23, -48); ctx.lineTo(25, -37); ctx.closePath(); ctx.fill();
+
+      // Muzzle, Nose, Mouth
+      ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(21, -25, 6, 4, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#f472b6"; ctx.beginPath(); ctx.arc(22.5, -27, 1.8, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.arc(21, -25, 1.6, 0.1, Math.PI - 0.1); ctx.stroke();
+
+      // Eye & Shine Highlights
+      ctx.fillStyle = "#000000";
+      ctx.beginPath(); ctx.ellipse(19, -31, 2.5, 3.8, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath(); ctx.arc(20, -32.5, 1, 0, Math.PI * 2); ctx.fill();
+
+      // Cheek Blush
+      ctx.fillStyle = "#f472b6"; opacity = 0.6;
+      ctx.beginPath(); ctx.ellipse(16, -24, 2.5, 1.5, 0, 0, Math.PI * 2); ctx.fill();
+
+      // Whiskers
+      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(22, -27); ctx.lineTo(32, -29); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(22, -25); ctx.lineTo(32, -24); ctx.stroke();
     }
 
     ctx.restore();
@@ -1735,7 +1910,7 @@ function initSnowEffect() {
 
 
 /* ==========================================
-   6. FAIL-SAFE APPLICATION BOOTSTRAPPER
+   5. FAIL-SAFE APPLICATION BOOTSTRAPPER
    ========================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
