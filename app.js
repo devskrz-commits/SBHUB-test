@@ -1,4 +1,107 @@
-// Helper function for local date string formatting (YYYY-MM-DD)
+/* ==========================================
+   1. LAMP LOGIN & AUTHENTICATION ENGINE
+   ========================================== */
+
+function playClickSound() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine'; 
+    osc.frequency.setValueAtTime(520, audioCtx.currentTime); 
+    osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.08); 
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime); 
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08); 
+    osc.connect(gain); 
+    gain.connect(audioCtx.destination); 
+    osc.start(); 
+    osc.stop(audioCtx.currentTime + 0.08);
+  } catch(e) {}
+}
+
+function toggleLamp() {
+  playClickSound();
+  const cordEl = document.getElementById("pullCord");
+  if (cordEl) {
+    cordEl.classList.remove("bouncing");
+    void cordEl.offsetWidth; 
+    cordEl.classList.add("bouncing");
+  }
+
+  document.body.classList.toggle("lamp-is-on");
+  if (document.body.classList.contains("lamp-is-on")) {
+    setTimeout(() => {
+      const pwdInput = document.getElementById("loginPassword");
+      if (pwdInput) pwdInput.focus();
+    }, 300);
+  }
+}
+
+function verifyLogin() {
+  const pwdInput = document.getElementById("loginPassword");
+  const errEl = document.getElementById("loginError");
+  if (!pwdInput) return;
+
+  if (pwdInput.value === "sb2026") {
+    if (errEl) errEl.innerText = "";
+    const authOverlay = document.getElementById("authOverlay");
+    if (authOverlay) authOverlay.classList.add("unlocked");
+    document.body.classList.remove("lamp-is-on");
+    pwdInput.value = "";
+    
+    const rememberChk = document.getElementById("rememberMeCheckbox");
+    if (rememberChk && rememberChk.checked) {
+      localStorage.setItem("sbhub_remember_me", "true");
+    } else {
+      localStorage.removeItem("sbhub_remember_me");
+    }
+    resetInactivityTimer();
+  } else {
+    if (errEl) errEl.innerText = "Incorrect password!";
+  }
+}
+
+function triggerLogout() {
+  localStorage.removeItem("sbhub_remember_me");
+  const modal = document.getElementById("settingsModal");
+  if (modal) modal.style.display = "none";
+  const authOverlay = document.getElementById("authOverlay");
+  if (authOverlay) authOverlay.classList.remove("unlocked");
+  document.body.classList.remove("lamp-is-on");
+}
+
+let inactivityTimer = null;
+const INACTIVITY_LIMIT = 30 * 60 * 1000;
+
+function resetInactivityTimer() {
+  clearTimeout(inactivityTimer);
+  const authOverlay = document.getElementById("authOverlay");
+  if (!authOverlay || !authOverlay.classList.contains("unlocked")) return;
+  
+  inactivityTimer = setTimeout(() => {
+    if (localStorage.getItem("sbhub_remember_me") !== "true") {
+      authOverlay.classList.remove("unlocked");
+      document.body.classList.remove("lamp-is-on");
+    }
+  }, INACTIVITY_LIMIT);
+}
+
+function checkRememberedSession() {
+  const isRemembered = localStorage.getItem("sbhub_remember_me") === "true";
+  if (isRemembered) {
+    const authOverlay = document.getElementById("authOverlay");
+    if (authOverlay) authOverlay.classList.add("unlocked");
+    const rememberChk = document.getElementById("rememberMeCheckbox");
+    if (rememberChk) rememberChk.checked = true;
+    resetInactivityTimer();
+  }
+}
+
+
+/* ==========================================
+   2. GLOBAL UTILITIES & DATA DEFINITIONS
+   ========================================== */
+
 function getLocalDateString(date = new Date()) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -6,7 +109,6 @@ function getLocalDateString(date = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
-/* Wallpaper Presets */
 const wallpaperPresets = [
   { id: "green_default", name: "Merry Christmas Green (Default)", type: "dark", url: "green.jpg" },
   { id: "minimalist_bg", name: "Winter Minimalist", type: "light", url: "minimalist.jpg" },
@@ -39,15 +141,9 @@ const widgetRegistry = {
 };
 
 let widgetVisibilityState = {
-  timezonesCard: true,
-  weatherCard: true,
-  topGamesCard: true,
-  flashscoreCard: true,
-  trendCard: true,
-  quickDockCard: true,
-  dailyTaskCard: true,
-  handoverCard: true,
-  currentDutyCard: true
+  timezonesCard: true, weatherCard: true, topGamesCard: true,
+  flashscoreCard: true, trendCard: true, quickDockCard: true,
+  dailyTaskCard: true, handoverCard: true, currentDutyCard: true
 };
 
 const menuData = [
@@ -70,24 +166,43 @@ const menuData = [
 ];
 
 const availableTimezones = [
-  { zone: "Asia/Manila", name: "Manila (PST)" },
-  { zone: "UTC", name: "UTC / GMT" },
-  { zone: "America/New_York", name: "US East (EST)" },
-  { zone: "America/Los_Angeles", name: "US West (PST)" },
-  { zone: "Europe/London", name: "London (GMT/BST)" },
-  { zone: "Europe/Paris", name: "Central Europe" },
-  { zone: "Asia/Tokyo", name: "Tokyo (JST)" },
-  { zone: "Asia/Singapore", name: "Singapore (SGT)" },
+  { zone: "Asia/Manila", name: "Manila (PST)" }, { zone: "UTC", name: "UTC / GMT" },
+  { zone: "America/New_York", name: "US East (EST)" }, { zone: "America/Los_Angeles", name: "US West (PST)" },
+  { zone: "Europe/London", name: "London (GMT/BST)" }, { zone: "Europe/Paris", name: "Central Europe" },
+  { zone: "Asia/Tokyo", name: "Tokyo (JST)" }, { zone: "Asia/Singapore", name: "Singapore (SGT)" },
   { zone: "Australia/Sydney", name: "Sydney (AEST)" }
 ];
 
 let selectedTimezones = ["Asia/Manila", "UTC", "America/New_York"];
 let trendChartInstance = null;
-let inactivityTimer = null;
-const INACTIVITY_LIMIT = 30 * 60 * 1000;
 let handoverItems = [];
 let isSidebarLocked = localStorage.getItem('sbhub_sidebar_locked') === 'true';
 let selectedGameDayOffset = 1;
+
+/* Safe Firebase Initialization Guard */
+let rosterDb = null;
+try {
+  if (typeof firebase !== 'undefined') {
+    const rosterFirebaseConfig = {
+      apiKey: "AIzaSyCaEclzLI284lWCFk-vXbLSXa_bEZsXbOg",
+      authDomain: "test-daily-task--sb.firebaseapp.com",
+      databaseURL: "https://test-daily-task--sb-default-rtdb.firebaseio.com",
+      projectId: "test-daily-task--sb",
+      storageBucket: "test-daily-task--sb.firebasestorage.app",
+      messagingSenderId: "928476661919",
+      appId: "1:928476661919:web:c6d531190824c6ed7c7aaa"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(rosterFirebaseConfig);
+    rosterDb = firebase.database();
+  }
+} catch (e) {
+  console.warn("Firebase failed to load or is blocked. Fallback mode enabled.", e);
+}
+
+
+/* ==========================================
+   3. UI & WORKSPACE CONTROLLERS
+   ========================================== */
 
 function changeGameDayOffset(delta) {
   const newOffset = selectedGameDayOffset + delta;
@@ -96,21 +211,6 @@ function changeGameDayOffset(delta) {
     fetchLiveGames();
   }
 }
-
-const rosterFirebaseConfig = {
-  apiKey: "AIzaSyCaEclzLI284lWCFk-vXbLSXa_bEZsXbOg",
-  authDomain: "test-daily-task--sb.firebaseapp.com",
-  databaseURL: "https://test-daily-task--sb-default-rtdb.firebaseio.com",
-  projectId: "test-daily-task--sb",
-  storageBucket: "test-daily-task--sb.firebasestorage.app",
-  messagingSenderId: "928476661919",
-  appId: "1:928476661919:web:c6d531190824c6ed7c7aaa"
-};
-
-if (!firebase.apps.length) {
-  firebase.initializeApp(rosterFirebaseConfig);
-}
-const rosterDb = firebase.database();
 
 function showToastNotification(msg) {
   const toast = document.getElementById('toastNotification');
@@ -166,23 +266,18 @@ function handleCustomBgUpload(event) {
     img.onload = function() {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      const maxWidth = 1920;
-      const maxHeight = 1080;
-      let width = img.width;
-      let height = img.height;
+      const maxWidth = 1920; const maxHeight = 1080;
+      let width = img.width; let height = img.height;
 
       if (width > maxWidth || height > maxHeight) {
         if (width / height > maxWidth / maxHeight) {
-          height = Math.round((height * maxWidth) / width);
-          width = maxWidth;
+          height = Math.round((height * maxWidth) / width); width = maxWidth;
         } else {
-          width = Math.round((width * maxHeight) / height);
-          height = maxHeight;
+          width = Math.round((width * maxHeight) / height); height = maxHeight;
         }
       }
 
-      canvas.width = width;
-      canvas.height = height;
+      canvas.width = width; canvas.height = height;
       ctx.drawImage(img, 0, 0, width, height);
       const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
 
@@ -254,16 +349,11 @@ function initWidgetManagerUI() {
     const name = widgetRegistry[cardId];
     const item = document.createElement('label');
     item.className = 'widget-toggle-item';
-    item.innerHTML = `
-      <span>${name}</span>
-      <input type="checkbox" ${isVisible ? 'checked' : ''} onchange="setWidgetVisible('${cardId}', this.checked)">
-    `;
+    item.innerHTML = `<span>${name}</span><input type="checkbox" ${isVisible ? 'checked' : ''} onchange="setWidgetVisible('${cardId}', this.checked)">`;
     container.appendChild(item);
 
     const cardEl = document.getElementById(cardId);
-    if (cardEl) {
-      cardEl.style.display = isVisible ? 'flex' : 'none';
-    }
+    if (cardEl) cardEl.style.display = isVisible ? 'flex' : 'none';
   });
 }
 
@@ -290,7 +380,8 @@ function setWidgetVisible(cardId, isVisible) {
 function updateGlassOpacity(val) {
   const alpha = (val / 100).toFixed(2);
   document.documentElement.style.setProperty('--glass-alpha', alpha);
-  document.getElementById('opacityValLabel').innerText = `${val}%`;
+  const lbl = document.getElementById('opacityValLabel');
+  if (lbl) lbl.innerText = `${val}%`;
   localStorage.setItem('sbhub_glass_opacity', val);
   if (trendChartInstance) initTrendChart();
 }
@@ -305,7 +396,8 @@ function setAccentColor(colorHex, swatchEl) {
 
 function restoreAppearanceSettings() {
   const savedOpacity = localStorage.getItem('sbhub_glass_opacity') || "30";
-  document.getElementById('opacitySlider').value = savedOpacity;
+  const slider = document.getElementById('opacitySlider');
+  if (slider) slider.value = savedOpacity;
   updateGlassOpacity(savedOpacity);
 
   const savedAccent = localStorage.getItem('sbhub_accent_color');
@@ -333,7 +425,6 @@ function toggleMobileSidebar() {
   const sidebar = document.getElementById("mainSidebar");
   const backdrop = document.getElementById("mobileBackdropOverlay");
   const isOpen = sidebar.classList.contains("mobile-open");
-  
   if (isOpen) closeMobileSidebar();
   else {
     sidebar.classList.add("mobile-open");
@@ -371,8 +462,7 @@ function initDraggableSidebar() {
     dragHandle.onmousedown = function(e) {
       if (isSidebarLocked || e.target.id === 'closeSidebarBtn') return;
       e.preventDefault();
-      pos3 = e.clientX;
-      pos4 = e.clientY;
+      pos3 = e.clientX; pos4 = e.clientY;
       document.onmouseup = closeDragSidebar;
       document.onmousemove = elementDragSidebar;
     };
@@ -381,18 +471,14 @@ function initDraggableSidebar() {
   function elementDragSidebar(e) {
     if (isSidebarLocked) return;
     e.preventDefault();
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-
+    pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY;
+    pos3 = e.clientX; pos4 = e.clientY;
     sidebar.style.top = (sidebar.offsetTop - pos2) + "px";
     sidebar.style.left = (sidebar.offsetLeft - pos1) + "px";
   }
 
   function closeDragSidebar() {
-    document.onmouseup = null;
-    document.onmousemove = null;
+    document.onmouseup = null; document.onmousemove = null;
     localStorage.setItem('sbhub_sidebar_pos', JSON.stringify({ top: sidebar.style.top, left: sidebar.style.left }));
   }
 
@@ -428,6 +514,7 @@ async function fetchRealtimeWeather() {
   const descEl = document.getElementById("phDesc");
   const iconEl = document.getElementById("weatherIcon");
   const detailsEl = document.getElementById("weatherDetails");
+  if (!tempEl || !descEl) return;
 
   try {
     const response = await fetch("https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=Asia%2FManila");
@@ -439,9 +526,7 @@ async function fetchRealtimeWeather() {
     const wind = Math.round(data.current.wind_speed_10m);
     const code = data.current.weather_code;
 
-    let desc = "Clear Sky";
-    let iconClass = "bx-sun";
-
+    let desc = "Clear Sky"; let iconClass = "bx-sun";
     if (code === 0) { desc = "Clear Sky"; iconClass = "bx-sun"; }
     else if (code === 1 || code === 2) { desc = "Partly Cloudy"; iconClass = "bx-cloud-sun"; }
     else if (code === 3) { desc = "Overcast"; iconClass = "bx-cloud"; }
@@ -452,8 +537,8 @@ async function fetchRealtimeWeather() {
 
     tempEl.innerText = `${temp}°C`;
     descEl.innerText = desc;
-    iconEl.className = `bx ${iconClass} weather-icon`;
-    detailsEl.innerHTML = `<span>📍 Metro Manila, PH</span><span>Humidity: ${humidity}%</span><span>Wind: ${wind} km/h</span>`;
+    if (iconEl) iconEl.className = `bx ${iconClass} weather-icon`;
+    if (detailsEl) detailsEl.innerHTML = `<span>📍 Metro Manila, PH</span><span>Humidity: ${humidity}%</span><span>Wind: ${wind} km/h</span>`;
   } catch (e) {
     descEl.innerText = "Unavailable";
   }
@@ -482,6 +567,7 @@ function getFormattedDateQuery(daysAhead) {
 
 async function fetchLiveGames() {
   const container = document.getElementById("topGamesList");
+  if (!container) return;
   container.innerHTML = `<div style="text-align:center; padding:15px;"><i class='bx bx-loader-alt bx-spin' style="font-size:20px; color:var(--accent-glow);"></i></div>`;
   
   try {
@@ -580,7 +666,6 @@ async function fetchLiveGames() {
 function getCurrentSlotInfo() {
   const now = new Date();
   const hours = now.getHours();
-
   if (hours >= 6 && hours < 9)   return { slotId: "slot_6_9", label: "7:00 - 9:00" };
   if (hours >= 9 && hours < 12)  return { slotId: "slot_9_12", label: "9:00 - 12:00" };
   if (hours >= 12 && hours < 15) return { slotId: "slot_12_15", label: "12:00 - 15:00" };
@@ -590,7 +675,15 @@ function getCurrentSlotInfo() {
 }
 
 function listenToLiveDutyRoster() {
+  if (!rosterDb) return;
   rosterDb.ref('roster_data').on('value', (snapshot) => {
+    renderLiveDutyWidget(snapshot.val());
+  });
+}
+
+function fetchLiveRosterDuties() {
+  if (!rosterDb) return;
+  rosterDb.ref('roster_data').once('value').then((snapshot) => {
     renderLiveDutyWidget(snapshot.val());
   });
 }
@@ -621,10 +714,8 @@ function renderLiveDutyWidget(rosterData) {
 
   const dayData = rosterData[activeDayKey];
   const teamMembers = [
-    { id: 'ann', name: 'ANN' },
-    { id: 'dave', name: 'DAVE' },
-    { id: 'ken', name: 'KEN' },
-    { id: 'kriztel', name: 'KRIZTEL' }
+    { id: 'ann', name: 'ANN' }, { id: 'dave', name: 'DAVE' },
+    { id: 'ken', name: 'KEN' }, { id: 'kriztel', name: 'KRIZTEL' }
   ];
 
   let html = `
@@ -669,7 +760,6 @@ function renderLiveDutyWidget(rosterData) {
       });
       html += `</div>`;
     }
-
     html += `</div>`;
   });
 
@@ -687,6 +777,7 @@ function formatShiftBadge(shiftId) {
 }
 
 function initHandoverStore() {
+  if (!rosterDb) return;
   rosterDb.ref('handover_items').on('value', (snapshot) => {
     const data = snapshot.val();
     handoverItems = data ? Object.values(data).sort((a, b) => Number(b.id) - Number(a.id)) : [];
@@ -734,13 +825,19 @@ function renderHandoverItems() {
 }
 
 function openAddHandoverModal() {
-  document.getElementById('handoverModal').style.display = 'flex';
-  setTimeout(() => document.getElementById('handoverText').focus(), 100);
+  const modal = document.getElementById('handoverModal');
+  if (modal) modal.style.display = 'flex';
+  setTimeout(() => {
+    const txt = document.getElementById('handoverText');
+    if (txt) txt.focus();
+  }, 100);
 }
 
 function closeAddHandoverModal() {
-  document.getElementById('handoverModal').style.display = 'none';
-  document.getElementById('handoverText').value = '';
+  const modal = document.getElementById('handoverModal');
+  if (modal) modal.style.display = 'none';
+  const txt = document.getElementById('handoverText');
+  if (txt) txt.value = '';
 }
 
 function createHandoverItem() {
@@ -748,32 +845,26 @@ function createHandoverItem() {
   const priority = document.getElementById('handoverPriority').value;
   const text = document.getElementById('handoverText').value.trim();
 
-  if (!text) {
-    alert('Please enter issue/endorsement description.');
-    return;
-  }
+  if (!text) { alert('Please enter issue/endorsement description.'); return; }
 
   const itemId = Date.now().toString();
   const newItem = {
-    id: itemId,
-    brand: brand,
-    priority: priority,
-    text: text,
+    id: itemId, brand: brand, priority: priority, text: text,
     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     done: false
   };
 
-  rosterDb.ref('handover_items/' + itemId).set(newItem);
+  if (rosterDb) rosterDb.ref('handover_items/' + itemId).set(newItem);
   closeAddHandoverModal();
 }
 
 function toggleHandoverDone(id) {
   const item = handoverItems.find(i => i.id === id);
-  if (item) rosterDb.ref('handover_items/' + id + '/done').set(!item.done);
+  if (item && rosterDb) rosterDb.ref('handover_items/' + id + '/done').set(!item.done);
 }
 
 function deleteHandoverItem(id) {
-  rosterDb.ref('handover_items/' + id).remove();
+  if (rosterDb) rosterDb.ref('handover_items/' + id).remove();
 }
 
 function escapeHtml(str) {
@@ -785,33 +876,36 @@ function loadDataForDate(dateStr) {
   const appData = JSON.parse(localStorage.getItem('sbhub_chart_data')) || {};
   const dateData = appData[dateStr];
   
+  const setVal = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+  };
+
   if (dateData) {
-    document.getElementById('ibetIncInput').value = dateData.ibet?.inc || 0;
-    document.getElementById('ibetRedInput').value = dateData.ibet?.red || 0;
-    document.getElementById('ibetLimInput').value = dateData.ibet?.lim || 0;
-
-    document.getElementById('edgeIncInput').value = dateData.edge?.inc || 0;
-    document.getElementById('edgeRedInput').value = dateData.edge?.red || 0;
-    document.getElementById('edgeLimInput').value = dateData.edge?.lim || 0;
-
-    document.getElementById('sevenIncInput').value = dateData.tracker7a?.inc || 0;
-    document.getElementById('sevenRedInput').value = dateData.tracker7a?.red || 0;
-    document.getElementById('sevenLimInput').value = dateData.tracker7a?.lim || 0;
-
-    document.getElementById('pubsIncInput').value = dateData.pubs?.inc || 0;
-    document.getElementById('pubsRedInput').value = dateData.pubs?.red || 0;
-    document.getElementById('pubsLimInput').value = dateData.pubs?.lim || 0;
+    setVal('ibetIncInput', dateData.ibet?.inc || 0);
+    setVal('ibetRedInput', dateData.ibet?.red || 0);
+    setVal('ibetLimInput', dateData.ibet?.lim || 0);
+    setVal('edgeIncInput', dateData.edge?.inc || 0);
+    setVal('edgeRedInput', dateData.edge?.red || 0);
+    setVal('edgeLimInput', dateData.edge?.lim || 0);
+    setVal('sevenIncInput', dateData.tracker7a?.inc || 0);
+    setVal('sevenRedInput', dateData.tracker7a?.red || 0);
+    setVal('sevenLimInput', dateData.tracker7a?.lim || 0);
+    setVal('pubsIncInput', dateData.pubs?.inc || 0);
+    setVal('pubsRedInput', dateData.pubs?.red || 0);
+    setVal('pubsLimInput', dateData.pubs?.lim || 0);
   } else {
     ['ibet', 'edge', 'seven', 'pubs'].forEach(b => {
-      document.getElementById(`${b}IncInput`).value = '';
-      document.getElementById(`${b}RedInput`).value = '';
-      document.getElementById(`${b}LimInput`).value = '';
+      setVal(`${b}IncInput`, '');
+      setVal(`${b}RedInput`, '');
+      setVal(`${b}LimInput`, '');
     });
   }
 }
 
 function navigateLogDate(days) {
   const input = document.getElementById('logDate');
+  if (!input) return;
   if (!input.value) input.value = getLocalDateString();
   const parts = input.value.split('-');
   const d = new Date(parts[0], parts[1] - 1, parts[2]);
@@ -827,8 +921,7 @@ function initDataStore() {
   if (!storedData) {
     const baseData = {};
     for (let i = 6; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
+      const d = new Date(); d.setDate(d.getDate() - i);
       const dateStr = getLocalDateString(d); 
       baseData[dateStr] = {
         ibet: { inc: Math.floor(Math.random() * 8) + 8, red: Math.floor(Math.random() * 4) + 1, lim: Math.floor(Math.random() * 3) + 1 },
@@ -841,46 +934,34 @@ function initDataStore() {
   }
   
   const today = getLocalDateString();
-  document.getElementById('logDate').value = today;
+  const dateInput = document.getElementById('logDate');
+  if (dateInput) dateInput.value = today;
   loadDataForDate(today);
 }
 
 function saveDailyLog() {
-  const dateStr = document.getElementById('logDate').value;
+  const dateStr = document.getElementById('logDate')?.value;
   if (!dateStr) return alert("Please select a valid date.");
   
   let appData = JSON.parse(localStorage.getItem('sbhub_chart_data')) || {};
-  
+  const getNum = id => Number(document.getElementById(id)?.value) || 0;
+
   appData[dateStr] = {
-    ibet: { 
-      inc: Number(document.getElementById('ibetIncInput').value) || 0, 
-      red: Number(document.getElementById('ibetRedInput').value) || 0,
-      lim: Number(document.getElementById('ibetLimInput').value) || 0 
-    },
-    edge: { 
-      inc: Number(document.getElementById('edgeIncInput').value) || 0, 
-      red: Number(document.getElementById('edgeRedInput').value) || 0,
-      lim: Number(document.getElementById('edgeLimInput').value) || 0 
-    },
-    tracker7a: { 
-      inc: Number(document.getElementById('sevenIncInput').value) || 0, 
-      red: Number(document.getElementById('sevenRedInput').value) || 0,
-      lim: Number(document.getElementById('sevenLimInput').value) || 0 
-    },
-    pubs: { 
-      inc: Number(document.getElementById('pubsIncInput').value) || 0, 
-      red: Number(document.getElementById('pubsRedInput').value) || 0,
-      lim: Number(document.getElementById('pubsLimInput').value) || 0 
-    }
+    ibet: { inc: getNum('ibetIncInput'), red: getNum('ibetRedInput'), lim: getNum('ibetLimInput') },
+    edge: { inc: getNum('edgeIncInput'), red: getNum('edgeRedInput'), lim: getNum('edgeLimInput') },
+    tracker7a: { inc: getNum('sevenIncInput'), red: getNum('sevenRedInput'), lim: getNum('sevenLimInput') },
+    pubs: { inc: getNum('pubsIncInput'), red: getNum('pubsRedInput'), lim: getNum('pubsLimInput') }
   };
 
   localStorage.setItem('sbhub_chart_data', JSON.stringify(appData));
   initTrendChart(); 
   
   const btn = document.getElementById("saveLogBtn");
-  const originalText = btn.innerHTML;
-  btn.innerHTML = "<i class='bx bx-check'></i> SAVED!";
-  setTimeout(() => btn.innerHTML = originalText, 1500);
+  if (btn) {
+    const originalText = btn.innerHTML;
+    btn.innerHTML = "<i class='bx bx-check'></i> SAVED!";
+    setTimeout(() => btn.innerHTML = originalText, 1500);
+  }
 }
 
 const verticalBarLabelPlugin = {
@@ -896,18 +977,13 @@ const verticalBarLabelPlugin = {
             if (val !== null && val !== undefined && val > 0) {
               ctx.save();
               const barHeight = Math.abs(bar.base - bar.y);
-              const x = bar.x;
-              const y = (bar.y + bar.base) / 2;
-
+              const x = bar.x; const y = (bar.y + bar.base) / 2;
               ctx.translate(x, y);
               ctx.rotate(-Math.PI / 2);
               ctx.fillStyle = '#ffffff';
-              ctx.shadowColor = 'rgba(0,0,0,0.8)';
-              ctx.shadowBlur = 4;
+              ctx.shadowColor = 'rgba(0,0,0,0.8)'; ctx.shadowBlur = 4;
               ctx.font = '800 9px "Plus Jakarta Sans", sans-serif';
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'middle';
-
+              ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
               const barText = dataset.customBarLabel ? dataset.customBarLabel : dataset.label;
               if (barHeight > 18) ctx.fillText(barText, 0, 0);
               ctx.restore();
@@ -920,8 +996,13 @@ const verticalBarLabelPlugin = {
 };
 
 function initTrendChart() {
-  const viewMode = document.getElementById("trackerSelector").value;
-  const timeframe = document.getElementById("timeframeSelector").value;
+  const trackerEl = document.getElementById("trackerSelector");
+  const tfEl = document.getElementById("timeframeSelector");
+  const chartCanvas = document.getElementById("trendChart");
+  if (!trackerEl || !tfEl || !chartCanvas) return;
+
+  const viewMode = trackerEl.value;
+  const timeframe = tfEl.value;
   
   const appData = JSON.parse(localStorage.getItem('sbhub_chart_data')) || {};
   let sortedDates = Object.keys(appData).sort();
@@ -938,7 +1019,7 @@ function initTrendChart() {
   const textColor = isLight ? '#0f172a' : '#ffffff';
   const gridColor = isLight ? 'rgba(15, 23, 42, 0.15)' : 'rgba(255, 255, 255, 0.18)';
 
-  const ctx = document.getElementById("trendChart").getContext("2d");
+  const ctx = chartCanvas.getContext("2d");
   if (trendChartInstance) trendChartInstance.destroy();
 
   let chartConfigData = { labels: dateLabels, datasets: [] };
@@ -956,14 +1037,14 @@ function initTrendChart() {
     brandSpecs.forEach(b => {
       allDatasets.push({
         type: 'bar', label: `${b.label} Inc`, customBarLabel: `inc ${b.label}`,
-        data: sortedDates.map(d => appData[d][b.key]?.inc || 0),
+        data: sortedDates.map(d => appData[d]?.[b.key]?.inc || 0),
         backgroundColor: b.inc, borderColor: '#ffffff', borderWidth: 1, borderRadius: 4
       });
     });
     brandSpecs.forEach(b => {
       allDatasets.push({
         type: 'line', label: `${b.label} Red`,
-        data: sortedDates.map(d => appData[d][b.key]?.red || 0),
+        data: sortedDates.map(d => appData[d]?.[b.key]?.red || 0),
         borderColor: b.red, backgroundColor: 'transparent', borderWidth: 3, pointRadius: 3.5,
         pointBackgroundColor: b.red, pointBorderColor: '#ffffff', pointBorderWidth: 1, tension: 0.3
       });
@@ -971,15 +1052,17 @@ function initTrendChart() {
     brandSpecs.forEach(b => {
       allDatasets.push({
         type: 'line', label: `${b.label} Lim`,
-        data: sortedDates.map(d => appData[d][b.key]?.lim || 0),
+        data: sortedDates.map(d => appData[d]?.[b.key]?.lim || 0),
         borderColor: b.lim, backgroundColor: 'transparent', borderWidth: 2.5, borderDash: [5, 5],
         pointRadius: 3.5, pointBackgroundColor: b.lim, pointBorderColor: '#ffffff', pointBorderWidth: 1, tension: 0.3
       });
     });
 
     chartConfigData.datasets = allDatasets;
-    badge.className = "stat-badge up";
-    badge.innerHTML = `<i class='bx bx-bar-chart-alt-2'></i> Custom Brand Palette`;
+    if (badge) {
+      badge.className = "stat-badge up";
+      badge.innerHTML = `<i class='bx bx-bar-chart-alt-2'></i> Custom Brand Palette`;
+    }
   } else {
     const brandKey = viewMode;
     const brandObj = brandSpecs.find(b => b.key === brandKey) || brandSpecs[0];
@@ -988,33 +1071,34 @@ function initTrendChart() {
     chartConfigData.datasets = [
       {
         type: 'bar', label: `${brandName} Increased`, customBarLabel: `inc ${brandName}`,
-        data: sortedDates.map(d => appData[d][brandKey]?.inc || 0),
+        data: sortedDates.map(d => appData[d]?.[brandKey]?.inc || 0),
         backgroundColor: brandObj.inc, borderColor: '#ffffff', borderWidth: 1.5, borderRadius: 4
       },
       {
         type: 'line', label: `${brandName} Reduced`,
-        data: sortedDates.map(d => appData[d][brandKey]?.red || 0),
+        data: sortedDates.map(d => appData[d]?.[brandKey]?.red || 0),
         borderColor: brandObj.red, backgroundColor: 'transparent', borderWidth: 3.5, pointRadius: 4,
         pointBackgroundColor: brandObj.red, pointBorderColor: '#ffffff', pointBorderWidth: 1.5, tension: 0.3
       },
       {
         type: 'line', label: `${brandName} Limited`,
-        data: sortedDates.map(d => appData[d][brandKey]?.lim || 0),
+        data: sortedDates.map(d => appData[d]?.[brandKey]?.lim || 0),
         borderColor: brandObj.lim, backgroundColor: 'transparent', borderWidth: 3, borderDash: [5, 5],
         pointRadius: 4, pointBackgroundColor: brandObj.lim, pointBorderColor: '#ffffff', pointBorderWidth: 1.5, tension: 0.3
       }
     ];
 
-    badge.className = "stat-badge up"; 
-    badge.innerHTML = `<i class='bx bx-trending-up'></i> ${brandName} Palette Trend`;
+    if (badge) {
+      badge.className = "stat-badge up"; 
+      badge.innerHTML = `<i class='bx bx-trending-up'></i> ${brandName} Palette Trend`;
+    }
   }
 
   trendChartInstance = new Chart(ctx, {
     type: 'bar', 
     data: chartConfigData,
     options: {
-      responsive: true, 
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       plugins: { 
         legend: { labels: { color: textColor, font: { size: 9, weight: '800' }, boxWidth: 12 }, display: true } 
       },
@@ -1086,7 +1170,7 @@ function restoreBentoLayout() {
       layoutToApply = JSON.parse(atob(layoutFromURL));
       localStorage.setItem("sbhub_bento_layout_clean_v10", JSON.stringify(layoutToApply)); 
       window.history.replaceState({}, document.title, window.location.pathname); 
-    } catch(e) { console.error("Invalid URL layout data."); }
+    } catch(e) {}
   }
 
   if (!layoutToApply) {
@@ -1136,7 +1220,7 @@ function renderSidebar() {
 }
 
 function handleSearch() {
-  const query = document.getElementById("searchInput").value.toLowerCase();
+  const query = document.getElementById("searchInput")?.value.toLowerCase() || "";
   const navItems = document.querySelectorAll(".nav-item-group");
 
   navItems.forEach(group => {
@@ -1192,11 +1276,28 @@ if (window.ResizeObserver) {
   document.querySelectorAll(".bento-card").forEach(card => resizeObserver.observe(card)); 
 }
 
-function toggleModal() { const modal = document.getElementById("settingsModal"); modal.style.display = (modal.style.display === "flex") ? "none" : "flex"; }
-function toggleTheme() { const isLight = document.getElementById("modeToggle").checked; if (isLight) document.body.classList.add("light-mode"); else document.body.classList.remove("light-mode"); initTrendChart(); }
-function toggleMobileView() { const mobileToggle = document.getElementById("mobileViewToggle"); if (mobileToggle && mobileToggle.checked) document.body.classList.add("mobile-view-active"); else document.body.classList.remove("mobile-view-active"); setTimeout(() => { if(trendChartInstance) trendChartInstance.resize(); }, 300); }
+function toggleModal() { 
+  const modal = document.getElementById("settingsModal"); 
+  if (modal) modal.style.display = (modal.style.display === "flex") ? "none" : "flex"; 
+}
+function toggleTheme() { 
+  const isLight = document.getElementById("modeToggle")?.checked; 
+  if (isLight) document.body.classList.add("light-mode"); 
+  else document.body.classList.remove("light-mode"); 
+  initTrendChart(); 
+}
+function toggleMobileView() { 
+  const mobileToggle = document.getElementById("mobileViewToggle"); 
+  if (mobileToggle && mobileToggle.checked) document.body.classList.add("mobile-view-active"); 
+  else document.body.classList.remove("mobile-view-active"); 
+  setTimeout(() => { if(trendChartInstance) trendChartInstance.resize(); }, 300); 
+}
 
-/* Collision-Based Real Physics 3D Snow & Dynamic Snowman Engine with Persistence & Girl */
+
+/* ==========================================
+   4. 3D PHYSICS SNOW & SNOWMAN ENGINE
+   ========================================== */
+
 function initSnowEffect() {
   const canvas = document.getElementById('snowCanvas');
   if (!canvas) return;
@@ -1231,9 +1332,7 @@ function initSnowEffect() {
         if (typeof data.snowmanVolume === 'number') snowmanVolume = data.snowmanVolume;
         if (typeof data.snowmanXRatio === 'number') snowmanXRatio = data.snowmanXRatio;
         if (typeof data.hasDecorations === 'boolean') hasDecorations = data.hasDecorations;
-      } catch (e) {
-        console.error("Error loading snow state:", e);
-      }
+      } catch (e) {}
     }
   }
 
@@ -1252,37 +1351,23 @@ function initSnowEffect() {
 
   const numFlakes = 110;
   const flakes = Array.from({ length: numFlakes }, () => ({
-    x: Math.random() * width,
-    y: Math.random() * (height * 0.8),
-    r: Math.random() * 2.5 + 1.2,
-    z: Math.random() * 0.9 + 0.3,
-    d: Math.random() * 0.8 + 0.4,
-    opacity: Math.random() * 0.6 + 0.4,
-    sway: Math.random() * Math.PI * 2,
-    swaySpeed: Math.random() * 0.02 + 0.01
+    x: Math.random() * width, y: Math.random() * (height * 0.8),
+    r: Math.random() * 2.5 + 1.2, z: Math.random() * 0.9 + 0.3,
+    d: Math.random() * 0.8 + 0.4, opacity: Math.random() * 0.6 + 0.4,
+    sway: Math.random() * Math.PI * 2, swaySpeed: Math.random() * 0.02 + 0.01
   }));
 
-  const girl = {
-    x: -50,
-    state: 'IDLE',
-    timer: 0,
-    frame: 0,
-    speed: 1.2
-  };
+  const girl = { x: -50, state: 'IDLE', timer: 0, frame: 0, speed: 1.2 };
 
   function getNewSnowmanXRatio() {
     let newRatio;
-    do {
-      newRatio = 0.2 + Math.random() * 0.6;
-    } while (Math.abs(newRatio - snowmanXRatio) < 0.25);
+    do { newRatio = 0.2 + Math.random() * 0.6; } while (Math.abs(newRatio - snowmanXRatio) < 0.25);
     return newRatio;
   }
 
   function handleFlakeCollision(f) {
     let col = Math.floor(f.x / colWidth);
-    if (col < 0) col = 0;
-    if (col >= numCols) col = numCols - 1;
-
+    if (col < 0) col = 0; if (col >= numCols) col = numCols - 1;
     let currentGroundY = height - groundHeights[col];
 
     if (f.y >= currentGroundY) {
@@ -1295,31 +1380,22 @@ function initSnowEffect() {
 
         const snowmanCol = Math.floor((width * snowmanXRatio) / colWidth);
         if (Math.abs(col - snowmanCol) <= 12) {
-          if (snowmanVolume < maxSnowmanVolume) {
-            snowmanVolume += 0.8 * f.z;
-          }
+          if (snowmanVolume < maxSnowmanVolume) snowmanVolume += 0.8 * f.z;
         }
       }
-
-      f.y = -10;
-      f.x = Math.random() * width;
+      f.y = -10; f.x = Math.random() * width;
     }
   }
 
   function drawSnowman(x, baseY, volume, meltRatio) {
     if (volume <= 0) return;
-
     ctx.save();
     
     const buildProgress = Math.min(1.0, volume / maxSnowmanVolume);
-    const bottomMaxR = 36;
-    const middleMaxR = 25;
-    const headMaxR = 16;
-
+    const bottomMaxR = 36; const middleMaxR = 25; const headMaxR = 16;
     const bottomR = Math.min(bottomMaxR, buildProgress * 2.2 * bottomMaxR);
     const middleR = buildProgress > 0.25 ? Math.min(middleMaxR, (buildProgress - 0.25) * 2.2 * middleMaxR) : 0;
     const headR = buildProgress > 0.55 ? Math.min(headMaxR, (buildProgress - 0.55) * 2.2 * headMaxR) : 0;
-
     const meltYOffset = meltRatio * 25;
     ctx.globalAlpha = Math.max(0, 1 - meltRatio * 0.9);
 
@@ -1329,38 +1405,26 @@ function initSnowEffect() {
     moundGrad.addColorStop(0.7, "rgba(226, 232, 240, 0.9)");
     moundGrad.addColorStop(1, "rgba(148, 163, 184, 0)");
     
-    ctx.beginPath();
-    ctx.fillStyle = moundGrad;
+    ctx.beginPath(); ctx.fillStyle = moundGrad;
     ctx.ellipse(x, baseY + 4, moundR * (1 + meltRatio * 0.6), (bottomR * 0.35) * (1 - meltRatio * 0.5), 0, 0, Math.PI * 2);
     ctx.fill();
 
     function draw3DSphere(cx, cy, radius, scaleY = 1) {
       const grad = ctx.createRadialGradient(cx - radius * 0.3, cy - radius * 0.3, radius * 0.1, cx, cy, radius);
-      grad.addColorStop(0, "#ffffff");
-      grad.addColorStop(0.65, "#f1f5f9");
-      grad.addColorStop(0.9, "#cbd5e1");
-      grad.addColorStop(1, "#94a3b8");
-
-      ctx.beginPath();
-      ctx.fillStyle = grad;
-      ctx.arc(cx, cy, radius * scaleY, 0, Math.PI * 2);
-      ctx.fill();
+      grad.addColorStop(0, "#ffffff"); grad.addColorStop(0.65, "#f1f5f9");
+      grad.addColorStop(0.9, "#cbd5e1"); grad.addColorStop(1, "#94a3b8");
+      ctx.beginPath(); ctx.fillStyle = grad;
+      ctx.arc(cx, cy, radius * scaleY, 0, Math.PI * 2); ctx.fill();
     }
 
-    if (bottomR > 1) {
-      const bY = baseY - bottomR * 0.7 + meltYOffset * 0.3;
-      draw3DSphere(x, bY, bottomR, (1 - meltRatio * 0.3));
-    }
+    if (bottomR > 1) draw3DSphere(x, baseY - bottomR * 0.7 + meltYOffset * 0.3, bottomR, (1 - meltRatio * 0.3));
 
     if (middleR > 1) {
       const mY = baseY - bottomR * 1.3 - middleR * 0.7 + meltYOffset * 0.6;
       draw3DSphere(x, mY, middleR, (1 - meltRatio * 0.4));
-
       if (hasDecorations) {
         const armMelt = meltRatio * 18;
-        ctx.strokeStyle = "#582f0e";
-        ctx.lineWidth = 3.5;
-        ctx.lineCap = "round";
+        ctx.strokeStyle = "#582f0e"; ctx.lineWidth = 3.5; ctx.lineCap = "round";
         ctx.beginPath(); ctx.moveTo(x - middleR * 0.8, mY); ctx.lineTo(x - middleR - 22, mY - 12 + armMelt); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(x + middleR * 0.8, mY); ctx.lineTo(x + middleR + 22, mY - 14 + armMelt); ctx.stroke();
       }
@@ -1369,28 +1433,22 @@ function initSnowEffect() {
     if (headR > 1) {
       const hY = baseY - bottomR * 1.3 - middleR * 1.3 - headR * 0.7 + meltYOffset;
       draw3DSphere(x, hY, headR, (1 - meltRatio * 0.5));
-
       if (buildProgress > 0.5) {
         ctx.fillStyle = "#0f172a";
         ctx.beginPath(); ctx.arc(x - 5, hY - 3, 2, 0, Math.PI * 2); ctx.arc(x + 5, hY - 3, 2, 0, Math.PI * 2); ctx.fill();
       }
-
       if (hasDecorations) {
         const carrotGrad = ctx.createLinearGradient(x, hY, x + 18, hY + 4);
-        carrotGrad.addColorStop(0, "#fb923c");
-        carrotGrad.addColorStop(1, "#ea580c");
-
+        carrotGrad.addColorStop(0, "#fb923c"); carrotGrad.addColorStop(1, "#ea580c");
         ctx.fillStyle = carrotGrad;
         ctx.beginPath(); ctx.moveTo(x, hY); ctx.lineTo(x + 18, hY + 3 + meltRatio * 12); ctx.lineTo(x, hY + 5); ctx.closePath(); ctx.fill();
       }
     }
-
     ctx.restore();
   }
 
   function drawGirl(x, y, state, frame, facingRight = true) {
-    ctx.save();
-    ctx.translate(x, y);
+    ctx.save(); ctx.translate(x, y);
     if (!facingRight) ctx.scale(-1, 1);
 
     const legSwing = (state === 'WALKING_TO' || state === 'WALKING_BACK') ? Math.sin(frame * 0.2) * 8 : 0;
@@ -1409,8 +1467,7 @@ function initSnowEffect() {
     ctx.fillStyle = "#a855f7";
     ctx.beginPath(); ctx.moveTo(0, -42); ctx.lineTo(-14, -20); ctx.quadraticCurveTo(0, -16, 14, -20); ctx.closePath(); ctx.fill();
 
-    ctx.fillStyle = "#fed7aa";
-    ctx.fillRect(-2, -46, 4, 6);
+    ctx.fillStyle = "#fed7aa"; ctx.fillRect(-2, -46, 4, 6);
     ctx.beginPath(); ctx.arc(0, -54, 12, 0, Math.PI * 2); ctx.fill();
 
     ctx.fillStyle = "#0f172a";
@@ -1426,13 +1483,11 @@ function initSnowEffect() {
     ctx.beginPath(); ctx.arc(0, -56, 13, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
 
     ctx.strokeStyle = "#fed7aa"; ctx.lineWidth = 3.5;
-
     if (state === 'WAVING') {
       ctx.beginPath(); ctx.moveTo(-6, -40); ctx.lineTo(-10, -28); ctx.stroke();
       const waveAngle = Math.sin(frame * 0.3) * 0.4;
       ctx.beginPath(); ctx.moveTo(6, -40); ctx.lineTo(14 + waveAngle * 10, -58 + Math.cos(waveAngle) * 5); ctx.stroke();
-      ctx.fillStyle = "#fed7aa";
-      ctx.beginPath(); ctx.arc(14 + waveAngle * 10, -58 + Math.cos(waveAngle) * 5, 2.5, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#fed7aa"; ctx.beginPath(); ctx.arc(14 + waveAngle * 10, -58 + Math.cos(waveAngle) * 5, 2.5, 0, Math.PI * 2); ctx.fill();
     } else if (state === 'DECORATING') {
       const reach = Math.sin(frame * 0.2) * 4;
       ctx.beginPath(); ctx.moveTo(4, -40); ctx.lineTo(16 + reach, -48); ctx.stroke();
@@ -1440,145 +1495,84 @@ function initSnowEffect() {
     } else {
       ctx.beginPath(); ctx.moveTo(-4, -40); ctx.lineTo(-4 - armSwing, -28); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(4, -40); ctx.lineTo(4 + armSwing, -28); ctx.stroke();
-
       if (state === 'WALKING_TO' && !hasDecorations) {
         ctx.fillStyle = "#f97316"; ctx.fillRect(10, -35, 6, 3);
         ctx.strokeStyle = "#582f0e"; ctx.beginPath(); ctx.moveTo(12, -32); ctx.lineTo(16, -38); ctx.stroke();
       }
     }
-
     ctx.restore();
   }
 
   function updateAndDrawGirl(snowmanX) {
     const targetX = snowmanX - 35;
     const startX = 30;
-
     girl.frame++;
 
     if (girl.state === 'IDLE') {
-      const buildProgress = snowmanVolume / maxSnowmanVolume;
-      if (buildProgress >= 0.55 && !hasDecorations) {
-        girl.state = 'WALKING_TO';
-        girl.x = startX;
+      if ((snowmanVolume / maxSnowmanVolume) >= 0.55 && !hasDecorations) {
+        girl.state = 'WALKING_TO'; girl.x = startX;
       }
     } else if (girl.state === 'WALKING_TO') {
-      if (girl.x < targetX) {
-        girl.x += girl.speed;
-      } else {
-        girl.state = 'DECORATING';
-        girl.timer = 0;
-      }
+      if (girl.x < targetX) girl.x += girl.speed;
+      else { girl.state = 'DECORATING'; girl.timer = 0; }
     } else if (girl.state === 'DECORATING') {
       girl.timer++;
-      if (girl.timer === 40) {
-        hasDecorations = true;
-        saveSnowState();
-      }
-      if (girl.timer > 90) {
-        girl.state = 'WAVING';
-        girl.timer = 0;
-      }
+      if (girl.timer === 40) { hasDecorations = true; saveSnowState(); }
+      if (girl.timer > 90) { girl.state = 'WAVING'; girl.timer = 0; }
     } else if (girl.state === 'WAVING') {
-      girl.timer++;
-      if (girl.timer > 100) girl.state = 'WALKING_BACK';
+      girl.timer++; if (girl.timer > 100) girl.state = 'WALKING_BACK';
     } else if (girl.state === 'WALKING_BACK') {
-      if (girl.x > -50) {
-        girl.x -= girl.speed;
-      } else {
-        girl.state = 'DONE';
-      }
+      if (girl.x > -50) girl.x -= girl.speed;
+      else girl.state = 'DONE';
     }
 
     if (girl.state !== 'IDLE' && girl.state !== 'DONE') {
       const girlCol = Math.floor(Math.max(0, girl.x) / colWidth);
       const girlGroundY = height - (groundHeights[girlCol] || 0);
-      const facingRight = (girl.state !== 'WALKING_BACK');
-      drawGirl(girl.x, girlGroundY, girl.state, girl.frame, facingRight);
+      drawGirl(girl.x, girlGroundY, girl.state, girl.frame, (girl.state !== 'WALKING_BACK'));
     }
   }
 
   function drawGroundTerrain() {
     ctx.save();
     let maxH = 15;
-    for (let c = 0; c < numCols; c++) {
-      if (groundHeights[c] > maxH) maxH = groundHeights[c];
-    }
+    for (let c = 0; c < numCols; c++) { if (groundHeights[c] > maxH) maxH = groundHeights[c]; }
 
     const groundGrad = ctx.createLinearGradient(0, height - maxH - 10, 0, height);
-    groundGrad.addColorStop(0, "#ffffff");
-    groundGrad.addColorStop(0.2, "#f1f5f9");
-    groundGrad.addColorStop(0.65, "#cbd5e1");
-    groundGrad.addColorStop(1, "rgba(148, 163, 184, 0.95)");
+    groundGrad.addColorStop(0, "#ffffff"); groundGrad.addColorStop(0.2, "#f1f5f9");
+    groundGrad.addColorStop(0.65, "#cbd5e1"); groundGrad.addColorStop(1, "rgba(148, 163, 184, 0.95)");
 
-    ctx.fillStyle = groundGrad;
-    ctx.beginPath();
-    ctx.moveTo(0, height);
+    ctx.fillStyle = groundGrad; ctx.beginPath(); ctx.moveTo(0, height);
+    for (let c = 0; c < numCols; c++) { ctx.lineTo(c * colWidth, height - groundHeights[c]); }
+    ctx.lineTo(width, height); ctx.closePath(); ctx.fill();
 
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.95)"; ctx.lineWidth = 2; ctx.beginPath();
     for (let c = 0; c < numCols; c++) {
-      const x = c * colWidth;
       const h = height - groundHeights[c];
-      ctx.lineTo(x, h);
+      if (c === 0) ctx.moveTo(0, h); else ctx.lineTo(c * colWidth, h);
     }
-
-    ctx.lineTo(width, height);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.95)";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    for (let c = 0; c < numCols; c++) {
-      const x = c * colWidth;
-      const h = height - groundHeights[c];
-      if (c === 0) ctx.moveTo(x, h);
-      else ctx.lineTo(x, h);
-    }
-    ctx.stroke();
-
-    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-    for (let c = 0; c < numCols; c += 3) {
-      if (groundHeights[c] > 2 && (c + Math.floor(Date.now() / 400)) % 7 === 0) {
-        const x = c * colWidth;
-        const h = height - groundHeights[c] + Math.random() * 4;
-        ctx.fillRect(x, h, 1.5, 1.5);
-      }
-    }
-
-    ctx.restore();
+    ctx.stroke(); ctx.restore();
   }
 
   let saveCounter = 0;
-
   function render() {
     ctx.clearRect(0, 0, width, height);
-
-    saveCounter++;
-    if (saveCounter % 180 === 0) saveSnowState();
+    saveCounter++; if (saveCounter % 180 === 0) saveSnowState();
 
     if (snowmanVolume >= maxSnowmanVolume && !isMelting) {
-      meltTimer += 1;
-      if (meltTimer > 800) isMelting = true;
+      meltTimer++; if (meltTimer > 800) isMelting = true;
     }
 
     let meltRatio = 0;
     if (isMelting) {
-      meltTimer += 1;
-      meltRatio = Math.min(1.0, (meltTimer - 800) / 400);
-
+      meltTimer++; meltRatio = Math.min(1.0, (meltTimer - 800) / 400);
       snowmanVolume = Math.max(0, maxSnowmanVolume * (1 - meltRatio));
-      for (let c = 0; c < numCols; c++) {
-        groundHeights[c] *= 0.995;
-      }
+      for (let c = 0; c < numCols; c++) groundHeights[c] *= 0.995;
 
       if (meltRatio >= 1.0) {
-        isMelting = false;
-        meltTimer = 0;
-        snowmanVolume = 0;
-        hasDecorations = false;
-        girl.state = 'IDLE';
-        snowmanXRatio = getNewSnowmanXRatio();
-        saveSnowState();
+        isMelting = false; meltTimer = 0; snowmanVolume = 0;
+        hasDecorations = false; girl.state = 'IDLE';
+        snowmanXRatio = getNewSnowmanXRatio(); saveSnowState();
       }
     }
 
@@ -1589,28 +1583,21 @@ function initSnowEffect() {
       flakeGrad.addColorStop(0.5, `rgba(241, 245, 249, ${f.opacity * 0.7})`);
       flakeGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
 
-      ctx.beginPath();
-      ctx.fillStyle = flakeGrad;
-      ctx.arc(f.x, f.y, size, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.fillStyle = flakeGrad;
+      ctx.arc(f.x, f.y, size, 0, Math.PI * 2); ctx.fill();
 
-      f.sway += f.swaySpeed;
-      f.y += f.d * f.z;
+      f.sway += f.swaySpeed; f.y += f.d * f.z;
       f.x += Math.sin(f.sway) * 0.4 * f.z;
-
       handleFlakeCollision(f);
     });
 
     drawGroundTerrain();
-
     const snowmanX = width * snowmanXRatio;
     const snowmanCol = Math.floor(snowmanX / colWidth);
-    const groundHeightAtSite = groundHeights[snowmanCol] || 0;
-    const groundY = height - groundHeightAtSite;
+    const groundY = height - (groundHeights[snowmanCol] || 0);
 
     drawSnowman(snowmanX, groundY, snowmanVolume, meltRatio);
     updateAndDrawGirl(snowmanX);
-
     requestAnimationFrame(render);
   }
 
@@ -1619,122 +1606,35 @@ function initSnowEffect() {
     height = canvas.height = window.innerHeight;
     numCols = Math.ceil(width / colWidth);
     const newGround = new Float32Array(numCols);
-    for (let i = 0; i < numCols; i++) {
-      newGround[i] = groundHeights[i] || 0;
-    }
+    for (let i = 0; i < numCols; i++) newGround[i] = groundHeights[i] || 0;
     groundHeights = newGround;
   });
 
   render();
 }
 
-/* Lamp Login & Auth Engine */
-function playClickSound() {
-  try {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'sine'; 
-    osc.frequency.setValueAtTime(520, audioCtx.currentTime); 
-    osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.08); 
-    gain.gain.setValueAtTime(0.2, audioCtx.currentTime); 
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08); 
-    osc.connect(gain); 
-    gain.connect(audioCtx.destination); 
-    osc.start(); 
-    osc.stop(audioCtx.currentTime + 0.08);
-  } catch(e) {}
-}
 
-function toggleLamp() {
-  playClickSound();
-  const cordEl = document.getElementById("pullCord");
-  if (cordEl) {
-    cordEl.classList.remove("bouncing");
-    void cordEl.offsetWidth; 
-    cordEl.classList.add("bouncing");
-  }
+/* ==========================================
+   5. APPLICATION BOOTSTRAPPER
+   ========================================== */
 
-  document.body.classList.toggle("lamp-is-on");
-  if (document.body.classList.contains("lamp-is-on")) {
-    setTimeout(() => {
-      const pwdInput = document.getElementById("loginPassword");
-      if (pwdInput) pwdInput.focus();
-    }, 300);
-  }
-}
+document.addEventListener("DOMContentLoaded", () => {
+  restoreBentoLayout(); 
+  checkRememberedSession();
+  restoreAppearanceSettings();
+  initWallpaperPicker();
+  initWidgetManagerUI();
+  initDataStore();
+  initHandoverStore();
+  renderSidebar();
+  initDraggableSidebar();
+  fetchLiveGames(); 
+  fetchRealtimeWeather();
+  renderClocks();
+  initTrendChart();
+  listenToLiveDutyRoster();
+  initSnowEffect();
 
-function verifyLogin() {
-  const pwdInput = document.getElementById("loginPassword");
-  const errEl = document.getElementById("loginError");
-  if (!pwdInput) return;
-
-  if (pwdInput.value === "sb2026") {
-    if (errEl) errEl.innerText = "";
-    document.getElementById("authOverlay").classList.add("unlocked");
-    document.body.classList.remove("lamp-is-on");
-    pwdInput.value = "";
-    
-    const rememberChk = document.getElementById("rememberMeCheckbox");
-    if (rememberChk && rememberChk.checked) {
-      localStorage.setItem("sbhub_remember_me", "true");
-    } else {
-      localStorage.removeItem("sbhub_remember_me");
-    }
-    resetInactivityTimer();
-  } else {
-    if (errEl) errEl.innerText = "Incorrect password!";
-  }
-}
-
-function triggerLogout() {
-  localStorage.removeItem("sbhub_remember_me");
-  const modal = document.getElementById("settingsModal");
-  if (modal) modal.style.display = "none";
-  document.getElementById("authOverlay").classList.remove("unlocked");
-  document.body.classList.remove("lamp-is-on");
-}
-
-function resetInactivityTimer() {
-  clearTimeout(inactivityTimer);
-  const authOverlay = document.getElementById("authOverlay");
-  if (!authOverlay || !authOverlay.classList.contains("unlocked")) return;
-  
-  inactivityTimer = setTimeout(() => {
-    if (localStorage.getItem("sbhub_remember_me") !== "true") {
-      authOverlay.classList.remove("unlocked");
-      document.body.classList.remove("lamp-is-on");
-    }
-  }, INACTIVITY_LIMIT);
-}
-
-function checkRememberedSession() {
-  const isRemembered = localStorage.getItem("sbhub_remember_me") === "true";
-  if (isRemembered) {
-    const authOverlay = document.getElementById("authOverlay");
-    if (authOverlay) authOverlay.classList.add("unlocked");
-    const rememberChk = document.getElementById("rememberMeCheckbox");
-    if (rememberChk) rememberChk.checked = true;
-    resetInactivityTimer();
-  }
-}
-
-/* Application Initialization Sequence */
-restoreBentoLayout(); 
-checkRememberedSession();
-restoreAppearanceSettings();
-initWallpaperPicker();
-initWidgetManagerUI();
-initDataStore();
-initHandoverStore();
-renderSidebar();
-initDraggableSidebar();
-fetchLiveGames(); 
-fetchRealtimeWeather();
-renderClocks();
-initTrendChart();
-listenToLiveDutyRoster();
-initSnowEffect();
-
-setInterval(updateClocksTick, 1000);
-setInterval(fetchRealtimeWeather, 15 * 60 * 1000);
+  setInterval(updateClocksTick, 1000);
+  setInterval(fetchRealtimeWeather, 15 * 60 * 1000);
+});
