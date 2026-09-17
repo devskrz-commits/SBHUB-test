@@ -1,4 +1,417 @@
-/* Collision-Based Real Physics 3D Snow, Interactive Girl & Dynamic Building Engine */
+/* ==========================================
+   1. GLOBAL CRASH-PROOF LAMP LOGIN ENGINE
+   (Bound directly to window so HTML inline clicks never fail)
+   ========================================== */
+
+let inactivityTimer = null;
+const INACTIVITY_LIMIT = 30 * 60 * 1000;
+
+window.playClickSound = function() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine'; 
+    osc.frequency.setValueAtTime(520, audioCtx.currentTime); 
+    osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.08); 
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime); 
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08); 
+    osc.connect(gain); 
+    gain.connect(audioCtx.destination); 
+    osc.start(); 
+    osc.stop(audioCtx.currentTime + 0.08);
+  } catch(e) {}
+};
+
+window.toggleLamp = function() {
+  window.playClickSound();
+  const cordEl = document.getElementById("pullCord");
+  if (cordEl) {
+    cordEl.classList.remove("bouncing");
+    void cordEl.offsetWidth; 
+    cordEl.classList.add("bouncing");
+  }
+
+  document.body.classList.toggle("lamp-is-on");
+  if (document.body.classList.contains("lamp-is-on")) {
+    setTimeout(() => {
+      const pwdInput = document.getElementById("loginPassword");
+      if (pwdInput) pwdInput.focus();
+    }, 300);
+  }
+};
+
+window.verifyLogin = function() {
+  const pwdInput = document.getElementById("loginPassword");
+  const errEl = document.getElementById("loginError");
+  if (!pwdInput) return;
+
+  if (pwdInput.value === "sb2026") {
+    if (errEl) errEl.innerText = "";
+    const authOverlay = document.getElementById("authOverlay");
+    if (authOverlay) authOverlay.classList.add("unlocked");
+    document.body.classList.remove("lamp-is-on");
+    pwdInput.value = "";
+    
+    const rememberChk = document.getElementById("rememberMeCheckbox");
+    if (rememberChk && rememberChk.checked) {
+      localStorage.setItem("sbhub_remember_me", "true");
+    } else {
+      localStorage.removeItem("sbhub_remember_me");
+    }
+    window.resetInactivityTimer();
+  } else {
+    if (errEl) errEl.innerText = "Incorrect password!";
+  }
+};
+
+window.triggerLogout = function() {
+  localStorage.removeItem("sbhub_remember_me");
+  const modal = document.getElementById("settingsModal");
+  if (modal) modal.style.display = "none";
+  const authOverlay = document.getElementById("authOverlay");
+  if (authOverlay) authOverlay.classList.remove("unlocked");
+  document.body.classList.remove("lamp-is-on");
+};
+
+window.resetInactivityTimer = function() {
+  clearTimeout(inactivityTimer);
+  const authOverlay = document.getElementById("authOverlay");
+  if (!authOverlay || !authOverlay.classList.contains("unlocked")) return;
+  
+  inactivityTimer = setTimeout(() => {
+    if (localStorage.getItem("sbhub_remember_me") !== "true") {
+      authOverlay.classList.remove("unlocked");
+      document.body.classList.remove("lamp-is-on");
+    }
+  }, INACTIVITY_LIMIT);
+};
+
+window.checkRememberedSession = function() {
+  const isRemembered = localStorage.getItem("sbhub_remember_me") === "true";
+  if (isRemembered) {
+    const authOverlay = document.getElementById("authOverlay");
+    if (authOverlay) authOverlay.classList.add("unlocked");
+    const rememberChk = document.getElementById("rememberMeCheckbox");
+    if (rememberChk) rememberChk.checked = true;
+    window.resetInactivityTimer();
+  }
+};
+
+
+/* ==========================================
+   2. DASHBOARD DATA & CONFIGURATION
+   ========================================== */
+
+function getLocalDateString(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+const wallpaperPresets = [
+  { id: "green_default", name: "Merry Christmas Green (Default)", type: "dark", url: "green.jpg" },
+  { id: "minimalist_bg", name: "Winter Minimalist", type: "light", url: "minimalist.jpg" },
+  { id: "santa_bg", name: "Festive Santa", type: "dark", url: "santa.jpg" },
+  { id: "merry_christmas_default", name: "Christmas Tree Scene", type: "dark", url: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=1600&auto=format&fit=crop" },
+  { id: "winter_wonderland_default", name: "Winter Wonderland", type: "light", url: "https://images.unsplash.com/photo-1513297887119-d46091b24bfa?q=80&w=1600&auto=format&fit=crop" },
+  { id: "festive_default", name: "Sportsbook Hub Festive", type: "dark", url: "https://images.unsplash.com/photo-1512389142860-9c449e58a543?q=80&w=1600&auto=format&fit=crop" }
+];
+
+const widgetRegistry = {
+  timezonesCard: "World Clock", weatherCard: "Weather PH", topGamesCard: "Next Day Top Games",
+  flashscoreCard: "Flashscore Hub", trendCard: "Monitoring Trend", quickDockCard: "Directory Dock",
+  dailyTaskCard: "Daily Task Dock", handoverCard: "Handover Tasks", currentDutyCard: "Live Time-Slot Duties"
+};
+
+let widgetVisibilityState = {
+  timezonesCard: true, weatherCard: true, topGamesCard: true, flashscoreCard: true,
+  trendCard: true, quickDockCard: true, dailyTaskCard: true, handoverCard: true, currentDutyCard: true
+};
+
+const availableTimezones = [
+  { zone: "Asia/Manila", name: "Manila (PST)" }, { zone: "UTC", name: "UTC / GMT" },
+  { zone: "America/New_York", name: "US East (EST)" }, { zone: "America/Los_Angeles", name: "US West (PST)" },
+  { zone: "Europe/London", name: "London (GMT/BST)" }, { zone: "Europe/Paris", name: "Central Europe" }
+];
+
+let selectedTimezones = ["Asia/Manila", "UTC", "America/New_York"];
+let trendChartInstance = null;
+let handoverItems = [];
+let isSidebarLocked = localStorage.getItem('sbhub_sidebar_locked') === 'true';
+let selectedGameDayOffset = 1;
+
+let rosterDb = null;
+try {
+  if (typeof firebase !== 'undefined') {
+    const rosterFirebaseConfig = {
+      apiKey: "AIzaSyCaEclzLI284lWCFk-vXbLSXa_bEZsXbOg",
+      authDomain: "test-daily-task--sb.firebaseapp.com",
+      databaseURL: "https://test-daily-task--sb-default-rtdb.firebaseio.com",
+      projectId: "test-daily-task--sb",
+      storageBucket: "test-daily-task--sb.firebasestorage.app",
+      messagingSenderId: "928476661919",
+      appId: "1:928476661919:web:c6d531190824c6ed7c7aaa"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(rosterFirebaseConfig);
+    rosterDb = firebase.database();
+  }
+} catch (e) {
+  console.warn("Firebase not active.", e);
+}
+
+
+/* ==========================================
+   3. UI HELPER FUNCTIONS
+   ========================================== */
+
+window.changeGameDayOffset = function(delta) {
+  const newOffset = selectedGameDayOffset + delta;
+  if (newOffset >= 0 && newOffset <= 7) {
+    selectedGameDayOffset = newOffset;
+    fetchLiveGames();
+  }
+};
+
+window.showToastNotification = function(msg) {
+  const toast = document.getElementById('toastNotification');
+  const msgEl = document.getElementById('toastMsg');
+  if (!toast || !msgEl) return;
+  msgEl.innerText = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2800);
+};
+
+window.toggleAccordion = function(containerId, chevronId) {
+  const container = document.getElementById(containerId);
+  const chevron = document.getElementById(chevronId);
+  if (!container) return;
+  const isHidden = container.style.display === 'none' || container.style.display === '';
+  container.style.display = isHidden ? 'flex' : 'none';
+  if (chevron) chevron.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+};
+
+function initWallpaperPicker() {
+  const container = document.getElementById('wallpaperPickerContainer');
+  if (!container) return;
+  container.innerHTML = '';
+  const activeWpId = localStorage.getItem('sbhub_selected_wallpaper') || 'green_default';
+
+  wallpaperPresets.forEach(wp => {
+    const thumb = document.createElement('div');
+    thumb.className = `wallpaper-thumb ${wp.id === activeWpId ? 'active' : ''}`;
+    thumb.style.backgroundImage = `url('${wp.url}')`;
+    thumb.title = wp.name;
+    thumb.onclick = () => selectWallpaper(wp.id);
+    container.appendChild(thumb);
+  });
+  applyWallpaper(activeWpId);
+}
+
+function selectWallpaper(id) {
+  localStorage.setItem('sbhub_selected_wallpaper', id);
+  document.querySelectorAll('.wallpaper-thumb').forEach((thumb, idx) => {
+    if (wallpaperPresets[idx] && wallpaperPresets[idx].id === id) thumb.classList.add('active');
+    else thumb.classList.remove('active');
+  });
+  applyWallpaper(id);
+}
+
+function applyWallpaper(id) {
+  const wp = wallpaperPresets.find(w => w.id === id) || wallpaperPresets[0];
+  document.body.style.backgroundImage = `linear-gradient(var(--bg-overlay), var(--bg-overlay)), url('${wp.url}')`;
+  document.body.style.backgroundSize = 'cover';
+  document.body.style.backgroundPosition = 'center center';
+  document.body.style.backgroundRepeat = 'no-repeat';
+  document.body.style.backgroundAttachment = 'fixed';
+}
+
+function initWidgetManagerUI() {
+  const savedVisibility = localStorage.getItem('sbhub_widget_visibility');
+  if (savedVisibility) {
+    try {
+      const parsed = JSON.parse(savedVisibility);
+      widgetVisibilityState = { ...widgetVisibilityState, ...parsed };
+    } catch(e){}
+  }
+
+  const container = document.getElementById('widgetManagerContainer');
+  if (!container) return;
+  container.innerHTML = '';
+
+  Object.keys(widgetRegistry).forEach(cardId => {
+    const isVisible = widgetVisibilityState[cardId] !== false;
+    const name = widgetRegistry[cardId];
+    const item = document.createElement('label');
+    item.className = 'widget-toggle-item';
+    item.innerHTML = `<span>${name}</span><input type="checkbox" ${isVisible ? 'checked' : ''} onchange="setWidgetVisible('${cardId}', this.checked)">`;
+    container.appendChild(item);
+
+    const cardEl = document.getElementById(cardId);
+    if (cardEl) cardEl.style.display = isVisible ? 'flex' : 'none';
+  });
+}
+
+window.setWidgetVisible = function(cardId, isVisible) {
+  widgetVisibilityState[cardId] = isVisible;
+  localStorage.setItem('sbhub_widget_visibility', JSON.stringify(widgetVisibilityState));
+
+  const cardEl = document.getElementById(cardId);
+  if (cardEl) cardEl.style.display = isVisible ? 'flex' : 'none';
+};
+
+window.updateGlassOpacity = function(val) {
+  const alpha = (val / 100).toFixed(2);
+  document.documentElement.style.setProperty('--glass-alpha', alpha);
+  const lbl = document.getElementById('opacityValLabel');
+  if (lbl) lbl.innerText = `${val}%`;
+  localStorage.setItem('sbhub_glass_opacity', val);
+};
+
+window.setAccentColor = function(colorHex, swatchEl) {
+  document.documentElement.style.setProperty('--accent-glow', colorHex);
+  document.querySelectorAll('.color-swatch').forEach(sw => sw.classList.remove('active'));
+  if (swatchEl) swatchEl.classList.add('active');
+  localStorage.setItem('sbhub_accent_color', colorHex);
+};
+
+function restoreAppearanceSettings() {
+  const savedOpacity = localStorage.getItem('sbhub_glass_opacity') || "30";
+  const slider = document.getElementById('opacitySlider');
+  if (slider) slider.value = savedOpacity;
+  window.updateGlassOpacity(savedOpacity);
+
+  const savedAccent = localStorage.getItem('sbhub_accent_color');
+  if (savedAccent) {
+    document.documentElement.style.setProperty('--accent-glow', savedAccent);
+  }
+}
+
+function isMobileOrTablet() {
+  return window.innerWidth <= 1024;
+}
+
+window.closeMobileSidebar = function() {
+  const sidebar = document.getElementById("mainSidebar");
+  const backdrop = document.getElementById("mobileBackdropOverlay");
+  if (sidebar) sidebar.classList.remove("mobile-open");
+  if (backdrop) backdrop.classList.remove("active");
+};
+
+window.toggleMobileSidebar = function() {
+  const sidebar = document.getElementById("mainSidebar");
+  const backdrop = document.getElementById("mobileBackdropOverlay");
+  const isOpen = sidebar && sidebar.classList.contains("mobile-open");
+  if (isOpen) window.closeMobileSidebar();
+  else {
+    if (sidebar) sidebar.classList.add("mobile-open");
+    if (backdrop) backdrop.classList.add("active");
+  }
+};
+
+window.handleNavClick = function(targetTab, action) {
+  if (targetTab) {
+    document.querySelectorAll('.mobile-nav-item').forEach(item => item.classList.remove('active'));
+    targetTab.classList.add('active');
+  }
+  window.closeMobileSidebar();
+  if (action) action();
+};
+
+async function fetchRealtimeWeather() {
+  const tempEl = document.getElementById("phTemp");
+  const descEl = document.getElementById("phDesc");
+  if (!tempEl || !descEl) return;
+
+  try {
+    const response = await fetch("https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=Asia%2FManila");
+    const data = await response.json();
+    if (!data.current) return;
+
+    tempEl.innerText = `${Math.round(data.current.temperature_2m)}°C`;
+    descEl.innerText = "Clear Sky";
+  } catch (e) {
+    descEl.innerText = "Unavailable";
+  }
+}
+
+window.switchDockTab = function(tabKey, btnEl) {
+  const card = btnEl.closest('.bento-card');
+  if (!card) return;
+  card.querySelectorAll('.dock-pill-btn').forEach(btn => btn.classList.remove('active'));
+  card.querySelectorAll('.dock-content-panel').forEach(panel => panel.classList.remove('active'));
+  btnEl.classList.add('active');
+  const targetPanel = card.querySelector(`#dock-${tabKey}`);
+  if (targetPanel) targetPanel.classList.add('active');
+};
+
+async function fetchLiveGames() {
+  const container = document.getElementById("topGamesList");
+  if (!container) return;
+  container.innerHTML = `<div style="text-align:center; padding:15px; color:var(--text-sub);">Loading live feeds...</div>`;
+}
+
+function renderClocks() {
+  const grid = document.getElementById("timezoneGrid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  selectedTimezones.forEach((tzZone, index) => {
+    const timeString = new Date().toLocaleTimeString("en-US", { timeZone: tzZone, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
+    const item = document.createElement("div"); item.className = "tz-item";
+    item.innerHTML = `<div class="tz-clock" id="clock_${index}">${timeString}</div>`;
+    grid.appendChild(item);
+  });
+}
+
+function updateClocksTick() {
+  selectedTimezones.forEach((tzZone, index) => {
+    const clockEl = document.getElementById(`clock_${index}`);
+    if (clockEl) {
+      clockEl.innerText = new Date().toLocaleTimeString("en-US", { timeZone: tzZone, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
+    }
+  });
+}
+
+function restoreBentoLayout() {
+  if (isMobileOrTablet()) return;
+  const saved = localStorage.getItem("sbhub_bento_layout_clean_v10");
+  if (saved) {
+    try {
+      const layoutToApply = JSON.parse(saved);
+      for (const id in layoutToApply) {
+        const el = document.getElementById(id);
+        if (el && layoutToApply[id].top) { 
+          el.style.top = layoutToApply[id].top; 
+          el.style.left = layoutToApply[id].left; 
+        }
+      }
+    } catch(e){}
+  }
+}
+
+window.toggleModal = function() { 
+  const modal = document.getElementById("settingsModal"); 
+  if (modal) modal.style.display = (modal.style.display === "flex") ? "none" : "flex"; 
+};
+
+window.toggleTheme = function() { 
+  const isLight = document.getElementById("modeToggle")?.checked; 
+  if (isLight) document.body.classList.add("light-mode"); 
+  else document.body.classList.remove("light-mode"); 
+};
+
+window.toggleMobileView = function() { 
+  const mobileToggle = document.getElementById("mobileViewToggle"); 
+  if (mobileToggle && mobileToggle.checked) document.body.classList.add("mobile-view-active"); 
+  else document.body.classList.remove("mobile-view-active"); 
+};
+
+
+/* ==========================================
+   4. 3D PHYSICS SNOW, GIRL & SNOWMAN ENGINE
+   ========================================== */
+
 function initSnowEffect() {
   const canvas = document.getElementById('snowCanvas');
   if (!canvas) return;
@@ -18,18 +431,13 @@ function initSnowEffect() {
   let meltTimer = 0;
   let hasDecorations = false;
 
-  // Persistence Engine
   function loadSnowState() {
     const saved = localStorage.getItem('sbhub_snow_data');
     if (saved) {
       try {
         const data = JSON.parse(saved);
         if (data.groundHeights && Array.isArray(data.groundHeights)) {
-          const oldArr = data.groundHeights;
-          for (let i = 0; i < numCols; i++) {
-            const srcIdx = Math.floor((i / numCols) * oldArr.length);
-            groundHeights[i] = oldArr[srcIdx] || 0;
-          }
+          for (let i = 0; i < numCols; i++) groundHeights[i] = data.groundHeights[i] || 0;
         }
         if (typeof data.snowmanVolume === 'number') snowmanVolume = data.snowmanVolume;
         if (typeof data.snowmanXRatio === 'number') snowmanXRatio = data.snowmanXRatio;
@@ -39,19 +447,16 @@ function initSnowEffect() {
   }
 
   function saveSnowState() {
-    const data = {
+    localStorage.setItem('sbhub_snow_data', JSON.stringify({
       groundHeights: Array.from(groundHeights),
       snowmanVolume: snowmanVolume,
       snowmanXRatio: snowmanXRatio,
       hasDecorations: hasDecorations
-    };
-    localStorage.setItem('sbhub_snow_data', JSON.stringify(data));
+    }));
   }
 
   loadSnowState();
-  window.addEventListener('beforeunload', saveSnowState);
 
-  // Mouse Sensing Engine
   let isMouseActive = false;
   let mouseTimer = null;
   window.addEventListener('mousemove', () => {
@@ -60,38 +465,15 @@ function initSnowEffect() {
     mouseTimer = setTimeout(() => { isMouseActive = false; }, 2200);
   });
 
-  // 3D Parallax Snowflakes
-  const numFlakes = 110;
+  const numFlakes = 100;
   const flakes = Array.from({ length: numFlakes }, () => ({
-    x: Math.random() * width,
-    y: Math.random() * (height * 0.8),
-    r: Math.random() * 2.5 + 1.2,
-    z: Math.random() * 0.9 + 0.3,
-    d: Math.random() * 0.8 + 0.4,
-    opacity: Math.random() * 0.6 + 0.4,
-    sway: Math.random() * Math.PI * 2,
-    swaySpeed: Math.random() * 0.02 + 0.01
+    x: Math.random() * width, y: Math.random() * (height * 0.8),
+    r: Math.random() * 2.5 + 1.2, z: Math.random() * 0.9 + 0.3,
+    d: Math.random() * 0.8 + 0.4, opacity: Math.random() * 0.6 + 0.4,
+    sway: Math.random() * Math.PI * 2, swaySpeed: Math.random() * 0.02 + 0.01
   }));
 
-  // Lively Girl Character Engine
-  const girl = {
-    x: 60,
-    targetX: 60,
-    state: 'ROAMING', // ROAMING, ROLL_SNOW, FETCH_ITEMS, DECORATING, WAVING, ADMIRING
-    prevState: 'ROAMING',
-    timer: 0,
-    frame: 0,
-    speed: 1.6,
-    facingRight: true,
-    carryingSnow: false,
-    snowBallRadius: 0
-  };
-
-  function getNewSnowmanXRatio() {
-    let newRatio;
-    do { newRatio = 0.25 + Math.random() * 0.5; } while (Math.abs(newRatio - snowmanXRatio) < 0.25);
-    return newRatio;
-  }
+  const girl = { x: 60, targetX: 60, state: 'ROAMING', prevState: 'ROAMING', timer: 0, frame: 0, speed: 1.6, facingRight: true, snowBallRadius: 0 };
 
   function handleFlakeCollision(f) {
     let col = Math.floor(f.x / colWidth);
@@ -108,158 +490,97 @@ function initSnowEffect() {
     }
   }
 
-  // Render 3D Snowman
   function drawSnowman(x, baseY, volume, meltRatio) {
     if (volume <= 0) return;
     ctx.save();
     
     const buildProgress = Math.min(1.0, volume / maxSnowmanVolume);
-    const bottomMaxR = 38; const middleMaxR = 26; const headMaxR = 17;
-    const bottomR = Math.min(bottomMaxR, buildProgress * 2.2 * bottomMaxR);
-    const middleR = buildProgress > 0.25 ? Math.min(middleMaxR, (buildProgress - 0.25) * 2.2 * middleMaxR) : 0;
-    const headR = buildProgress > 0.55 ? Math.min(headMaxR, (buildProgress - 0.55) * 2.2 * headMaxR) : 0;
+    const bottomR = Math.min(38, buildProgress * 2.2 * 38);
+    const middleR = buildProgress > 0.25 ? Math.min(26, (buildProgress - 0.25) * 2.2 * 26) : 0;
+    const headR = buildProgress > 0.55 ? Math.min(17, (buildProgress - 0.55) * 2.2 * 17) : 0;
     const meltYOffset = meltRatio * 25;
     ctx.globalAlpha = Math.max(0, 1 - meltRatio * 0.9);
 
-    const moundR = Math.max(bottomR * 1.3, 12);
-    const moundGrad = ctx.createRadialGradient(x, baseY + 4, 2, x, baseY + 4, moundR);
-    moundGrad.addColorStop(0, "rgba(255, 255, 255, 0.95)");
-    moundGrad.addColorStop(0.7, "rgba(226, 232, 240, 0.9)");
-    moundGrad.addColorStop(1, "rgba(148, 163, 184, 0)");
-    
-    ctx.beginPath(); ctx.fillStyle = moundGrad;
-    ctx.ellipse(x, baseY + 4, moundR * (1 + meltRatio * 0.6), (bottomR * 0.35) * (1 - meltRatio * 0.5), 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    function draw3DSphere(cx, cy, radius, scaleY = 1) {
+    function draw3DSphere(cx, cy, radius) {
       const grad = ctx.createRadialGradient(cx - radius * 0.3, cy - radius * 0.3, radius * 0.1, cx, cy, radius);
-      grad.addColorStop(0, "#ffffff"); grad.addColorStop(0.65, "#f1f5f9");
-      grad.addColorStop(0.9, "#cbd5e1"); grad.addColorStop(1, "#94a3b8");
-      ctx.beginPath(); ctx.fillStyle = grad;
-      ctx.arc(cx, cy, radius * scaleY, 0, Math.PI * 2); ctx.fill();
+      grad.addColorStop(0, "#ffffff"); grad.addColorStop(0.65, "#f1f5f9"); grad.addColorStop(1, "#94a3b8");
+      ctx.beginPath(); ctx.fillStyle = grad; ctx.arc(cx, cy, radius, 0, Math.PI * 2); ctx.fill();
     }
 
-    if (bottomR > 1) draw3DSphere(x, baseY - bottomR * 0.7 + meltYOffset * 0.3, bottomR, (1 - meltRatio * 0.3));
-
+    if (bottomR > 1) draw3DSphere(x, baseY - bottomR * 0.7 + meltYOffset * 0.3, bottomR);
     if (middleR > 1) {
       const mY = baseY - bottomR * 1.3 - middleR * 0.7 + meltYOffset * 0.6;
-      draw3DSphere(x, mY, middleR, (1 - meltRatio * 0.4));
+      draw3DSphere(x, mY, middleR);
       if (hasDecorations) {
-        const armMelt = meltRatio * 18;
         ctx.strokeStyle = "#582f0e"; ctx.lineWidth = 3.5; ctx.lineCap = "round";
-        ctx.beginPath(); ctx.moveTo(x - middleR * 0.8, mY); ctx.lineTo(x - middleR - 22, mY - 12 + armMelt); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(x + middleR * 0.8, mY); ctx.lineTo(x + middleR + 22, mY - 14 + armMelt); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x - middleR * 0.8, mY); ctx.lineTo(x - middleR - 22, mY - 12); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x + middleR * 0.8, mY); ctx.lineTo(x + middleR + 22, mY - 14); ctx.stroke();
       }
     }
-
     if (headR > 1) {
       const hY = baseY - bottomR * 1.3 - middleR * 1.3 - headR * 0.7 + meltYOffset;
-      draw3DSphere(x, hY, headR, (1 - meltRatio * 0.5));
+      draw3DSphere(x, hY, headR);
       if (buildProgress > 0.4) {
-        ctx.fillStyle = "#0f172a";
-        ctx.beginPath(); ctx.arc(x - 5, hY - 3, 2, 0, Math.PI * 2); ctx.arc(x + 5, hY - 3, 2, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "#0f172a"; ctx.beginPath();
+        ctx.arc(x - 5, hY - 3, 2, 0, Math.PI * 2); ctx.arc(x + 5, hY - 3, 2, 0, Math.PI * 2); ctx.fill();
       }
       if (hasDecorations) {
-        const carrotGrad = ctx.createLinearGradient(x, hY, x + 18, hY + 4);
-        carrotGrad.addColorStop(0, "#fb923c"); carrotGrad.addColorStop(1, "#ea580c");
-        ctx.fillStyle = carrotGrad;
-        ctx.beginPath(); ctx.moveTo(x, hY); ctx.lineTo(x + 18, hY + 3 + meltRatio * 12); ctx.lineTo(x, hY + 5); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = "#ea580c"; ctx.beginPath();
+        ctx.moveTo(x, hY); ctx.lineTo(x + 18, hY + 3); ctx.lineTo(x, hY + 5); ctx.closePath(); ctx.fill();
       }
     }
     ctx.restore();
   }
 
-  // Draw Girl Character (Pink Headband, Purple Dress with Daisy)
   function drawGirl(x, y, state, frame, facingRight = true) {
-    ctx.save();
-    ctx.translate(x, y);
+    ctx.save(); ctx.translate(x, y);
     if (!facingRight) ctx.scale(-1, 1);
 
     const isWalking = (state === 'ROAMING' || state === 'ROLL_SNOW' || state === 'FETCH_ITEMS');
     const legSwing = isWalking ? Math.sin(frame * 0.25) * 8 : 0;
-    const armSwing = isWalking ? Math.sin(frame * 0.25) * 10 : 0;
 
     // Shadow
     ctx.fillStyle = "rgba(15, 23, 42, 0.28)";
     ctx.beginPath(); ctx.ellipse(0, 0, 14, 4.5, 0, 0, Math.PI * 2); ctx.fill();
 
-    // Legs & Purple Shoes
-    ctx.strokeStyle = "#fed7aa"; ctx.lineWidth = 4; ctx.lineCap = "round";
+    // Body & Dress
+    ctx.strokeStyle = "#fed7aa"; ctx.lineWidth = 4;
     ctx.beginPath(); ctx.moveTo(-3, -22); ctx.lineTo(-3 - legSwing, -4); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(3, -22); ctx.lineTo(3 + legSwing, -4); ctx.stroke();
 
-    ctx.fillStyle = "#7e22ce";
-    ctx.beginPath(); ctx.arc(-3 - legSwing, -2, 4, 0, Math.PI * 2); ctx.arc(3 + legSwing, -2, 4, 0, Math.PI * 2); ctx.fill();
-
-    // Purple Dress with Daisy
     ctx.fillStyle = "#a855f7";
     ctx.beginPath(); ctx.moveTo(0, -42); ctx.lineTo(-14, -20); ctx.quadraticCurveTo(0, -16, 14, -20); ctx.closePath(); ctx.fill();
 
-    // Daisy Flower
-    ctx.fillStyle = "#ffffff";
-    for (let i = 0; i < 5; i++) {
-      const angle = (i * Math.PI * 2) / 5;
-      ctx.beginPath(); ctx.arc(Math.cos(angle) * 3, -29 + Math.sin(angle) * 3, 2, 0, Math.PI * 2); ctx.fill();
-    }
-    ctx.fillStyle = "#f59e0b"; ctx.beginPath(); ctx.arc(0, -29, 2, 0, Math.PI * 2); ctx.fill();
-
-    // Head, Face & Blonde Hair
+    // Head
     ctx.fillStyle = "#fed7aa"; ctx.fillRect(-2, -46, 4, 6);
     ctx.beginPath(); ctx.arc(0, -54, 12, 0, Math.PI * 2); ctx.fill();
 
-    // Eyes & Smile
-    ctx.fillStyle = "#0f172a";
-    ctx.beginPath(); ctx.arc(4, -56, 1.8, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = "#9a3412"; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.arc(4, -52, 3.2, 0.1, Math.PI - 0.2); ctx.stroke();
-
-    // Hair
     ctx.fillStyle = "#facc15";
     ctx.beginPath(); ctx.arc(-2, -54, 15, Math.PI * 0.5, Math.PI * 1.8); ctx.fill();
-    ctx.beginPath(); ctx.arc(3, -60, 9, 0, Math.PI); ctx.fill();
-
-    // Pink Headband
     ctx.strokeStyle = "#ec4899"; ctx.lineWidth = 3;
     ctx.beginPath(); ctx.arc(0, -56, 13, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
 
-    // Arms Animation & Pushing Objects
+    // Arms / Waving
     ctx.strokeStyle = "#fed7aa"; ctx.lineWidth = 3.5;
-
     if (state === 'WAVING') {
-      ctx.beginPath(); ctx.moveTo(-6, -40); ctx.lineTo(-10, -28); ctx.stroke();
       const waveAngle = Math.sin(frame * 0.35) * 0.5;
-      ctx.beginPath(); ctx.moveTo(6, -40); ctx.lineTo(14 + waveAngle * 10, -58 + Math.cos(waveAngle) * 5); ctx.stroke();
-      ctx.fillStyle = "#fed7aa"; ctx.beginPath(); ctx.arc(14 + waveAngle * 10, -58 + Math.cos(waveAngle) * 5, 2.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(6, -40); ctx.lineTo(14 + waveAngle * 10, -58); ctx.stroke();
     } else if (state === 'ROLL_SNOW') {
-      // Pushing Snowball Forward
       ctx.beginPath(); ctx.moveTo(2, -38); ctx.lineTo(14, -28); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(-2, -38); ctx.lineTo(12, -24); ctx.stroke();
-
-      // Pushed Rolling Snowball
       const sR = Math.min(18, 6 + girl.snowBallRadius);
-      const grad = ctx.createRadialGradient(18 + sR, -sR + 4, 2, 18 + sR, -sR + 4, sR);
-      grad.addColorStop(0, "#ffffff"); grad.addColorStop(0.8, "#cbd5e1");
-      ctx.fillStyle = grad;
-      ctx.beginPath(); ctx.arc(18 + sR, -sR + 4, sR, 0, Math.PI * 2); ctx.fill();
-    } else if (state === 'FETCH_ITEMS') {
-      ctx.beginPath(); ctx.moveTo(-4, -40); ctx.lineTo(-4 - armSwing, -28); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(4, -40); ctx.lineTo(12, -32); ctx.stroke();
-      ctx.fillStyle = "#f97316"; ctx.fillRect(12, -35, 6, 3);
-      ctx.strokeStyle = "#582f0e"; ctx.beginPath(); ctx.moveTo(14, -32); ctx.lineTo(18, -38); ctx.stroke();
+      ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(18 + sR, -sR + 4, sR, 0, Math.PI * 2); ctx.fill();
     } else {
-      ctx.beginPath(); ctx.moveTo(-4, -40); ctx.lineTo(-4 - armSwing, -28); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(4, -40); ctx.lineTo(4 + armSwing, -28); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-4, -40); ctx.lineTo(-4, -28); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(4, -40); ctx.lineTo(4, -28); ctx.stroke();
     }
 
     ctx.restore();
   }
 
-  // Intelligent State & Movement Machine
   function updateGirl(snowmanX) {
     girl.frame++;
     const siteX = snowmanX - 35;
 
-    // React to Mouse Movement with Waving
     if (isMouseActive && girl.state !== 'WAVING') {
       girl.prevState = girl.state;
       girl.state = 'WAVING';
@@ -270,17 +591,13 @@ function initSnowEffect() {
       girl.timer++;
       if (girl.timer > 75 && !isMouseActive) {
         girl.state = girl.prevState || 'ROAMING';
-        girl.timer = 0;
       }
       return;
     }
 
-    // Snowman Building Progression Cycle
     if (snowmanVolume < maxSnowmanVolume) {
       if (girl.state === 'ROAMING' || girl.state === 'ADMIRING') {
-        girl.state = 'ROLL_SNOW';
-        girl.x = 40;
-        girl.snowBallRadius = 2;
+        girl.state = 'ROLL_SNOW'; girl.x = 40; girl.snowBallRadius = 2;
       }
 
       if (girl.state === 'ROLL_SNOW') {
@@ -289,46 +606,30 @@ function initSnowEffect() {
         if (girl.x < siteX) {
           girl.x += girl.speed * 1.1;
         } else {
-          // Delivered Snowball to Site
           snowmanVolume = Math.min(maxSnowmanVolume, snowmanVolume + 45);
           saveSnowState();
-          girl.x = 40;
-          girl.snowBallRadius = 2;
-
-          if (snowmanVolume >= maxSnowmanVolume && !hasDecorations) {
-            girl.state = 'FETCH_ITEMS';
-            girl.x = 20;
-          }
+          girl.x = 40; girl.snowBallRadius = 2;
         }
       }
     } else if (!hasDecorations) {
-      // Fetch Nose & Arms
       if (girl.state !== 'FETCH_ITEMS' && girl.state !== 'DECORATING') {
-        girl.state = 'FETCH_ITEMS';
-        girl.x = 20;
+        girl.state = 'FETCH_ITEMS'; girl.x = 20;
       }
 
       if (girl.state === 'FETCH_ITEMS') {
         girl.facingRight = true;
-        if (girl.x < siteX) {
-          girl.x += girl.speed;
-        } else {
-          girl.state = 'DECORATING';
-          girl.timer = 0;
-        }
+        if (girl.x < siteX) girl.x += girl.speed;
+        else { girl.state = 'DECORATING'; girl.timer = 0; }
       }
 
       if (girl.state === 'DECORATING') {
         girl.timer++;
         if (girl.timer > 50) {
-          hasDecorations = true;
-          saveSnowState();
-          girl.state = 'ADMIRING';
-          girl.timer = 0;
+          hasDecorations = true; saveSnowState();
+          girl.state = 'ADMIRING'; girl.timer = 0;
         }
       }
     } else {
-      // Fully Built - Roam Dashboard
       if (girl.state === 'ADMIRING') {
         girl.timer++;
         if (girl.timer > 90) {
@@ -358,60 +659,26 @@ function initSnowEffect() {
     for (let c = 0; c < numCols; c++) { if (groundHeights[c] > maxH) maxH = groundHeights[c]; }
 
     const groundGrad = ctx.createLinearGradient(0, height - maxH - 10, 0, height);
-    groundGrad.addColorStop(0, "#ffffff"); groundGrad.addColorStop(0.2, "#f1f5f9");
-    groundGrad.addColorStop(0.65, "#cbd5e1"); groundGrad.addColorStop(1, "rgba(148, 163, 184, 0.95)");
+    groundGrad.addColorStop(0, "#ffffff"); groundGrad.addColorStop(1, "rgba(148, 163, 184, 0.95)");
 
     ctx.fillStyle = groundGrad; ctx.beginPath(); ctx.moveTo(0, height);
     for (let c = 0; c < numCols; c++) { ctx.lineTo(c * colWidth, height - groundHeights[c]); }
     ctx.lineTo(width, height); ctx.closePath(); ctx.fill();
-
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.95)"; ctx.lineWidth = 2; ctx.beginPath();
-    for (let c = 0; c < numCols; c++) {
-      const h = height - groundHeights[c];
-      if (c === 0) ctx.moveTo(0, h); else ctx.lineTo(c * colWidth, h);
-    }
-    ctx.stroke(); ctx.restore();
+    ctx.restore();
   }
 
-  let saveCounter = 0;
   function render() {
     ctx.clearRect(0, 0, width, height);
-    saveCounter++; if (saveCounter % 180 === 0) saveSnowState();
-
-    if (snowmanVolume >= maxSnowmanVolume && !isMelting) {
-      meltTimer++; if (meltTimer > 1200) isMelting = true;
-    }
-
-    let meltRatio = 0;
-    if (isMelting) {
-      meltTimer++; meltRatio = Math.min(1.0, (meltTimer - 1200) / 400);
-      snowmanVolume = Math.max(0, maxSnowmanVolume * (1 - meltRatio));
-      for (let c = 0; c < numCols; c++) groundHeights[c] *= 0.995;
-
-      if (meltRatio >= 1.0) {
-        isMelting = false; meltTimer = 0; snowmanVolume = 0;
-        hasDecorations = false; girl.state = 'ROAMING';
-        snowmanXRatio = getNewSnowmanXRatio(); saveSnowState();
-      }
-    }
 
     flakes.forEach((f) => {
-      const size = f.r * f.z;
-      const flakeGrad = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, size);
-      flakeGrad.addColorStop(0, `rgba(255, 255, 255, ${f.opacity})`);
-      flakeGrad.addColorStop(0.5, `rgba(241, 245, 249, ${f.opacity * 0.7})`);
-      flakeGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
-
-      ctx.beginPath(); ctx.fillStyle = flakeGrad;
-      ctx.arc(f.x, f.y, size, 0, Math.PI * 2); ctx.fill();
-
+      ctx.beginPath(); ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`;
+      ctx.arc(f.x, f.y, f.r * f.z, 0, Math.PI * 2); ctx.fill();
       f.sway += f.swaySpeed; f.y += f.d * f.z;
       f.x += Math.sin(f.sway) * 0.4 * f.z;
       handleFlakeCollision(f);
     });
 
     drawGroundTerrain();
-
     const snowmanX = width * snowmanXRatio;
     const snowmanCol = Math.floor(snowmanX / colWidth);
     const groundY = height - (groundHeights[snowmanCol] || 0);
@@ -430,10 +697,29 @@ function initSnowEffect() {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
     numCols = Math.ceil(width / colWidth);
-    const newGround = new Float32Array(numCols);
-    for (let i = 0; i < numCols; i++) newGround[i] = groundHeights[i] || 0;
-    groundHeights = newGround;
+    groundHeights = new Float32Array(numCols).fill(0);
   });
 
   render();
 }
+
+
+/* ==========================================
+   5. FAIL-SAFE APPLICATION BOOTSTRAPPER
+   (Every module wrapped in try...catch so login never breaks)
+   ========================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Always verify login session first
+  try { window.checkRememberedSession(); } catch(e) { console.error("Session check error:", e); }
+  
+  // Safe isolated module execution
+  try { restoreBentoLayout(); } catch(e){}
+  try { restoreAppearanceSettings(); } catch(e){}
+  try { initWallpaperPicker(); } catch(e){}
+  try { initWidgetManagerUI(); } catch(e){}
+  try { fetchLiveGames(); } catch(e){}
+  try { fetchRealtimeWeather(); } catch(e){}
+  try { renderClocks(); setInterval(updateClocksTick, 1000); } catch(e){}
+  try { initSnowEffect(); } catch(e) { console.error("Snow Canvas Error:", e); }
+});
