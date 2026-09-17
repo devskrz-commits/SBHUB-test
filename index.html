@@ -18,7 +18,10 @@
 <body>
 
   <!-- Toast Notification -->
-  <div id="toastNotification"><i class='bx bx-info-circle' style="font-size: 16px; color: var(--accent-glow);"></i> <span id="toastMsg">Notification</span></div>
+  <div id="toastNotification">
+    <i class='bx bx-info-circle' style="font-size: 16px; color: var(--accent-glow);"></i> 
+    <span id="toastMsg">Notification</span>
+  </div>
 
   <!-- Authentication Overlay -->
   <div id="authOverlay">
@@ -26,9 +29,9 @@
       <div class="lamp-scene" onclick="toggleLamp()">
         <div class="lamp-light-beam"></div>
         <div class="lamp-shade"></div>
-        <div class="pull-cord-wrapper" id="pullCord">
-          <div class="cord-string"></div>
-          <div class="cord-handle" title="Toggle Lamp Switch"></div>
+        <div class="pull-cord-wrapper" id="pullCord" onclick="event.stopPropagation(); toggleLamp();">
+          <div class="cord-string" onclick="event.stopPropagation(); toggleLamp();"></div>
+          <div class="cord-handle" id="cordHandle" title="Toggle Lamp Switch" onclick="event.stopPropagation(); toggleLamp();"></div>
         </div>
         <div class="lamp-stand-rod"></div>
         <div class="lamp-base"></div>
