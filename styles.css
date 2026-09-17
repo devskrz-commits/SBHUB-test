@@ -135,7 +135,7 @@ body.lamp-is-on .lamp-shade::before { opacity: 1; }
 /* Pull Cord Styling & Precise Layering */
 .pull-cord-wrapper { 
   position: absolute; 
-  top: 90px; /* Aligned exactly under the lamp shade bottom rim */
+  top: 102px; /* Positioned precisely at the bottom rim of the shade */
   right: 42px; 
   cursor: pointer; 
   z-index: 10; 
@@ -664,7 +664,7 @@ input:checked + .slider:before { transform: translateX(22px); }
 .mobile-nav-bar { display: none; }
 #mobileBackdropOverlay { display: none; }
 
-/* Elevated Snow Canvas so girl and snowman render over bento elements */
+/* Elevated Snow Canvas so cat and snowman render over bento elements */
 #snowCanvas {
   position: fixed;
   top: 0;
