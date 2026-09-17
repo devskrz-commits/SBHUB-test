@@ -1290,22 +1290,7 @@ window.toggleMobileView = function() {
 
 
 /* ==========================================
-   4. High-Res SVG Vector Character Assets
-   ========================================== */
-
-const girlStandingSvg = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 130" width="100" height="130"><ellipse cx="50" cy="124" rx="18" ry="4" fill="rgba(15,23,42,0.3)"/><path d="M22,35 C10,48 8,72 18,82 C22,86 28,78 32,76 L68,76 C72,78 78,86 82,82 C92,72 90,48 78,35 Z" fill="%23fde047" stroke="%23000000" stroke-width="2.2" stroke-linejoin="round"/><rect x="38" y="90" width="7" height="28" rx="3.5" fill="%23ffe4d6" stroke="%23000000" stroke-width="2"/><ellipse cx="41.5" cy="118" rx="6.5" ry="4.5" fill="%237e22ce" stroke="%23000000" stroke-width="2"/><ellipse cx="41.5" cy="116" rx="3" ry="1.8" fill="%23ffe4d6" stroke="%23000000" stroke-width="1.2"/><rect x="55" y="90" width="7" height="28" rx="3.5" fill="%23ffe4d6" stroke="%23000000" stroke-width="2"/><ellipse cx="58.5" cy="118" rx="6.5" ry="4.5" fill="%237e22ce" stroke="%23000000" stroke-width="2"/><ellipse cx="58.5" cy="116" rx="3" ry="1.8" fill="%23ffe4d6" stroke="%23000000" stroke-width="1.2"/><circle cx="28" cy="58" r="7.5" fill="%23f472b6" stroke="%23000000" stroke-width="2"/><circle cx="72" cy="58" r="7.5" fill="%23f472b6" stroke="%23000000" stroke-width="2"/><path d="M36,54 L22,90 C32,95 40,90 50,93 C60,90 68,95 78,90 L64,54 Z" fill="%23a855f7" stroke="%23000000" stroke-width="2.2" stroke-linejoin="round"/><circle cx="50" cy="73" r="3.2" fill="%23ffffff" stroke="%23000000" stroke-width="1"/><circle cx="45.5" cy="73" r="3.2" fill="%23ffffff" stroke="%23000000" stroke-width="1"/><circle cx="54.5" cy="73" r="3.2" fill="%23ffffff" stroke="%23000000" stroke-width="1"/><circle cx="47.5" cy="69" r="3.2" fill="%23ffffff" stroke="%23000000" stroke-width="1"/><circle cx="52.5" cy="69" r="3.2" fill="%23ffffff" stroke="%23000000" stroke-width="1"/><circle cx="47.5" cy="77" r="3.2" fill="%23ffffff" stroke="%23000000" stroke-width="1"/><circle cx="52.5" cy="77" r="3.2" fill="%23ffffff" stroke="%23000000" stroke-width="1"/><circle cx="50" cy="73" r="3.8" fill="%23f59e0b" stroke="%23000000" stroke-width="1.2"/><rect x="46" y="42" width="8" height="12" fill="%23ffe4d6" stroke="%23000000" stroke-width="2"/><circle cx="50" cy="32" r="21" fill="%23ffe4d6" stroke="%23000000" stroke-width="2.2"/><circle cx="28" cy="34" r="4.2" fill="%23ffe4d6" stroke="%23000000" stroke-width="1.8"/><circle cx="72" cy="34" r="4.2" fill="%23ffe4d6" stroke="%23000000" stroke-width="1.8"/><ellipse cx="38" cy="38" rx="4" ry="2.2" fill="rgba(244,114,182,0.6)"/><ellipse cx="62" cy="38" rx="4" ry="2.2" fill="rgba(244,114,182,0.6)"/><ellipse cx="40" cy="30" rx="4" ry="6" fill="%23000000"/><ellipse cx="60" cy="30" rx="4" ry="6" fill="%23000000"/><circle cx="41.5" cy="28" r="1.8" fill="%23ffffff"/><circle cx="61.5" cy="28" r="1.8" fill="%23ffffff"/><path d="M34,21 Q40,18 45,22" fill="none" stroke="%23000000" stroke-width="1.8" stroke-linecap="round"/><path d="M55,22 Q60,18 66,21" fill="none" stroke="%23000000" stroke-width="1.8" stroke-linecap="round"/><path d="M49,34 C52,34 52,38 49,38" fill="none" stroke="%23000000" stroke-width="1.8" stroke-linecap="round"/><path d="M41,40 Q50,49 59,40 Z" fill="%23ffffff" stroke="%23000000" stroke-width="1.8" stroke-linejoin="round"/><path d="M26,26 C20,10 80,10 74,26 C82,40 88,52 78,60 C72,57 70,50 68,47 L32,47 C30,50 28,57 22,60 C12,52 18,40 26,26 Z" fill="%23fde047" stroke="%23000000" stroke-width="2.2" stroke-linejoin="round"/><path d="M28,22 L36,30 L43,22 L50,29 L57,22 L64,30 L72,22" fill="none" stroke="%23000000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M27,20 C33,8 67,8 73,20" fill="none" stroke="%23ec4899" stroke-width="5.5" stroke-linecap="round"/><path d="M24,58 L12,70 C10,72 12,77 15,75" fill="none" stroke="%23ffe4d6" stroke-width="4.5" stroke-linecap="round"/><path d="M24,58 L12,70 C10,72 12,77 15,75" fill="none" stroke="%23000000" stroke-width="1.6" stroke-linecap="round"/><path d="M76,58 L88,70 C90,72 88,77 85,75" fill="none" stroke="%23ffe4d6" stroke-width="4.5" stroke-linecap="round"/><path d="M76,58 L88,70 C90,72 88,77 85,75" fill="none" stroke="%23000000" stroke-width="1.6" stroke-linecap="round"/></svg>`;
-
-const girlCrawlingSvg = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 90" width="120" height="90"><ellipse cx="50" cy="84" rx="28" ry="4" fill="rgba(15,23,42,0.3)"/><path d="M12,48 C5,58 10,78 22,80 L55,75 C60,65 52,50 42,46 Z" fill="%23fde047" stroke="%23000000" stroke-width="2.2" stroke-linejoin="round"/><ellipse cx="20" cy="74" rx="8" ry="5" fill="%237e22ce" stroke="%23000000" stroke-width="2"/><rect x="22" y="62" width="22" height="12" rx="6" fill="%23ffe4d6" stroke="%23000000" stroke-width="2"/><path d="M30,45 L15,66 C25,72 45,68 55,62 L48,45 Z" fill="%23a855f7" stroke="%23000000" stroke-width="2.2" stroke-linejoin="round"/><circle cx="34" cy="58" r="2.8" fill="%23ffffff" stroke="%23000000" stroke-width="1"/><circle cx="34" cy="58" r="3.2" fill="%23f59e0b" stroke="%23000000" stroke-width="1"/><circle cx="50" cy="42" r="6" fill="%23f472b6" stroke="%23000000" stroke-width="2"/><rect x="52" y="32" width="10" height="7" fill="%23ffe4d6" stroke="%23000000" stroke-width="2"/><circle cx="62" cy="26" r="18" fill="%23ffe4d6" stroke="%23000000" stroke-width="2.2"/><circle cx="45" cy="26" r="3.5" fill="%23ffe4d6" stroke="%23000000" stroke-width="1.8"/><ellipse cx="58" cy="30" rx="3.5" ry="2" fill="rgba(244,114,182,0.6)"/><ellipse cx="68" cy="23" rx="3.5" ry="5" fill="%23000000"/><circle cx="69.2" cy="21.5" r="1.5" fill="%23ffffff"/><path d="M63,16 Q68,13 73,17" fill="none" stroke="%23000000" stroke-width="1.6" stroke-linecap="round"/><path d="M72,28 C75,28 75,31 72,31" fill="none" stroke="%23000000" stroke-width="1.6" stroke-linecap="round"/><path d="M68,33 Q75,38 80,31 Z" fill="%23ffffff" stroke="%23000000" stroke-width="1.6" stroke-linejoin="round"/><path d="M46,18 C42,8 88,6 80,20 C88,32 90,42 82,50 C76,46 72,40 70,36 C62,34 54,28 46,18 Z" fill="%23fde047" stroke="%23000000" stroke-width="2.2" stroke-linejoin="round"/><path d="M52,14 L58,22 L64,14 L70,21 L76,14" fill="none" stroke="%23000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M50,11 C58,2 78,5 82,14" fill="none" stroke="%23ec4899" stroke-width="5" stroke-linecap="round"/><path d="M52,44 L68,62 L82,60" fill="none" stroke="%23ffe4d6" stroke-width="5" stroke-linecap="round"/><path d="M52,44 L68,62 L82,60" fill="none" stroke="%23000000" stroke-width="1.8" stroke-linecap="round"/></svg>`;
-
-const girlWavingSvg = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 130" width="100" height="130"><ellipse cx="50" cy="124" rx="18" ry="4" fill="rgba(15,23,42,0.3)"/><path d="M22,35 C10,48 8,72 18,82 C22,86 28,78 32,76 L68,76 C72,78 78,86 82,82 C92,72 90,48 78,35 Z" fill="%23fde047" stroke="%23000000" stroke-width="2.2" stroke-linejoin="round"/><rect x="38" y="90" width="7" height="28" rx="3.5" fill="%23ffe4d6" stroke="%23000000" stroke-width="2"/><ellipse cx="41.5" cy="118" rx="6.5" ry="4.5" fill="%237e22ce" stroke="%23000000" stroke-width="2"/><ellipse cx="41.5" cy="116" rx="3" ry="1.8" fill="%23ffe4d6" stroke="%23000000" stroke-width="1.2"/><rect x="55" y="90" width="7" height="28" rx="3.5" fill="%23ffe4d6" stroke="%23000000" stroke-width="2"/><ellipse cx="58.5" cy="118" rx="6.5" ry="4.5" fill="%237e22ce" stroke="%23000000" stroke-width="2"/><ellipse cx="58.5" cy="116" rx="3" ry="1.8" fill="%23ffe4d6" stroke="%23000000" stroke-width="1.2"/><circle cx="28" cy="58" r="7.5" fill="%23f472b6" stroke="%23000000" stroke-width="2"/><circle cx="72" cy="58" r="7.5" fill="%23f472b6" stroke="%23000000" stroke-width="2"/><path d="M36,54 L22,90 C32,95 40,90 50,93 C60,90 68,95 78,90 L64,54 Z" fill="%23a855f7" stroke="%23000000" stroke-width="2.2" stroke-linejoin="round"/><circle cx="50" cy="73" r="3.2" fill="%23ffffff" stroke="%23000000" stroke-width="1"/><circle cx="50" cy="73" r="3.8" fill="%23f59e0b" stroke="%23000000" stroke-width="1.2"/><rect x="46" y="42" width="8" height="12" fill="%23ffe4d6" stroke="%23000000" stroke-width="2"/><circle cx="50" cy="32" r="21" fill="%23ffe4d6" stroke="%23000000" stroke-width="2.2"/><circle cx="28" cy="34" r="4.2" fill="%23ffe4d6" stroke="%23000000" stroke-width="1.8"/><circle cx="72" cy="34" r="4.2" fill="%23ffe4d6" stroke="%23000000" stroke-width="1.8"/><ellipse cx="38" cy="38" rx="4" ry="2.2" fill="rgba(244,114,182,0.6)"/><ellipse cx="62" cy="38" rx="4" ry="2.2" fill="rgba(244,114,182,0.6)"/><ellipse cx="40" cy="30" rx="4" ry="6" fill="%23000000"/><ellipse cx="60" cy="30" rx="4" ry="6" fill="%23000000"/><circle cx="41.5" cy="28" r="1.8" fill="%23ffffff"/><circle cx="61.5" cy="28" r="1.8" fill="%23ffffff"/><path d="M49,34 C52,34 52,38 49,38" fill="none" stroke="%23000000" stroke-width="1.8" stroke-linecap="round"/><path d="M41,40 Q50,49 59,40 Z" fill="%23ffffff" stroke="%23000000" stroke-width="1.8" stroke-linejoin="round"/><path d="M26,26 C20,10 80,10 74,26 C82,40 88,52 78,60 C72,57 70,50 68,47 L32,47 C30,50 28,57 22,60 C12,52 18,40 26,26 Z" fill="%23fde047" stroke="%23000000" stroke-width="2.2" stroke-linejoin="round"/><path d="M28,22 L36,30 L43,22 L50,29 L57,22 L64,30 L72,22" fill="none" stroke="%23000000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M27,20 C33,8 67,8 73,20" fill="none" stroke="%23ec4899" stroke-width="5.5" stroke-linecap="round"/><path d="M24,58 L10,32 C8,28 14,24 18,28 L28,42" fill="none" stroke="%23ffe4d6" stroke-width="5" stroke-linecap="round"/><path d="M24,58 L10,32 C8,28 14,24 18,28 L28,42" fill="none" stroke="%23000000" stroke-width="1.8" stroke-linecap="round"/><path d="M76,58 L90,32 C92,28 86,24 82,28 L72,42" fill="none" stroke="%23ffe4d6" stroke-width="5" stroke-linecap="round"/><path d="M76,58 L90,32 C92,28 86,24 82,28 L72,42" fill="none" stroke="%23000000" stroke-width="1.8" stroke-linecap="round"/></svg>`;
-
-const imgStanding = new Image(); imgStanding.src = girlStandingSvg;
-const imgCrawling = new Image(); imgCrawling.src = girlCrawlingSvg;
-const imgWaving = new Image(); imgWaving.src = girlWavingSvg;
-
-
-/* ==========================================
-   5. 3D PHYSICS SNOW, PRINCESS & FOOTPRINT ENGINE
+   4. 3D PHYSICS SNOW, PRINCESS & FOOTPRINT ENGINE
    ========================================== */
 
 function initSnowEffect() {
@@ -1508,33 +1493,250 @@ function initSnowEffect() {
     ctx.restore();
   }
 
-  // Cartoon Vector Image Character Drawing Engine
+  // Pure 2D Canvas Character Drawing Engine (Matching image_44cfc8)
   function drawGirlCharacter(x, y, state, frame, facingRight = true, ballRadius = 0) {
     ctx.save();
-    // Submerge feet 8px into top snow layer
-    ctx.translate(x, y + 8);
+    // Submerge feet 6px into top snow layer
+    ctx.translate(x, y + 6);
+    ctx.scale(1.15, 1.15);
     
     if (!facingRight) {
-      ctx.translate(0, 0);
       ctx.scale(-1, 1);
     }
 
     const isCrawling = (state === 'ROLL_SNOW' && ballRadius < 10);
+    const isWalking = (state === 'ROLL_SNOW' || state === 'FETCH_ITEMS' || state === 'ROAMING');
+    const legCycle = isWalking ? Math.sin(frame * 0.18) * 8 : 0;
+    const armCycle = isWalking ? Math.sin(frame * 0.18) * 10 : 0;
+    const bounce = isWalking ? Math.abs(Math.sin(frame * 0.18)) * 2 : 0;
 
-    let activeImg = imgStanding;
-    if (state === 'WAVING') activeImg = imgWaving;
-    else if (isCrawling) activeImg = imgCrawling;
+    ctx.translate(0, -bounce);
 
-    const renderW = isCrawling ? 68 : 58;
-    const renderH = isCrawling ? 52 : 72;
+    // Ground Shadow
+    ctx.fillStyle = "rgba(15, 23, 42, 0.35)";
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 16, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
 
-    ctx.drawImage(activeImg, -renderW / 2, -renderH, renderW, renderH);
+    ctx.lineWidth = 1.8;
+    ctx.strokeStyle = "#000000";
 
-    // Draw Rolling Snowball under her hands
-    if (state === 'ROLL_SNOW' && ballRadius > 0) {
-      let bx = renderW / 2 - 4 + ballRadius;
-      let by = -ballRadius - 2;
-      drawLumpySnowball(bx, by, ballRadius, frame * 0.08);
+    if (isCrawling) {
+      // CRAWLING POSE (Knees and hands on floor pushing small snow ball)
+      ctx.translate(0, 8);
+      ctx.rotate(0.2);
+
+      // Legs crawling on knees
+      ctx.fillStyle = "#ffe4d6";
+      ctx.beginPath(); ctx.ellipse(-12, -6, 7, 3.5, -0.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(-6, -4, 6, 3, 0.1, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      
+      // Shoes
+      ctx.fillStyle = "#7e22ce";
+      ctx.beginPath(); ctx.arc(-16, -6, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // Dress in crawl position
+      ctx.fillStyle = "#a855f7";
+      ctx.beginPath();
+      ctx.moveTo(-6, -26);
+      ctx.lineTo(-16, -8);
+      ctx.lineTo(8, -8);
+      ctx.lineTo(6, -26);
+      ctx.closePath();
+      ctx.fill(); ctx.stroke();
+
+      // Pink Sleeves
+      ctx.fillStyle = "#f472b6";
+      ctx.beginPath(); ctx.arc(-2, -26, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(6, -26, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // Daisy
+      ctx.fillStyle = "#ffffff";
+      for (let i = 0; i < 5; i++) {
+        const a = (i * Math.PI * 2) / 5;
+        ctx.beginPath(); ctx.arc(Math.cos(a) * 2.5, -16 + Math.sin(a) * 2.5, 1.8, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.fillStyle = "#f59e0b"; ctx.beginPath(); ctx.arc(0, -16, 2, 0, Math.PI * 2); ctx.fill();
+
+      // Neck & Head
+      ctx.fillStyle = "#ffe4d6"; ctx.fillRect(2, -33, 4, 6); ctx.strokeRect(2, -33, 4, 6);
+      ctx.beginPath(); ctx.arc(8, -38, 12, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // Face Details in Crawl Profile
+      ctx.fillStyle = "rgba(244, 114, 182, 0.5)"; ctx.beginPath(); ctx.ellipse(10, -35, 2.8, 1.8, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#000000"; ctx.beginPath(); ctx.ellipse(11, -40, 2.2, 3.2, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(11.8, -41.2, 0.9, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.arc(10, -38, 1.5, -Math.PI*0.3, Math.PI*0.6); ctx.stroke();
+      ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(10, -35, 3.5, 0.1, Math.PI - 0.1); ctx.fill(); ctx.stroke();
+
+      // Hair & Headband in Crawl
+      ctx.fillStyle = "#fde047"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.arc(6, -40, 15, Math.PI * 0.75, Math.PI * 0.15, true);
+      ctx.lineTo(21, -28); ctx.lineTo(17, -32); ctx.lineTo(14, -20);
+      ctx.lineTo(-6, -20); ctx.lineTo(-8, -32); ctx.lineTo(-12, -28);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+
+      // Bangs
+      ctx.beginPath();
+      ctx.arc(6, -42, 13.5, Math.PI * 1.05, Math.PI * 1.85, false);
+      ctx.lineTo(18, -42); ctx.lineTo(14, -38); ctx.lineTo(10, -43); ctx.lineTo(6, -37); ctx.lineTo(2, -43); ctx.lineTo(-2, -38); ctx.lineTo(-7, -42);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+
+      // Headband
+      ctx.strokeStyle = "#ec4899"; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.arc(6, -41, 13, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
+
+      // Crawling Arms Pushing Ball
+      ctx.strokeStyle = "#ffe4d6"; ctx.lineWidth = 3.5;
+      ctx.beginPath(); ctx.moveTo(6, -24); ctx.lineTo(16, -12); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(2, -24); ctx.lineTo(12, -8); ctx.stroke();
+      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(6, -24); ctx.lineTo(16, -12); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(2, -24); ctx.lineTo(12, -8); ctx.stroke();
+
+      // Small Snowball in Crawl
+      if (ballRadius > 0) {
+        const bx = 16 + ballRadius; const by = -ballRadius + 2;
+        drawLumpySnowball(bx, by, ballRadius, frame * 0.1);
+      }
+
+    } else {
+      // STANDING POSE
+      
+      // Legs & Shoes
+      ctx.fillStyle = "#ffe4d6";
+      
+      // Left Leg & Shoe
+      ctx.save(); ctx.translate(-4, -18); ctx.rotate(-legCycle * 0.04);
+      ctx.beginPath(); ctx.rect(-2.5, 0, 5, 17); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#7e22ce"; ctx.beginPath(); ctx.ellipse(0, 16, 5, 3.5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#ffe4d6"; ctx.beginPath(); ctx.ellipse(0, 15, 2.5, 1.5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.restore();
+
+      // Right Leg & Shoe
+      ctx.save(); ctx.translate(4, -18); ctx.rotate(legCycle * 0.04);
+      ctx.fillStyle = "#ffe4d6"; ctx.beginPath(); ctx.rect(-2.5, 0, 5, 17); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#7e22ce"; ctx.beginPath(); ctx.ellipse(0, 16, 5, 3.5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#ffe4d6"; ctx.beginPath(); ctx.ellipse(0, 15, 2.5, 1.5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.restore();
+
+      // Pink Sleeves & Top Trim
+      ctx.fillStyle = "#f472b6";
+      ctx.beginPath(); ctx.arc(-10, -36, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(10, -36, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(0, -37, 7, Math.PI * 0.1, Math.PI * 0.9); ctx.fill(); ctx.stroke();
+
+      // Purple Pinafore Dress with Scalloped Hem
+      ctx.fillStyle = "#a855f7";
+      ctx.beginPath();
+      ctx.moveTo(-6, -37);
+      ctx.lineTo(-14, -18);
+      ctx.quadraticCurveTo(-9, -14, -4, -18);
+      ctx.quadraticCurveTo(0, -14, 4, -18);
+      ctx.quadraticCurveTo(9, -14, 14, -18);
+      ctx.lineTo(6, -37);
+      ctx.closePath();
+      ctx.fill(); ctx.stroke();
+
+      // White Daisy Center
+      const flowerX = 0, flowerY = -26;
+      ctx.fillStyle = "#ffffff";
+      for (let i = 0; i < 6; i++) {
+        const a = (i * Math.PI * 2) / 6;
+        ctx.beginPath(); ctx.arc(flowerX + Math.cos(a)*3.5, flowerY + Math.sin(a)*3.5, 2.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      }
+      ctx.fillStyle = "#f59e0b"; ctx.beginPath(); ctx.arc(flowerX, flowerY, 2.8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // Neck
+      ctx.fillStyle = "#ffe4d6"; ctx.beginPath(); ctx.rect(-2.5, -45, 5, 8); ctx.fill(); ctx.stroke();
+
+      // Head Base
+      ctx.fillStyle = "#ffe4d6"; ctx.beginPath(); ctx.arc(0, -52, 13.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // Back Blonde Hair (Flipped Outer Ends)
+      ctx.fillStyle = "#fde047"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.arc(0, -52, 17, Math.PI * 0.8, Math.PI * 0.2, false);
+      ctx.lineTo(19, -40); ctx.lineTo(15, -44); ctx.lineTo(12, -32);
+      ctx.lineTo(-12, -32); ctx.lineTo(-15, -44); ctx.lineTo(-19, -40);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+
+      // Rosy Cheeks
+      ctx.fillStyle = "rgba(244, 114, 182, 0.5)";
+      ctx.beginPath(); ctx.ellipse(-6, -48, 3, 1.8, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(6, -48, 3, 1.8, 0, 0, Math.PI * 2); ctx.fill();
+
+      // Expressive Cartoon Eyes
+      ctx.fillStyle = "#000000";
+      ctx.beginPath(); ctx.ellipse(-5, -53, 2.5, 3.8, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(5, -53, 2.5, 3.8, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath(); ctx.arc(-4, -55, 1, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(6, -55, 1, 0, Math.PI * 2); ctx.fill();
+
+      // Eyebrows
+      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.arc(-5, -58, 3, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
+      ctx.beginPath(); ctx.arc(5, -58, 3, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
+
+      // C-shaped Nose
+      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(0, -50, 1.8, -Math.PI * 0.4, Math.PI * 0.6); ctx.stroke();
+
+      // Open Smile with Inner White Teeth
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath(); ctx.arc(0, -46, 4.5, 0.1, Math.PI - 0.1, false); ctx.closePath(); ctx.fill(); ctx.stroke();
+
+      // Ears
+      ctx.fillStyle = "#ffe4d6";
+      ctx.beginPath(); ctx.arc(-13, -50, 3.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(13, -50, 3.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // Front Bangs (Jagged V-shapes)
+      ctx.fillStyle = "#fde047";
+      ctx.beginPath();
+      ctx.arc(0, -56, 14.5, Math.PI * 1.1, Math.PI * 1.9, false);
+      ctx.lineTo(13, -56); ctx.lineTo(9, -52); ctx.lineTo(5, -57); ctx.lineTo(1, -51);
+      ctx.lineTo(-3, -57); ctx.lineTo(-7, -52); ctx.lineTo(-13, -56);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+
+      // Pink Headband
+      ctx.strokeStyle = "#ec4899"; ctx.lineWidth = 4.5;
+      ctx.beginPath(); ctx.arc(0, -55, 14, Math.PI * 1.12, Math.PI * 1.88); ctx.stroke();
+
+      // Arms & Dynamic Action Positions
+      ctx.strokeStyle = "#ffe4d6"; ctx.lineWidth = 3.5;
+
+      if (state === 'WAVING') {
+        const wave = Math.sin(frame * 0.3) * 5;
+
+        ctx.beginPath(); ctx.moveTo(-9, -36); ctx.lineTo(-18, -48 + wave); ctx.stroke();
+        ctx.fillStyle = "#ffe4d6"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(-19, -50 + wave, 3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+        ctx.strokeStyle = "#ffe4d6"; ctx.lineWidth = 3.5;
+        ctx.beginPath(); ctx.moveTo(9, -36); ctx.lineTo(18, -48 - wave); ctx.stroke();
+        ctx.fillStyle = "#ffe4d6"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(19, -50 - wave, 3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      } else if (state === 'ROLL_SNOW') {
+        ctx.beginPath(); ctx.moveTo(5, -34); ctx.lineTo(14, -24); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(1, -34); ctx.lineTo(11, -20); ctx.stroke();
+
+        ctx.fillStyle = "#ffe4d6"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.arc(15, -24, 2.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.arc(12, -20, 2.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+        if (ballRadius > 0) {
+          const bx = 12 + ballRadius; const by = -ballRadius + 2;
+          drawLumpySnowball(bx, by, ballRadius, frame * 0.08);
+        }
+      } else {
+        ctx.beginPath(); ctx.moveTo(-6, -36); ctx.lineTo(-10 - armCycle, -22); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(6, -36); ctx.lineTo(10 + armCycle, -22); ctx.stroke();
+      }
     }
 
     ctx.restore();
@@ -1572,7 +1774,7 @@ function initSnowEffect() {
     // Rolling & Growth Cycle
     if (snowmanVolume < maxSnowmanVolume) {
       if (girl.state === 'ROAMING' || girl.state === 'ADMIRING') {
-        girl.state = 'ROLL_SNOW'; girl.x = minX; girl.facingRight = true; girl.snowBallRadius = 3.5;
+        girl.state = 'ROLL_SNOW'; girl.x = minX; girl.facingRight = true; girl.snowBallRadius = 3;
       }
 
       if (girl.state === 'ROLL_SNOW') {
@@ -1682,7 +1884,7 @@ function initSnowEffect() {
       if (meltRatio >= 1.0) {
         isMelting = false; meltTimer = 0; snowmanVolume = 0;
         hasDecorations = false; girl.state = 'ROLL_SNOW'; girl.x = 60;
-        snowmanXRatio = 0.2 + Math.random() * 0.6;
+        snowmanXRatio = 0.2 + Math.random() * 0.6; // Pick new dynamic location!
         saveSnowState();
       }
     }
@@ -1728,7 +1930,7 @@ function initSnowEffect() {
 
 
 /* ==========================================
-   6. FAIL-SAFE APPLICATION BOOTSTRAPPER
+   5. FAIL-SAFE APPLICATION BOOTSTRAPPER
    ========================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
