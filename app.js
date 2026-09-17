@@ -1497,7 +1497,7 @@ function initSnowEffect() {
     ctx.restore();
   }
 
-  // Cartoon Girl Character Render Engine (Detailed Profile View)
+  // Cartoon Girl Character Render Engine (Faithful Recreation of Left Reference)
   function drawGirl(x, y, state, frame, facingRight = true, ballRadius = 0) {
     ctx.save();
     // Feet submerged 6px into the snow line
@@ -1533,7 +1533,7 @@ function initSnowEffect() {
       ctx.fillStyle = "#7e22ce";
       ctx.beginPath(); ctx.ellipse(-14, -4, 4, 3, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      ctx.fillStyle = "#9333ea";
+      ctx.fillStyle = "#a855f7";
       ctx.beginPath();
       ctx.moveTo(-6, -26); ctx.lineTo(-14, -8); ctx.lineTo(8, -8); ctx.lineTo(6, -26);
       ctx.closePath(); ctx.fill(); ctx.stroke();
@@ -1584,123 +1584,132 @@ function initSnowEffect() {
       ctx.fillStyle = "#ffe4d6";
       
       // Left Leg & Shoe
-      ctx.save(); ctx.translate(-4, -20); ctx.rotate(-legSwing * 0.05);
-      ctx.beginPath(); ctx.rect(-2.5, 0, 5, 18); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = "#7e22ce"; ctx.beginPath(); ctx.arc(0, 17, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.save(); ctx.translate(-4, -18); ctx.rotate(-legSwing * 0.05);
+      ctx.beginPath(); ctx.rect(-2.5, 0, 5, 17); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#7e22ce"; ctx.beginPath(); ctx.ellipse(0, 16, 5, 3.5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#ffe4d6"; ctx.beginPath(); ctx.ellipse(0, 15, 2.5, 1.5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       ctx.restore();
 
       // Right Leg & Shoe
-      ctx.save(); ctx.translate(4, -20); ctx.rotate(legSwing * 0.05);
-      ctx.fillStyle = "#ffe4d6"; ctx.beginPath(); ctx.rect(-2.5, 0, 5, 18); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = "#7e22ce"; ctx.beginPath(); ctx.arc(0, 17, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.save(); ctx.translate(4, -18); ctx.rotate(legSwing * 0.05);
+      ctx.fillStyle = "#ffe4d6"; ctx.beginPath(); ctx.rect(-2.5, 0, 5, 17); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#7e22ce"; ctx.beginPath(); ctx.ellipse(0, 16, 5, 3.5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#ffe4d6"; ctx.beginPath(); ctx.ellipse(0, 15, 2.5, 1.5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       ctx.restore();
 
       // Light Pink Inner Shirt & Puff Sleeves
       ctx.fillStyle = "#f472b6";
-      ctx.beginPath(); ctx.arc(-11, -38, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      ctx.beginPath(); ctx.arc(11, -38, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      ctx.beginPath(); ctx.ellipse(0, -36, 7, 5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(-10, -36, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(10, -36, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(0, -37, 7, Math.PI * 0.1, Math.PI * 0.9); ctx.fill(); ctx.stroke();
 
       // Purple Pinafore Dress
-      ctx.fillStyle = "#9333ea";
+      ctx.fillStyle = "#a855f7";
       ctx.beginPath();
-      ctx.moveTo(-6, -38);
+      ctx.moveTo(-6, -37);
       ctx.lineTo(-14, -18);
-      ctx.quadraticCurveTo(-7, -15, 0, -18);
-      ctx.quadraticCurveTo(7, -15, 14, -18);
-      ctx.lineTo(6, -38);
+      ctx.quadraticCurveTo(-9, -14, -4, -18);
+      ctx.quadraticCurveTo(0, -14, 4, -18);
+      ctx.quadraticCurveTo(9, -14, 14, -18);
+      ctx.lineTo(6, -37);
       ctx.closePath();
       ctx.fill(); ctx.stroke();
 
       // White Daisy Center
+      const flowerX = 0, flowerY = -26;
       ctx.fillStyle = "#ffffff";
       for (let i = 0; i < 6; i++) {
         let a = (i * Math.PI * 2) / 6;
-        ctx.beginPath(); ctx.arc(Math.cos(a)*3.5, -26 + Math.sin(a)*3.5, 2.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.arc(flowerX + Math.cos(a)*3.5, flowerY + Math.sin(a)*3.5, 2.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       }
-      ctx.fillStyle = "#f59e0b"; ctx.beginPath(); ctx.arc(0, -26, 2.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#f59e0b"; ctx.beginPath(); ctx.arc(flowerX, flowerY, 2.8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
       // Neck
-      ctx.fillStyle = "#ffe4d6"; ctx.fillRect(-2.5, -45, 5, 7); ctx.strokeRect(-2.5, -45, 5, 7);
+      ctx.fillStyle = "#ffe4d6"; ctx.beginPath(); ctx.rect(-2.5, -45, 5, 8); ctx.fill(); ctx.stroke();
 
       // Head
-      ctx.beginPath(); ctx.arc(0, -52, 13, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#ffe4d6"; ctx.beginPath(); ctx.arc(0, -52, 13.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
       // Rosy Cheeks
-      ctx.fillStyle = "#f472b6";
+      ctx.fillStyle = "rgba(244, 114, 182, 0.5)";
       ctx.beginPath(); ctx.ellipse(-6, -48, 3, 1.8, 0, 0, Math.PI * 2); ctx.fill();
       ctx.beginPath(); ctx.ellipse(6, -48, 3, 1.8, 0, 0, Math.PI * 2); ctx.fill();
 
       // Expressive Cartoon Eyes
       ctx.fillStyle = "#000000";
-      ctx.beginPath(); ctx.ellipse(-5, -53, 2.8, 4, 0, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(5, -53, 2.8, 4, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(-5, -53, 2.5, 3.8, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(5, -53, 2.5, 3.8, 0, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = "#ffffff";
-      ctx.beginPath(); ctx.arc(-4, -55, 1.2, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(6, -55, 1.2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(-4, -55, 1, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(6, -55, 1, 0, Math.PI * 2); ctx.fill();
+
+      // Eyebrows
+      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.arc(-5, -58, 3, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
+      ctx.beginPath(); ctx.arc(5, -58, 3, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
 
       // C-shaped Nose
-      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.6;
-      ctx.beginPath(); ctx.arc(0, -50, 1.8, -Math.PI*0.3, Math.PI*0.6); ctx.stroke();
+      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(0, -50, 1.8, -Math.PI * 0.4, Math.PI * 0.6); ctx.stroke();
 
       // Open Smile
       ctx.fillStyle = "#ffffff";
-      ctx.beginPath(); ctx.arc(0, -47, 5, 0.1, Math.PI - 0.1); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(0, -46, 4.5, 0.1, Math.PI - 0.1, false); ctx.closePath(); ctx.fill(); ctx.stroke();
 
       // Ears
       ctx.fillStyle = "#ffe4d6";
-      ctx.beginPath(); ctx.arc(-13, -52, 3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      ctx.beginPath(); ctx.arc(13, -52, 3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(-13, -50, 3.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(13, -50, 3.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      // Blonde Hair
-      ctx.fillStyle = "#fde047";
+      // Back Blonde Hair
+      ctx.fillStyle = "#fde047"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8;
       ctx.beginPath();
-      ctx.arc(0, -55, 16, Math.PI * 0.85, Math.PI * 0.15, true);
-      ctx.lineTo(17, -42); ctx.lineTo(14, -46); ctx.lineTo(18, -48);
-      ctx.lineTo(-18, -48); ctx.lineTo(-14, -46); ctx.lineTo(-17, -42);
-      ctx.closePath();
-      ctx.fill(); ctx.stroke();
+      ctx.arc(0, -52, 17, Math.PI * 0.8, Math.PI * 0.2, false);
+      ctx.lineTo(19, -40); ctx.lineTo(15, -44); ctx.lineTo(12, -32);
+      ctx.lineTo(-12, -32); ctx.lineTo(-15, -44); ctx.lineTo(-19, -40);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
 
-      // Forehead Bangs
+      // Front Bangs
       ctx.beginPath();
-      ctx.moveTo(-12, -58);
-      ctx.lineTo(-8, -52); ctx.lineTo(-4, -57);
-      ctx.lineTo(0, -52); ctx.lineTo(4, -57);
-      ctx.lineTo(8, -52); ctx.lineTo(12, -58);
-      ctx.stroke();
+      ctx.arc(0, -56, 14.5, Math.PI * 1.1, Math.PI * 1.9, false);
+      ctx.lineTo(13, -56); ctx.lineTo(9, -52); ctx.lineTo(5, -57); ctx.lineTo(1, -51);
+      ctx.lineTo(-3, -57); ctx.lineTo(-7, -52); ctx.lineTo(-13, -56);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
 
       // Pink Headband
-      ctx.strokeStyle = "#ec4899"; ctx.lineWidth = 4;
-      ctx.beginPath(); ctx.arc(0, -56, 14.5, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
+      ctx.strokeStyle = "#ec4899"; ctx.lineWidth = 4.5;
+      ctx.beginPath(); ctx.arc(0, -55, 14, Math.PI * 1.12, Math.PI * 1.88); ctx.stroke();
 
       // Arms & Actions
-      ctx.strokeStyle = "#ffe4d6"; ctx.lineWidth = 3.8;
+      ctx.strokeStyle = "#ffe4d6"; ctx.lineWidth = 3.5;
 
       if (state === 'WAVING') {
-        const wave = Math.sin(frame * 0.3) * 4;
-        
-        ctx.beginPath(); ctx.moveTo(-10, -38); ctx.lineTo(-18, -50 + wave); ctx.stroke();
-        ctx.fillStyle = "#ffe4d6"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.arc(-19, -52 + wave, 3.5, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+        const wave = Math.sin(frame * 0.3) * 5;
 
-        ctx.strokeStyle = "#ffe4d6"; ctx.lineWidth = 3.8;
-        ctx.beginPath(); ctx.moveTo(10, -38); ctx.lineTo(18, -50 - wave); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-9, -36); ctx.lineTo(-18, -48 + wave); ctx.stroke();
         ctx.fillStyle = "#ffe4d6"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.arc(19, -52 - wave, 3.5, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.arc(-19, -50 + wave, 3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+        ctx.strokeStyle = "#ffe4d6"; ctx.lineWidth = 3.5;
+        ctx.beginPath(); ctx.moveTo(9, -36); ctx.lineTo(18, -48 - wave); ctx.stroke();
+        ctx.fillStyle = "#ffe4d6"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(19, -50 - wave, 3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
       } else if (state === 'ROLL_SNOW') {
-        ctx.strokeStyle = "#ffe4d6"; ctx.lineWidth = 3.8;
-        ctx.beginPath(); ctx.moveTo(6, -36); ctx.lineTo(15, -26); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(2, -36); ctx.lineTo(12, -22); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(5, -34); ctx.lineTo(14, -24); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(1, -34); ctx.lineTo(11, -20); ctx.stroke();
+
+        ctx.fillStyle = "#ffe4d6"; ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.arc(15, -24, 2.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.arc(12, -20, 2.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
         if (ballRadius > 0) {
           let bx = 12 + ballRadius; let by = -ballRadius + 2;
           drawLumpySnowball(bx, by, ballRadius, frame * 0.08);
         }
       } else {
-        ctx.strokeStyle = "#ffe4d6"; ctx.lineWidth = 3.8;
-        ctx.beginPath(); ctx.moveTo(-6, -38); ctx.lineTo(-10 - armSwing, -26); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(6, -38); ctx.lineTo(10 + armSwing, -26); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-6, -36); ctx.lineTo(-10 - armSwing, -22); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(6, -36); ctx.lineTo(10 + armSwing, -22); ctx.stroke();
       }
     }
 
