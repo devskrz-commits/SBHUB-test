@@ -1,6 +1,5 @@
 /* ==========================================
    1. GLOBAL CRASH-PROOF LAMP LOGIN ENGINE
-   (Bound directly to window so HTML inline clicks never fail)
    ========================================== */
 
 let inactivityTimer = null;
@@ -23,16 +22,19 @@ window.playClickSound = function() {
   } catch(e) {}
 };
 
-window.toggleLamp = function() {
+window.toggleLamp = function(event) {
+  if (event && event.stopPropagation) event.stopPropagation();
   window.playClickSound();
+
   const cordEl = document.getElementById("pullCord");
   if (cordEl) {
     cordEl.classList.remove("bouncing");
-    void cordEl.offsetWidth; 
+    void cordEl.offsetWidth; // Force CSS reflow to re-trigger spring animation
     cordEl.classList.add("bouncing");
   }
 
   document.body.classList.toggle("lamp-is-on");
+
   if (document.body.classList.contains("lamp-is-on")) {
     setTimeout(() => {
       const pwdInput = document.getElementById("loginPassword");
@@ -706,14 +708,11 @@ function initSnowEffect() {
 
 /* ==========================================
    5. FAIL-SAFE APPLICATION BOOTSTRAPPER
-   (Every module wrapped in try...catch so login never breaks)
    ========================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Always verify login session first
   try { window.checkRememberedSession(); } catch(e) { console.error("Session check error:", e); }
   
-  // Safe isolated module execution
   try { restoreBentoLayout(); } catch(e){}
   try { restoreAppearanceSettings(); } catch(e){}
   try { initWallpaperPicker(); } catch(e){}
