@@ -1139,10 +1139,17 @@ window.changeTimezone = function(index, newZone) {
 function getBentoLayoutObj() {
   const layout = {};
   document.querySelectorAll(".bento-card").forEach(card => { 
-    layout[card.id] = { top: card.style.top, left: card.style.left, width: card.style.width, height: card.style.height }; 
+    layout[card.id] = { 
+      top: card.style.top, 
+      left: card.style.left, 
+      width: card.style.width, 
+      height: card.style.height,
+      display: card.style.display 
+    }; 
   });
   layout["selected_timezones"] = selectedTimezones; 
   layout["mobile_view"] = document.body.classList.contains("mobile-view-active");
+  layout["selected_wallpaper"] = localStorage.getItem('sbhub_selected_wallpaper') || 'green_default';
   return layout;
 }
 
@@ -1179,14 +1186,20 @@ function restoreBentoLayout() {
       const mobileToggle = document.getElementById("mobileViewToggle");
       if(mobileToggle) mobileToggle.checked = true; 
     }
+    
+    if (layoutToApply["selected_wallpaper"]) {
+      localStorage.setItem('sbhub_selected_wallpaper', layoutToApply["selected_wallpaper"]);
+    }
+
     for (const id in layoutToApply) {
-      if (id === "selected_timezones" || id === "mobile_view") continue;
+      if (id === "selected_timezones" || id === "mobile_view" || id === "selected_wallpaper") continue;
       const el = document.getElementById(id);
-      if (el && layoutToApply[id].top) { 
-        el.style.top = layoutToApply[id].top; 
-        el.style.left = layoutToApply[id].left; 
+      if (el) { 
+        if (layoutToApply[id].top) el.style.top = layoutToApply[id].top; 
+        if (layoutToApply[id].left) el.style.left = layoutToApply[id].left; 
         if (layoutToApply[id].width) el.style.width = layoutToApply[id].width; 
         if (layoutToApply[id].height) el.style.height = layoutToApply[id].height; 
+        if (layoutToApply[id].display) el.style.display = layoutToApply[id].display;
       }
     }
     if (layoutToApply["selected_timezones"]) selectedTimezones = layoutToApply["selected_timezones"];
@@ -1195,7 +1208,11 @@ function restoreBentoLayout() {
 
 window.saveLayout = function() {
   saveBentoLayout();
-  alert("Bento layout saved successfully!");
+  if (typeof showToastNotification === 'function') {
+    showToastNotification("💾 Layout & Background saved successfully!");
+  } else {
+    alert("Layout & background saved successfully!");
+  }
 };
 
 function renderSidebar() {
@@ -1305,7 +1322,7 @@ function initSnowEffect() {
   let numCols = Math.ceil(width / colWidth);
   let groundHeights = new Float32Array(numCols).fill(0);
 
-  let snowmanXRatio = 0.25 + Math.random() * 0.5;
+  let snowmanXRatio = 0.75; 
   let snowmanVolume = 0;
   const maxSnowmanVolume = 450;
   let isMelting = false;
@@ -1325,57 +1342,21 @@ function initSnowEffect() {
       ctx.save();
       ctx.fillStyle = `rgba(148, 163, 184, ${pp.opacity})`;
       ctx.beginPath();
-      // Main Pad
       ctx.ellipse(pp.x, pp.y, 3, 2, 0, 0, Math.PI * 2);
       ctx.fill();
-      // Toe Beans
       ctx.beginPath();
       ctx.arc(pp.x - 2.5, pp.y - 2, 1, 0, Math.PI * 2);
       ctx.arc(pp.x, pp.y - 3, 1, 0, Math.PI * 2);
       ctx.arc(pp.x + 2.5, pp.y - 2, 1, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
-      pp.opacity -= 0.0006;
+      pp.opacity -= 0.0008;
       if (pp.opacity <= 0) pawprints.splice(i, 1);
     }
   }
 
-  function loadSnowState() {
-    const saved = localStorage.getItem('sbhub_snow_data');
-    if (saved) {
-      try {
-        const data = JSON.parse(saved);
-        if (data.groundHeights && Array.isArray(data.groundHeights)) {
-          for (let i = 0; i < numCols; i++) {
-            const srcIdx = Math.floor((i / numCols) * data.groundHeights.length);
-            groundHeights[i] = data.groundHeights[srcIdx] || 0;
-          }
-        }
-        if (typeof data.snowmanVolume === 'number') snowmanVolume = data.snowmanVolume;
-        if (typeof data.snowmanXRatio === 'number') snowmanXRatio = data.snowmanXRatio;
-        if (typeof data.hasDecorations === 'boolean') hasDecorations = data.hasDecorations;
-      } catch (e) {}
-    }
-  }
-
-  function saveSnowState() {
-    localStorage.setItem('sbhub_snow_data', JSON.stringify({
-      groundHeights: Array.from(groundHeights),
-      snowmanVolume: snowmanVolume,
-      snowmanXRatio: snowmanXRatio,
-      hasDecorations: hasDecorations
-    }));
-  }
-
-  loadSnowState();
-
-  let isMouseActive = false;
-  let mouseTimer = null;
-  window.addEventListener('mousemove', () => {
-    isMouseActive = true;
-    clearTimeout(mouseTimer);
-    mouseTimer = setTimeout(() => { isMouseActive = false; }, 2200);
-  });
+  // Clear stale snow state from previous loads
+  localStorage.removeItem('sbhub_snow_data');
 
   const numFlakes = 130;
   const flakes = Array.from({ length: numFlakes }, () => ({
@@ -1392,16 +1373,51 @@ function initSnowEffect() {
   const cat = { 
     x: 60, 
     targetX: 60, 
-    minRollX: 60, 
     state: 'ROLL_SNOW', 
     prevState: 'ROLL_SNOW', 
     timer: 0, 
     frame: 0, 
-    speed: 0.85, 
+    speed: 1.8, 
     facingRight: true, 
-    snowBallRadius: 3.5,
-    lastFpX: 60
+    snowBallRadius: 5,
+    lastFpX: 60,
+    jumpY: 0
   };
+
+  // Interactive Click Listener anywhere on bottom terrain
+  window.addEventListener('click', (e) => {
+    const clickY = e.clientY;
+    const clickX = e.clientX;
+    const groundY = height - 90;
+
+    if (clickY >= groundY) {
+      const snowmanX = width * snowmanXRatio;
+      
+      // Clicked on/near Snowman -> Melt & Reset Rebuild!
+      if (Math.abs(clickX - snowmanX) < 100) {
+        snowmanVolume = 0;
+        hasDecorations = false;
+        isMelting = false;
+        meltTimer = 0;
+        cat.state = 'ROLL_SNOW';
+        cat.x = 60;
+        cat.facingRight = true;
+        cat.snowBallRadius = 5;
+        if (typeof window.playClickSound === 'function') window.playClickSound();
+        if (typeof window.showToastNotification === 'function') {
+          window.showToastNotification("☃️ Snowman reset! Kitty is rolling a new snowball!");
+        }
+      } 
+      // Clicked on/near Cat -> Meow & Jump!
+      else if (Math.abs(clickX - cat.x) < 80) {
+        cat.prevState = cat.state;
+        cat.state = 'WAVING';
+        cat.timer = 0;
+        cat.jumpY = -15;
+        if (typeof window.playClickSound === 'function') window.playClickSound();
+      }
+    }
+  });
 
   function handleFlakeCollision(f) {
     let col = Math.floor(f.x / colWidth);
@@ -1419,7 +1435,6 @@ function initSnowEffect() {
     }
   }
 
-  // Organic Lumpy Snowball Renderer
   function drawLumpySnowball(cx, cy, radius, rotation) {
     if (radius <= 0) return;
     ctx.save();
@@ -1500,10 +1515,8 @@ function initSnowEffect() {
     ctx.restore();
   }
 
-  /* Fully Articulated Animated Cartoon Cat Character */
   function drawCatCharacter(x, y, state, frame, facingRight = true, ballRadius = 0) {
     ctx.save();
-    // Submerge paws 6px into top snow layer
     ctx.translate(x, y + 6);
     ctx.scale(1.15, 1.15);
     
@@ -1511,12 +1524,13 @@ function initSnowEffect() {
       ctx.scale(-1, 1);
     }
 
-    const isWalking = (state === 'ROLL_SNOW' || state === 'FETCH_ITEMS' || state === 'ROAMING');
-    const gaitCycle = isWalking ? Math.sin(frame * 0.25) * 12 : 0;
-    const bounce = isWalking ? Math.abs(Math.sin(frame * 0.25)) * 2.5 : 0;
-    const tailSway = Math.sin(frame * 0.15) * 0.25;
+    const isWalking = (state === 'ROLL_SNOW' || state === 'FETCH_ITEMS' || state === 'ROAMING' || state === 'RETURNING');
+    const gaitCycle = isWalking ? Math.sin(frame * 0.35) * 12 : 0;
+    const bounce = isWalking ? Math.abs(Math.sin(frame * 0.35)) * 2.5 : 0;
+    const tailSway = Math.sin(frame * 0.2) * 0.25;
 
-    ctx.translate(0, -bounce);
+    ctx.translate(0, -bounce + cat.jumpY);
+    if (cat.jumpY < 0) cat.jumpY += 1;
 
     // Floor Shadow
     ctx.fillStyle = "rgba(15, 23, 42, 0.35)";
@@ -1528,15 +1542,11 @@ function initSnowEffect() {
     ctx.strokeStyle = "#000000";
 
     if (state === 'WAVING') {
-      // Sitting & Enthusiastically Waving Front Paws
-      
-      // Animated Tail
       ctx.save(); ctx.translate(-14, -12); ctx.rotate(-0.5 + tailSway);
       ctx.fillStyle = "#f97316";
       ctx.beginPath(); ctx.quadraticCurveTo(-15, -25, -5, -35); ctx.quadraticCurveTo(-18, -20, 0, 0); ctx.fill(); ctx.stroke();
       ctx.restore();
 
-      // Rear Legs (Sitting Folded)
       ctx.fillStyle = "#f97316";
       ctx.beginPath(); ctx.ellipse(-12, -8, 8, 5, 0.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       ctx.beginPath(); ctx.ellipse(12, -8, 8, 5, -0.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
@@ -1545,23 +1555,18 @@ function initSnowEffect() {
       ctx.beginPath(); ctx.ellipse(-14, -4, 5, 3, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       ctx.beginPath(); ctx.ellipse(14, -4, 5, 3, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      // Main Torso
       ctx.fillStyle = "#f97316";
       ctx.beginPath(); ctx.ellipse(0, -18, 14, 16, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      // White Chest Patch
       ctx.fillStyle = "#ffffff";
       ctx.beginPath(); ctx.ellipse(0, -16, 9, 11, 0, 0, Math.PI * 2); ctx.fill();
 
-      // Pink Collar & Bell
       ctx.fillStyle = "#ec4899"; ctx.fillRect(-10, -32, 20, 4); ctx.strokeRect(-10, -32, 20, 4);
       ctx.fillStyle = "#f59e0b"; ctx.beginPath(); ctx.arc(0, -29, 3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      // Head
       ctx.fillStyle = "#f97316";
       ctx.beginPath(); ctx.arc(0, -42, 15, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      // Ears
       ctx.beginPath(); ctx.moveTo(-11, -52); ctx.lineTo(-17, -68); ctx.lineTo(-2, -55); ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.fillStyle = "#f472b6"; ctx.beginPath(); ctx.moveTo(-10, -53); ctx.lineTo(-15, -64); ctx.lineTo(-4, -55); ctx.closePath(); ctx.fill();
 
@@ -1569,14 +1574,12 @@ function initSnowEffect() {
       ctx.beginPath(); ctx.moveTo(11, -52); ctx.lineTo(17, -68); ctx.lineTo(2, -55); ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.fillStyle = "#f472b6"; ctx.beginPath(); ctx.moveTo(10, -53); ctx.lineTo(15, -64); ctx.lineTo(4, -55); ctx.closePath(); ctx.fill();
 
-      // Muzzle, Eyes, Nose
       ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(0, -38, 7, 5, 0, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = "#f472b6"; ctx.beginPath(); ctx.polygon ? ctx.polygon() : ctx.arc(0, -41, 2, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#f472b6"; ctx.beginPath(); ctx.arc(0, -41, 2, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.4;
       ctx.beginPath(); ctx.arc(-2, -39, 2, 0, Math.PI); ctx.stroke();
       ctx.beginPath(); ctx.arc(2, -39, 2, 0, Math.PI); ctx.stroke();
 
-      // Eyes & Shine
       ctx.fillStyle = "#000000";
       ctx.beginPath(); ctx.ellipse(-6, -45, 3, 4.5, 0, 0, Math.PI * 2); ctx.fill();
       ctx.beginPath(); ctx.ellipse(6, -45, 3, 4.5, 0, 0, Math.PI * 2); ctx.fill();
@@ -1584,112 +1587,83 @@ function initSnowEffect() {
       ctx.beginPath(); ctx.arc(-5, -47, 1.2, 0, Math.PI * 2); ctx.fill();
       ctx.beginPath(); ctx.arc(7, -47, 1.2, 0, Math.PI * 2); ctx.fill();
 
-      // Whiskers
-      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.2;
-      ctx.beginPath(); ctx.moveTo(-6, -40); ctx.lineTo(-18, -42); stroke();
-      ctx.beginPath(); ctx.moveTo(-6, -38); ctx.lineTo(-18, -37); stroke();
-      ctx.beginPath(); ctx.moveTo(6, -40); ctx.lineTo(18, -42); stroke();
-      ctx.beginPath(); ctx.moveTo(6, -38); ctx.lineTo(18, -37); stroke();
-
-      // Animated Waving Front Paws
       const waveAngle = Math.sin(frame * 0.3) * 12;
 
-      // Left Waving Paw
       ctx.strokeStyle = "#f97316"; ctx.lineWidth = 6; ctx.lineCap = "round";
       ctx.beginPath(); ctx.moveTo(-8, -26); ctx.lineTo(-18 - waveAngle, -40); ctx.stroke();
       ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8; ctx.stroke();
       ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(-18 - waveAngle, -40, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      // Right Waving Paw
       ctx.strokeStyle = "#f97316"; ctx.lineWidth = 6; ctx.lineCap = "round";
       ctx.beginPath(); ctx.moveTo(8, -26); ctx.lineTo(18 + waveAngle, -40); ctx.stroke();
       ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8; ctx.stroke();
       ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(18 + waveAngle, -40, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
     } else {
-      // 4-Leg Animated Walking & Pushing Stance
-      
-      // Animated Tail
       ctx.save(); ctx.translate(-16, -14); ctx.rotate(0.2 + tailSway);
       ctx.fillStyle = "#f97316";
       ctx.beginPath(); ctx.quadraticCurveTo(-15, -20, -10, -32); ctx.quadraticCurveTo(-2, -15, 0, 0); ctx.fill(); ctx.stroke();
       ctx.restore();
 
-      // HIND LEGS (Alternating Stride)
       const rearLeftX = -12 + gaitCycle * 0.6;
       const rearRightX = -6 - gaitCycle * 0.6;
 
-      // Left Rear Leg
       ctx.strokeStyle = "#f97316"; ctx.lineWidth = 6; ctx.lineCap = "round";
       ctx.beginPath(); ctx.moveTo(-12, -12); ctx.lineTo(rearLeftX, -2); ctx.stroke();
       ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8; ctx.stroke();
       ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(rearLeftX, -1, 4.5, 2.8, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      // Right Rear Leg
       ctx.strokeStyle = "#f97316"; ctx.lineWidth = 6; ctx.lineCap = "round";
       ctx.beginPath(); ctx.moveTo(-6, -12); ctx.lineTo(rearRightX, -2); ctx.stroke();
       ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8; ctx.stroke();
       ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(rearRightX, -1, 4.5, 2.8, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      // Main Torso (Horizontal Cat Body)
       ctx.fillStyle = "#f97316";
       ctx.beginPath(); ctx.ellipse(-2, -16, 16, 11, -0.1, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      // White Belly Patch
       ctx.fillStyle = "#ffffff";
       ctx.beginPath(); ctx.ellipse(2, -13, 10, 7, 0, 0, Math.PI * 2); ctx.fill();
 
-      // FRONT LEGS / PAWS (Alternating Pushing & Walking Motion)
       const frontLeftX = 8 - gaitCycle * 0.8;
       const frontRightX = 14 + gaitCycle * 0.8;
 
       if (state === 'ROLL_SNOW') {
-        // Front paws extend forward onto the snowball and roll continuously
         const rollPushLeft = Math.sin(frame * 0.3) * 4;
         const rollPushRight = -Math.sin(frame * 0.3) * 4;
 
-        // Left Front Paw Pushing
         ctx.strokeStyle = "#f97316"; ctx.lineWidth = 5.5; ctx.lineCap = "round";
         ctx.beginPath(); ctx.moveTo(6, -14); ctx.lineTo(14 + rollPushLeft, -8); ctx.stroke();
         ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8; ctx.stroke();
         ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(14 + rollPushLeft, -8, 3.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-        // Right Front Paw Pushing
         ctx.strokeStyle = "#f97316"; ctx.lineWidth = 5.5; ctx.lineCap = "round";
         ctx.beginPath(); ctx.moveTo(10, -14); ctx.lineTo(18 + rollPushRight, -10); ctx.stroke();
         ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8; ctx.stroke();
         ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(18 + rollPushRight, -10, 3.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-        // Draw Rolling Lumpy Snowball in front of pushing paws
         if (ballRadius > 0) {
           const bx = 16 + ballRadius; const by = -ballRadius + 2;
           drawLumpySnowball(bx, by, ballRadius, frame * 0.08);
         }
 
       } else {
-        // Normal 4-Leg Walking Stride
-        // Left Front Leg
         ctx.strokeStyle = "#f97316"; ctx.lineWidth = 5.5; ctx.lineCap = "round";
         ctx.beginPath(); ctx.moveTo(6, -12); ctx.lineTo(frontLeftX, -2); ctx.stroke();
         ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8; ctx.stroke();
         ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(frontLeftX, -1, 4, 2.5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-        // Right Front Leg
         ctx.strokeStyle = "#f97316"; ctx.lineWidth = 5.5; ctx.lineCap = "round";
         ctx.beginPath(); ctx.moveTo(12, -12); ctx.lineTo(frontRightX, -2); ctx.stroke();
         ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.8; ctx.stroke();
         ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(frontRightX, -1, 4, 2.5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       }
 
-      // Pink Collar & Bell
       ctx.fillStyle = "#ec4899"; ctx.fillRect(10, -26, 4, 10); ctx.strokeRect(10, -26, 4, 10);
       ctx.fillStyle = "#f59e0b"; ctx.beginPath(); ctx.arc(12, -16, 2.8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      // Head
       ctx.fillStyle = "#f97316";
       ctx.beginPath(); ctx.arc(15, -28, 13, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      // Ears
       ctx.beginPath(); ctx.moveTo(6, -36); ctx.lineTo(4, -50); ctx.lineTo(14, -40); ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.fillStyle = "#f472b6"; ctx.beginPath(); ctx.moveTo(7, -37); ctx.lineTo(5, -46); ctx.lineTo(13, -39); ctx.closePath(); ctx.fill();
 
@@ -1697,23 +1671,19 @@ function initSnowEffect() {
       ctx.beginPath(); ctx.moveTo(18, -38); ctx.lineTo(24, -52); ctx.lineTo(26, -36); ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.fillStyle = "#f472b6"; ctx.beginPath(); ctx.moveTo(19, -38); ctx.lineTo(23, -48); ctx.lineTo(25, -37); ctx.closePath(); ctx.fill();
 
-      // Muzzle, Nose, Mouth
       ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(21, -25, 6, 4, 0, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = "#f472b6"; ctx.beginPath(); ctx.arc(22.5, -27, 1.8, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.4;
       ctx.beginPath(); ctx.arc(21, -25, 1.6, 0.1, Math.PI - 0.1); ctx.stroke();
 
-      // Eye & Shine Highlights
       ctx.fillStyle = "#000000";
       ctx.beginPath(); ctx.ellipse(19, -31, 2.5, 3.8, 0, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = "#ffffff";
       ctx.beginPath(); ctx.arc(20, -32.5, 1, 0, Math.PI * 2); ctx.fill();
 
-      // Cheek Blush
-      ctx.fillStyle = "#f472b6"; opacity = 0.6;
+      ctx.fillStyle = "#f472b6";
       ctx.beginPath(); ctx.ellipse(16, -24, 2.5, 1.5, 0, 0, Math.PI * 2); ctx.fill();
 
-      // Whiskers
       ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.2;
       ctx.beginPath(); ctx.moveTo(22, -27); ctx.lineTo(32, -29); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(22, -25); ctx.lineTo(32, -24); ctx.stroke();
@@ -1724,10 +1694,9 @@ function initSnowEffect() {
 
   function updateCat(snowmanX) {
     cat.frame++;
-    const siteX = snowmanX - 40;
-    const minX = Math.max(60, width * 0.1);
+    const siteX = snowmanX - 45;
+    const minX = 60;
 
-    // Pawprints
     if (Math.abs(cat.x - cat.lastFpX) > 12) {
       const catCol = Math.floor(Math.max(0, cat.x) / colWidth);
       const groundY = height - (groundHeights[catCol] || 0) - 15;
@@ -1735,90 +1704,55 @@ function initSnowEffect() {
       cat.lastFpX = cat.x;
     }
 
-    // Mouse Reactivity
-    if (isMouseActive && cat.state !== 'WAVING') {
-      cat.prevState = cat.state;
-      cat.state = 'WAVING';
-      cat.timer = 0;
-    }
-
     if (cat.state === 'WAVING') {
       cat.timer++;
-      if (cat.timer > 70 && !isMouseActive) {
-        cat.state = cat.prevState || 'ROAMING';
+      if (cat.timer > 80) {
+        cat.state = cat.prevState || 'ROLL_SNOW';
         cat.timer = 0;
       }
       return;
     }
 
-    // Rolling & Growth Cycle
+    // Active Snowball Rolling Cycle
     if (snowmanVolume < maxSnowmanVolume) {
-      if (cat.state === 'ROAMING' || cat.state === 'ADMIRING') {
-        cat.state = 'ROLL_SNOW'; cat.x = minX; cat.facingRight = true; cat.snowBallRadius = 3.5;
-      }
+      if (cat.state === 'RETURNING') {
+        cat.facingRight = false;
+        cat.x -= cat.speed;
+        if (cat.x <= minX) {
+          cat.state = 'ROLL_SNOW';
+          cat.facingRight = true;
+          cat.snowBallRadius = 5;
+        }
+      } else {
+        cat.state = 'ROLL_SNOW';
+        cat.facingRight = true;
+        cat.x += cat.speed;
 
-      if (cat.state === 'ROLL_SNOW') {
-        const moveDir = cat.facingRight ? cat.speed : -cat.speed;
-        cat.x += moveDir;
-
-        if (cat.snowBallRadius < 22) {
-          cat.snowBallRadius += 0.045;
+        if (cat.snowBallRadius < 20) {
+          cat.snowBallRadius += 0.05;
         }
 
-        if (cat.facingRight && cat.x >= siteX) {
-          snowmanVolume = Math.min(maxSnowmanVolume, snowmanVolume + 65);
-          saveSnowState();
-          
-          if (snowmanVolume < maxSnowmanVolume) {
-            cat.facingRight = false;
-          } else {
-            cat.state = 'FETCH_ITEMS'; cat.x = 40;
-          }
-        } else if (!cat.facingRight && cat.x <= minX) {
-          cat.facingRight = true;
+        if (cat.x >= siteX) {
+          snowmanVolume = Math.min(maxSnowmanVolume, snowmanVolume + 90);
+          cat.state = 'RETURNING';
+          cat.snowBallRadius = 0;
         }
       }
     } else if (!hasDecorations) {
-      if (cat.state !== 'FETCH_ITEMS' && cat.state !== 'DECORATING') {
-        cat.state = 'FETCH_ITEMS'; cat.x = 40;
-      }
-
-      if (cat.state === 'FETCH_ITEMS') {
-        cat.facingRight = true;
-        if (cat.x < siteX) {
-          cat.x += cat.speed;
-        } else {
-          cat.state = 'DECORATING'; cat.timer = 0;
-        }
-      }
-
-      if (cat.state === 'DECORATING') {
-        cat.timer++;
-        if (cat.timer > 50) {
-          hasDecorations = true; saveSnowState();
-          cat.state = 'ADMIRING'; cat.timer = 0;
-        }
+      cat.state = 'DECORATING';
+      cat.x = siteX;
+      cat.timer++;
+      if (cat.timer > 40) {
+        hasDecorations = true;
+        cat.state = 'ADMIRING';
+        cat.timer = 0;
       }
     } else {
-      if (cat.state === 'ADMIRING') {
-        cat.timer++;
-        if (cat.timer > 80) {
-          cat.state = 'ROAMING';
-          cat.targetX = Math.random() * (width - 160) + 60;
-        }
-      }
-
-      if (cat.state === 'ROAMING') {
-        if (Math.abs(cat.x - cat.targetX) > 6) {
-          cat.facingRight = (cat.targetX > cat.x);
-          cat.x += cat.facingRight ? cat.speed * 0.8 : -cat.speed * 0.8;
-        } else {
-          cat.timer++;
-          if (cat.timer > 100) {
-            cat.targetX = Math.random() * (width - 160) + 60;
-            cat.timer = 0;
-          }
-        }
+      cat.state = 'ADMIRING';
+      cat.timer++;
+      // Auto-reset cycle after ~15 seconds of admiring
+      if (cat.timer > 900) {
+        isMelting = true;
       }
     }
   }
@@ -1845,31 +1779,21 @@ function initSnowEffect() {
     ctx.stroke(); ctx.restore();
   }
 
-  let saveCounter = 0;
   function render() {
     ctx.clearRect(0, 0, width, height);
 
-    saveCounter++; if (saveCounter % 180 === 0) saveSnowState();
-
-    if (snowmanVolume >= maxSnowmanVolume && !isMelting) {
-      meltTimer++; if (meltTimer > 1500) isMelting = true;
-    }
-
     let meltRatio = 0;
     if (isMelting) {
-      meltTimer++; meltRatio = Math.min(1.0, (meltTimer - 1500) / 400);
+      meltTimer++; meltRatio = Math.min(1.0, meltTimer / 200);
       snowmanVolume = Math.max(0, maxSnowmanVolume * (1 - meltRatio));
       for (let c = 0; c < numCols; c++) groundHeights[c] *= 0.995;
 
       if (meltRatio >= 1.0) {
         isMelting = false; meltTimer = 0; snowmanVolume = 0;
         hasDecorations = false; cat.state = 'ROLL_SNOW'; cat.x = 60;
-        snowmanXRatio = 0.2 + Math.random() * 0.6; // Pick new dynamic location!
-        saveSnowState();
       }
     }
 
-    // Render Flakes
     flakes.forEach((f) => {
       ctx.beginPath(); ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`;
       ctx.arc(f.x, f.y, f.r * f.z, 0, Math.PI * 2); ctx.fill();
