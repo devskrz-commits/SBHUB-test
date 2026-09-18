@@ -1362,8 +1362,6 @@ function initSnowEffect() {
     }
   }
 
-  localStorage.removeItem('sbhub_snow_data');
-
   const numFlakes = 130;
   const flakes = Array.from({ length: numFlakes }, () => ({
     x: Math.random() * width,
@@ -1391,6 +1389,44 @@ function initSnowEffect() {
   };
 
   let waveCooldown = 0;
+
+  // Persistent Snow State Functions
+  function loadSnowState() {
+    const saved = localStorage.getItem('sbhub_snow_data');
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        if (data.snowmen && Array.isArray(data.snowmen)) {
+          data.snowmen.forEach((s, i) => {
+            if (snowmen[i]) {
+              snowmen[i].volume = s.volume || 0;
+              snowmen[i].decorated = !!s.decorated;
+            }
+          });
+        }
+        if (typeof data.currentSnowmanIdx === 'number') {
+          currentSnowmanIdx = Math.min(data.currentSnowmanIdx, snowmen.length);
+        }
+        if (typeof data.catX === 'number') {
+          cat.x = data.catX;
+        }
+        if (data.catState) {
+          cat.state = (data.catState === 'CRYING' || data.catState === 'WAVING') ? 'ROLL_SNOW' : data.catState;
+        }
+      } catch (e) {}
+    }
+  }
+
+  function saveSnowState() {
+    localStorage.setItem('sbhub_snow_data', JSON.stringify({
+      snowmen: snowmen.map(s => ({ volume: s.volume, decorated: s.decorated })),
+      currentSnowmanIdx: currentSnowmanIdx,
+      catX: cat.x,
+      catState: cat.state
+    }));
+  }
+
+  loadSnowState();
 
   // Rate-limited mouse move listener with cooldown
   window.addEventListener('mousemove', () => {
@@ -1524,7 +1560,6 @@ function initSnowEffect() {
     ctx.restore();
   }
 
-  // Draw Animated Playful Dogs
   function drawDog(x, y, facingRight, frame) {
     ctx.save();
     ctx.translate(x, y + 4);
@@ -1536,43 +1571,35 @@ function initSnowEffect() {
 
     ctx.translate(0, -bounce);
 
-    // Dog Shadow
     ctx.fillStyle = "rgba(15, 23, 42, 0.35)";
     ctx.beginPath(); ctx.ellipse(0, 0, 16, 4, 0, 0, Math.PI * 2); ctx.fill();
 
     ctx.lineWidth = 1.8; ctx.strokeStyle = "#000000";
 
-    // Tail Wagging
     const tailWag = Math.sin(frame * 0.5) * 0.4;
     ctx.save(); ctx.translate(-14, -14); ctx.rotate(-0.3 + tailWag);
     ctx.fillStyle = "#d97706"; ctx.beginPath();
     ctx.quadraticCurveTo(-12, -18, -6, -26); ctx.quadraticCurveTo(-2, -12, 0, 0); ctx.fill(); ctx.stroke();
     ctx.restore();
 
-    // Legs
     ctx.strokeStyle = "#d97706"; ctx.lineWidth = 5; ctx.lineCap = "round";
     ctx.beginPath(); ctx.moveTo(-10, -10); ctx.lineTo(-10 + legRun, -2); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(-4, -10); ctx.lineTo(-4 - legRun, -2); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(6, -10); ctx.lineTo(6 - legRun, -2); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(12, -10); ctx.lineTo(12 + legRun, -2); ctx.stroke();
 
-    // Body
     ctx.fillStyle = "#f59e0b";
     ctx.beginPath(); ctx.ellipse(0, -14, 15, 10, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-    // Head
     ctx.beginPath(); ctx.arc(14, -22, 11, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-    // Floppy Ear
     ctx.fillStyle = "#b45309";
     ctx.beginPath(); ctx.ellipse(10, -20, 5, 9, 0.3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-    // Muzzle & Tongue
     ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(18, -20, 5, 4, 0, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = "#ef4444"; ctx.beginPath(); ctx.arc(20, -18, 2.5, 0, Math.PI); ctx.fill();
     ctx.fillStyle = "#000000"; ctx.beginPath(); ctx.arc(21, -22, 1.8, 0, Math.PI * 2); ctx.fill();
 
-    // Happy Eye
     ctx.beginPath(); ctx.arc(16, -25, 2, 0, Math.PI * 2); ctx.fill();
 
     ctx.restore();
@@ -1595,7 +1622,6 @@ function initSnowEffect() {
     ctx.translate(0, -bounce + cat.jumpY);
     if (cat.jumpY < 0) cat.jumpY += 1;
 
-    // Floor Shadow
     ctx.fillStyle = "rgba(15, 23, 42, 0.35)";
     ctx.beginPath();
     ctx.ellipse(0, 0, 18, 5, 0, 0, Math.PI * 2);
@@ -1833,6 +1859,7 @@ function initSnowEffect() {
         currentSnowmanIdx = 0;
         cat.x = minX;
         cat.timer = 0;
+        saveSnowState();
       }
       return;
     }
@@ -1846,6 +1873,7 @@ function initSnowEffect() {
           cat.state = 'ROLL_SNOW';
           cat.facingRight = true;
           cat.snowBallRadius = 5;
+          saveSnowState();
         }
       } else if (cat.state === 'ROLL_SNOW') {
         cat.facingRight = true;
@@ -1862,6 +1890,7 @@ function initSnowEffect() {
             cat.state = 'RETURNING';
           }
           cat.snowBallRadius = 0;
+          saveSnowState();
         }
       } else if (cat.state === 'FETCH_STICK') {
         cat.facingRight = false;
@@ -1870,6 +1899,7 @@ function initSnowEffect() {
         if (cat.x <= minX) {
           cat.state = 'DELIVER_STICK';
           cat.holdingItem = true;
+          saveSnowState();
         }
       } else if (cat.state === 'DELIVER_STICK') {
         cat.facingRight = true;
@@ -1880,6 +1910,7 @@ function initSnowEffect() {
           cat.holdingItem = false;
           currentSnowmanIdx++;
           cat.state = 'RETURNING';
+          saveSnowState();
         }
       }
     } else {
@@ -1919,6 +1950,7 @@ function initSnowEffect() {
       dogs = [];
       cat.state = 'CRYING';
       cat.timer = 0;
+      saveSnowState();
     }
   }
 
