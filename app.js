@@ -1569,8 +1569,8 @@ function initSnowEffect() {
 
     // Muzzle & Tongue
     ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(18, -20, 5, 4, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#ef4444"; ctx.beginPath(); ctx.arc(20, -18, 2.5, 0, Math.PI); ctx.fill(); // Tongue out!
-    ctx.fillStyle = "#000000"; ctx.beginPath(); ctx.arc(21, -22, 1.8, 0, Math.PI * 2); ctx.fill(); // Nose
+    ctx.fillStyle = "#ef4444"; ctx.beginPath(); ctx.arc(20, -18, 2.5, 0, Math.PI); ctx.fill();
+    ctx.fillStyle = "#000000"; ctx.beginPath(); ctx.arc(21, -22, 1.8, 0, Math.PI * 2); ctx.fill();
 
     // Happy Eye
     ctx.beginPath(); ctx.arc(16, -25, 2, 0, Math.PI * 2); ctx.fill();
@@ -1605,51 +1605,40 @@ function initSnowEffect() {
     ctx.strokeStyle = "#000000";
 
     if (state === 'CRYING') {
-      // Sad Crying Cat Sitting & Sobbing
       const sobTremble = Math.sin(frame * 0.8) * 1.5;
       ctx.translate(sobTremble, 0);
 
-      // Drooping Tail
       ctx.save(); ctx.translate(-14, -8); ctx.rotate(0.6 + tailSway * 0.5);
       ctx.fillStyle = "#f97316";
       ctx.beginPath(); ctx.quadraticCurveTo(-15, 10, -8, 18); ctx.quadraticCurveTo(-2, 10, 0, 0); ctx.fill(); ctx.stroke();
       ctx.restore();
 
-      // Folded Sitting Legs
       ctx.fillStyle = "#f97316";
       ctx.beginPath(); ctx.ellipse(-12, -8, 8, 5, 0.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       ctx.beginPath(); ctx.ellipse(12, -8, 8, 5, -0.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      // Torso
       ctx.fillStyle = "#f97316";
       ctx.beginPath(); ctx.ellipse(0, -18, 14, 16, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      // White Chest
       ctx.fillStyle = "#ffffff";
       ctx.beginPath(); ctx.ellipse(0, -16, 9, 11, 0, 0, Math.PI * 2); ctx.fill();
 
-      // Pink Collar
       ctx.fillStyle = "#ec4899"; ctx.fillRect(-10, -32, 20, 4); ctx.strokeRect(-10, -32, 20, 4);
 
-      // Drooping Head
       ctx.fillStyle = "#f97316";
       ctx.beginPath(); ctx.arc(0, -40, 15, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      // Drooping Ears
       ctx.beginPath(); ctx.moveTo(-11, -48); ctx.lineTo(-20, -56); ctx.lineTo(-2, -50); ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(11, -48); ctx.lineTo(20, -56); ctx.lineTo(2, -50); ctx.closePath(); ctx.fill(); ctx.stroke();
 
-      // Sad Muzzle & Mouth ( inverted arc )
       ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(0, -36, 7, 5, 0, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.4;
-      ctx.beginPath(); ctx.arc(0, -32, 2.5, Math.PI, 0); ctx.stroke(); // Sad Mouth
+      ctx.beginPath(); ctx.arc(0, -32, 2.5, Math.PI, 0); ctx.stroke();
 
-      // Crying Eyes with Tears Streaming
       ctx.fillStyle = "#000000";
       ctx.beginPath(); ctx.arc(-5, -42, 2.5, 0, Math.PI * 2); ctx.fill();
       ctx.beginPath(); ctx.arc(5, -42, 2.5, 0, Math.PI * 2); ctx.fill();
 
-      // Blue Tears Falling Down Cheeks
       const tearY = (frame * 3) % 25;
       ctx.fillStyle = "#38bdf8";
       ctx.beginPath(); ctx.arc(-6, -38 + tearY, 2, 0, Math.PI * 2); ctx.fill();
@@ -1802,11 +1791,10 @@ function initSnowEffect() {
       ctx.beginPath(); ctx.moveTo(22, -27); ctx.lineTo(32, -29); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(22, -25); ctx.lineTo(32, -24); ctx.stroke();
 
-      // Render Carrot & Stick in Mouth when Carrying Items
       if (holdingItem) {
-        ctx.fillStyle = "#ea580c"; ctx.beginPath(); // Carrot
+        ctx.fillStyle = "#ea580c"; ctx.beginPath();
         ctx.moveTo(22, -24); ctx.lineTo(34, -20); ctx.lineTo(24, -18); ctx.closePath(); ctx.fill();
-        ctx.strokeStyle = "#582f0e"; ctx.lineWidth = 2.5; ctx.beginPath(); // Stick
+        ctx.strokeStyle = "#582f0e"; ctx.lineWidth = 2.5; ctx.beginPath();
         ctx.moveTo(18, -26); ctx.lineTo(32, -34); ctx.stroke();
       }
     }
@@ -1840,7 +1828,7 @@ function initSnowEffect() {
 
     if (cat.state === 'CRYING') {
       cat.timer++;
-      if (cat.timer > 180) { // Cries for ~3 seconds, then restarts
+      if (cat.timer > 180) {
         cat.state = 'ROLL_SNOW';
         currentSnowmanIdx = 0;
         cat.x = minX;
@@ -1849,7 +1837,6 @@ function initSnowEffect() {
       return;
     }
 
-    // 4 Snowmen Building State Machine
     if (currentSnowmanIdx < snowmen.length) {
       if (cat.state === 'RETURNING') {
         cat.facingRight = false;
@@ -1870,7 +1857,7 @@ function initSnowEffect() {
         if (cat.x >= targetX) {
           targetSnowman.volume += 120;
           if (targetSnowman.volume >= maxVolumePerSnowman) {
-            cat.state = 'FETCH_STICK'; // Body complete -> Fetch Carrot & Stick
+            cat.state = 'FETCH_STICK';
           } else {
             cat.state = 'RETURNING';
           }
@@ -1889,14 +1876,13 @@ function initSnowEffect() {
         cat.holdingItem = true;
         cat.x += cat.speed * 1.1;
         if (cat.x >= targetX) {
-          targetSnowman.decorated = true; // Attach Stick & Carrot!
+          targetSnowman.decorated = true;
           cat.holdingItem = false;
-          currentSnowmanIdx++; // Move to next snowman
+          currentSnowmanIdx++;
           cat.state = 'RETURNING';
         }
       }
     } else {
-      // All 4 Snowmen Fully Built & Decorated -> Trigger Dog Pack Attack!
       if (!dogsActive) {
         spawnDogsAttack();
       }
@@ -1916,13 +1902,12 @@ function initSnowEffect() {
         allDogsFinished = false;
       }
 
-      // Check collision with snowmen to knock them down
       snowmen.forEach(s => {
         const smX = width * s.xRatio;
         if (Math.abs(d.x - smX) < 35 && s.volume > 0) {
           s.volume = 0;
           s.decorated = false;
-          d.jumpY = -14; // Playful jump over destroyed snowman
+          d.jumpY = -14;
         }
       });
 
@@ -1976,7 +1961,6 @@ function initSnowEffect() {
     drawGroundTerrain();
     drawPawprints();
 
-    // Render 4 Snowmen
     snowmen.forEach(s => {
       const smX = width * s.xRatio;
       const smCol = Math.floor(smX / colWidth);
@@ -1984,7 +1968,6 @@ function initSnowEffect() {
       drawSnowman(smX, groundY, s.volume, s.decorated);
     });
 
-    // Render Dogs
     updateDogs();
     dogs.forEach(d => {
       const dCol = Math.floor(Math.max(0, Math.min(width, d.x)) / colWidth);
@@ -1992,7 +1975,6 @@ function initSnowEffect() {
       drawDog(d.x, dGroundY, d.facingRight, d.frame);
     });
 
-    // Render Cat
     updateCat();
     const catCol = Math.floor(Math.max(0, Math.min(width, cat.x)) / colWidth);
     const catGroundY = height - (groundHeights[catCol] || 0) - 15;
