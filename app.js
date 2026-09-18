@@ -146,6 +146,7 @@ const menuData = [
   { category: "INTERNAL", icon: "bx-home-alt", subs: [{ name: "DAILY DUTY", url: "duties.html" }, { name: "ROTA", url: "rota.html" }, { name: "HANDOVER", url: "handover.html" }] },
   { category: "DAILY TASK", icon: "bx-task", subs: [
     { name: "SPORTS OFFER CHECK", url: "https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?usp=sharing" },
+    { name: "PREDICTION OFFER CHECK", url: "https://polymarket.com/breaking" },
     { name: "TOP PICKS", url: "boostschedule.html" },
     { name: "EDGE BOOST (MIG)", url: "https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit?gid=1450723096#gid=1450723096" },
     { name: "IBET BOOST (MIG)", url: "https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit?gid=933404962#gid=933404962" },
@@ -1307,7 +1308,7 @@ window.toggleMobileView = function() {
 
 
 /* ==========================================
-   4. 3D PHYSICS SNOW, KITTY & PAWPRINT ENGINE
+   4. 3D PHYSICS SNOW, KITTY, DOGS & PAWPRINTS
    ========================================== */
 
 function initSnowEffect() {
@@ -1322,18 +1323,24 @@ function initSnowEffect() {
   let numCols = Math.ceil(width / colWidth);
   let groundHeights = new Float32Array(numCols).fill(0);
 
-  let snowmanXRatio = 0.75; 
-  let snowmanVolume = 0;
-  const maxSnowmanVolume = 450;
-  let isMelting = false;
-  let meltTimer = 0;
-  let hasDecorations = false;
+  // 4 Snowmen Array
+  const maxVolumePerSnowman = 350;
+  const snowmen = [
+    { xRatio: 0.32, volume: 0, decorated: false },
+    { xRatio: 0.50, volume: 0, decorated: false },
+    { xRatio: 0.68, volume: 0, decorated: false },
+    { xRatio: 0.86, volume: 0, decorated: false }
+  ];
+  let currentSnowmanIdx = 0;
+
+  let dogs = [];
+  let dogsActive = false;
 
   let pawprints = [];
 
   function addPawprint(x, y) {
     pawprints.push({ x, y, opacity: 0.65 });
-    if (pawprints.length > 50) pawprints.shift();
+    if (pawprints.length > 60) pawprints.shift();
   }
 
   function drawPawprints() {
@@ -1355,7 +1362,6 @@ function initSnowEffect() {
     }
   }
 
-  // Clear stale snow state from previous loads
   localStorage.removeItem('sbhub_snow_data');
 
   const numFlakes = 130;
@@ -1372,52 +1378,64 @@ function initSnowEffect() {
 
   const cat = { 
     x: 60, 
-    targetX: 60, 
     state: 'ROLL_SNOW', 
     prevState: 'ROLL_SNOW', 
     timer: 0, 
     frame: 0, 
-    speed: 1.8, 
+    speed: 2.2, 
     facingRight: true, 
     snowBallRadius: 5,
     lastFpX: 60,
-    jumpY: 0
+    jumpY: 0,
+    holdingItem: false
   };
 
-  // Interactive Click Listener anywhere on bottom terrain
+  let waveCooldown = 0;
+
+  // Rate-limited mouse move listener with cooldown
+  window.addEventListener('mousemove', () => {
+    if (waveCooldown <= 0 && cat.state !== 'WAVING' && cat.state !== 'CRYING' && cat.state !== 'DOGS_ATTACK') {
+      cat.prevState = (cat.state === 'WAVING') ? 'ROLL_SNOW' : cat.state;
+      cat.state = 'WAVING';
+      cat.timer = 0;
+      cat.jumpY = -12;
+      waveCooldown = 600;
+    }
+  });
+
+  // Direct Click Listener
   window.addEventListener('click', (e) => {
     const clickY = e.clientY;
     const clickX = e.clientX;
     const groundY = height - 90;
 
     if (clickY >= groundY) {
-      const snowmanX = width * snowmanXRatio;
-      
-      // Clicked on/near Snowman -> Melt & Reset Rebuild!
-      if (Math.abs(clickX - snowmanX) < 100) {
-        snowmanVolume = 0;
-        hasDecorations = false;
-        isMelting = false;
-        meltTimer = 0;
-        cat.state = 'ROLL_SNOW';
-        cat.x = 60;
-        cat.facingRight = true;
-        cat.snowBallRadius = 5;
-        if (typeof window.playClickSound === 'function') window.playClickSound();
-        if (typeof window.showToastNotification === 'function') {
-          window.showToastNotification("☃️ Snowman reset! Kitty is rolling a new snowball!");
-        }
-      } 
-      // Clicked on/near Cat -> Meow & Jump!
-      else if (Math.abs(clickX - cat.x) < 80) {
-        cat.prevState = cat.state;
+      if (Math.abs(clickX - cat.x) < 80 && cat.state !== 'CRYING') {
+        cat.prevState = (cat.state === 'WAVING') ? 'ROLL_SNOW' : cat.state;
         cat.state = 'WAVING';
         cat.timer = 0;
-        cat.jumpY = -15;
+        cat.jumpY = -18;
         if (typeof window.playClickSound === 'function') window.playClickSound();
       }
     }
   });
+
+  function spawnDogsAttack() {
+    dogsActive = true;
+    const fromLeft = Math.random() > 0.5;
+    const startX = fromLeft ? -80 : width + 80;
+    const speed = fromLeft ? 5.5 : -5.5;
+
+    dogs = [
+      { x: startX, speed: speed, jumpY: 0, frame: 0, facingRight: fromLeft },
+      { x: startX - (fromLeft ? 60 : -60), speed: speed * 1.1, jumpY: 0, frame: 10, facingRight: fromLeft },
+      { x: startX - (fromLeft ? 120 : -120), speed: speed * 0.9, jumpY: 0, frame: 20, facingRight: fromLeft }
+    ];
+
+    if (typeof window.showToastNotification === 'function') {
+      window.showToastNotification("🐕 Oh no! A pack of playful dogs is charging in!");
+    }
+  }
 
   function handleFlakeCollision(f) {
     let col = Math.floor(f.x / colWidth);
@@ -1426,7 +1444,7 @@ function initSnowEffect() {
     let currentGroundY = height - groundHeights[col];
 
     if (f.y >= currentGroundY) {
-      if (!isMelting && groundHeights[col] < 45) {
+      if (groundHeights[col] < 45) {
         groundHeights[col] += 0.3 * f.z;
         if (col > 0) groundHeights[col - 1] += 0.15 * f.z;
         if (col < numCols - 1) groundHeights[col + 1] += 0.15 * f.z;
@@ -1470,52 +1488,97 @@ function initSnowEffect() {
     ctx.restore();
   }
 
-  function drawSnowman(x, baseY, volume, meltRatio) {
+  function drawSnowman(x, baseY, volume, decorated) {
     if (volume <= 0) return;
     ctx.save();
     
-    const buildProgress = Math.min(1.0, volume / maxSnowmanVolume);
-    const bottomR = Math.min(38, buildProgress * 2.2 * 38);
-    const middleR = buildProgress > 0.25 ? Math.min(26, (buildProgress - 0.25) * 2.2 * 26) : 0;
-    const headR = buildProgress > 0.55 ? Math.min(17, (buildProgress - 0.55) * 2.2 * 17) : 0;
-    const meltYOffset = meltRatio * 25;
-    ctx.globalAlpha = Math.max(0, 1 - meltRatio * 0.9);
-
-    if (meltRatio > 0.1) {
-      ctx.fillStyle = "rgba(241, 245, 249, 0.85)";
-      ctx.beginPath();
-      ctx.ellipse(x, baseY + 2, (bottomR + 15) * meltRatio, 4 * meltRatio, 0, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    const buildProgress = Math.min(1.0, volume / maxVolumePerSnowman);
+    const bottomR = Math.min(32, buildProgress * 2.2 * 32);
+    const middleR = buildProgress > 0.25 ? Math.min(22, (buildProgress - 0.25) * 2.2 * 22) : 0;
+    const headR = buildProgress > 0.55 ? Math.min(15, (buildProgress - 0.55) * 2.2 * 15) : 0;
 
     if (bottomR > 1) {
-      drawLumpySnowball(x, baseY - bottomR * 0.7 + meltYOffset * 0.3, bottomR * (1 - meltRatio * 0.2), meltRatio);
+      drawLumpySnowball(x, baseY - bottomR * 0.7, bottomR, 0);
     }
     if (middleR > 1) {
-      const mY = baseY - bottomR * 1.3 - middleR * 0.7 + meltYOffset * 0.6;
-      drawLumpySnowball(x, mY, middleR * (1 - meltRatio * 0.3), -meltRatio * 2);
-      if (hasDecorations) {
-        ctx.strokeStyle = "#582f0e"; ctx.lineWidth = 3.5; ctx.lineCap = "round";
-        ctx.beginPath(); ctx.moveTo(x - middleR * 0.8, mY); ctx.lineTo(x - middleR - 22, mY - 12 + meltRatio * 15); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(x + middleR * 0.8, mY); ctx.lineTo(x + middleR + 22, mY - 14 + meltRatio * 15); ctx.stroke();
+      const mY = baseY - bottomR * 1.3 - middleR * 0.7;
+      drawLumpySnowball(x, mY, middleR, 0);
+      if (decorated) {
+        ctx.strokeStyle = "#582f0e"; ctx.lineWidth = 3; ctx.lineCap = "round";
+        ctx.beginPath(); ctx.moveTo(x - middleR * 0.8, mY); ctx.lineTo(x - middleR - 18, mY - 10); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x + middleR * 0.8, mY); ctx.lineTo(x + middleR + 18, mY - 12); ctx.stroke();
       }
     }
     if (headR > 1) {
-      const hY = baseY - bottomR * 1.3 - middleR * 1.3 - headR * 0.7 + meltYOffset;
-      drawLumpySnowball(x, hY, headR * (1 - meltRatio * 0.4), meltRatio * 1.5);
+      const hY = baseY - bottomR * 1.3 - middleR * 1.3 - headR * 0.7;
+      drawLumpySnowball(x, hY, headR, 0);
       if (buildProgress > 0.4) {
         ctx.fillStyle = "#0f172a"; ctx.beginPath();
-        ctx.arc(x - 5, hY - 3, 2, 0, Math.PI * 2); ctx.arc(x + 5, hY - 3, 2, 0, Math.PI * 2); ctx.fill();
+        ctx.arc(x - 4, hY - 3, 1.8, 0, Math.PI * 2); ctx.arc(x + 4, hY - 3, 1.8, 0, Math.PI * 2); ctx.fill();
       }
-      if (hasDecorations) {
+      if (decorated) {
         ctx.fillStyle = "#ea580c"; ctx.beginPath();
-        ctx.moveTo(x, hY); ctx.lineTo(x + 18, hY + 3 + meltRatio * 10); ctx.lineTo(x, hY + 5); ctx.closePath(); ctx.fill();
+        ctx.moveTo(x, hY); ctx.lineTo(x + 14, hY + 2); ctx.lineTo(x, hY + 4); ctx.closePath(); ctx.fill();
       }
     }
     ctx.restore();
   }
 
-  function drawCatCharacter(x, y, state, frame, facingRight = true, ballRadius = 0) {
+  // Draw Animated Playful Dogs
+  function drawDog(x, y, facingRight, frame) {
+    ctx.save();
+    ctx.translate(x, y + 4);
+    ctx.scale(1.1, 1.1);
+    if (!facingRight) ctx.scale(-1, 1);
+
+    const legRun = Math.sin(frame * 0.4) * 12;
+    const bounce = Math.abs(Math.sin(frame * 0.4)) * 3;
+
+    ctx.translate(0, -bounce);
+
+    // Dog Shadow
+    ctx.fillStyle = "rgba(15, 23, 42, 0.35)";
+    ctx.beginPath(); ctx.ellipse(0, 0, 16, 4, 0, 0, Math.PI * 2); ctx.fill();
+
+    ctx.lineWidth = 1.8; ctx.strokeStyle = "#000000";
+
+    // Tail Wagging
+    const tailWag = Math.sin(frame * 0.5) * 0.4;
+    ctx.save(); ctx.translate(-14, -14); ctx.rotate(-0.3 + tailWag);
+    ctx.fillStyle = "#d97706"; ctx.beginPath();
+    ctx.quadraticCurveTo(-12, -18, -6, -26); ctx.quadraticCurveTo(-2, -12, 0, 0); ctx.fill(); ctx.stroke();
+    ctx.restore();
+
+    // Legs
+    ctx.strokeStyle = "#d97706"; ctx.lineWidth = 5; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(-10, -10); ctx.lineTo(-10 + legRun, -2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-4, -10); ctx.lineTo(-4 - legRun, -2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(6, -10); ctx.lineTo(6 - legRun, -2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(12, -10); ctx.lineTo(12 + legRun, -2); ctx.stroke();
+
+    // Body
+    ctx.fillStyle = "#f59e0b";
+    ctx.beginPath(); ctx.ellipse(0, -14, 15, 10, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+    // Head
+    ctx.beginPath(); ctx.arc(14, -22, 11, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+    // Floppy Ear
+    ctx.fillStyle = "#b45309";
+    ctx.beginPath(); ctx.ellipse(10, -20, 5, 9, 0.3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+    // Muzzle & Tongue
+    ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(18, -20, 5, 4, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#ef4444"; ctx.beginPath(); ctx.arc(20, -18, 2.5, 0, Math.PI); ctx.fill(); // Tongue out!
+    ctx.fillStyle = "#000000"; ctx.beginPath(); ctx.arc(21, -22, 1.8, 0, Math.PI * 2); ctx.fill(); // Nose
+
+    // Happy Eye
+    ctx.beginPath(); ctx.arc(16, -25, 2, 0, Math.PI * 2); ctx.fill();
+
+    ctx.restore();
+  }
+
+  function drawCatCharacter(x, y, state, frame, facingRight = true, ballRadius = 0, holdingItem = false) {
     ctx.save();
     ctx.translate(x, y + 6);
     ctx.scale(1.15, 1.15);
@@ -1524,7 +1587,7 @@ function initSnowEffect() {
       ctx.scale(-1, 1);
     }
 
-    const isWalking = (state === 'ROLL_SNOW' || state === 'FETCH_ITEMS' || state === 'ROAMING' || state === 'RETURNING');
+    const isWalking = (state === 'ROLL_SNOW' || state === 'FETCH_STICK' || state === 'DELIVER_STICK' || state === 'RETURNING');
     const gaitCycle = isWalking ? Math.sin(frame * 0.35) * 12 : 0;
     const bounce = isWalking ? Math.abs(Math.sin(frame * 0.35)) * 2.5 : 0;
     const tailSway = Math.sin(frame * 0.2) * 0.25;
@@ -1541,7 +1604,58 @@ function initSnowEffect() {
     ctx.lineWidth = 2.0;
     ctx.strokeStyle = "#000000";
 
-    if (state === 'WAVING') {
+    if (state === 'CRYING') {
+      // Sad Crying Cat Sitting & Sobbing
+      const sobTremble = Math.sin(frame * 0.8) * 1.5;
+      ctx.translate(sobTremble, 0);
+
+      // Drooping Tail
+      ctx.save(); ctx.translate(-14, -8); ctx.rotate(0.6 + tailSway * 0.5);
+      ctx.fillStyle = "#f97316";
+      ctx.beginPath(); ctx.quadraticCurveTo(-15, 10, -8, 18); ctx.quadraticCurveTo(-2, 10, 0, 0); ctx.fill(); ctx.stroke();
+      ctx.restore();
+
+      // Folded Sitting Legs
+      ctx.fillStyle = "#f97316";
+      ctx.beginPath(); ctx.ellipse(-12, -8, 8, 5, 0.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(12, -8, 8, 5, -0.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // Torso
+      ctx.fillStyle = "#f97316";
+      ctx.beginPath(); ctx.ellipse(0, -18, 14, 16, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // White Chest
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath(); ctx.ellipse(0, -16, 9, 11, 0, 0, Math.PI * 2); ctx.fill();
+
+      // Pink Collar
+      ctx.fillStyle = "#ec4899"; ctx.fillRect(-10, -32, 20, 4); ctx.strokeRect(-10, -32, 20, 4);
+
+      // Drooping Head
+      ctx.fillStyle = "#f97316";
+      ctx.beginPath(); ctx.arc(0, -40, 15, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      // Drooping Ears
+      ctx.beginPath(); ctx.moveTo(-11, -48); ctx.lineTo(-20, -56); ctx.lineTo(-2, -50); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(11, -48); ctx.lineTo(20, -56); ctx.lineTo(2, -50); ctx.closePath(); ctx.fill(); ctx.stroke();
+
+      // Sad Muzzle & Mouth ( inverted arc )
+      ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(0, -36, 7, 5, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.arc(0, -32, 2.5, Math.PI, 0); ctx.stroke(); // Sad Mouth
+
+      // Crying Eyes with Tears Streaming
+      ctx.fillStyle = "#000000";
+      ctx.beginPath(); ctx.arc(-5, -42, 2.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(5, -42, 2.5, 0, Math.PI * 2); ctx.fill();
+
+      // Blue Tears Falling Down Cheeks
+      const tearY = (frame * 3) % 25;
+      ctx.fillStyle = "#38bdf8";
+      ctx.beginPath(); ctx.arc(-6, -38 + tearY, 2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(6, -38 + tearY, 2, 0, Math.PI * 2); ctx.fill();
+
+    } else if (state === 'WAVING') {
       ctx.save(); ctx.translate(-14, -12); ctx.rotate(-0.5 + tailSway);
       ctx.fillStyle = "#f97316";
       ctx.beginPath(); ctx.quadraticCurveTo(-15, -25, -5, -35); ctx.quadraticCurveTo(-18, -20, 0, 0); ctx.fill(); ctx.stroke();
@@ -1687,15 +1801,26 @@ function initSnowEffect() {
       ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.2;
       ctx.beginPath(); ctx.moveTo(22, -27); ctx.lineTo(32, -29); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(22, -25); ctx.lineTo(32, -24); ctx.stroke();
+
+      // Render Carrot & Stick in Mouth when Carrying Items
+      if (holdingItem) {
+        ctx.fillStyle = "#ea580c"; ctx.beginPath(); // Carrot
+        ctx.moveTo(22, -24); ctx.lineTo(34, -20); ctx.lineTo(24, -18); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = "#582f0e"; ctx.lineWidth = 2.5; ctx.beginPath(); // Stick
+        ctx.moveTo(18, -26); ctx.lineTo(32, -34); ctx.stroke();
+      }
     }
 
     ctx.restore();
   }
 
-  function updateCat(snowmanX) {
+  function updateCat() {
     cat.frame++;
-    const siteX = snowmanX - 45;
+    if (waveCooldown > 0) waveCooldown--;
+
     const minX = 60;
+    const targetSnowman = snowmen[currentSnowmanIdx];
+    const targetX = targetSnowman ? (width * targetSnowman.xRatio - 40) : width * 0.8;
 
     if (Math.abs(cat.x - cat.lastFpX) > 12) {
       const catCol = Math.floor(Math.max(0, cat.x) / colWidth);
@@ -1706,54 +1831,109 @@ function initSnowEffect() {
 
     if (cat.state === 'WAVING') {
       cat.timer++;
-      if (cat.timer > 80) {
-        cat.state = cat.prevState || 'ROLL_SNOW';
+      if (cat.timer > 100) {
+        cat.state = (cat.prevState && cat.prevState !== 'WAVING') ? cat.prevState : 'ROLL_SNOW';
         cat.timer = 0;
       }
       return;
     }
 
-    // Active Snowball Rolling Cycle
-    if (snowmanVolume < maxSnowmanVolume) {
+    if (cat.state === 'CRYING') {
+      cat.timer++;
+      if (cat.timer > 180) { // Cries for ~3 seconds, then restarts
+        cat.state = 'ROLL_SNOW';
+        currentSnowmanIdx = 0;
+        cat.x = minX;
+        cat.timer = 0;
+      }
+      return;
+    }
+
+    // 4 Snowmen Building State Machine
+    if (currentSnowmanIdx < snowmen.length) {
       if (cat.state === 'RETURNING') {
         cat.facingRight = false;
+        cat.holdingItem = false;
         cat.x -= cat.speed;
         if (cat.x <= minX) {
           cat.state = 'ROLL_SNOW';
           cat.facingRight = true;
           cat.snowBallRadius = 5;
         }
-      } else {
-        cat.state = 'ROLL_SNOW';
+      } else if (cat.state === 'ROLL_SNOW') {
         cat.facingRight = true;
+        cat.holdingItem = false;
         cat.x += cat.speed;
 
-        if (cat.snowBallRadius < 20) {
-          cat.snowBallRadius += 0.05;
-        }
+        if (cat.snowBallRadius < 18) cat.snowBallRadius += 0.04;
 
-        if (cat.x >= siteX) {
-          snowmanVolume = Math.min(maxSnowmanVolume, snowmanVolume + 90);
-          cat.state = 'RETURNING';
+        if (cat.x >= targetX) {
+          targetSnowman.volume += 120;
+          if (targetSnowman.volume >= maxVolumePerSnowman) {
+            cat.state = 'FETCH_STICK'; // Body complete -> Fetch Carrot & Stick
+          } else {
+            cat.state = 'RETURNING';
+          }
           cat.snowBallRadius = 0;
         }
-      }
-    } else if (!hasDecorations) {
-      cat.state = 'DECORATING';
-      cat.x = siteX;
-      cat.timer++;
-      if (cat.timer > 40) {
-        hasDecorations = true;
-        cat.state = 'ADMIRING';
-        cat.timer = 0;
+      } else if (cat.state === 'FETCH_STICK') {
+        cat.facingRight = false;
+        cat.holdingItem = false;
+        cat.x -= cat.speed * 1.1;
+        if (cat.x <= minX) {
+          cat.state = 'DELIVER_STICK';
+          cat.holdingItem = true;
+        }
+      } else if (cat.state === 'DELIVER_STICK') {
+        cat.facingRight = true;
+        cat.holdingItem = true;
+        cat.x += cat.speed * 1.1;
+        if (cat.x >= targetX) {
+          targetSnowman.decorated = true; // Attach Stick & Carrot!
+          cat.holdingItem = false;
+          currentSnowmanIdx++; // Move to next snowman
+          cat.state = 'RETURNING';
+        }
       }
     } else {
-      cat.state = 'ADMIRING';
-      cat.timer++;
-      // Auto-reset cycle after ~15 seconds of admiring
-      if (cat.timer > 900) {
-        isMelting = true;
+      // All 4 Snowmen Fully Built & Decorated -> Trigger Dog Pack Attack!
+      if (!dogsActive) {
+        spawnDogsAttack();
       }
+    }
+  }
+
+  function updateDogs() {
+    if (!dogsActive) return;
+
+    let allDogsFinished = true;
+
+    dogs.forEach(d => {
+      d.frame++;
+      d.x += d.speed;
+
+      if ((d.speed > 0 && d.x < width + 100) || (d.speed < 0 && d.x > -100)) {
+        allDogsFinished = false;
+      }
+
+      // Check collision with snowmen to knock them down
+      snowmen.forEach(s => {
+        const smX = width * s.xRatio;
+        if (Math.abs(d.x - smX) < 35 && s.volume > 0) {
+          s.volume = 0;
+          s.decorated = false;
+          d.jumpY = -14; // Playful jump over destroyed snowman
+        }
+      });
+
+      if (d.jumpY < 0) d.jumpY += 1;
+    });
+
+    if (allDogsFinished) {
+      dogsActive = false;
+      dogs = [];
+      cat.state = 'CRYING';
+      cat.timer = 0;
     }
   }
 
@@ -1782,18 +1962,6 @@ function initSnowEffect() {
   function render() {
     ctx.clearRect(0, 0, width, height);
 
-    let meltRatio = 0;
-    if (isMelting) {
-      meltTimer++; meltRatio = Math.min(1.0, meltTimer / 200);
-      snowmanVolume = Math.max(0, maxSnowmanVolume * (1 - meltRatio));
-      for (let c = 0; c < numCols; c++) groundHeights[c] *= 0.995;
-
-      if (meltRatio >= 1.0) {
-        isMelting = false; meltTimer = 0; snowmanVolume = 0;
-        hasDecorations = false; cat.state = 'ROLL_SNOW'; cat.x = 60;
-      }
-    }
-
     flakes.forEach((f) => {
       ctx.beginPath(); ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`;
       ctx.arc(f.x, f.y, f.r * f.z, 0, Math.PI * 2); ctx.fill();
@@ -1808,16 +1976,27 @@ function initSnowEffect() {
     drawGroundTerrain();
     drawPawprints();
 
-    const snowmanX = width * snowmanXRatio;
-    const snowmanCol = Math.floor(snowmanX / colWidth);
-    const groundY = height - (groundHeights[snowmanCol] || 0) - 15;
+    // Render 4 Snowmen
+    snowmen.forEach(s => {
+      const smX = width * s.xRatio;
+      const smCol = Math.floor(smX / colWidth);
+      const groundY = height - (groundHeights[smCol] || 0) - 15;
+      drawSnowman(smX, groundY, s.volume, s.decorated);
+    });
 
-    drawSnowman(snowmanX, groundY, snowmanVolume, meltRatio);
+    // Render Dogs
+    updateDogs();
+    dogs.forEach(d => {
+      const dCol = Math.floor(Math.max(0, Math.min(width, d.x)) / colWidth);
+      const dGroundY = height - (groundHeights[dCol] || 0) - 15 + d.jumpY;
+      drawDog(d.x, dGroundY, d.facingRight, d.frame);
+    });
 
-    updateCat(snowmanX);
-    const catCol = Math.floor(Math.max(0, cat.x) / colWidth);
+    // Render Cat
+    updateCat();
+    const catCol = Math.floor(Math.max(0, Math.min(width, cat.x)) / colWidth);
     const catGroundY = height - (groundHeights[catCol] || 0) - 15;
-    drawCatCharacter(cat.x, catGroundY, cat.state, cat.frame, cat.facingRight, cat.snowBallRadius);
+    drawCatCharacter(cat.x, catGroundY, cat.state, cat.frame, cat.facingRight, cat.snowBallRadius, cat.holdingItem);
 
     requestAnimationFrame(render);
   }
