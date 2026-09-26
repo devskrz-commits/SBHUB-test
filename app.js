@@ -1390,7 +1390,6 @@ function initSnowEffect() {
 
   let waveCooldown = 0;
 
-  // Persistent Snow State Functions
   function loadSnowState() {
     const saved = localStorage.getItem('sbhub_snow_data');
     if (saved) {
@@ -1428,7 +1427,6 @@ function initSnowEffect() {
 
   loadSnowState();
 
-  // Rate-limited mouse move listener with cooldown
   window.addEventListener('mousemove', () => {
     if (waveCooldown <= 0 && cat.state !== 'WAVING' && cat.state !== 'CRYING' && cat.state !== 'DOGS_ATTACK') {
       cat.prevState = (cat.state === 'WAVING') ? 'ROLL_SNOW' : cat.state;
@@ -1439,7 +1437,6 @@ function initSnowEffect() {
     }
   });
 
-  // Direct Click Listener
   window.addEventListener('click', (e) => {
     const clickY = e.clientY;
     const clickX = e.clientX;
@@ -2008,9 +2005,7 @@ function initSnowEffect() {
     });
 
     updateCat();
-    const catCol = Math.floor(Math.max(0, Math.min(width, cat.x)) / colWidth);
-    const catGroundY = height - (groundHeights[catCol] || 0) - 15;
-    drawCatCharacter(cat.x, catGroundY, cat.state, cat.frame, cat.facingRight, cat.snowBallRadius, cat.holdingItem);
+    drawCatCharacter(cat.x, height - (groundHeights[Math.floor(Math.max(0, Math.min(width, cat.x)) / colWidth)] || 0) - 15, cat.state, cat.frame, cat.facingRight, cat.snowBallRadius, cat.holdingItem);
 
     requestAnimationFrame(render);
   }
@@ -2019,32 +2014,32 @@ function initSnowEffect() {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
     numCols = Math.ceil(width / colWidth);
-    groundHeights = new Float32Array(numCols).fill(0);
+    if (groundHeights.length < numCols) {
+      const newHeights = new Float32Array(numCols);
+      newHeights.set(groundHeights);
+      groundHeights = newHeights;
+    }
   });
 
-  render();
+  requestAnimationFrame(render);
 }
 
-
-/* ==========================================
-   5. FAIL-SAFE APPLICATION BOOTSTRAPPER
-   ========================================== */
-
+// Initialize everything on DOM load
 document.addEventListener("DOMContentLoaded", () => {
-  try { window.checkRememberedSession(); } catch(e) { console.error("Session check error:", e); }
-  
-  try { restoreBentoLayout(); } catch(e){}
-  try { restoreAppearanceSettings(); } catch(e){}
-  try { initWallpaperPicker(); } catch(e){}
-  try { initWidgetManagerUI(); } catch(e){}
-  try { initDataStore(); } catch(e){}
-  try { initHandoverStore(); } catch(e){}
-  try { renderSidebar(); } catch(e){}
-  try { initDraggableSidebar(); } catch(e){}
-  try { fetchLiveGames(); } catch(e){}
-  try { fetchRealtimeWeather(); } catch(e){}
-  try { renderClocks(); setInterval(updateClocksTick, 1000); } catch(e){}
-  try { initTrendChart(); } catch(e){}
-  try { listenToLiveDutyRoster(); } catch(e){}
-  try { initSnowEffect(); } catch(e) { console.error("Snow Canvas Error:", e); }
+  window.checkRememberedSession();
+  initWallpaperPicker();
+  initWidgetManagerUI();
+  restoreAppearanceSettings();
+  initDraggableSidebar();
+  renderSidebar();
+  initDataStore();
+  initTrendChart();
+  renderClocks();
+  setInterval(updateClocksTick, 1000);
+  restoreBentoLayout();
+  fetchRealtimeWeather();
+  fetchLiveGames();
+  listenToLiveDutyRoster();
+  initHandoverStore();
+  initSnowEffect();
 });
