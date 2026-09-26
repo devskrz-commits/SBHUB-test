@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sportsbook Hub - Secure Login</title>
+  <title>Sportsbook Hub - Glassmorphic Dashboard</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     * {
@@ -47,161 +48,6 @@
       --glass-highlight: inset 0 1px 2px rgba(255, 255, 255, 0.6), inset 0 -1px 2px rgba(0, 0, 0, 0.1);
       --glass-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
       --card-blur: blur(20px) saturate(140%);
-    }
-
-    /* LOGIN OVERLAY MODAL WRAPPER */
-    #loginOverlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(10, 15, 30, 0.65);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      z-index: 999999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      transition: opacity 0.4s ease, visibility 0.4s ease;
-    }
-
-    #loginOverlay.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .login-card {
-      width: 100%;
-      max-width: 420px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(25px);
-      border-radius: 28px;
-      padding: 36px;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.5);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 20px;
-      animation: modalSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes modalSlideIn {
-      0% { transform: translateY(20px) scale(0.95); opacity: 0; }
-      100% { transform: translateY(0) scale(1); opacity: 1; }
-    }
-
-    .login-logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 20px;
-      background: linear-gradient(135deg, #f97316, #3b82f6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 30px;
-      color: #fff;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2), inset 0 2px 3px rgba(255,255,255,0.6);
-      margin-bottom: 4px;
-    }
-
-    .login-title { font-size: 22px; font-weight: 800; letter-spacing: 0.5px; }
-    .login-subtitle { font-size: 12px; opacity: 0.75; margin-top: -10px; }
-
-    .login-input-group {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      text-align: left;
-    }
-
-    .login-label { font-size: 11px; font-weight: 700; opacity: 0.9; margin-left: 4px; }
-
-    .password-field-wrap {
-      position: relative;
-      width: 100%;
-    }
-
-    .login-input {
-      width: 100%;
-      background: rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 14px;
-      padding: 12px 42px 12px 16px;
-      font-size: 14px;
-      color: #fff;
-      outline: none;
-      transition: all 0.2s;
-    }
-
-    .login-input:focus {
-      border-color: rgba(255, 255, 255, 0.7);
-      background: rgba(0, 0, 0, 0.3);
-      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25);
-    }
-
-    .password-toggle-btn {
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: transparent;
-      border: none;
-      color: rgba(255, 255, 255, 0.6);
-      cursor: pointer;
-      font-size: 18px;
-    }
-    .password-toggle-btn:hover { color: #fff; }
-
-    .login-btn {
-      width: 100%;
-      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      border-radius: 14px;
-      padding: 13px;
-      font-size: 13px;
-      font-weight: 800;
-      color: #fff;
-      cursor: pointer;
-      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4), inset 0 1px 2px rgba(255,255,255,0.4);
-      transition: all 0.2s;
-      margin-top: 6px;
-    }
-
-    .login-btn:hover {
-      filter: brightness(1.1);
-      transform: translateY(-1px);
-    }
-
-    .login-error {
-      font-size: 11px;
-      font-weight: 700;
-      color: #f87171;
-      min-height: 16px;
-      transition: opacity 0.2s;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-6px); }
-      40%, 80% { transform: translateX(6px); }
-    }
-    .shake { animation: shake 0.4s ease-in-out; }
-
-    /* DASHBOARD CONTENT CONTAINER WRAPPER (HIDDEN UNTIL AUTHENTICATED) */
-    #dashboardApp {
-      display: flex;
-      gap: 24px;
-      width: 100%;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.5s ease;
-    }
-    #dashboardApp.unlocked {
-      opacity: 1;
-      visibility: visible;
     }
 
     /* SIDEBAR NAVIGATION */
@@ -367,19 +213,13 @@
       margin-top: 10px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 12px;
       padding: 8px 14px;
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
       border-radius: 999px;
       backdrop-filter: var(--card-blur);
       box-shadow: var(--glass-highlight), var(--glass-shadow);
-    }
-
-    .user-left-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
     }
 
     .avatar-img {
@@ -390,25 +230,9 @@
       object-fit: cover;
     }
 
-    .user-info { display: flex; flex-direction: column; text-align: left; }
+    .user-info { display: flex; flex-direction: column; }
     .user-title { font-size: 10px; font-weight: 800; opacity: 0.8; }
     .user-name  { font-size: 12px; font-weight: 700; }
-
-    .logout-action-btn {
-      background: rgba(239, 68, 68, 0.2);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      color: #fca5a5;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 10px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      transition: background 0.2s;
-    }
-    .logout-action-btn:hover { background: rgba(239, 68, 68, 0.4); color: #fff; }
 
     /* MAIN WORKSPACE LAYOUT */
     .main-workspace {
@@ -488,7 +312,7 @@
     }
     .metric-pill i { font-size: 16px; color: #fbbf24; }
 
-    /* THEME SWITCHER DROPDOWN */
+    /* THEME SWITCHER DROPDOWN FIXED WITH HIGH Z-INDEX & SAFE SCREEN BOUNDS */
     .theme-dropdown {
       position: relative;
       display: inline-block;
@@ -627,390 +451,301 @@
 </head>
 <body id="pageBody">
 
-  <!-- FRONT LOGIN OVERLAY NAVIGATION -->
-  <div id="loginOverlay">
-    <div class="login-card" id="loginCard">
-      <div class="login-logo">
-        <i class='bx bx-shield-quarter'></i>
-      </div>
-      <div>
-        <div class="login-title">Sportsbook Hub</div>
-        <div class="login-subtitle">Enter security passphrase to access dashboard</div>
-      </div>
-      
-      <form class="login-input-group" onsubmit="handleLogin(event)">
-        <label class="login-label">Access Password</label>
-        <div class="password-field-wrap">
-          <input type="password" id="passwordInput" class="login-input" placeholder="Enter password..." autocomplete="current-password" autofocus required>
-          <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility()">
-            <i class='bx bx-show' id="togglePassIcon"></i>
-          </button>
-        </div>
-        <div class="login-error" id="loginErrorMsg"></div>
-        <button type="submit" class="login-btn">
-          <i class='bx bx-lock-open-alt'></i> Unlock Dashboard
-        </button>
-      </form>
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <span>SPORTSBOOK HUB</span>
+      <i class='bx bx-x' style="cursor: pointer; font-size: 18px;"></i>
     </div>
-  </div>
 
-  <!-- DASHBOARD APP CONTAINER -->
-  <div id="dashboardApp">
+    <div class="search-box">
+      <i class='bx bx-search' style="font-size: 14px;"></i>
+      <input type="text" placeholder="Search categories & links...">
+    </div>
 
-    <!-- SIDEBAR NAVIGATION -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <span>SPORTSBOOK HUB</span>
-        <i class='bx bx-x' style="cursor: pointer; font-size: 18px;"></i>
+    <!-- INTERNAL -->
+    <div class="nav-group">
+      <div class="nav-main-btn" onclick="toggleMenu('sub-internal', this)">
+        <div class="nav-main-left">
+          <div class="icon-badge icon-internal"><i class='bx bx-home-alt'></i></div>
+          <span>INTERNAL</span>
+        </div>
+        <i class='bx bx-chevron-down toggle-icon'></i>
       </div>
-
-      <div class="search-box">
-        <i class='bx bx-search' style="font-size: 14px;"></i>
-        <input type="text" placeholder="Search categories & links...">
+      <div class="sub-menu collapsed" id="sub-internal">
+        <a class="nav-sub-btn" href="duties.html"><span>DAILY DUTY</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="rota.html"><span>ROTA</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="handover.html"><span>HANDOVER</span><i class='bx bx-right-arrow-alt'></i></a>
       </div>
+    </div>
 
-      <!-- INTERNAL -->
-      <div class="nav-group">
-        <div class="nav-main-btn" onclick="toggleMenu('sub-internal', this)">
-          <div class="nav-main-left">
-            <div class="icon-badge icon-internal"><i class='bx bx-home-alt'></i></div>
-            <span>INTERNAL</span>
+    <!-- DAILY TASK -->
+    <div class="nav-group">
+      <div class="nav-main-btn" onclick="toggleMenu('sub-dailytask', this)">
+        <div class="nav-main-left">
+          <div class="icon-badge icon-tasks"><i class='bx bx-task'></i></div>
+          <span>DAILY TASK</span>
+        </div>
+        <i class='bx bx-chevron-down toggle-icon'></i>
+      </div>
+      <div class="sub-menu collapsed" id="sub-dailytask">
+        <a class="nav-sub-btn" href="boostschedule.html"><span>TOP PICKS</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1E-34VRXSaQG0oFrNPjfxLZe8L05oNYWXcoX-rDhdVCE/edit?gid=477417890#gid=477417890" target="_blank"><span>EDGE BOOST EXCEL</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1gjkUVpMM3AuABSsWRcq0oD-72_ttWNHTE7yagCWFPLE/edit?gid=807815114#gid=807815114" target="_blank"><span>IBET BOOST EXCEL</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="edge_boosts.html"><span>EDGE BOOST SYS</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="ibet_boosts.html"><span>IBET BOOST SYS</span><i class='bx bx-right-arrow-alt'></i></a>
+      </div>
+    </div>
+
+    <!-- DAILY MONITORING -->
+    <div class="nav-group">
+      <div class="nav-main-btn" onclick="toggleMenu('sub-dailymonitoring', this)">
+        <div class="nav-main-left">
+          <div class="icon-badge icon-monitor"><i class='bx bx-line-chart'></i></div>
+          <span>DAILY MONITORING</span>
+        </div>
+        <i class='bx bx-chevron-down toggle-icon'></i>
+      </div>
+      <div class="sub-menu collapsed" id="sub-dailymonitoring">
+        <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1qruVq-HZCyM0uDgnYSqFhccXKnMkqJ8z/edit?gid=1305147410#gid=1305147410" target="_blank"><span>GREEN TRACKER</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1OcaMz_AOUeRsWIVplbnk2XAna62m3IKa/edit?gid=457800468#gid=457800468" target="_blank"><span>RED TRACKER</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1U-Dmc628kHQabzJGoBeEgRus5PiRhgSd/edit?pli=1&gid=1983372695#gid=1983372695" target="_blank"><span>ORANGE TRACKER</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="#"><span>7A TRACKER</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/11STKO4Xsj0a8iTuUXSCXC-XEE4-7qmF9/edit?pli=1&gid=1701374259#gid=1701374259" target="_blank"><span>GREEN CRM</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1gPks2FdHyOOTiILvn553miz32WeEtOpx/edit?gid=1701374259#gid=1701374259" target="_blank"><span>RED CRM</span><i class='bx bx-right-arrow-alt'></i></a>
+      </div>
+    </div>
+
+    <!-- BACK OFFICE -->
+    <div class="nav-group">
+      <div class="nav-main-btn" onclick="toggleMenu('sub-backoffice', this)">
+        <div class="nav-main-left">
+          <div class="icon-badge icon-back"><i class='bx bx-briefcase-alt-2'></i></div>
+          <span>BACK OFFICE</span>
+        </div>
+        <i class='bx bx-chevron-down toggle-icon'></i>
+      </div>
+      <div class="sub-menu collapsed" id="sub-backoffice">
+        <a class="nav-sub-btn" href="https://betbook.center/qbet/bets" target="_blank"><span>QBET/55/30</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://mga-betbook.center/ibet/bets" target="_blank"><span>IBET</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://eu-b7k.center/pubs8/bets" target="_blank"><span>PUBS</span><i class='bx bx-right-arrow-alt'></i></a>
+      </div>
+    </div>
+
+    <!-- MULTI MONITOR -->
+    <div class="nav-group">
+      <div class="nav-main-btn" onclick="toggleMenu('sub-multimonitor', this)">
+        <div class="nav-main-left">
+          <div class="icon-badge icon-multi"><i class='bx bx-desktop'></i></div>
+          <span>MULTI MONITOR</span>
+        </div>
+        <i class='bx bx-chevron-down toggle-icon'></i>
+      </div>
+      <div class="sub-menu collapsed" id="sub-multimonitor">
+        <a class="nav-sub-btn" href="https://betbook.center/monitor?providerIds=prediction_markets" target="_blank"><span>EDGE PREDICTION TICKER</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://eu-b7k.center/monitor?providerIds=prediction_markets" target="_blank"><span>PUBS PREDICTION TICKER</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://betbook.center/monitor" target="_blank"><span>QBET/55/30 REJECTED</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://eu-b7k.center/monitor" target="_blank"><span>PUBS REJECTED</span><i class='bx bx-right-arrow-alt'></i></a>
+      </div>
+    </div>
+
+    <!-- BETRADAR -->
+    <div class="nav-group">
+      <div class="nav-main-btn" onclick="toggleMenu('sub-betradar', this)">
+        <div class="nav-main-left">
+          <div class="icon-badge icon-radar"><i class='bx bx-radar'></i></div>
+          <span>BETRADAR</span>
+        </div>
+        <i class='bx bx-chevron-down toggle-icon'></i>
+      </div>
+      <div class="sub-menu collapsed" id="sub-betradar">
+        <a class="nav-sub-btn" href="https://mtsc-its.betradar.com/" target="_blank"><span>MTS</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://portal.betradar.com/" target="_blank"><span>CTRL PORTAL</span><i class='bx bx-right-arrow-alt'></i></a>
+      </div>
+    </div>
+
+    <!-- OWN BRANDS -->
+    <div class="nav-group">
+      <div class="nav-main-btn" onclick="toggleMenu('sub-ownbrands', this)">
+        <div class="nav-main-left">
+          <div class="icon-badge icon-brands"><i class='bx bx-layer'></i></div>
+          <span>OWN BRANDS</span>
+        </div>
+        <i class='bx bx-chevron-down toggle-icon'></i>
+      </div>
+      <div class="sub-menu collapsed" id="sub-ownbrands">
+        <a class="nav-sub-btn" href="https://www.7abet.com/en-UN" target="_blank"><span>7A</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://www.qbet.com/en-UN" target="_blank"><span>QBET</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://www.55bet.com/en-UN" target="_blank"><span>55BET</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://www.30bet.com/en-UN" target="_blank"><span>30BET</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://www.gqbet.vip/en-UN/" target="_blank"><span>GQBET</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://www.bvbet.com/en-UN" target="_blank"><span>BVBET</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://www.ibet.com/en-UN/sportsbook/price-boost/football" target="_blank"><span>IBET</span><i class='bx bx-right-arrow-alt'></i></a>
+      </div>
+    </div>
+
+    <!-- PRICE REFERENCES -->
+    <div class="nav-group">
+      <div class="nav-main-btn" onclick="toggleMenu('sub-priceref', this)">
+        <div class="nav-main-left">
+          <div class="icon-badge icon-price"><i class='bx bx-data'></i></div>
+          <span>PRICE REFERENCES</span>
+        </div>
+        <i class='bx bx-chevron-down toggle-icon'></i>
+      </div>
+      <div class="sub-menu collapsed" id="sub-priceref">
+        <a class="nav-sub-btn" href="https://www.flashscore.com/" target="_blank"><span>FLASHSCORE</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://betsapi.com/" target="_blank"><span>BETSAPI</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://www.oddsportal.com/football/" target="_blank"><span>ODDSPORTAL</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://www.oddschecker.com/" target="_blank"><span>ODDSCHECKER</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://www.betfair.com/exchange/plus/" target="_blank"><span>BETFAIR</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://www.bet365.com/" target="_blank"><span>BET365</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://www.pinnacle.com/" target="_blank"><span>PINNACLE</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://gg.bet/" target="_blank"><span>GGBET</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://www.unibet.com.au/" target="_blank"><span>UNIBET</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://www.sofascore.com/" target="_blank"><span>SOFASCORE</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://www.marathonbet.com/" target="_blank"><span>MARATHONBET</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="https://fonbet.com/" target="_blank"><span>FONBET</span><i class='bx bx-right-arrow-alt'></i></a>
+      </div>
+    </div>
+
+    <!-- PROCEDURES -->
+    <div class="nav-group">
+      <div class="nav-main-btn" onclick="toggleMenu('sub-procedures', this)">
+        <div class="nav-main-left">
+          <div class="icon-badge icon-proc"><i class='bx bx-file'></i></div>
+          <span>PROCEDURES</span>
+        </div>
+        <i class='bx bx-chevron-down toggle-icon'></i>
+      </div>
+      <div class="sub-menu collapsed" id="sub-procedures">
+        <a class="nav-sub-btn" href="https://ibet.atlassian.net/wiki/spaces/Sportsbook/overview" target="_blank"><span>CONFLUENCE</span><i class='bx bx-right-arrow-alt'></i></a>
+        <a class="nav-sub-btn" href="workspace.html"><span>WORKSPACE</span><i class='bx bx-right-arrow-alt'></i></a>
+      </div>
+    </div>
+
+    <!-- USER PROFILE CAPSULE -->
+    <div class="user-pill">
+      <img src="https://i.pravatar.cc/100?img=12" alt="Admin Devorin" class="avatar-img">
+      <div class="user-info">
+        <span class="user-title">Admin:</span>
+        <span class="user-name">Devorin</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- DASHBOARD WORKSPACE -->
+  <main class="main-workspace">
+
+    <!-- TOP WIDE BANNER CARD WITH COLOR GRADIENT SWITCHER -->
+    <div class="glass-card top-banner-card">
+      <div class="banner-title-area">
+        <div class="banner-title">Sportsbook Hub Overview</div>
+        <div class="banner-subtitle">Glass dashboard management system & operations monitor</div>
+      </div>
+      <div class="metrics-group">
+        <!-- THEME CUSTOMIZER DROPDOWN -->
+        <div class="theme-dropdown">
+          <button class="theme-btn" onclick="toggleThemeMenu()">
+            <i class='bx bx-palette'></i> Change Theme <i class='bx bx-chevron-down'></i>
+          </button>
+          <div class="theme-menu" id="themeMenu">
+            <button class="theme-option" onclick="setGradient('sunset')"><span class="color-dot" style="background: linear-gradient(135deg, #3b82f6, #f97316);"></span> Sunset Orange/Blue</button>
+            <button class="theme-option" onclick="setGradient('obsidian')"><span class="color-dot" style="background: linear-gradient(135deg, #111111, #333333);"></span> Obsidian Black</button>
+            <button class="theme-option" onclick="setGradient('maroon')"><span class="color-dot" style="background: linear-gradient(135deg, #4a0e17, #800020);"></span> Midnight Maroon</button>
+            <button class="theme-option" onclick="setGradient('burgundy')"><span class="color-dot" style="background: linear-gradient(135deg, #3a0ca3, #7209b7);"></span> Royal Burgundy</button>
+            <button class="theme-option" onclick="setGradient('ocean')"><span class="color-dot" style="background: linear-gradient(135deg, #0f2027, #2c5364);"></span> Deep Ocean</button>
+            <button class="theme-option" onclick="setGradient('cyberpunk')"><span class="color-dot" style="background: linear-gradient(135deg, #ff007f, #7928ca);"></span> Cyberpunk</button>
           </div>
-          <i class='bx bx-chevron-down toggle-icon'></i>
         </div>
-        <div class="sub-menu collapsed" id="sub-internal">
-          <a class="nav-sub-btn" href="duties.html"><span>DAILY DUTY</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="rota.html"><span>ROTA</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="handover.html"><span>HANDOVER</span><i class='bx bx-right-arrow-alt'></i></a>
-        </div>
-      </div>
 
-      <!-- DAILY TASK -->
-      <div class="nav-group">
-        <div class="nav-main-btn" onclick="toggleMenu('sub-dailytask', this)">
-          <div class="nav-main-left">
-            <div class="icon-badge icon-tasks"><i class='bx bx-task'></i></div>
-            <span>DAILY TASK</span>
-          </div>
-          <i class='bx bx-chevron-down toggle-icon'></i>
-        </div>
-        <div class="sub-menu collapsed" id="sub-dailytask">
-          <a class="nav-sub-btn" href="boostschedule.html"><span>TOP PICKS</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1E-34VRXSaQG0oFrNPjfxLZe8L05oNYWXcoX-rDhdVCE/edit?gid=477417890#gid=477417890" target="_blank"><span>EDGE BOOST EXCEL</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1gjkUVpMM3AuABSsWRcq0oD-72_ttWNHTE7yagCWFPLE/edit?gid=807815114#gid=807815114" target="_blank"><span>IBET BOOST EXCEL</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="edge_boosts.html"><span>EDGE BOOST SYS</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="ibet_boosts.html"><span>IBET BOOST SYS</span><i class='bx bx-right-arrow-alt'></i></a>
-        </div>
-      </div>
-
-      <!-- DAILY MONITORING -->
-      <div class="nav-group">
-        <div class="nav-main-btn" onclick="toggleMenu('sub-dailymonitoring', this)">
-          <div class="nav-main-left">
-            <div class="icon-badge icon-monitor"><i class='bx bx-line-chart'></i></div>
-            <span>DAILY MONITORING</span>
-          </div>
-          <i class='bx bx-chevron-down toggle-icon'></i>
-        </div>
-        <div class="sub-menu collapsed" id="sub-dailymonitoring">
-          <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1qruVq-HZCyM0uDgnYSqFhccXKnMkqJ8z/edit?gid=1305147410#gid=1305147410" target="_blank"><span>GREEN TRACKER</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1OcaMz_AOUeRsWIVplbnk2XAna62m3IKa/edit?gid=457800468#gid=457800468" target="_blank"><span>RED TRACKER</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1U-Dmc628kHQabzJGoBeEgRus5PiRhgSd/edit?pli=1&gid=1983372695#gid=1983372695" target="_blank"><span>ORANGE TRACKER</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="#"><span>7A TRACKER</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/11STKO4Xsj0a8iTuUXSCXC-XEE4-7qmF9/edit?pli=1&gid=1701374259#gid=1701374259" target="_blank"><span>GREEN CRM</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1gPks2FdHyOOTiILvn553miz32WeEtOpx/edit?gid=1701374259#gid=1701374259" target="_blank"><span>RED CRM</span><i class='bx bx-right-arrow-alt'></i></a>
-        </div>
-      </div>
-
-      <!-- BACK OFFICE -->
-      <div class="nav-group">
-        <div class="nav-main-btn" onclick="toggleMenu('sub-backoffice', this)">
-          <div class="nav-main-left">
-            <div class="icon-badge icon-back"><i class='bx bx-briefcase-alt-2'></i></div>
-            <span>BACK OFFICE</span>
-          </div>
-          <i class='bx bx-chevron-down toggle-icon'></i>
-        </div>
-        <div class="sub-menu collapsed" id="sub-backoffice">
-          <a class="nav-sub-btn" href="https://betbook.center/qbet/bets" target="_blank"><span>QBET/55/30</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://mga-betbook.center/ibet/bets" target="_blank"><span>IBET</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://eu-b7k.center/pubs8/bets" target="_blank"><span>PUBS</span><i class='bx bx-right-arrow-alt'></i></a>
-        </div>
-      </div>
-
-      <!-- MULTI MONITOR -->
-      <div class="nav-group">
-        <div class="nav-main-btn" onclick="toggleMenu('sub-multimonitor', this)">
-          <div class="nav-main-left">
-            <div class="icon-badge icon-multi"><i class='bx bx-desktop'></i></div>
-            <span>MULTI MONITOR</span>
-          </div>
-          <i class='bx bx-chevron-down toggle-icon'></i>
-        </div>
-        <div class="sub-menu collapsed" id="sub-multimonitor">
-          <a class="nav-sub-btn" href="https://betbook.center/monitor?providerIds=prediction_markets" target="_blank"><span>EDGE PREDICTION TICKER</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://eu-b7k.center/monitor?providerIds=prediction_markets" target="_blank"><span>PUBS PREDICTION TICKER</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://betbook.center/monitor" target="_blank"><span>QBET/55/30 REJECTED</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://eu-b7k.center/monitor" target="_blank"><span>PUBS REJECTED</span><i class='bx bx-right-arrow-alt'></i></a>
-        </div>
-      </div>
-
-      <!-- BETRADAR -->
-      <div class="nav-group">
-        <div class="nav-main-btn" onclick="toggleMenu('sub-betradar', this)">
-          <div class="nav-main-left">
-            <div class="icon-badge icon-radar"><i class='bx bx-radar'></i></div>
-            <span>BETRADAR</span>
-          </div>
-          <i class='bx bx-chevron-down toggle-icon'></i>
-        </div>
-        <div class="sub-menu collapsed" id="sub-betradar">
-          <a class="nav-sub-btn" href="https://mtsc-its.betradar.com/" target="_blank"><span>MTS</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://portal.betradar.com/" target="_blank"><span>CTRL PORTAL</span><i class='bx bx-right-arrow-alt'></i></a>
-        </div>
-      </div>
-
-      <!-- OWN BRANDS -->
-      <div class="nav-group">
-        <div class="nav-main-btn" onclick="toggleMenu('sub-ownbrands', this)">
-          <div class="nav-main-left">
-            <div class="icon-badge icon-brands"><i class='bx bx-layer'></i></div>
-            <span>OWN BRANDS</span>
-          </div>
-          <i class='bx bx-chevron-down toggle-icon'></i>
-        </div>
-        <div class="sub-menu collapsed" id="sub-ownbrands">
-          <a class="nav-sub-btn" href="https://www.7abet.com/en-UN" target="_blank"><span>7A</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://www.qbet.com/en-UN" target="_blank"><span>QBET</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://www.55bet.com/en-UN" target="_blank"><span>55BET</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://www.30bet.com/en-UN" target="_blank"><span>30BET</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://www.gqbet.vip/en-UN/" target="_blank"><span>GQBET</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://www.bvbet.com/en-UN" target="_blank"><span>BVBET</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://www.ibet.com/en-UN/sportsbook/price-boost/football" target="_blank"><span>IBET</span><i class='bx bx-right-arrow-alt'></i></a>
-        </div>
-      </div>
-
-      <!-- PRICE REFERENCES -->
-      <div class="nav-group">
-        <div class="nav-main-btn" onclick="toggleMenu('sub-priceref', this)">
-          <div class="nav-main-left">
-            <div class="icon-badge icon-price"><i class='bx bx-data'></i></div>
-            <span>PRICE REFERENCES</span>
-          </div>
-          <i class='bx bx-chevron-down toggle-icon'></i>
-        </div>
-        <div class="sub-menu collapsed" id="sub-priceref">
-          <a class="nav-sub-btn" href="https://www.flashscore.com/" target="_blank"><span>FLASHSCORE</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://betsapi.com/" target="_blank"><span>BETSAPI</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://www.oddsportal.com/football/" target="_blank"><span>ODDSPORTAL</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://www.oddschecker.com/" target="_blank"><span>ODDSCHECKER</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://www.betfair.com/exchange/plus/" target="_blank"><span>BETFAIR</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://www.bet365.com/" target="_blank"><span>BET365</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://www.pinnacle.com/" target="_blank"><span>PINNACLE</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://gg.bet/" target="_blank"><span>GGBET</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://www.unibet.com.au/" target="_blank"><span>UNIBET</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://www.sofascore.com/" target="_blank"><span>SOFASCORE</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://www.marathonbet.com/" target="_blank"><span>MARATHONBET</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="https://fonbet.com/" target="_blank"><span>FONBET</span><i class='bx bx-right-arrow-alt'></i></a>
-        </div>
-      </div>
-
-      <!-- PROCEDURES -->
-      <div class="nav-group">
-        <div class="nav-main-btn" onclick="toggleMenu('sub-procedures', this)">
-          <div class="nav-main-left">
-            <div class="icon-badge icon-proc"><i class='bx bx-file'></i></div>
-            <span>PROCEDURES</span>
-          </div>
-          <i class='bx bx-chevron-down toggle-icon'></i>
-        </div>
-        <div class="sub-menu collapsed" id="sub-procedures">
-          <a class="nav-sub-btn" href="https://ibet.atlassian.net/wiki/spaces/Sportsbook/overview" target="_blank"><span>CONFLUENCE</span><i class='bx bx-right-arrow-alt'></i></a>
-          <a class="nav-sub-btn" href="workspace.html"><span>WORKSPACE</span><i class='bx bx-right-arrow-alt'></i></a>
-        </div>
-      </div>
-
-      <!-- USER PROFILE CAPSULE WITH LOGOUT -->
-      <div class="user-pill">
-        <div class="user-left-info">
-          <img src="https://i.pravatar.cc/100?img=12" alt="Admin Devorin" class="avatar-img">
-          <div class="user-info">
-            <span class="user-title">Admin:</span>
-            <span class="user-name">Devorin</span>
-          </div>
-        </div>
-        <button class="logout-action-btn" onclick="handleLogout()" title="Lock Session">
-          <i class='bx bx-log-out'></i> Lock
-        </button>
-      </div>
-    </aside>
-
-    <!-- DASHBOARD WORKSPACE -->
-    <main class="main-workspace">
-
-      <!-- TOP WIDE BANNER CARD WITH COLOR GRADIENT SWITCHER -->
-      <div class="glass-card top-banner-card">
-        <div class="banner-title-area">
-          <div class="banner-title">Sportsbook Hub Overview</div>
-          <div class="banner-subtitle">Glass dashboard management system & operations monitor</div>
-        </div>
-        <div class="metrics-group">
-          <!-- THEME CUSTOMIZER DROPDOWN -->
-          <div class="theme-dropdown">
-            <button class="theme-btn" onclick="toggleThemeMenu()">
-              <i class='bx bx-palette'></i> Change Theme <i class='bx bx-chevron-down'></i>
-            </button>
-            <div class="theme-menu" id="themeMenu">
-              <button class="theme-option" onclick="setGradient('sunset')"><span class="color-dot" style="background: linear-gradient(135deg, #3b82f6, #f97316);"></span> Sunset Orange/Blue</button>
-              <button class="theme-option" onclick="setGradient('obsidian')"><span class="color-dot" style="background: linear-gradient(135deg, #111111, #333333);"></span> Obsidian Black</button>
-              <button class="theme-option" onclick="setGradient('maroon')"><span class="color-dot" style="background: linear-gradient(135deg, #4a0e17, #800020);"></span> Midnight Maroon</button>
-              <button class="theme-option" onclick="setGradient('burgundy')"><span class="color-dot" style="background: linear-gradient(135deg, #3a0ca3, #7209b7);"></span> Royal Burgundy</button>
-              <button class="theme-option" onclick="setGradient('ocean')"><span class="color-dot" style="background: linear-gradient(135deg, #0f2027, #2c5364);"></span> Deep Ocean</button>
-              <button class="theme-option" onclick="setGradient('cyberpunk')"><span class="color-dot" style="background: linear-gradient(135deg, #ff007f, #7928ca);"></span> Cyberpunk</button>
-            </div>
-          </div>
-
-          <!-- ACTIVE TRADER COUNTER -->
-          <div class="metric-pill">
-            <i class='bx bx-user-check'></i>
-            <div>
-              <div style="font-size: 9px; opacity: 0.7;">ACTIVE TRADER</div>
-              <div style="font-size: 13px;" id="activeTraderCount">0 Working</div>
-            </div>
+        <!-- ACTIVE TRADER COUNTER -->
+        <div class="metric-pill">
+          <i class='bx bx-user-check'></i>
+          <div>
+            <div style="font-size: 9px; opacity: 0.7;">ACTIVE TRADER</div>
+            <div style="font-size: 13px;" id="activeTraderCount">0 Working</div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- 3-COLUMN GRID FOR CONTENT CARDS -->
-      <div class="dashboard-grid">
+    <!-- 3-COLUMN GRID FOR CONTENT CARDS -->
+    <div class="dashboard-grid">
 
-        <!-- COLUMN 1: BRAND DIRECTORY & DAILY TASKS -->
-        <div style="display: flex; flex-direction: column; gap: 20px;">
-          <div class="glass-card">
-            <div class="card-header">
-              <span style="color: #f59e0b;"><i class='bx bx-pin'></i> BRAND DIRECTORY DOCK</span>
-              <div class="actions"><span>DRAG / RESIZE</span><i class='bx bx-x'></i></div>
-            </div>
-            <div class="tab-pills">
-              <div class="tab-pill active">IBET</div>
-              <div class="tab-pill">EDGE</div>
-              <div class="tab-pill">PUBS</div>
-            </div>
-            <a class="action-row" href="https://mga-betbook.center/ibet/bets" target="_blank"><span>IBET ADMIN</span><i class='bx bx-right-arrow-alt'></i></a>
-            <a class="action-row" href="https://www.ibet.com/en-UN/sportsbook/price-boost/football" target="_blank"><span>IBET SPORTSBOOK</span><i class='bx bx-right-arrow-alt'></i></a>
-            <a class="action-row" href="https://betbook.center/qbet/bets" target="_blank"><span>QBET BACKOFFICE</span><i class='bx bx-right-arrow-alt'></i></a>
-          </div>
-
-          <div class="glass-card">
-            <div class="card-header">
-              <span style="color: #ef4444;"><i class='bx bx-list-ul'></i> DAILY TASK DOCK</span>
-              <div class="actions"><span>DRAG / RESIZE</span><i class='bx bx-x'></i></div>
-            </div>
-            <a class="action-row" href="boostschedule.html"><span>TOP PICKS (SCHEDULE)</span><i class='bx bx-right-arrow-alt'></i></a>
-            <a class="action-row" href="https://docs.google.com/spreadsheets/d/1E-34VRXSaQG0oFrNPjfxLZe8L05oNYWXcoX-rDhdVCE/edit?gid=477417890#gid=477417890" target="_blank"><span>EDGE BOOST (EXCEL)</span><i class='bx bx-right-arrow-alt'></i></a>
-            <a class="action-row" href="https://docs.google.com/spreadsheets/d/1gjkUVpMM3AuABSsWRcq0oD-72_ttWNHTE7yagCWFPLE/edit?gid=807815114#gid=807815114" target="_blank"><span>IBET BOOST (EXCEL)</span><i class='bx bx-right-arrow-alt'></i></a>
-          </div>
-        </div>
-
-        <!-- COLUMN 2: LIVE TIME-SLOT DUTIES -->
+      <!-- COLUMN 1: BRAND DIRECTORY & DAILY TASKS -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
         <div class="glass-card">
           <div class="card-header">
-            <span style="color: #f97316;"><i class='bx bx-time'></i> LIVE TIME-SLOT DUTIES</span>
-            <div class="actions"><span>DRAG</span><i class='bx bx-x'></i></div>
+            <span style="color: #f59e0b;"><i class='bx bx-pin'></i> BRAND DIRECTORY DOCK</span>
+            <div class="actions"><span>DRAG / RESIZE</span><i class='bx bx-x'></i></div>
           </div>
-          <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; opacity: 0.9;">
-            <span>📅 2026-09-26</span>
-            <span>⏰ 12:00 - 15:00</span>
+          <div class="tab-pills">
+            <div class="tab-pill active">IBET</div>
+            <div class="tab-pill">EDGE</div>
+            <div class="tab-pill">PUBS</div>
           </div>
-          <div class="duty-card"><div class="duty-top"><span>ANN</span><span class="badge-time">13 - 22</span></div><div class="duty-desc">No assigned tasks in this slot.</div></div>
-          <div class="duty-card"><div class="duty-top"><span>DAVE</span><span class="badge-time" style="background: rgba(59, 130, 246, 0.3);">12-0-WFH</span></div><div class="duty-desc">No assigned tasks in this slot.</div></div>
-          <div class="duty-card"><div class="duty-top"><span>KEN</span><span class="badge-time">7 - 16</span></div><div class="duty-desc">No assigned tasks in this slot.</div></div>
-          <div class="duty-card"><div class="duty-top"><span>KRIZTEL</span><span class="badge-time">OFF</span></div><div class="duty-desc">Rest day.</div></div>
+          <a class="action-row" href="https://mga-betbook.center/ibet/bets" target="_blank"><span>IBET ADMIN</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="action-row" href="https://www.ibet.com/en-UN/sportsbook/price-boost/football" target="_blank"><span>IBET SPORTSBOOK</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="action-row" href="https://betbook.center/qbet/bets" target="_blank"><span>QBET BACKOFFICE</span><i class='bx bx-right-arrow-alt'></i></a>
         </div>
 
-        <!-- COLUMN 3: TOP GAMES & TICKER -->
         <div class="glass-card">
           <div class="card-header">
-            <span style="color: #3b82f6;"><i class='bx bx-play-circle'></i> TOP GAMES</span>
-            <div class="actions"><span>DRAG</span><i class='bx bx-x'></i></div>
+            <span style="color: #ef4444;"><i class='bx bx-list-ul'></i> DAILY TASK DOCK</span>
+            <div class="actions"><span>DRAG / RESIZE</span><i class='bx bx-x'></i></div>
           </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.1); padding: 8px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.15);">
-            <i class='bx bx-chevron-left' style="cursor: pointer;"></i>
-            <span>NEXT DAY (SEP 27)</span>
-            <i class='bx bx-chevron-right' style="cursor: pointer;"></i>
-          </div>
-          <div class="game-card">
-            <div style="font-size: 10px; opacity: 0.7; font-weight: 700;">US USA MLS</div>
-            <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 14px; margin: 8px 0;"><span>Columbus</span><span style="opacity: 0.5;">VS</span><span>Miami</span></div>
-            <div style="display: flex; justify-content: space-between; font-size: 10px; opacity: 0.7;"><span>Sep 28 - 07:30 (Local)</span><span style="color: #34d399; font-weight: 700;">UPCOMING</span></div>
-          </div>
-          <div class="game-card">
-            <div style="font-size: 10px; opacity: 0.7; font-weight: 700;">EU UEFA CHAMPIONS LEAGUE</div>
-            <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 14px; margin: 8px 0;"><span>Real Madrid</span><span style="opacity: 0.5;">VS</span><span>Man City</span></div>
-            <div style="display: flex; justify-content: space-between; font-size: 10px; opacity: 0.7;"><span>Sep 28 - 21:00 (Local)</span><span style="color: #34d399; font-weight: 700;">UPCOMING</span></div>
-          </div>
+          <a class="action-row" href="boostschedule.html"><span>TOP PICKS (SCHEDULE)</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="action-row" href="https://docs.google.com/spreadsheets/d/1E-34VRXSaQG0oFrNPjfxLZe8L05oNYWXcoX-rDhdVCE/edit?gid=477417890#gid=477417890" target="_blank"><span>EDGE BOOST (EXCEL)</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="action-row" href="https://docs.google.com/spreadsheets/d/1gjkUVpMM3AuABSsWRcq0oD-72_ttWNHTE7yagCWFPLE/edit?gid=807815114#gid=807815114" target="_blank"><span>IBET BOOST (EXCEL)</span><i class='bx bx-right-arrow-alt'></i></a>
         </div>
-
       </div>
 
-    </main>
-  </div>
+      <!-- COLUMN 2: LIVE TIME-SLOT DUTIES -->
+      <div class="glass-card">
+        <div class="card-header">
+          <span style="color: #f97316;"><i class='bx bx-time'></i> LIVE TIME-SLOT DUTIES</span>
+          <div class="actions"><span>DRAG</span><i class='bx bx-x'></i></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; opacity: 0.9;">
+          <span>📅 2026-09-26</span>
+          <span>⏰ 12:00 - 15:00</span>
+        </div>
+        <div class="duty-card"><div class="duty-top"><span>ANN</span><span class="badge-time">13 - 22</span></div><div class="duty-desc">No assigned tasks in this slot.</div></div>
+        <div class="duty-card"><div class="duty-top"><span>DAVE</span><span class="badge-time" style="background: rgba(59, 130, 246, 0.3);">12-0-WFH</span></div><div class="duty-desc">No assigned tasks in this slot.</div></div>
+        <div class="duty-card"><div class="duty-top"><span>KEN</span><span class="badge-time">7 - 16</span></div><div class="duty-desc">No assigned tasks in this slot.</div></div>
+        <div class="duty-card"><div class="duty-top"><span>KRIZTEL</span><span class="badge-time">OFF</span></div><div class="duty-desc">Rest day.</div></div>
+      </div>
 
-  <!-- INTERACTION & AUTHENTICATION SCRIPTS -->
+      <!-- COLUMN 3: TOP GAMES & TICKER -->
+      <div class="glass-card">
+        <div class="card-header">
+          <span style="color: #3b82f6;"><i class='bx bx-play-circle'></i> TOP GAMES</span>
+          <div class="actions"><span>DRAG</span><i class='bx bx-x'></i></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.1); padding: 8px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.15);">
+          <i class='bx bx-chevron-left' style="cursor: pointer;"></i>
+          <span>NEXT DAY (SEP 27)</span>
+          <i class='bx bx-chevron-right' style="cursor: pointer;"></i>
+        </div>
+        <div class="game-card">
+          <div style="font-size: 10px; opacity: 0.7; font-weight: 700;">US USA MLS</div>
+          <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 14px; margin: 8px 0;"><span>Columbus</span><span style="opacity: 0.5;">VS</span><span>Miami</span></div>
+          <div style="display: flex; justify-content: space-between; font-size: 10px; opacity: 0.7;"><span>Sep 28 - 07:30 (Local)</span><span style="color: #34d399; font-weight: 700;">UPCOMING</span></div>
+        </div>
+        <div class="game-card">
+          <div style="font-size: 10px; opacity: 0.7; font-weight: 700;">EU UEFA CHAMPIONS LEAGUE</div>
+          <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 14px; margin: 8px 0;"><span>Real Madrid</span><span style="opacity: 0.5;">VS</span><span>Man City</span></div>
+          <div style="display: flex; justify-content: space-between; font-size: 10px; opacity: 0.7;"><span>Sep 28 - 21:00 (Local)</span><span style="color: #34d399; font-weight: 700;">UPCOMING</span></div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- INTERACTION SCRIPTS -->
   <script>
-    const CORRECT_PASSWORD = "sb2026";
-
-    function handleLogin(event) {
-      event.preventDefault();
-      const inputVal = document.getElementById('passwordInput').value;
-      const errorMsg = document.getElementById('loginErrorMsg');
-      const card = document.getElementById('loginCard');
-
-      if (inputVal === CORRECT_PASSWORD) {
-        sessionStorage.setItem('sbhub_auth', 'true');
-        unlockDashboard();
-      } else {
-        errorMsg.textContent = "Incorrect password. Try again (sb2026)";
-        card.classList.add('shake');
-        setTimeout(() => card.classList.remove('shake'), 400);
-        document.getElementById('passwordInput').focus();
-        document.getElementById('passwordInput').select();
-      }
-    }
-
-    function unlockDashboard() {
-      const overlay = document.getElementById('loginOverlay');
-      const app = document.getElementById('dashboardApp');
-      
-      overlay.classList.add('hidden');
-      app.classList.add('unlocked');
-    }
-
-    function handleLogout() {
-      sessionStorage.removeItem('sbhub_auth');
-      document.getElementById('passwordInput').value = '';
-      document.getElementById('loginErrorMsg').textContent = '';
-      
-      const overlay = document.getElementById('loginOverlay');
-      const app = document.getElementById('dashboardApp');
-      
-      app.classList.remove('unlocked');
-      overlay.classList.remove('hidden');
-      document.getElementById('passwordInput').focus();
-    }
-
-    function togglePasswordVisibility() {
-      const passInput = document.getElementById('passwordInput');
-      const icon = document.getElementById('togglePassIcon');
-      if (passInput.type === 'password') {
-        passInput.type = 'text';
-        icon.className = 'bx bx-hide';
-      } else {
-        passInput.type = 'password';
-        icon.className = 'bx bx-show';
-      }
-    }
-
     function toggleMenu(menuId, btnElement) {
       const targetMenu = document.getElementById(menuId);
       const isCollapsed = targetMenu.classList.contains('collapsed');
@@ -1029,7 +764,7 @@
       document.getElementById('themeMenu').classList.toggle('show');
     }
 
-    // Dynamic Gradient Presets
+    // Dynamic Gradient Presets with high glass legibility
     function setGradient(theme) {
       const body = document.getElementById('pageBody');
       let gradientCSS = '';
@@ -1079,27 +814,20 @@
       document.getElementById('activeTraderCount').textContent = activeCount + ' Working';
     }
 
-    // Load saved preferences & check active session state on load
+    // Load saved theme & calculate active traders on DOM ready
     window.addEventListener('DOMContentLoaded', () => {
       const savedTheme = localStorage.getItem('sbhub_theme');
       if (savedTheme) {
         document.getElementById('pageBody').style.background = savedTheme;
         document.getElementById('pageBody').style.backgroundAttachment = 'fixed';
       }
-
-      // Check session storage so you don't keep re-typing password on tab reloads
-      if (sessionStorage.getItem('sbhub_auth') === 'true') {
-        unlockDashboard();
-      }
-
       calculateActiveTraders();
     });
 
     // Close theme menu when clicking outside
     window.addEventListener('click', function(e) {
       if (!e.target.closest('.theme-dropdown')) {
-        const menu = document.getElementById('themeMenu');
-        if (menu) menu.classList.remove('show');
+        document.getElementById('themeMenu').classList.remove('show');
       }
     });
   </script>
