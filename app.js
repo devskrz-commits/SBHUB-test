@@ -1,6 +1,27 @@
 const DEFAULT_USER = "sportsbook2026";
 const DEFAULT_PASS = "sb2026";
 
+let rosterDb = null;
+try {
+  if (typeof firebase !== 'undefined') {
+    const rosterFirebaseConfig = {
+      apiKey: "AIzaSyCaEclzLI284lWCFk-vXbLSXa_bEZsXbOg",
+      authDomain: "test-daily-task--sb.firebaseapp.com",
+      databaseURL: "https://test-daily-task--sb-default-rtdb.firebaseio.com",
+      projectId: "test-daily-task--sb",
+      storageBucket: "test-daily-task--sb.firebasestorage.app",
+      messagingSenderId: "928476661919",
+      appId: "1:928476661919:web:c6d531190824c6ed7c7aaa"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(rosterFirebaseConfig);
+    rosterDb = firebase.database();
+  }
+} catch (e) {
+  console.warn("Firebase offline or blocked.", e);
+}
+
+let selectedGameDayOffset = 0;
+
 /* --- BRAND DIRECTORY TAB DATA & SWITCHER --- */
 const brandTabData = {
   ibet: [
@@ -238,7 +259,6 @@ function hideWidgetDirect(widgetId) {
   if (checkbox) checkbox.checked = false;
 }
 
-/* SUBDUED LOW-GLARE DARK PRESETS */
 function setGradient(theme) {
   const body = document.getElementById('pageBody');
   let gradientCSS = '';
@@ -270,97 +290,205 @@ function setGradient(theme) {
   localStorage.setItem('sbhub_theme', gradientCSS);
 }
 
-/* --- 7-DAY TOP GAMES SCHEDULE --- */
-const matchSchedule7Days = [
-  {
-    dayLabel: "DAY 1 (SEP 26, 2026)",
-    games: [
-      { league: "EU UEFA NATIONS LEAGUE", home: "England", away: "Spain", time: "20:45 (Local)", priority: "P1", status: "UPCOMING" },
-      { league: "ES SPAIN LA LIGA", home: "Barcelona", away: "Atletico Madrid", time: "21:00 (Local)", priority: "P1", status: "UPCOMING" },
-      { league: "US USA MLS", home: "Columbus", away: "Miami", time: "07:30 (Local)", priority: "P2", status: "UPCOMING" }
-    ]
-  },
-  {
-    dayLabel: "DAY 2 (SEP 27, 2026)",
-    games: [
-      { league: "GB ENGLAND PREMIER LEAGUE", home: "Arsenal", away: "Chelsea", time: "16:30 (Local)", priority: "P1", status: "UPCOMING" },
-      { league: "DE GERMANY BUNDESLIGA", home: "Bayern Munich", away: "Dortmund", time: "18:30 (Local)", priority: "P1", status: "UPCOMING" },
-      { league: "FI FINLAND VEIKKAUSLIIGA", home: "HJK Helsinki", away: "KuPS", time: "17:00 (Local)", priority: "P2", status: "UPCOMING" }
-    ]
-  },
-  {
-    dayLabel: "DAY 3 (SEP 28, 2026)",
-    games: [
-      { league: "IT ITALY SERIE A", home: "Inter Milan", away: "Juventus", time: "20:45 (Local)", priority: "P1", status: "UPCOMING" },
-      { league: "FR FRANCE LIGUE 1", home: "PSG", away: "Marseille", time: "21:00 (Local)", priority: "P1", status: "UPCOMING" },
-      { league: "NO NORWAY ELITESERIEN", home: "Bodo/Glimt", away: "Molde", time: "18:00 (Local)", priority: "P2", status: "UPCOMING" }
-    ]
-  },
-  {
-    dayLabel: "DAY 4 (SEP 29, 2026)",
-    games: [
-      { league: "EU UEFA CHAMPIONS LEAGUE", home: "Real Madrid", away: "Man City", time: "21:00 (Local)", priority: "P1", status: "UPCOMING" },
-      { league: "EU UEFA CHAMPIONS LEAGUE", home: "Liverpool", away: "AC Milan", time: "21:00 (Local)", priority: "P1", status: "UPCOMING" }
-    ]
-  },
-  {
-    dayLabel: "DAY 5 (SEP 30, 2026)",
-    games: [
-      { league: "EU UEFA CHAMPIONS LEAGUE", home: "Leverkusen", away: "Benfica", time: "21:00 (Local)", priority: "P1", status: "UPCOMING" },
-      { league: "PT PORTUGAL LIGA", home: "Porto", away: "Sporting CP", time: "20:15 (Local)", priority: "P1", status: "UPCOMING" }
-    ]
-  },
-  {
-    dayLabel: "DAY 6 (OCT 01, 2026)",
-    games: [
-      { league: "NL NETHERLANDS EREDIVISIE", home: "Ajax", away: "Feyenoord", time: "14:30 (Local)", priority: "P1", status: "UPCOMING" },
-      { league: "AF AFCON QUALIFIERS", home: "Nigeria", away: "Senegal", time: "18:00 (Local)", priority: "P2", status: "UPCOMING" }
-    ]
-  },
-  {
-    dayLabel: "DAY 7 (OCT 02, 2026)",
-    games: [
-      { league: "GB ENGLAND PREMIER LEAGUE", home: "Man United", away: "Tottenham", time: "20:00 (Local)", priority: "P1", status: "UPCOMING" },
-      { league: "US USA MLS", home: "LA FC", away: "LA Galaxy", time: "19:30 (Local)", priority: "P2", status: "UPCOMING" }
-    ]
-  }
-];
+/* --- REAL-TIME LIVE DUTY ROSTER (FIREBASE) --- */
+function getCurrentSlotInfo() {
+  const now = new Date();
+  const hours = now.getHours();
+  if (hours >= 6 && hours < 9)   return { slotId: "slot_6_9", label: "7:00 - 9:00" };
+  if (hours >= 9 && hours < 12)  return { slotId: "slot_9_12", label: "9:00 - 12:00" };
+  if (hours >= 12 && hours < 15) return { slotId: "slot_12_15", label: "12:00 - 15:00" };
+  if (hours >= 15 && hours < 18) return { slotId: "slot_15_18", label: "15:00 - 18:00" };
+  if (hours >= 18 && hours < 21) return { slotId: "slot_18_21", label: "18:00 - 21:00" };
+  return { slotId: "slot_21_0", label: "21:00 - 00:00" };
+}
 
-let currentDayIndex = 0;
-
-function renderGamesForCurrentDay() {
-  const dayData = matchSchedule7Days[currentDayIndex];
-  document.getElementById('matchDayDisplay').textContent = dayData.dayLabel;
-  const sortedGames = [...dayData.games].sort((a, b) => (a.priority === 'P1' ? -1 : 1));
-
-  const container = document.getElementById('gamesContainer');
-  if (!container) return;
-  container.innerHTML = '';
-
-  sortedGames.forEach(game => {
-    const gameEl = document.createElement('div');
-    gameEl.className = 'game-card';
-    gameEl.innerHTML = `
-      <div style="font-size: 10px; opacity: 0.75; font-weight: 700; display:flex; justify-content:space-between;">
-        <span>${game.league}</span>
-        <span style="color:${game.priority==='P1'?'#fbbf24':'#38bdf8'}; font-size:9px;">${game.priority==='P1'?'TOP TIER':'SECONDARY'}</span>
-      </div>
-      <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 13px; margin: 4px 0;">
-        <span>${game.home}</span><span style="opacity: 0.5;">VS</span><span>${game.away}</span>
-      </div>
-      <div style="display: flex; justify-content: space-between; font-size: 10px; opacity: 0.75;">
-        <span>${game.time}</span><span style="color: #34d399; font-weight: 700;">${game.status}</span>
-      </div>
-    `;
-    container.appendChild(gameEl);
+function listenToLiveDutyRoster() {
+  if (!rosterDb) return;
+  rosterDb.ref('roster_data').on('value', (snapshot) => {
+    renderLiveDutyWidget(snapshot.val());
   });
 }
 
+function renderLiveDutyWidget(rosterData) {
+  const container = document.getElementById("liveDutyContent");
+  if (!container) return;
+
+  if (!rosterData) {
+    container.innerHTML = `<div style="text-align:center; padding:15px; font-size:10px; color:rgba(255,255,255,0.7);">No roster data available.</div>`;
+    return;
+  }
+
+  const todayIso = new Date().toISOString().split('T')[0];
+  const { slotId, label: slotLabel } = getCurrentSlotInfo();
+
+  let activeDayKey = Object.keys(rosterData).find(key => key !== 'archives' && rosterData[key]?.isoDate === todayIso);
+  if (!activeDayKey) {
+    const activeKeys = Object.keys(rosterData).filter(k => k !== 'archives');
+    activeKeys.sort((a, b) => (rosterData[b]?.isoDate || '').localeCompare(rosterData[a]?.isoDate || ''));
+    activeDayKey = activeKeys[0];
+  }
+
+  if (!activeDayKey || !rosterData[activeDayKey]) {
+    container.innerHTML = `<div style="text-align:center; padding:15px; font-size:10px; color:rgba(255,255,255,0.7);">No active schedule found.</div>`;
+    return;
+  }
+
+  const dayData = rosterData[activeDayKey];
+  const teamMembers = [
+    { id: 'ann', name: 'ANN' }, { id: 'dave', name: 'DAVE' },
+    { id: 'ken', name: 'KEN' }, { id: 'kriztel', name: 'KRIZTEL' }
+  ];
+
+  let html = `
+    <div style="font-size:11px; font-weight:700; opacity:0.9; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+      <span>📅 ${dayData.isoDate || 'Today'}</span>
+      <span class="badge-time">⏰ ${slotLabel}</span>
+    </div>
+  `;
+
+  teamMembers.forEach(m => {
+    const mGrid = dayData.grid ? dayData.grid[m.id] : null;
+    const shiftId = mGrid?.shift || 'shift-7-16';
+    const isRest = (shiftId === 'shift-rd' || shiftId === 'shift-vl' || shiftId === 'shift-sl');
+    const restLabel = shiftId === 'shift-vl' ? 'VACATION LEAVE' : (shiftId === 'shift-sl' ? 'SICK LEAVE' : 'REST DAY');
+
+    let rawTasks = (mGrid && mGrid.slots) ? mGrid.slots[slotId] || [] : [];
+    if (!Array.isArray(rawTasks)) rawTasks = [];
+    const tasks = rawTasks.map(item => (typeof item === 'string' ? { text: item, done: false } : { text: item.text || '', done: !!item.done }));
+
+    html += `
+      <div class="duty-card">
+        <div class="duty-top">
+          <span>${m.name}</span>
+          <span class="badge-time">${isRest ? restLabel : shiftId.replace('shift-', '')}</span>
+        </div>
+    `;
+
+    if (isRest) {
+      html += `<div class="duty-desc">Rest day.</div>`;
+    } else if (tasks.length === 0) {
+      html += `<div class="duty-desc">No assigned tasks in this slot.</div>`;
+    } else {
+      tasks.forEach(t => {
+        html += `<div class="duty-desc" style="display:flex; gap:4px; align-items:center;">
+          <i class='bx ${t.done ? 'bx-check-circle' : 'bx-time-five'}' style="color:${t.done ? '#34d399' : '#38bdf8'}"></i>
+          <span style="${t.done ? 'text-decoration:line-through; opacity:0.6;' : ''}">${t.text}</span>
+        </div>`;
+      });
+    }
+    html += `</div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+/* --- LIVE ESPN TOP GAMES SCOREBOARD API --- */
+function getFormattedDateQuery(daysAhead) {
+  const d = new Date();
+  d.setDate(d.getDate() + daysAhead);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}${month}${day}`;
+}
+
+async function fetchLiveGames() {
+  const container = document.getElementById("gamesContainer");
+  if (!container) return;
+  container.innerHTML = `<div style="text-align:center; padding:15px;"><i class='bx bx-loader-alt bx-spin' style="font-size:20px; color:#38bdf8;"></i></div>`;
+  
+  try {
+    const targetDateQuery = getFormattedDateQuery(selectedGameDayOffset);
+    const targetDateObj = new Date();
+    targetDateObj.setDate(targetDateObj.getDate() + selectedGameDayOffset);
+    const dateLabelStr = targetDateObj.toLocaleDateString("en-US", { month: 'short', day: 'numeric' }).toUpperCase();
+    
+    let dayTag = `DAY ${selectedGameDayOffset + 1}`;
+    if (selectedGameDayOffset === 0) dayTag = `TODAY`;
+
+    const labelEl = document.getElementById("matchDayDisplay");
+    if (labelEl) labelEl.textContent = `${dayTag} (${dateLabelStr})`;
+
+    const primaryLeagues = [
+      { name: "EU UEFA CHAMPIONS LEAGUE", code: "uefa.champions", link: "https://www.flashscore.com/football/europe/champions-league/" },
+      { name: "GB ENGLAND PREMIER LEAGUE", code: "eng.1", link: "https://www.flashscore.ph/football/england/premier-league/" },
+      { name: "ES SPAIN LA LIGA", code: "esp.1", link: "https://www.flashscore.ph/football/spain/laliga/" },
+      { name: "DE GERMANY BUNDESLIGA", code: "ger.1", link: "https://www.flashscore.ph/football/germany/bundesliga/" },
+      { name: "IT ITALY SERIE A", code: "ita.1", link: "https://www.flashscore.ph/football/italy/serie-a/" },
+      { name: "FR FRANCE LIGUE 1", code: "fra.1", link: "https://www.flashscore.ph/football/france/ligue-1/" }
+    ];
+
+    const backupLeagues = [
+      { name: "US USA MLS", code: "usa.1", link: "https://www.flashscore.ph/football/usa/mls/" },
+      { name: "NO NORWAY ELITESERIEN", code: "nor.1", link: "https://www.flashscore.ph/football/norway/eliteserien/" },
+      { name: "FI FINLAND VEIKKAUSLIIGA", code: "fin.1", link: "https://www.flashscore.ph/football/finland/veikkausliiga/" }
+    ];
+
+    const fetchLeagueData = async (leagues) => {
+      const promises = leagues.map(league =>
+        fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard?dates=${targetDateQuery}`)
+          .then(res => res.json())
+          .then(data => ({ league, events: data.events || [] }))
+          .catch(() => ({ league, events: [] }))
+      );
+      const results = await Promise.all(promises);
+      let matches = [];
+      results.forEach(result => {
+        if (result.events && result.events.length > 0) {
+          result.events.forEach(e => {
+            matches.push({ event: e, league: result.league.name });
+          });
+        }
+      });
+      return matches;
+    };
+
+    let allMatches = await fetchLeagueData(primaryLeagues);
+
+    if (allMatches.length === 0) {
+      allMatches = await fetchLeagueData(backupLeagues);
+    }
+
+    let gamesHtml = "";
+    allMatches.slice(0, 5).forEach(item => {
+      const match = item.event.competitions[0];
+      const home = match.competitors?.find(c => c.homeAway === 'home')?.team?.shortDisplayName || "Home";
+      const away = match.competitors?.find(c => c.homeAway === 'away')?.team?.shortDisplayName || "Away";
+      const dateObj = new Date(item.event.date);
+      const timeStr = dateObj.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
+
+      gamesHtml += `
+        <div class="game-card">
+          <div style="font-size: 10px; opacity: 0.75; font-weight: 700; display:flex; justify-content:space-between;">
+            <span>${item.league}</span>
+            <span style="color:#fbbf24; font-size:9px;">TOP TIER</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 13px; margin: 4px 0;">
+            <span>${home}</span><span style="opacity: 0.5;">VS</span><span>${away}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 10px; opacity: 0.75;">
+            <span>${timeStr} (Local)</span><span style="color: #34d399; font-weight: 700;">UPCOMING</span>
+          </div>
+        </div>
+      `;
+    });
+
+    if (!gamesHtml) {
+      gamesHtml = `<div style="text-align:center; padding:20px; font-size:11px; opacity:0.7;">No live games scheduled for this date.</div>`;
+    }
+
+    container.innerHTML = gamesHtml;
+
+  } catch (e) {
+    container.innerHTML = `<div style="text-align:center; padding:10px; font-size:11px; color:#f87171;">Failed to fetch live fixture data.</div>`;
+  }
+}
+
 function navigateMatchDay(dir) {
-  currentDayIndex += dir;
-  if (currentDayIndex < 0) currentDayIndex = matchSchedule7Days.length - 1;
-  if (currentDayIndex >= matchSchedule7Days.length) currentDayIndex = 0;
-  renderGamesForCurrentDay();
+  selectedGameDayOffset += dir;
+  if (selectedGameDayOffset < 0) selectedGameDayOffset = 6;
+  if (selectedGameDayOffset > 6) selectedGameDayOffset = 0;
+  fetchLiveGames();
 }
 
 function calculateActiveTraders() {
@@ -375,7 +503,8 @@ function calculateActiveTraders() {
       }
     }
   });
-  document.getElementById('activeTraderCount').textContent = activeCount + ' Working';
+  const el = document.getElementById('activeTraderCount');
+  if (el) el.textContent = activeCount + ' Working';
 }
 
 /* --- INITIALIZATION --- */
@@ -393,8 +522,9 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   switchBrandTab('ibet');
+  listenToLiveDutyRoster();
+  fetchLiveGames();
   calculateActiveTraders();
-  renderGamesForCurrentDay();
 });
 
 window.addEventListener('click', function(e) {
