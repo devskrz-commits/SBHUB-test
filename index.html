@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sportsbook Hub - Glassmorphic Portal</title>
+  <title>Sportsbook Hub - Secured Dashboard</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,7 +42,7 @@
         </div>
       </div>
 
-      <!-- SOLID LOGIN CARD -->
+      <!-- GLASS LOGIN CARD -->
       <div class="login-card" id="loginCard">
         <div class="login-title">Security Gateway</div>
         <div class="login-subtitle">SPORTSBOOK HUB OPERATIONAL PORTAL</div>
@@ -271,7 +271,7 @@
       <!-- TOP WIDE BANNER CARD WITH MOVED ADMIN SECTION & WORLD CLOCKS -->
       <div class="glass-card top-banner-card">
         <div class="banner-left-group">
-          <!-- ADMIN PROFILE PILL (POSITIONED AT FAR LEFT) -->
+          <!-- ADMIN PROFILE PILL -->
           <div class="admin-top-pill">
             <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMSEhUTExMVFhUXGBgXGBgYGBgaGBgYGBgYGBgYGBgYHSggGB4lHRgXITEhJSkrLi4uGB8zODMtNygtLisBCgoKDg0OGxAQGy8mICUvLS0vLS8vLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/A1AARCAD3ATsDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhBxJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hbfExAAICAQ4BRAMFBgcAAAABAxEACQECBEFRYRIiA2JxMoGR8IChsRNSweEGF0LR4vIHFyU0Y3KCkpL/25S1RjN1N1RkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hbfExAAICAQ4BRAMFBgcAAAABAxEACQECBEFRYRIiA2JxMoGR8IChsRNSweEGF0LR4vIHFyU0Y3KCkpL/25S1RjN1N1RkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hb/2gAMAwleftD/9k=" alt="Admin Profile" class="avatar-img">
             <div class="user-info">
@@ -289,7 +289,7 @@
         </div>
 
         <div class="metrics-group">
-          <!-- 3 WORLD CLOCKS (GMT+8, CET, GMT+2) -->
+          <!-- 3 WORLD CLOCKS -->
           <div class="world-clocks">
             <div class="clock-badge">
               <span class="clock-label">GMT+8</span>
@@ -330,7 +330,7 @@
             </div>
           </div>
 
-          <!-- THEME CUSTOMIZER DROPDOWN (DARK LOW-GLARE PRESETS) -->
+          <!-- THEME CUSTOMIZER DROPDOWN -->
           <div class="dropdown-container">
             <button class="dropdown-btn" onclick="toggleDropdown('themeMenu')">
               <i class='bx bx-palette'></i> Theme <i class='bx bx-chevron-down'></i>
@@ -362,24 +362,20 @@
         <!-- COLUMN 1: BRAND DIRECTORY & DAILY TASKS -->
         <div style="display: flex; flex-direction: column; gap: 20px;">
           
-          <!-- WIDGET: BRAND DIRECTORY (WITH DYNAMIC INTERACTIVE TABS) -->
+          <!-- WIDGET: BRAND DIRECTORY -->
           <div class="glass-card" id="widget-brand-dock">
             <div class="card-header">
               <span style="color: #f59e0b;"><i class='bx bx-pin'></i> BRAND DIRECTORY DOCK</span>
               <div class="actions"><span>DRAG / RESIZE</span><i class='bx bx-x' style="cursor:pointer;" onclick="hideWidgetDirect('widget-brand-dock')"></i></div>
             </div>
             
-            <!-- TAB SWITCHER PILLS -->
             <div class="tab-pills">
               <div class="tab-pill active" id="tab-ibet" onclick="switchBrandTab('ibet')">IBET</div>
               <div class="tab-pill" id="tab-edge" onclick="switchBrandTab('edge')">EDGE</div>
               <div class="tab-pill" id="tab-pubs" onclick="switchBrandTab('pubs')">PUBS</div>
             </div>
 
-            <!-- DYNAMIC BRAND LINKS CONTAINER -->
-            <div id="brandLinksContainer" style="display: flex; flex-direction: column; gap: 10px;">
-              <!-- Default IBET content renders on load via JS -->
-            </div>
+            <div id="brandLinksContainer" style="display: flex; flex-direction: column; gap: 10px;"></div>
           </div>
 
           <!-- WIDGET: DAILY TASK DOCK -->
@@ -423,9 +419,7 @@
             <span id="matchDayDisplay">DAY 1 (SEP 26, 2026)</span>
             <i class='bx bx-chevron-right' style="cursor: pointer;" onclick="navigateMatchDay(1)"></i>
           </div>
-          <div id="gamesContainer" style="display: flex; flex-direction: column; gap: 10px;">
-            <!-- Games render dynamically via JavaScript -->
-          </div>
+          <div id="gamesContainer" style="display: flex; flex-direction: column; gap: 10px;"></div>
         </div>
 
       </div>
