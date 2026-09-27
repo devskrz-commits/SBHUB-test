@@ -438,15 +438,8 @@ body {
   flex-shrink: 0;
 }
 
-.icon-internal { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
 .icon-tasks    { background: linear-gradient(135deg, #f97316, #c2410c); }
-.icon-monitor  { background: linear-gradient(135deg, #10b981, #047857); }
-.icon-back     { background: linear-gradient(135deg, #ef4444, #b91c1c); }
-.icon-multi    { background: linear-gradient(135deg, #f59e0b, #b45309); }
-.icon-radar    { background: linear-gradient(135deg, #06b6d4, #0e7490); }
 .icon-brands   { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
-.icon-price    { background: linear-gradient(135deg, #84cc16, #4d7c0f); }
-.icon-proc     { background: linear-gradient(135deg, #ec4899, #be185d); }
 
 .sub-menu {
   display: flex;
@@ -506,7 +499,7 @@ body {
   box-shadow: var(--glass-shadow);
 }
 
-/* --- TOP BANNER CARD (FIXED COMPRESSED DISPLAY & RESPONSIVE WRAP) --- */
+/* --- TOP BANNER CARD (FIXED COMPRESSED DISPLAY & WRAPPING) --- */
 .top-banner-card {
   display: flex;
   justify-content: space-between;
@@ -567,7 +560,6 @@ body {
   flex-wrap: wrap;
 }
 
-/* --- WORLD CLOCKS --- */
 .world-clocks {
   display: flex;
   gap: 8px;
@@ -601,62 +593,10 @@ body {
   font-weight: 700;
 }
 
-/* --- DROPDOWN MENUS --- */
-.dropdown-container {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  padding: 8px 13px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-.dropdown-btn:hover { background: rgba(255, 255, 255, 0.3); }
-
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: calc(100% + 8px);
-  background: rgba(18, 18, 28, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 16px;
-  padding: 10px;
-  z-index: 99999;
-  width: 220px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-}
-
-.dropdown-menu.show { display: flex; flex-direction: column; gap: 6px; }
-
-.menu-option {
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #ffffff;
-  background: transparent;
-  border: none;
-  width: 100%;
-  transition: background 0.2s ease;
-}
-.menu-option:hover { background: rgba(255, 255, 255, 0.1); }
-
 /* --- DASHBOARD GRID & COMPONENTS --- */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 2fr;
   gap: 20px;
 }
 
@@ -683,22 +623,6 @@ body {
   color: #fff;
 }
 
-.action-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 10px 14px;
-  border-radius: 14px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #fff;
-  text-decoration: none;
-  transition: background 0.2s ease, transform 0.1s ease;
-}
-.action-row:hover { background: rgba(255, 255, 255, 0.1); transform: translateX(2px); }
-
 .duty-card {
   background: rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -718,13 +642,3 @@ body {
   font-size: 9px;
 }
 .duty-desc { font-size: 10px; opacity: 0.7; }
-
-.game-card {
-  background: rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 14px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
