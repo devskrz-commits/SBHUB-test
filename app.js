@@ -191,6 +191,56 @@ function updateWorldClocks() {
 setInterval(updateWorldClocks, 1000);
 updateWorldClocks();
 
+/* --- REAL-TIME PHILIPPINES (MANILA) WEATHER FORECAST --- */
+async function fetchManilaWeather() {
+  const tempEl = document.getElementById('weatherTemp');
+  const condEl = document.getElementById('weatherCond');
+  const humEl = document.getElementById('weatherHumidity');
+  const windEl = document.getElementById('weatherWind');
+  const iconEl = document.getElementById('weatherIcon');
+
+  if (!tempEl) return;
+
+  try {
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=Asia%2FManila';
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data && data.current) {
+      const temp = Math.round(data.current.temperature_2m);
+      const humidity = data.current.relative_humidity_2m;
+      const wind = Math.round(data.current.wind_speed_10m);
+      const code = data.current.weather_code;
+
+      const weatherMeta = parseWMOWeatherCode(code);
+
+      tempEl.textContent = `${temp}°C`;
+      condEl.textContent = weatherMeta.label;
+      if (humEl) humEl.textContent = `Humidity: ${humidity}%`;
+      if (windEl) windEl.textContent = `Wind: ${wind} km/h`;
+
+      if (iconEl) {
+        iconEl.className = `bx ${weatherMeta.icon}`;
+        iconEl.style.color = weatherMeta.color;
+      }
+    }
+  } catch (err) {
+    console.error('Weather fetch error:', err);
+    if (condEl) condEl.textContent = 'OFFLINE';
+  }
+}
+
+function parseWMOWeatherCode(code) {
+  if (code === 0) return { label: 'CLEAR SKY', icon: 'bx-sun', color: '#f59e0b' };
+  if (code === 1 || code === 2) return { label: 'PARTLY CLOUDY', icon: 'bx-cloud-sun', color: '#f59e0b' };
+  if (code === 3) return { label: 'OVERCAST', icon: 'bx-cloud', color: '#38bdf8' };
+  if (code >= 45 && code <= 48) return { label: 'FOGGY', icon: 'bx-cloud-fog', color: '#94a3b8' };
+  if (code >= 51 && code <= 67) return { label: 'LIGHT RAIN', icon: 'bx-cloud-drizzle', color: '#60a5fa' };
+  if (code >= 80 && code <= 82) return { label: 'HEAVY RAIN', icon: 'bx-cloud-showers-heavy', color: '#3b82f6' };
+  if (code >= 95) return { label: 'THUNDERSTORM', icon: 'bx-cloud-lightning', color: '#eab308' };
+  return { label: 'CLOUDY', icon: 'bx-cloud', color: '#38bdf8' };
+}
+
 /* --- AUTHENTICATION --- */
 function handleLogin(event) {
   event.preventDefault();
@@ -542,6 +592,8 @@ window.addEventListener('DOMContentLoaded', () => {
   listenToLiveDutyRoster();
   fetchLiveGames();
   calculateActiveTraders();
+  fetchManilaWeather();
+  setInterval(fetchManilaWeather, 15 * 60 * 1000);
 });
 
 window.addEventListener('click', function(e) {
