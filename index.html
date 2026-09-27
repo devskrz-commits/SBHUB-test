@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sportsbook Hub - Secured Dashboard</title>
   
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -51,7 +51,7 @@
           <!-- USERNAME INPUT FIELD -->
           <div class="field-wrapper">
             <label class="login-label" for="usernameInput">Username or email</label>
-            <input type="text" id="usernameInput" class="login-input" value="sportsbook2026" required autocomplete="username">
+            <input type="text" id="usernameInput" class="login-input" value="sportsbook2026" required="required" autocomplete="username"/>
           </div>
 
           <!-- PASSWORD INPUT FIELD -->
@@ -61,7 +61,7 @@
               <a href="#" class="forgot-link">Forgot key?</a>
             </div>
             <div class="password-field-wrap">
-              <input type="password" id="passwordInput" class="login-input" value="" placeholder="Enter password" required autocomplete="current-password">
+              <input type="password" id="passwordInput" class="login-input" value="" placeholder="Enter password" required="required" autocomplete="current-password"/>
               <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility()">
                 <i class="bx bx-show" id="togglePassIcon"></i>
               </button>
@@ -70,7 +70,7 @@
 
           <!-- REMEMBER ME CHECKBOX -->
           <div class="remember-row">
-            <input type="checkbox" id="rememberMe" checked>
+            <input type="checkbox" id="rememberMe" checked="checked"/>
             <label for="rememberMe">Maintain active session</label>
           </div>
 
@@ -98,7 +98,7 @@
 
       <div class="search-box">
         <i class="bx bx-search" style="font-size: 14px;"></i>
-        <input type="text" placeholder="Search categories &amp; links...">
+        <input type="text" placeholder="Search categories &amp; links..."/>
       </div>
 
       <!-- INTERNAL -->
@@ -267,7 +267,7 @@
       <!-- ADMIN PROFILE (BELOW PROCEDURES AT SIDEBAR BOTTOM) -->
       <div class="sidebar-admin-footer">
         <div class="admin-top-pill">
-          <img src="https://ui-avatars.com/api/?name=Admin&amp;background=0f172a&amp;color=38bdf8&amp;bold=true" alt="Admin Profile" class="avatar-img">
+          <img src="https://ui-avatars.com/api/?name=Admin&amp;background=0f172a&amp;color=38bdf8&amp;bold=true" alt="Admin Profile" class="avatar-img"/>
           <div class="user-info">
             <span class="user-title">Admin</span>
           </div>
@@ -347,24 +347,24 @@
               <div class="dropdown-menu" id="widgetMenu">
                 <label class="menu-option">
                   <span>Brand Directory</span>
-                  <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-brand-dock', this.checked)">
+                  <input type="checkbox" class="widget-checkbox" checked="checked" onchange="toggleWidget('widget-brand-dock', this.checked)"/>
                 </label>
                 <label class="menu-option">
                   <span>Daily Task Dock</span>
-                  <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-task-dock', this.checked)">
+                  <input type="checkbox" class="widget-checkbox" checked="checked" onchange="toggleWidget('widget-task-dock', this.checked)"/>
                 </label>
                 <label class="menu-option">
                   <span>Time-Slot Duties</span>
-                  <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-duties-dock', this.checked)">
+                  <input type="checkbox" class="widget-checkbox" checked="checked" onchange="toggleWidget('widget-duties-dock', this.checked)"/>
                 </label>
                 <label class="menu-option">
                   <span>Top Games Ticker</span>
-                  <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-games-dock', this.checked)">
+                  <input type="checkbox" class="widget-checkbox" checked="checked" onchange="toggleWidget('widget-games-dock', this.checked)"/>
                 </label>
               </div>
             </div>
 
-            <!-- THEME CUSTOMIZER DROPDOWN (NEW PALETTE) -->
+            <!-- THEME CUSTOMIZER DROPDOWN (10 THEMES) -->
             <div class="dropdown-container">
               <button class="dropdown-btn" onclick="toggleDropdown('themeMenu')">
                 <i class="bx bx-palette"></i> Theme <i class="bx bx-chevron-down"></i>
