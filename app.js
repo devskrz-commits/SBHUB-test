@@ -323,53 +323,57 @@ function hideWidgetDirect(widgetId) {
   if (checkbox) checkbox.checked = false;
 }
 
-/* --- UPDATED THEME SWITCHER (IMAGE 1 & IMAGE 2 PALETTE) --- */
+/* --- VISUAL TEXTURE & SILK WAVE THEME ENGINE --- */
 function setGradient(theme) {
   const body = document.getElementById('pageBody');
-  let gradientCSS = '';
+  let backgroundStyle = '';
 
   switch(theme) {
     // 3 PLAIN COLORS
     case 'plain-slate':
-      gradientCSS = '#0f172a';
+      backgroundStyle = '#0f172a';
       break;
     case 'plain-navy':
-      gradientCSS = '#0b1329';
+      backgroundStyle = '#0b1329';
       break;
     case 'plain-onyx':
-      gradientCSS = '#121212';
+      backgroundStyle = '#121212';
       break;
 
-    // 5 SOFT WAVE / SILK GRADIENTS (IMAGE 1 INSPIRED)
+    // 5 SILK & SATIN WAVE TEXTURES (EXACT PHOTO 1 MATCHES)
     case 'silk-lavender':
-      gradientCSS = 'linear-gradient(135deg, #2e1065 0%, #3b82f6 50%, #ec4899 100%)';
+      backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920&auto=format&fit=crop")';
       break;
     case 'silk-coral':
-      gradientCSS = 'linear-gradient(135deg, #4c0519 0%, #be123c 40%, #fb923c 100%)';
+      backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url("https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=1920&auto=format&fit=crop")';
       break;
     case 'silk-pastel':
-      gradientCSS = 'linear-gradient(135deg, #1e1b4b 0%, #6366f1 40%, #f472b6 80%, #fb7185 100%)';
+      backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.4)), url("https://images.unsplash.com/photo-1550684848-bac1c5b4e853?q=80&w=1920&auto=format&fit=crop")';
       break;
     case 'silk-mint':
-      gradientCSS = 'linear-gradient(135deg, #022c22 0%, #0d9488 40%, #a7f3d0 100%)';
+      backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url("https://images.unsplash.com/photo-1604076913837-52ab5629fba9?q=80&w=1920&auto=format&fit=crop")';
       break;
     case 'silk-iridescent':
-      gradientCSS = 'linear-gradient(125deg, #311042 0%, #7c3aed 45%, #38bdf8 85%, #f472b6 100%)';
+      backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.4)), url("https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=1920&auto=format&fit=crop")';
       break;
 
-    // 2 ABSTRACT BUBBLE / LAVA THEMES (IMAGE 2 INSPIRED)
+    // 2 ABSTRACT BUBBLE & LAVA ORB TEXTURES (EXACT PHOTO 2 MATCHES)
     case 'abstract-bubbles':
-      gradientCSS = 'radial-gradient(circle at 15% 25%, rgba(56,189,248,0.6) 0%, transparent 40%), radial-gradient(circle at 85% 30%, rgba(236,72,153,0.6) 0%, transparent 45%), radial-gradient(circle at 50% 80%, rgba(245,158,11,0.5) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(139,92,246,0.6) 0%, transparent 40%), #090d16';
+      backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.4)), url("https://images.unsplash.com/photo-1520690214124-2405c50470c6?q=80&w=1920&auto=format&fit=crop")';
       break;
     case 'abstract-lava':
-      gradientCSS = 'radial-gradient(circle at 30% 30%, rgba(168,85,247,0.6) 0%, transparent 45%), radial-gradient(circle at 75% 65%, rgba(59,130,246,0.55) 0%, transparent 45%), radial-gradient(circle at 20% 80%, rgba(236,72,153,0.5) 0%, transparent 40%), #0c0a20';
+      backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url("https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=1920&auto=format&fit=crop")';
       break;
   }
 
-  body.style.background = gradientCSS;
+  body.style.background = backgroundStyle;
+  body.style.backgroundSize = 'cover';
+  body.style.backgroundPosition = 'center';
   body.style.backgroundAttachment = 'fixed';
+  body.style.backgroundRepeat = 'no-repeat';
+
   document.getElementById('themeMenu').classList.remove('show');
-  localStorage.setItem('sbhub_theme', gradientCSS);
+  localStorage.setItem('sbhub_theme', backgroundStyle);
 }
 
 /* --- REAL-TIME LIVE DUTY ROSTER (FIREBASE) --- */
@@ -650,10 +654,13 @@ function initDashboardApp() {
     const pageBody = document.getElementById('pageBody');
     if (pageBody) {
       pageBody.style.background = savedTheme;
+      pageBody.style.backgroundSize = 'cover';
+      pageBody.style.backgroundPosition = 'center';
       pageBody.style.backgroundAttachment = 'fixed';
+      pageBody.style.backgroundRepeat = 'no-repeat';
     }
   } else {
-    setGradient('maroon');
+    setGradient('silk-lavender');
   }
 
   if (sessionStorage.getItem('sbhub_auth') === 'true') {
