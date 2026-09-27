@@ -506,12 +506,13 @@ body {
   box-shadow: var(--glass-shadow);
 }
 
-/* --- TOP BANNER CARD --- */
+/* --- TOP BANNER CARD (UPDATED FULL WIDTH & SPACE-BETWEEN) --- */
 .top-banner-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
+  width: 100%;
 }
 
 .banner-left-group {
