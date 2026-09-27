@@ -1,3 +1,7 @@
+/* ========================================================================== */
+/* SPORTSBOOK DASHBOARD - FULL STYLES.CSS                                     */
+/* ========================================================================== */
+
 * {
   margin: 0;
   padding: 0;
@@ -28,6 +32,7 @@ body {
   --card-blur: blur(25px) saturate(140%);
 }
 
+/* --- CANVAS BACKGROUND --- */
 #bgCanvas {
   position: fixed;
   inset: 0;
@@ -35,6 +40,7 @@ body {
   pointer-events: none;
 }
 
+/* --- AUTHENTICATION OVERLAY & LOGIN CARD --- */
 #authOverlay {
   position: fixed;
   inset: 0;
@@ -81,6 +87,17 @@ body {
   z-index: 5;
 }
 
+.login-card.shake {
+  animation: shakeCard 0.4s ease-in-out;
+}
+
+@keyframes shakeCard {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+/* --- SITTING ROBOT ANIMATION STAGE --- */
 .sitting-robot-stage {
   position: absolute;
   top: -72px;
@@ -113,6 +130,7 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 2;
+  transition: transform 0.1s ease-out;
 }
 
 .robot-antenna {
@@ -158,6 +176,7 @@ body {
   border-radius: 50%;
   position: relative;
   box-shadow: 0 0 10px #00f2fe;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .robot-torso {
@@ -192,20 +211,24 @@ body {
   border-radius: 8px;
   position: absolute;
   top: 20px;
-  transition: all 0.35s ease;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 20;
 }
 .robot-hand.left { left: 10px; }
 .robot-hand.right { right: 10px; }
 
-.covering-eyes .robot-hand.left { transform: translateY(-24px) rotate(15deg); }
-.covering-eyes .robot-hand.right { transform: translateY(-24px) rotate(-15deg); }
-.covering-eyes .robot-eye { transform: scaleY(0.1) !important; }
+/* Robot Interactive States */
+.sitting-robot-stage.covering-eyes .robot-hand.left { transform: translateY(-24px) rotate(15deg); }
+.sitting-robot-stage.covering-eyes .robot-hand.right { transform: translateY(-24px) rotate(-15deg); }
+.sitting-robot-stage.covering-eyes .robot-eye { transform: scaleY(0.1) !important; }
 
-.peeking .robot-hand.left { transform: translateY(-22px) translateX(-8px) rotate(30deg); }
-.peeking .robot-hand.right { transform: translateY(-22px) translateX(8px) rotate(-30deg); }
-.peeking .robot-eye { transform: scaleY(1) !important; background: #fbbf24; }
+.sitting-robot-stage.peeking .robot-hand.left { transform: translateY(-22px) translateX(-8px) rotate(30deg); }
+.sitting-robot-stage.peeking .robot-hand.right { transform: translateY(-22px) translateX(8px) rotate(-30deg); }
+.sitting-robot-stage.peeking .robot-eye { transform: scaleY(1) !important; background: #fbbf24; box-shadow: 0 0 10px #fbbf24; }
 
+.sitting-robot-stage.error-state .robot-eye { background: #f87171 !important; box-shadow: 0 0 12px #f87171 !important; }
+
+/* --- LOGIN FORM ELEMENTS --- */
 .login-title {
   font-size: 26px;
   font-weight: 800;
@@ -239,13 +262,19 @@ body {
   align-items: center;
 }
 
-.login-label { font-size: 11px; font-weight: 700; color: rgba(255, 255, 255, 0.85); text-transform: uppercase; }
+.login-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  text-transform: uppercase;
+}
 
 .forgot-link {
   font-size: 11px;
   color: #38bdf8;
   text-decoration: none;
 }
+.forgot-link:hover { text-decoration: underline; }
 
 .password-field-wrap {
   position: relative;
@@ -261,7 +290,9 @@ body {
   font-size: 14px;
   color: #fff;
   outline: none;
+  transition: border-color 0.2s ease;
 }
+.login-input:focus { border-color: #38bdf8; }
 
 .password-toggle-btn {
   position: absolute;
@@ -274,6 +305,7 @@ body {
   cursor: pointer;
   font-size: 18px;
 }
+.password-toggle-btn:hover { color: #fff; }
 
 .remember-row {
   display: flex;
@@ -293,7 +325,10 @@ body {
   font-weight: 800;
   color: #0f172a;
   cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.1s ease;
 }
+.login-btn:hover { opacity: 0.9; }
+.login-btn:active { transform: scale(0.98); }
 
 .login-error {
   font-size: 11px;
@@ -303,6 +338,7 @@ body {
   text-align: center;
 }
 
+/* --- DASHBOARD APP LAYOUT --- */
 #dashboardApp {
   display: flex;
   gap: 24px;
@@ -318,6 +354,7 @@ body {
   visibility: visible;
 }
 
+/* --- SIDEBAR --- */
 .sidebar {
   width: 270px;
   display: flex;
@@ -326,7 +363,10 @@ body {
   flex-shrink: 0;
   max-height: calc(100vh - 48px);
   overflow-y: auto;
+  padding-right: 4px;
 }
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
 
 .sidebar-header {
   display: flex;
@@ -356,6 +396,7 @@ body {
   font-size: 11px;
   width: 100%;
 }
+.search-box input::placeholder { color: rgba(255, 255, 255, 0.5); }
 
 .nav-group {
   display: flex;
@@ -375,7 +416,9 @@ body {
   font-weight: 700;
   color: #fff;
   cursor: pointer;
+  transition: background 0.2s ease;
 }
+.nav-main-btn:hover { background: rgba(255, 255, 255, 0.15); }
 
 .nav-main-left {
   display: flex;
@@ -392,6 +435,7 @@ body {
   justify-content: center;
   font-size: 13px;
   color: #ffffff;
+  flex-shrink: 0;
 }
 
 .icon-internal { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
@@ -411,7 +455,7 @@ body {
   padding-left: 14px;
   max-height: 450px;
   overflow: hidden;
-  transition: max-height 0.3s ease;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
 }
 
 .sub-menu.collapsed {
@@ -432,8 +476,11 @@ body {
   font-weight: 700;
   color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
+  transition: background 0.2s ease;
 }
+.nav-sub-btn:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
 
+/* --- MAIN WORKSPACE --- */
 .main-workspace {
   flex: 1;
   display: flex;
@@ -441,7 +488,10 @@ body {
   gap: 20px;
   max-height: calc(100vh - 48px);
   overflow-y: auto;
+  padding-right: 4px;
 }
+.main-workspace::-webkit-scrollbar { width: 4px; }
+.main-workspace::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
 
 .glass-card {
   background: var(--glass-card-bg);
@@ -453,8 +503,10 @@ body {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  box-shadow: var(--glass-shadow);
 }
 
+/* --- TOP BANNER CARD --- */
 .top-banner-card {
   display: flex;
   justify-content: space-between;
@@ -497,13 +549,16 @@ body {
   font-size: 10px;
   font-weight: 700;
   cursor: pointer;
+  transition: background 0.2s ease;
 }
+.logout-action-btn:hover { background: rgba(239, 68, 68, 0.4); }
 
 .banner-title { font-size: 17px; font-weight: 800; }
 .banner-subtitle { font-size: 11px; opacity: 0.75; }
 
 .metrics-group { display: flex; gap: 12px; align-items: center; }
 
+/* --- WORLD CLOCKS --- */
 .world-clocks {
   display: flex;
   gap: 8px;
@@ -536,6 +591,7 @@ body {
   font-weight: 700;
 }
 
+/* --- DROPDOWN MENUS --- */
 .dropdown-container {
   position: relative;
   display: inline-block;
@@ -550,7 +606,9 @@ body {
   font-weight: 700;
   color: #fff;
   cursor: pointer;
+  transition: background 0.2s ease;
 }
+.dropdown-btn:hover { background: rgba(255, 255, 255, 0.3); }
 
 .dropdown-menu {
   display: none;
@@ -563,6 +621,7 @@ body {
   padding: 10px;
   z-index: 99999;
   width: 220px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
 }
 
 .dropdown-menu.show { display: flex; flex-direction: column; gap: 6px; }
@@ -580,8 +639,11 @@ body {
   background: transparent;
   border: none;
   width: 100%;
+  transition: background 0.2s ease;
 }
+.menu-option:hover { background: rgba(255, 255, 255, 0.1); }
 
+/* --- DASHBOARD GRID & COMPONENTS --- */
 .dashboard-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -601,7 +663,10 @@ body {
   font-size: 10px;
   font-weight: 700;
   cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease;
 }
+.tab-pill:hover { background: rgba(255, 255, 255, 0.2); color: #fff; }
 .tab-pill.active {
   background: rgba(255, 255, 255, 0.35);
   border-color: rgba(255, 255, 255, 0.7);
@@ -620,7 +685,9 @@ body {
   font-weight: 700;
   color: #fff;
   text-decoration: none;
+  transition: background 0.2s ease, transform 0.1s ease;
 }
+.action-row:hover { background: rgba(255, 255, 255, 0.1); transform: translateX(2px); }
 
 .duty-card {
   background: rgba(0, 0, 0, 0.1);
