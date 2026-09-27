@@ -12,28 +12,65 @@
   <!-- Background Canvas -->
   <canvas id="bgCanvas"></canvas>
 
-  <!-- AUTHENTICATION OVERLAY -->
+  <!-- --- AUTHENTICATION LOGIN OVERLAY WITH SITTING ROBOT --- -->
   <div id="authOverlay">
     <div class="login-container">
       <div class="login-card" id="loginCard">
+        
+        <!-- Interactive Sitting Robot Stage -->
+        <div class="sitting-robot-stage" id="robotStage">
+          <div class="robot-body-wrapper">
+            <div class="robot-antenna"></div>
+            <div class="robot-head">
+              <div class="robot-visor">
+                <div class="robot-eye left"></div>
+                <div class="robot-eye right"></div>
+              </div>
+            </div>
+            <div class="robot-torso"></div>
+            <div class="robot-leg left"></div>
+            <div class="robot-leg right"></div>
+            <div class="robot-hand left"></div>
+            <div class="robot-hand right"></div>
+          </div>
+        </div>
+
         <h1 class="login-title">Shift Portal</h1>
         <p class="login-subtitle">Sports Betting Handover & Risk Hub</p>
+
         <div class="login-input-group">
           <div class="field-wrapper">
-            <input type="text" id="userInput" class="login-input" placeholder="Operator ID...">
+            <div class="field-label-row">
+              <label class="login-label">Operator ID / Email</label>
+            </div>
+            <input type="text" id="userInput" class="login-input" placeholder="Enter operator login..." autocomplete="off">
           </div>
+
           <div class="field-wrapper">
+            <div class="field-label-row">
+              <label class="login-label">Secure Access Key</label>
+              <a href="#" class="forgot-link">Reset Key?</a>
+            </div>
             <div class="password-field-wrap">
-              <input type="password" id="passInput" class="login-input" placeholder="Secure Key...">
+              <input type="password" id="passInput" class="login-input" placeholder="••••••••••••" autocomplete="current-password">
+              <button type="button" class="password-toggle-btn" id="togglePassBtn">👁️</button>
             </div>
           </div>
+
+          <div class="remember-row">
+            <input type="checkbox" id="rememberMe">
+            <label for="rememberMe">Remember session on this device</label>
+          </div>
+
           <button type="button" class="login-btn" id="loginBtn">Authenticate & Launch</button>
+          <div class="login-error" id="loginError"></div>
         </div>
+
       </div>
     </div>
   </div>
 
-  <!-- MAIN DASHBOARD APP -->
+  <!-- --- MAIN DASHBOARD APP --- -->
   <div id="dashboardApp">
 
     <!-- SIDEBAR -->
@@ -201,7 +238,52 @@
       alert('Handover report copied to clipboard!');
     }
 
+    // Robot Interactive Login Logic
+    const robotStage = document.getElementById('robotStage');
+    const passInput = document.getElementById('passInput');
+    const togglePassBtn = document.getElementById('togglePassBtn');
+
+    passInput.addEventListener('focus', () => {
+      robotStage.classList.add('covering-eyes');
+    });
+
+    passInput.addEventListener('blur', () => {
+      robotStage.classList.remove('covering-eyes', 'peeking');
+    });
+
+    togglePassBtn.addEventListener('mousedown', () => {
+      robotStage.classList.remove('covering-eyes');
+      robotStage.classList.add('peeking');
+    });
+
+    togglePassBtn.addEventListener('mouseup', () => {
+      robotStage.classList.remove('peeking');
+      robotStage.classList.add('covering-eyes');
+    });
+
+    togglePassBtn.addEventListener('click', () => {
+      const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passInput.setAttribute('type', type);
+    });
+
     document.getElementById('loginBtn').addEventListener('click', function() {
+      const user = document.getElementById('userInput').value.trim();
+      const pass = passInput.value.trim();
+      const errorDiv = document.getElementById('loginError');
+      const loginCard = document.getElementById('loginCard');
+
+      if (!user || !pass) {
+        errorDiv.innerText = 'Please enter Operator ID and Secure Key.';
+        robotStage.classList.add('error-state');
+        loginCard.classList.add('shake');
+        setTimeout(() => {
+          loginCard.classList.remove('shake');
+          robotStage.classList.remove('error-state');
+        }, 400);
+        return;
+      }
+
+      errorDiv.innerText = '';
       document.getElementById('authOverlay').classList.add('unlocked');
       document.getElementById('dashboardApp').classList.add('unlocked');
     });
@@ -209,11 +291,16 @@
     document.getElementById('logoutBtn').addEventListener('click', function() {
       document.getElementById('authOverlay').classList.remove('unlocked');
       document.getElementById('dashboardApp').classList.remove('unlocked');
+      passInput.value = '';
+      document.getElementById('userInput').value = '';
     });
 
     function updateClocks() {
       const now = new Date();
-      document.getElementById('utcClock').innerText = now.toUTCString().slice(17, 25);
+      const clockEl = document.getElementById('utcClock');
+      if (clockEl) {
+        clockEl.innerText = now.toUTCString().slice(17, 25);
+      }
     }
     setInterval(updateClocks, 1000);
     updateClocks();
