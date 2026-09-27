@@ -293,6 +293,7 @@ body {
   background: transparent;
   border: none;
   padding: 0;
+  position: relative;
 }
 
 .sidebar-header {
@@ -399,8 +400,26 @@ body {
   -webkit-backdrop-filter: var(--card-blur);
 }
 
-.sidebar-admin-footer { margin-top: auto; padding-top: 10px; }
-.sidebar-admin-footer .admin-top-pill { width: 100%; justify-content: space-between; backdrop-filter: var(--card-blur); -webkit-backdrop-filter: var(--card-blur); }
+/* SIDEBAR FOOTER ADMIN PROFILE - PINNED AT LOWEST/BOTTOM PART */
+.sidebar-admin-footer {
+  margin-top: auto;
+  padding-top: 10px;
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  background: rgba(9, 13, 22, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 999px;
+}
+
+.sidebar-admin-footer .admin-top-pill {
+  width: 100%;
+  justify-content: space-between;
+  backdrop-filter: var(--card-blur);
+  -webkit-backdrop-filter: var(--card-blur);
+}
 
 .main-workspace {
   flex: 1;
@@ -445,6 +464,7 @@ body {
   opacity: 0.6;
 }
 
+/* FROZEN (STICKY) TOP BANNER CARD */
 .top-banner-card {
   display: flex;
   flex-direction: column;
@@ -453,6 +473,7 @@ body {
   width: 100%;
   box-sizing: border-box;
   overflow: visible;
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 1000;
