@@ -3,198 +3,419 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sportsbook Shift Handover Generator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Sportsbook Hub - Secured Dashboard</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-</head>
-<body>
 
-  <!-- Background Canvas -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+</head>
+<body id="pageBody">
+
+  <!-- ANIMATED BACKGROUND CANVAS -->
   <canvas id="bgCanvas"></canvas>
 
-  <!-- --- AUTHENTICATION LOGIN OVERLAY WITH SITTING ROBOT --- -->
+  <!-- FRONT SECURITY LOGIN OVERLAY MODAL -->
   <div id="authOverlay">
     <div class="login-container">
-      <div class="login-card" id="loginCard">
-        
-        <!-- Interactive Sitting Robot Stage -->
-        <div class="sitting-robot-stage" id="robotStage">
-          <div class="robot-body-wrapper">
-            <div class="robot-antenna"></div>
-            <div class="robot-head">
-              <div class="robot-visor">
-                <div class="robot-eye left"></div>
-                <div class="robot-eye right"></div>
-              </div>
+
+      <!-- ROBOT SITTING ON TOP OF THE LOGIN BOX -->
+      <div class="sitting-robot-stage" id="sittingRobotStage">
+        <div class="robot-body-wrapper" id="robotBodyWrapper">
+          <div class="robot-antenna"></div>
+          <div class="robot-head" id="robotHead">
+            <div class="robot-visor">
+              <div class="robot-eye" id="leftEye"></div>
+              <div class="robot-eye" id="rightEye"></div>
             </div>
-            <div class="robot-torso"></div>
-            <div class="robot-leg left"></div>
-            <div class="robot-leg right"></div>
-            <div class="robot-hand left"></div>
-            <div class="robot-hand right"></div>
           </div>
+          <div class="robot-torso"></div>
+          <div class="robot-leg left"></div>
+          <div class="robot-leg right"></div>
+          <div class="robot-hand left"></div>
+          <div class="robot-hand right"></div>
         </div>
+      </div>
 
-        <h1 class="login-title">Shift Portal</h1>
-        <p class="login-subtitle">Sports Betting Handover & Risk Hub</p>
-
-        <div class="login-input-group">
+      <!-- SOLID LOGIN CARD -->
+      <div class="login-card" id="loginCard">
+        <div class="login-title">Security Gateway</div>
+        <div class="login-subtitle">SPORTSBOOK HUB OPERATIONAL PORTAL</div>
+        
+        <form class="login-input-group" onsubmit="handleLogin(event)">
+          <!-- USERNAME INPUT FIELD -->
           <div class="field-wrapper">
-            <div class="field-label-row">
-              <label class="login-label">Operator ID / Email</label>
-            </div>
-            <input type="text" id="userInput" class="login-input" placeholder="Enter operator login..." autocomplete="off">
+            <label class="login-label" for="usernameInput">Username or email</label>
+            <input type="text" id="usernameInput" class="login-input" value="sportsbook2026" required autocomplete="username">
           </div>
 
+          <!-- PASSWORD INPUT FIELD -->
           <div class="field-wrapper">
             <div class="field-label-row">
-              <label class="login-label">Secure Access Key</label>
-              <a href="#" class="forgot-link">Reset Key?</a>
+              <label class="login-label" for="passwordInput">Security Key</label>
+              <a href="#" class="forgot-link">Forgot key?</a>
             </div>
             <div class="password-field-wrap">
-              <input type="password" id="passInput" class="login-input" placeholder="••••••••••••" autocomplete="current-password">
-              <button type="button" class="password-toggle-btn" id="togglePassBtn">👁️</button>
+              <input type="password" id="passwordInput" class="login-input" value="" placeholder="Enter password" required autocomplete="current-password">
+              <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility()">
+                <i class='bx bx-show' id="togglePassIcon"></i>
+              </button>
             </div>
           </div>
 
+          <!-- REMEMBER ME CHECKBOX -->
           <div class="remember-row">
-            <input type="checkbox" id="rememberMe">
-            <label for="rememberMe">Remember session on this device</label>
+            <input type="checkbox" id="rememberMe" checked>
+            <label for="rememberMe">Maintain active session</label>
           </div>
 
-          <button type="button" class="login-btn" id="loginBtn">Authenticate & Launch</button>
-          <div class="login-error" id="loginError"></div>
-        </div>
+          <div class="login-error" id="loginErrorMsg"></div>
 
+          <!-- SUBMIT BUTTON -->
+          <button type="submit" class="login-btn">
+            <i class='bx bx-key'></i> ACCESS DASHBOARD
+          </button>
+        </form>
       </div>
+
     </div>
   </div>
 
-  <!-- --- MAIN DASHBOARD APP --- -->
+  <!-- DASHBOARD APP CONTAINER -->
   <div id="dashboardApp">
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR NAVIGATION -->
     <aside class="sidebar">
       <div class="sidebar-header">
-        <span>Sportsbook Hub</span>
-      </div>
-      <div class="search-box">
-        <span>🔍</span>
-        <input type="text" id="globalSearch" placeholder="Search parameters...">
+        <span>SPORTSBOOK HUB</span>
+        <i class='bx bx-x' style="cursor: pointer; font-size: 18px;"></i>
       </div>
 
+      <div class="search-box">
+        <i class='bx bx-search' style="font-size: 14px;"></i>
+        <input type="text" placeholder="Search categories & links...">
+      </div>
+
+      <!-- INTERNAL -->
       <div class="nav-group">
-        <button class="nav-main-btn" onclick="toggleSubMenu('handoverMenu')">
+        <div class="nav-main-btn" onclick="toggleMenu('sub-internal', this)">
           <div class="nav-main-left">
-            <div class="icon-badge icon-tasks">📋</div>
-            <span>Handover Builder</span>
+            <div class="icon-badge icon-internal"><i class='bx bx-home-alt'></i></div>
+            <span>INTERNAL</span>
           </div>
-          <span>▼</span>
-        </button>
-        <div class="sub-menu" id="handoverMenu">
-          <a href="#" class="nav-sub-btn"><span>AM Shift Summary</span></a>
-          <a href="#" class="nav-sub-btn"><span>PM Shift Summary</span></a>
-          <a href="#" class="nav-sub-btn"><span>Risk Adjustments Log</span></a>
+          <i class='bx bx-chevron-down toggle-icon'></i>
+        </div>
+        <div class="sub-menu collapsed" id="sub-internal">
+          <a class="nav-sub-btn" href="duties.html"><span>DAILY DUTY</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="rota.html"><span>ROTA</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="handover.html"><span>HANDOVER</span><i class='bx bx-right-arrow-alt'></i></a>
         </div>
       </div>
 
+      <!-- DAILY TASK -->
       <div class="nav-group">
-        <button class="nav-main-btn" onclick="toggleSubMenu('brandsMenu')">
+        <div class="nav-main-btn" onclick="toggleMenu('sub-dailytask', this)">
           <div class="nav-main-left">
-            <div class="icon-badge icon-brands">🎰</div>
-            <span>Brand Operations</span>
+            <div class="icon-badge icon-tasks"><i class='bx bx-task'></i></div>
+            <span>DAILY TASK</span>
           </div>
-          <span>▼</span>
-        </button>
-        <div class="sub-menu" id="brandsMenu">
-          <a href="#" class="nav-sub-btn"><span>KT Brand Tracking</span></a>
-          <a href="#" class="nav-sub-btn"><span>iBet Betsson Monitor</span></a>
-          <a href="#" class="nav-sub-btn"><span>SoftSwiss Weekly Files</span></a>
+          <i class='bx bx-chevron-down toggle-icon'></i>
+        </div>
+        <div class="sub-menu collapsed" id="sub-dailytask">
+          <a class="nav-sub-btn" href="boostschedule.html"><span>TOP PICKS</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1E-34VRXSaQG0oFrNPjfxLZe8L05oNYWXcoX-rDhdVCE/edit?gid=477417890#gid=477417890" target="_blank"><span>EDGE BOOST EXCEL</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1gjkUVpMM3AuABSsWRcq0oD-72_ttWNHTE7yagCWFPLE/edit?gid=807815114#gid=807815114" target="_blank"><span>IBET BOOST EXCEL</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank"><span>KT SPORTS CHECK</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://polymarket.com/breaking" target="_blank"><span>PREDICTION OFFER CHECK</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="edge_boosts.html"><span>EDGE BOOST SYS</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="ibet_boosts.html"><span>IBET BOOST SYS</span><i class='bx bx-right-arrow-alt'></i></a>
+        </div>
+      </div>
+
+      <!-- DAILY MONITORING -->
+      <div class="nav-group">
+        <div class="nav-main-btn" onclick="toggleMenu('sub-dailymonitoring', this)">
+          <div class="nav-main-left">
+            <div class="icon-badge icon-monitor"><i class='bx bx-line-chart'></i></div>
+            <span>DAILY MONITORING</span>
+          </div>
+          <i class='bx bx-chevron-down toggle-icon'></i>
+        </div>
+        <div class="sub-menu collapsed" id="sub-dailymonitoring">
+          <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1qruVq-HZCyM0uDgnYSqFhccXKnMkqJ8z/edit?gid=1305147410#gid=1305147410" target="_blank"><span>GREEN TRACKER</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1OcaMz_AOUeRsWIVplbnk2XAna62m3IKa/edit?gid=457800468#gid=457800468" target="_blank"><span>RED TRACKER</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1U-Dmc628kHQabzJGoBeEgRus5PiRhgSd/edit?pli=1&gid=1983372695#gid=1983372695" target="_blank"><span>ORANGE TRACKER</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="#"><span>7A TRACKER</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/11STKO4Xsj0a8iTuUXSCXC-XEE4-7qmF9/edit?pli=1&gid=1701374259#gid=1701374259" target="_blank"><span>GREEN CRM</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1gPks2FdHyOOTiILvn553miz32WeEtOpx/edit?gid=1701374259#gid=1701374259" target="_blank"><span>RED CRM</span><i class='bx bx-right-arrow-alt'></i></a>
+        </div>
+      </div>
+
+      <!-- BACK OFFICE -->
+      <div class="nav-group">
+        <div class="nav-main-btn" onclick="toggleMenu('sub-backoffice', this)">
+          <div class="nav-main-left">
+            <div class="icon-badge icon-back"><i class='bx bx-briefcase-alt-2'></i></div>
+            <span>BACK OFFICE</span>
+          </div>
+          <i class='bx bx-chevron-down toggle-icon'></i>
+        </div>
+        <div class="sub-menu collapsed" id="sub-backoffice">
+          <a class="nav-sub-btn" href="https://betbook.center/qbet/bets" target="_blank"><span>QBET/55/30</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://mga-betbook.center/ibet/bets" target="_blank"><span>IBET</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://eu-b7k.center/pubs8/bets" target="_blank"><span>PUBS</span><i class='bx bx-right-arrow-alt'></i></a>
+        </div>
+      </div>
+
+      <!-- MULTI MONITOR -->
+      <div class="nav-group">
+        <div class="nav-main-btn" onclick="toggleMenu('sub-multimonitor', this)">
+          <div class="nav-main-left">
+            <div class="icon-badge icon-multi"><i class='bx bx-desktop'></i></div>
+            <span>MULTI MONITOR</span>
+          </div>
+          <i class='bx bx-chevron-down toggle-icon'></i>
+        </div>
+        <div class="sub-menu collapsed" id="sub-multimonitor">
+          <a class="nav-sub-btn" href="https://betbook.center/monitor?providerIds=prediction_markets" target="_blank"><span>EDGE PREDICTION TICKER</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://eu-b7k.center/monitor?providerIds=prediction_markets" target="_blank"><span>PUBS PREDICTION TICKER</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://betbook.center/monitor" target="_blank"><span>QBET/55/30 REJECTED</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://eu-b7k.center/monitor" target="_blank"><span>PUBS REJECTED</span><i class='bx bx-right-arrow-alt'></i></a>
+        </div>
+      </div>
+
+      <!-- BETRADAR -->
+      <div class="nav-group">
+        <div class="nav-main-btn" onclick="toggleMenu('sub-betradar', this)">
+          <div class="nav-main-left">
+            <div class="icon-badge icon-radar"><i class='bx bx-radar'></i></div>
+            <span>BETRADAR</span>
+          </div>
+          <i class='bx bx-chevron-down toggle-icon'></i>
+        </div>
+        <div class="sub-menu collapsed" id="sub-betradar">
+          <a class="nav-sub-btn" href="https://mtsc-its.betradar.com/" target="_blank"><span>MTS</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://portal.betradar.com/" target="_blank"><span>CTRL PORTAL</span><i class='bx bx-right-arrow-alt'></i></a>
+        </div>
+      </div>
+
+      <!-- OWN BRANDS -->
+      <div class="nav-group">
+        <div class="nav-main-btn" onclick="toggleMenu('sub-ownbrands', this)">
+          <div class="nav-main-left">
+            <div class="icon-badge icon-brands"><i class='bx bx-layer'></i></div>
+            <span>OWN BRANDS</span>
+          </div>
+          <i class='bx bx-chevron-down toggle-icon'></i>
+        </div>
+        <div class="sub-menu collapsed" id="sub-ownbrands">
+          <a class="nav-sub-btn" href="https://www.7abet.com/en-UN" target="_blank"><span>7A</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://www.qbet.com/en-UN" target="_blank"><span>QBET</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://www.55bet.com/en-UN" target="_blank"><span>55BET</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://www.30bet.com/en-UN" target="_blank"><span>30BET</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://www.gqbet.vip/en-UN/" target="_blank"><span>GQBET</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://www.bvbet.com/en-UN" target="_blank"><span>BVBET</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://www.ibet.com/en-UN/sportsbook/price-boost/football" target="_blank"><span>IBET</span><i class='bx bx-right-arrow-alt'></i></a>
+        </div>
+      </div>
+
+      <!-- PRICE REFERENCES -->
+      <div class="nav-group">
+        <div class="nav-main-btn" onclick="toggleMenu('sub-priceref', this)">
+          <div class="nav-main-left">
+            <div class="icon-badge icon-price"><i class='bx bx-data'></i></div>
+            <span>PRICE REFERENCES</span>
+          </div>
+          <i class='bx bx-chevron-down toggle-icon'></i>
+        </div>
+        <div class="sub-menu collapsed" id="sub-priceref">
+          <a class="nav-sub-btn" href="https://www.flashscore.com/" target="_blank"><span>FLASHSCORE</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://betsapi.com/" target="_blank"><span>BETSAPI</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://www.oddsportal.com/football/" target="_blank"><span>ODDSPORTAL</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://www.oddschecker.com/" target="_blank"><span>ODDSCHECKER</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://www.betfair.com/exchange/plus/" target="_blank"><span>BETFAIR</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://www.bet365.com/" target="_blank"><span>BET365</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://www.pinnacle.com/" target="_blank"><span>PINNACLE</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://gg.bet/" target="_blank"><span>GGBET</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://www.unibet.com.au/" target="_blank"><span>UNIBET</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://www.sofascore.com/" target="_blank"><span>SOFASCORE</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://www.marathonbet.com/" target="_blank"><span>MARATHONBET</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="https://fonbet.com/" target="_blank"><span>FONBET</span><i class='bx bx-right-arrow-alt'></i></a>
+        </div>
+      </div>
+
+      <!-- PROCEDURES -->
+      <div class="nav-group">
+        <div class="nav-main-btn" onclick="toggleMenu('sub-procedures', this)">
+          <div class="nav-main-left">
+            <div class="icon-badge icon-proc"><i class='bx bx-file'></i></div>
+            <span>PROCEDURES</span>
+          </div>
+          <i class='bx bx-chevron-down toggle-icon'></i>
+        </div>
+        <div class="sub-menu collapsed" id="sub-procedures">
+          <a class="nav-sub-btn" href="https://ibet.atlassian.net/wiki/spaces/Sportsbook/overview" target="_blank"><span>CONFLUENCE</span><i class='bx bx-right-arrow-alt'></i></a>
+          <a class="nav-sub-btn" href="workspace.html"><span>WORKSPACE</span><i class='bx bx-right-arrow-alt'></i></a>
         </div>
       </div>
     </aside>
 
-    <!-- MAIN WORKSPACE -->
+    <!-- DASHBOARD WORKSPACE -->
     <main class="main-workspace">
 
-      <!-- TOP BANNER (FIXED COMPRESSION LAYOUT) -->
-      <section class="glass-card top-banner-card">
+      <!-- TOP WIDE BANNER CARD WITH MOVED ADMIN SECTION & WORLD CLOCKS -->
+      <div class="glass-card top-banner-card">
         <div class="banner-left-group">
+          <!-- ADMIN PROFILE PILL -->
           <div class="admin-top-pill">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces" alt="Avatar" class="avatar-img">
+            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMSEhUTExMVFhUXGBgXGBgYGBgaGBgYGBgYGBgYGBgYHSggGB4lHRgXITEhJSkrLi4uGB8zODMtNygtLisBCgoKDg0OGxAQGy8mICUvLS0vLS8vLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/A1AARCAD3ATsDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhBxJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hbfExAAICAQ4BRAMFBgcAAAABAxEACQECBEFRYRIiA2JxMoGR8IChsRNSweEGF0LR4vIHFyU0Y3KCkpL/25S1RjN1N1RkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hbfExAAICAQ4BRAMFBgcAAAABAxEACQECBEFRYRIiA2JxMoGR8IChsRNSweEGF0LR4vIHFyU0Y3KCkpL/25S1RjN1N1RkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hb/2gAMAwleftD/9k=" alt="Admin Profile" class="avatar-img">
             <div class="user-info">
-              <span class="user-title">Risk Supervisor</span>
+              <span class="user-title">Admin</span>
             </div>
-            <button class="logout-action-btn" id="logoutBtn">Lock</button>
+            <button class="logout-action-btn" onclick="handleLogout()" title="Lock Session">
+              <i class='bx bx-log-out'></i> Lock
+            </button>
           </div>
-          <div>
-            <h2 class="banner-title">Shift Handover & Operations Generator</h2>
-            <p class="banner-subtitle">KT & iBet Betsson Standardized Reporting Tool</p>
+
+          <div class="banner-title-area">
+            <div class="banner-title">Sportsbook Hub Overview</div>
+            <div class="banner-subtitle">Glass dashboard management system & operations monitor</div>
           </div>
         </div>
 
         <div class="metrics-group">
+          <!-- 3 WORLD CLOCKS -->
           <div class="world-clocks">
             <div class="clock-badge">
-              <span class="clock-label">UTC</span>
-              <span class="clock-time" id="utcClock">00:00:00</span>
+              <span class="clock-label">GMT+8</span>
+              <span class="clock-time" id="clock-gmt8">00:00:00</span>
+            </div>
+            <div class="clock-badge">
+              <span class="clock-label">CET</span>
+              <span class="clock-time" id="clock-cet">00:00:00</span>
+            </div>
+            <div class="clock-badge">
+              <span class="clock-label">GMT+2</span>
+              <span class="clock-time" id="clock-gmt2">00:00:00</span>
             </div>
           </div>
+
+          <!-- MANAGE WIDGETS DROPDOWN -->
+          <div class="dropdown-container">
+            <button class="dropdown-btn" onclick="toggleDropdown('widgetMenu')">
+              <i class='bx bx-slider-alt'></i> Widgets <i class='bx bx-chevron-down'></i>
+            </button>
+            <div class="dropdown-menu" id="widgetMenu">
+              <label class="menu-option">
+                <span>Brand Directory</span>
+                <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-brand-dock', this.checked)">
+              </label>
+              <label class="menu-option">
+                <span>Daily Task Dock</span>
+                <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-task-dock', this.checked)">
+              </label>
+              <label class="menu-option">
+                <span>Time-Slot Duties</span>
+                <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-duties-dock', this.checked)">
+              </label>
+              <label class="menu-option">
+                <span>Top Games Ticker</span>
+                <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-games-dock', this.checked)">
+              </label>
+            </div>
+          </div>
+
+          <!-- THEME CUSTOMIZER DROPDOWN -->
+          <div class="dropdown-container">
+            <button class="dropdown-btn" onclick="toggleDropdown('themeMenu')">
+              <i class='bx bx-palette'></i> Theme <i class='bx bx-chevron-down'></i>
+            </button>
+            <div class="dropdown-menu" id="themeMenu">
+              <button class="menu-option" onclick="setGradient('cyberpunk')"><span>Cyberpunk Dark</span><span class="color-dot" style="background: linear-gradient(135deg, #090d16, #38bdf8);"></span></button>
+              <button class="menu-option" onclick="setGradient('maroon')"><span>Midnight Maroon</span><span class="color-dot" style="background: linear-gradient(135deg, #2a080c, #4a0e17);"></span></button>
+              <button class="menu-option" onclick="setGradient('obsidian')"><span>Obsidian Carbon</span><span class="color-dot" style="background: linear-gradient(135deg, #09090b, #1f1f23);"></span></button>
+              <button class="menu-option" onclick="setGradient('ocean')"><span>Deep Ocean</span><span class="color-dot" style="background: linear-gradient(135deg, #06111e, #0f2027);"></span></button>
+              <button class="menu-option" onclick="setGradient('royal')"><span>Royal Emerald</span><span class="color-dot" style="background: linear-gradient(135deg, #100a1c, #042f2e);"></span></button>
+              <button class="menu-option" onclick="setGradient('sunset')"><span>Sunset Midnight</span><span class="color-dot" style="background: linear-gradient(135deg, #1e1b2e, #451a03);"></span></button>
+            </div>
+          </div>
+
+          <!-- ACTIVE TRADER COUNTER -->
           <div class="metric-pill">
-            <span>🟢 Status: System Ready</span>
+            <i class='bx bx-user-check'></i>
+            <div>
+              <div style="font-size: 9px; opacity: 0.7;">ACTIVE TRADER</div>
+              <div style="font-size: 12px;" id="activeTraderCount">0 Working</div>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- GENERATOR GRID CONTENT -->
+      <!-- 3-COLUMN GRID FOR CONTENT CARDS -->
       <div class="dashboard-grid">
-        
-        <!-- Shift Selector & Brand Configuration -->
-        <div class="glass-card">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="font-size: 14px; font-weight: 800;">Brand & Shift Selection</h3>
-            <div class="tab-pills">
-              <span class="tab-pill active" id="btnAM" onclick="setShift('AM')">AM Shift</span>
-              <span class="tab-pill" id="btnPM" onclick="setShift('PM')">PM Shift</span>
+
+        <!-- COLUMN 1: BRAND DIRECTORY & DAILY TASKS -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          
+          <!-- WIDGET: BRAND DIRECTORY -->
+          <div class="glass-card" id="widget-brand-dock">
+            <div class="card-header">
+              <span style="color: #f59e0b;"><i class='bx bx-pin'></i> BRAND DIRECTORY DOCK</span>
+              <div class="actions"><span>DRAG / RESIZE</span><i class='bx bx-x' style="cursor:pointer;" onclick="hideWidgetDirect('widget-brand-dock')"></i></div>
             </div>
+            
+            <div class="tab-pills">
+              <div class="tab-pill active" id="tab-ibet" onclick="switchBrandTab('ibet')">IBET</div>
+              <div class="tab-pill" id="tab-edge" onclick="switchBrandTab('edge')">EDGE</div>
+              <div class="tab-pill" id="tab-pubs" onclick="switchBrandTab('pubs')">PUBS</div>
+            </div>
+
+            <div id="brandLinksContainer" style="display: flex; flex-direction: column; gap: 10px;"></div>
           </div>
 
-          <div class="field-wrapper" style="margin-top: 10px;">
-            <label class="login-label">Select Brand Target</label>
-            <select id="brandSelect" class="login-input" style="background: rgba(0,0,0,0.4); padding: 10px;">
-              <option value="KT">KT Brand Operations</option>
-              <option value="iBet_Betsson">iBet Betsson</option>
-            </select>
+          <!-- WIDGET: DAILY TASK DOCK -->
+          <div class="glass-card" id="widget-task-dock">
+            <div class="card-header">
+              <span style="color: #ef4444;"><i class='bx bx-list-ul'></i> DAILY TASK DOCK</span>
+              <div class="actions"><span>DRAG / RESIZE</span><i class='bx bx-x' style="cursor:pointer;" onclick="hideWidgetDirect('widget-task-dock')"></i></div>
+            </div>
+            <a class="action-row" href="boostschedule.html"><span>TOP PICKS (SCHEDULE)</span><i class='bx bx-right-arrow-alt'></i></a>
+            <a class="action-row" href="https://docs.google.com/spreadsheets/d/1E-34VRXSaQG0oFrNPjfxLZe8L05oNYWXcoX-rDhdVCE/edit?gid=477417890#gid=477417890" target="_blank"><span>EDGE BOOST (EXCEL)</span><i class='bx bx-right-arrow-alt'></i></a>
+            <a class="action-row" href="https://docs.google.com/spreadsheets/d/1gjkUVpMM3AuABSsWRcq0oD-72_ttWNHTE7yagCWFPLE/edit?gid=807815114#gid=807815114" target="_blank"><span>IBET BOOST (EXCEL)</span><i class='bx bx-right-arrow-alt'></i></a>
+            <a class="action-row" href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank"><span>KT SPORTS CHECK</span><i class='bx bx-right-arrow-alt'></i></a>
+            <a class="action-row" href="https://polymarket.com/breaking" target="_blank"><span>PREDICTION OFFER CHECK</span><i class='bx bx-right-arrow-alt'></i></a>
           </div>
-
-          <div class="field-wrapper" style="margin-top: 10px;">
-            <label class="login-label">Client Limit Drop / Risk Action Rationale</label>
-            <select id="reasonSelect" class="login-input" style="background: rgba(0,0,0,0.4); padding: 10px;">
-              <option value="Sharp Action / Syndicate Profile">Sharp Action / Syndicate Profile</option>	  
-              <option value="Bonus Abuse / Arbitrage">Bonus Abuse / Arbitrage</option>
-              <option value="VIP Limit Adjustment">VIP Limit Adjustment</option>
-              <option value="Manual Risk Review Completed">Manual Risk Review Completed</option>
-            </select>
-          </div>
-
-          <button type="button" class="login-btn" style="margin-top: 10px;" onclick="generateReport()">Generate Automated Summary Text ⚡</button>
         </div>
 
-        <!-- Live Output & Clipboard Tool -->
-        <div class="glass-card">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="font-size: 14px; font-weight: 800;">Generated Shift Handover Output</h3>
-            <button class="tab-pill" onclick="copyReportText()">Copy to Clipboard 📋</button>
+        <!-- COLUMN 2: LIVE TIME-SLOT DUTIES (DYNAMIC FIREBASE CONTAINER) -->
+        <div class="glass-card" id="widget-duties-dock">
+          <div class="card-header">
+            <span style="color: #f97316;"><i class='bx bx-time'></i> LIVE TIME-SLOT DUTIES</span>
+            <div class="actions"><span>DRAG</span><i class='bx bx-x' style="cursor:pointer;" onclick="hideWidgetDirect('widget-duties-dock')"></i></div>
           </div>
+          <div id="liveDutyContent" style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="text-align:center; padding:15px;"><i class='bx bx-loader-alt bx-spin' style="font-size:20px; color:#38bdf8;"></i></div>
+          </div>
+        </div>
 
-          <textarea id="outputReportBox" class="login-input" style="height: 180px; resize: none; font-family: monospace; font-size: 11px; padding: 12px;" readonly placeholder="Handover summary text will populate here based on selected parameters..."></textarea>
-
-          <div class="duty-card">
-            <div class="duty-top">
-              <span>SoftSwiss Weekly File Status</span>
-              <span class="badge-time" id="fileStatusBadge">Pending Verification</span>
-            </div>
-            <span class="duty-desc">Automated checks ensure CRM exclusions and VIP lists are synchronized.</span>
+        <!-- COLUMN 3: TOP GAMES (LIVE SCOREBOARD API CONTAINER) -->
+        <div class="glass-card" id="widget-games-dock">
+          <div class="card-header">
+            <span style="color: #38bdf8;"><i class='bx bx-play-circle'></i> TOP GAMES (7-DAY FIXTURES)</span>
+            <div class="actions"><span>DRAG</span><i class='bx bx-x' style="cursor:pointer;" onclick="hideWidgetDirect('widget-games-dock')"></i></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.15); padding: 8px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.15);">
+            <i class='bx bx-chevron-left' style="cursor: pointer;" onclick="navigateMatchDay(-1)"></i>
+            <span id="matchDayDisplay">TODAY</span>
+            <i class='bx bx-chevron-right' style="cursor: pointer;" onclick="navigateMatchDay(1)"></i>
+          </div>
+          <div id="gamesContainer" style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="text-align:center; padding:15px;"><i class='bx bx-loader-alt bx-spin' style="font-size:20px; color:#38bdf8;"></i></div>
           </div>
         </div>
 
@@ -203,107 +424,6 @@
     </main>
   </div>
 
-  <script>
-    function toggleSubMenu(id) {
-      document.getElementById(id).classList.toggle('collapsed');
-    }
-
-    let currentShift = 'AM';
-    function setShift(shift) {
-      currentShift = shift;
-      document.getElementById('btnAM').classList.toggle('active', shift === 'AM');
-      document.getElementById('btnPM').classList.toggle('active', shift === 'PM');
-    }
-
-    function generateReport() {
-      const brand = document.getElementById('brandSelect').value;
-      const reason = document.getElementById('reasonSelect').value;
-      const timestamp = new Date().toUTCString();
-
-      const reportText = `[SHIFT HANDOVER SUMMARY - ${currentShift} SHIFT]\n` +
-                         `Timestamp: ${timestamp}\n` +
-                         `Brand Target: ${brand}\n` +
-                         `Primary Action / Rationale: ${reason}\n` +
-                         `Status: Verified & Synced across monitoring channels.\n` +
-                         `Notes: Shift logs clear. Escalations handled according to protocol.`;
-
-      document.getElementById('outputReportBox').value = reportText;
-      document.getElementById('fileStatusBadge').innerText = 'Synced & Verified';
-    }
-
-    function copyReportText() {
-      const textBox = document.getElementById('outputReportBox');
-      textBox.select();
-      navigator.clipboard.writeText(textBox.value);
-      alert('Handover report copied to clipboard!');
-    }
-
-    // Robot Interactive Login Logic
-    const robotStage = document.getElementById('robotStage');
-    const passInput = document.getElementById('passInput');
-    const togglePassBtn = document.getElementById('togglePassBtn');
-
-    passInput.addEventListener('focus', () => {
-      robotStage.classList.add('covering-eyes');
-    });
-
-    passInput.addEventListener('blur', () => {
-      robotStage.classList.remove('covering-eyes', 'peeking');
-    });
-
-    togglePassBtn.addEventListener('mousedown', () => {
-      robotStage.classList.remove('covering-eyes');
-      robotStage.classList.add('peeking');
-    });
-
-    togglePassBtn.addEventListener('mouseup', () => {
-      robotStage.classList.remove('peeking');
-      robotStage.classList.add('covering-eyes');
-    });
-
-    togglePassBtn.addEventListener('click', () => {
-      const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
-      passInput.setAttribute('type', type);
-    });
-
-    document.getElementById('loginBtn').addEventListener('click', function() {
-      const user = document.getElementById('userInput').value.trim();
-      const pass = passInput.value.trim();
-      const errorDiv = document.getElementById('loginError');
-      const loginCard = document.getElementById('loginCard');
-
-      if (!user || !pass) {
-        errorDiv.innerText = 'Please enter Operator ID and Secure Key.';
-        robotStage.classList.add('error-state');
-        loginCard.classList.add('shake');
-        setTimeout(() => {
-          loginCard.classList.remove('shake');
-          robotStage.classList.remove('error-state');
-        }, 400);
-        return;
-      }
-
-      errorDiv.innerText = '';
-      document.getElementById('authOverlay').classList.add('unlocked');
-      document.getElementById('dashboardApp').classList.add('unlocked');
-    });
-
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-      document.getElementById('authOverlay').classList.remove('unlocked');
-      document.getElementById('dashboardApp').classList.remove('unlocked');
-      passInput.value = '';
-      document.getElementById('userInput').value = '';
-    });
-
-    function updateClocks() {
-      const now = new Date();
-      const clockEl = document.getElementById('utcClock');
-      if (clockEl) {
-        clockEl.innerText = now.toUTCString().slice(17, 25);
-      }
-    }
-    setInterval(updateClocks, 1000);
-    updateClocks();
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
