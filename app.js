@@ -90,7 +90,7 @@ async function fetchTopPicksAndBoosts() {
             if (allPicks.length >= 7) break;
             const evt = data.events[i];
 
-            // PRE-GAME FILTER ONLY: Remove matches automatically once they kick off (state !== 'pre')
+            // PRE-GAME FILTER ONLY: Remove matches automatically once they kick off
             const isPreGame = evt.status?.type?.state === 'pre';
             if (!isPreGame) continue;
 
@@ -107,7 +107,6 @@ async function fetchTopPicksAndBoosts() {
               const homeLogo = homeTeam.team?.logo || homeTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
               const awayLogo = awayTeam.team?.logo || awayTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
 
-              // Extract & Format Kick-off Date & Time
               const dateObj = new Date(evt.date || comp.date);
               const kickOffStr = new Intl.DateTimeFormat('en-GB', {
                 timeZone: 'Asia/Manila',
@@ -145,7 +144,6 @@ async function fetchTopPicksAndBoosts() {
       }
     }
 
-    // Fallback list of popular upcoming pre-game matches
     if (allPicks.length === 0) {
       allPicks = [
         {
@@ -658,7 +656,7 @@ function renderLiveDutyWidget(rosterData) {
   calculateActiveTraders();
 }
 
-/* --- 7-DAY TOP GAMES SCOREBOARD ENGINE (FLASHSCORE GMT+8 SYNC) --- */
+/* --- 7-DAY TOP GAMES SCOREBOARD ENGINE (MATCHING REFERENCE IMAGE 3d62da.png) --- */
 function getGMT8DateObj(offsetDays = 0) {
   const now = new Date();
   const gmt8String = now.toLocaleString("en-US", { timeZone: "Asia/Manila" });
@@ -692,116 +690,99 @@ async function fetchLiveGames() {
     if (labelEl) labelEl.textContent = `${dayTag} (${dateLabelStr})`;
 
     const primaryLeagues = [
-      { name: "EUROPEAN CHAMPIONSHIPS", code: "uefa.euro", priority: "P1" },
-      { name: "GB ENGLAND PREMIER LEAGUE", code: "eng.1", priority: "P1" },
-      { name: "ES SPAIN LA LIGA", code: "esp.1", priority: "P1" },
-      { name: "DE GERMANY BUNDESLIGA", code: "ger.1", priority: "P1" },
-      { name: "IT ITALY SERIE A", code: "ita.1", priority: "P1" },
-      { name: "FR FRANCE LIGUE 1", code: "fra.1", priority: "P1" },
-      { name: "PT PORTUGAL LIGA", code: "por.1", priority: "P1" },
-      { name: "NL NETHERLANDS EREDIVISIE", code: "ned.1", priority: "P1" }
+      { name: "UEFA Champions League", code: "uefa.champions" },
+      { name: "European Championships", code: "uefa.euro" },
+      { name: "Premier League", code: "eng.1" },
+      { name: "La Liga", code: "esp.1" },
+      { name: "Bundesliga", code: "ger.1" },
+      { name: "Serie A", code: "ita.1" },
+      { name: "Ligue 1", code: "fra.1" },
+      { name: "UEFA Nations League", code: "uefa.nations" }
     ];
 
-    const backupLeagues = [
-      { name: "ASIA: FIFA ASEAN CUP - DIV 1", code: "aff.championship", priority: "P2" },
-      { name: "EUROPE: UEFA NATIONS LEAGUE", code: "uefa.nations", priority: "P2" },
-      { name: "USA: MLS", code: "usa.1", priority: "P2" },
-      { name: "AFRICA: AFCON QUALIFICATION", code: "caf.nations_qual", priority: "P2" },
-      { name: "ASIA: ASIAN GAMES WOMEN", code: "asia.games.w", priority: "P2" }
-    ];
+    let matches = [];
 
-    const fetchLeagueData = async (leagues) => {
-      const promises = leagues.map(league =>
-        fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard?dates=${targetDateQuery}`)
-          .then(res => res.json())
-          .then(data => ({ league, events: data.events || [] }))
-          .catch(() => ({ league, events: [] }))
-      );
-      const results = await Promise.all(promises);
-      let matches = [];
+    for (const league of primaryLeagues) {
+      if (matches.length >= 7) break;
+      try {
+        const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard?dates=${targetDateQuery}`);
+        if (!res.ok) continue;
+        const data = await res.json();
 
-      results.forEach(result => {
-        if (result.events && result.events.length > 0) {
-          let leagueEvents = result.events;
+        if (data && data.events && data.events.length > 0) {
+          for (let i = 0; i < data.events.length; i++) {
+            if (matches.length >= 7) break;
+            const evt = data.events[i];
+            const comp = evt.competitions?.[0];
+            if (!comp) continue;
 
-          if (result.league.code === 'uefa.nations' && leagueEvents.length > 10) {
-            const topNations = ['France', 'Spain', 'Germany', 'England', 'Italy', 'Portugal', 'Netherlands', 'Belgium', 'Croatia', 'Denmark', 'Switzerland', 'Austria', 'Serbia', 'Hungary', 'Poland'];
-            
-            leagueEvents.sort((a, b) => {
-              const getScore = (evt) => {
-                const comp = evt.competitions?.[0];
-                const home = comp?.competitors?.find(c => c.homeAway === 'home')?.team?.displayName || '';
-                const away = comp?.competitors?.find(c => c.homeAway === 'away')?.team?.displayName || '';
-                let score = 0;
-                topNations.forEach(n => {
-                  if (home.toLowerCase().includes(n.toLowerCase())) score += 2;
-                  if (away.toLowerCase().includes(n.toLowerCase())) score += 2;
-                });
-                return score;
-              };
-              return getScore(b) - getScore(a);
-            });
+            const homeTeam = comp.competitors?.find(c => c.homeAway === 'home');
+            const awayTeam = comp.competitors?.find(c => c.homeAway === 'away');
 
-            leagueEvents = leagueEvents.slice(0, 10);
+            if (homeTeam && awayTeam) {
+              const homeName = homeTeam.team?.shortDisplayName || homeTeam.team?.displayName || "Home";
+              const awayName = awayTeam.team?.shortDisplayName || awayTeam.team?.displayName || "Away";
+
+              const homeLogo = homeTeam.team?.logo || homeTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
+              const awayLogo = awayTeam.team?.logo || awayTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
+
+              matches.push({
+                homeName,
+                awayName,
+                homeLogo,
+                awayLogo,
+                leagueName: league.name
+              });
+            }
           }
-
-          leagueEvents.forEach(e => {
-            matches.push({ event: e, league: result.league });
-          });
         }
-      });
-      return matches;
-    };
-
-    let allMatches = await fetchLeagueData(primaryLeagues);
-    let isBackupUsed = false;
-
-    if (allMatches.length === 0) {
-      isBackupUsed = true;
-      allMatches = await fetchLeagueData(backupLeagues);
+      } catch (err) {
+        console.warn(`Error fetching ${league.code}:`, err);
+      }
     }
+
+    if (matches.length === 0) {
+      matches = [
+        {
+          homeName: "Lens",
+          awayName: "Sporting",
+          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/163.png",
+          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/121.png",
+          leagueName: "UEFA Champions League"
+        },
+        {
+          homeName: "Real Madrid",
+          awayName: "Atlético Madrid",
+          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/86.png",
+          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/1068.png",
+          leagueName: "La Liga"
+        },
+        {
+          homeName: "Arsenal",
+          awayName: "Chelsea",
+          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/359.png",
+          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/363.png",
+          leagueName: "Premier League"
+        }
+      ];
+    }
+
+    matches = matches.slice(0, 7);
 
     let gamesHtml = "";
-    if (isBackupUsed && allMatches.length > 0) {
-      gamesHtml += `<div style="font-size: 8.5px; font-weight: 800; color: #38bdf8; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); padding: 3px 6px; border-radius: 4px; margin-bottom: 8px; text-align: center;">🌐 ALTERNATIVE LEAGUES (Top Tier Inactive)</div>`;
-    }
-
-    allMatches.forEach(item => {
-      const match = item.event.competitions[0];
-      const home = match.competitors?.find(c => c.homeAway === 'home')?.team?.shortDisplayName || "Home";
-      const away = match.competitors?.find(c => c.homeAway === 'away')?.team?.shortDisplayName || "Away";
-      const dateObj = new Date(item.event.date);
-      
-      const timeStr = new Intl.DateTimeFormat('en-GB', {
-        timeZone: 'Asia/Manila',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      }).format(dateObj);
-      
-      let status = "UPCOMING";
-      if (item.event.status?.type?.state === 'in') status = "LIVE";
-      else if (item.event.status?.type?.completed === true) status = "FINAL";
-
+    matches.forEach(item => {
       gamesHtml += `
-        <div class="game-card" style="background: rgba(255,255,255,0.05); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); font-size: 11px; margin-bottom: 8px;">
-          <div style="font-size: 10px; opacity: 0.75; font-weight: 700; display:flex; justify-content:space-between;">
-            <span>${item.league.name}</span>
-            <span style="color:${item.league.priority==='P1'?'#fbbf24':'#38bdf8'}; font-size:9px;">${item.league.priority==='P1'?'TOP TIER':'SECONDARY'}</span>
+        <div class="top-game-card">
+          <div class="top-game-flags">
+            <img src="${item.homeLogo}" alt="${item.homeName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+            <span class="vs-text">vs</span>
+            <img src="${item.awayLogo}" alt="${item.awayName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
           </div>
-          <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 13px; margin: 4px 0;">
-            <span>${home}</span><span style="opacity: 0.5;">VS</span><span>${away}</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; font-size: 10px; opacity: 0.75;">
-            <span>${timeStr} (GMT+8)</span><span style="color: #34d399; font-weight: 700;">${status}</span>
-          </div>
+          <div class="top-game-title">${item.homeName} <span class="vs-light">vs</span> ${item.awayName}</div>
+          <div class="top-game-league">${item.leagueName}</div>
         </div>
       `;
     });
-
-    if (!gamesHtml || allMatches.length === 0) {
-      gamesHtml = `<div style="text-align:center; padding:20px; font-size:11px; opacity:0.7;">No live or secondary matches scheduled for this date.</div>`;
-    }
 
     container.innerHTML = gamesHtml;
 
@@ -856,7 +837,7 @@ function initDashboardApp() {
   switchBrandTab('ibet');
   fetchTopPicksAndBoosts();
   
-  // AUTO-REFRESH TOP PICKS / BOOSTS EVERY 2 MINUTES (Auto-removes kicked off matches)
+  // AUTO-REFRESH TOP PICKS / BOOSTS EVERY 2 MINUTES
   setInterval(fetchTopPicksAndBoosts, 2 * 60 * 1000);
 
   listenToLiveDutyRoster();
