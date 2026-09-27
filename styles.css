@@ -691,6 +691,65 @@ body {
   gap: 4px;
 }
 
+/* TOP GAMES CARD (MATCHING REFERENCE IMAGE 3d62da.png) */
+.top-game-card {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  margin-bottom: 8px;
+}
+
+.top-game-card:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.top-game-flags {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 2px;
+}
+
+.top-game-flags .team-flag-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  background: #1e293b;
+}
+
+.top-game-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.top-game-title .vs-light {
+  font-size: 11px;
+  font-weight: 400;
+  color: #94a3b8;
+  margin: 0 2px;
+}
+
+.top-game-league {
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: 0.3px;
+}
+
 .dashboard-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
