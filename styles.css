@@ -444,7 +444,6 @@ body {
   opacity: 0.6;
 }
 
-/* FROZEN (STICKY) TOP BANNER CARD */
 .top-banner-card {
   display: flex;
   flex-direction: column;
@@ -453,6 +452,7 @@ body {
   width: 100%;
   box-sizing: border-box;
   overflow: visible !important;
+  position: -webkit-sticky !important;
   position: sticky !important;
   top: 0;
   z-index: 1000;
@@ -502,6 +502,7 @@ body {
   gap: 6px;
   min-width: 260px;
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   flex-shrink: 0;
 }
 
@@ -660,7 +661,6 @@ body {
 
 .boost-card-bottom { display: flex; justify-content: flex-end; }
 
-/* KICK-OFF DATE & TIME BADGE (REPLACES ODDS) */
 .boost-kickoff-pill {
   background: rgba(56, 189, 248, 0.12);
   border: 1px solid rgba(56, 189, 248, 0.35);
