@@ -268,10 +268,10 @@
     <!-- DASHBOARD WORKSPACE -->
     <main class="main-workspace">
 
-      <!-- TOP WIDE BANNER CARD WITH MOVED ADMIN SECTION & WORLD CLOCKS -->
+      <!-- TOP WIDE BANNER CARD WITH ADMIN PROFILE ON LEFT END CORNER -->
       <div class="glass-card top-banner-card">
         <div class="banner-left-group">
-          <!-- ADMIN PROFILE PILL -->
+          <!-- ADMIN PROFILE PILL (LEFT END CORNER) -->
           <div class="admin-top-pill">
             <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMSEhUTExMVFhUXGBgXGBgYGBgaGBgYGBgYGBgYGBgYHSggGB4lHRgXITEhJSkrLi4uGB8zODMtNygtLisBCgoKDg0OGxAQGy8mICUvLS0vLS8vLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/A1AARCAD3ATsDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhBxJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hbfExAAICAQ4BRAMFBgcAAAABAxEACQECBEFRYRIiA2JxMoGR8IChsRNSweEGF0LR4vIHFyU0Y3KCkpL/25S1RjN1N1RkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hbfExAAICAQ4BRAMFBgcAAAABAxEACQECBEFRYRIiA2JxMoGR8IChsRNSweEGF0LR4vIHFyU0Y3KCkpL/25S1RjN1N1RkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hb/2gAMAwleftD/9k=" alt="Admin Profile" class="avatar-img">
             <div class="user-info">
@@ -392,12 +392,66 @@
           </div>
         </div>
 
-        <!-- COLUMN 2: LIVE TIME-SLOT DUTIES (DYNAMIC FIREBASE CONTAINER) -->
+        <!-- COLUMN 2: LIVE TIME-SLOT DUTIES (ORANGE BOX WITH PHILIPPINES WEATHER REFERENCE) -->
         <div class="glass-card" id="widget-duties-dock">
           <div class="card-header">
             <span style="color: #f97316;"><i class='bx bx-time'></i> LIVE TIME-SLOT DUTIES</span>
             <div class="actions"><span>DRAG</span><i class='bx bx-x' style="cursor:pointer;" onclick="hideWidgetDirect('widget-duties-dock')"></i></div>
           </div>
+
+          <!-- PHILIPPINES (MANILA) WEATHER FORECAST REFERENCE CARD -->
+          <div class="weather-box">
+            <div class="weather-header">
+              <div class="weather-location">
+                <i class='bx bx-map-pin' style="color: #f97316;"></i>
+                <span>Philippines (Manila) Weather Reference</span>
+              </div>
+              <span class="weather-tag">LIVE REF</span>
+            </div>
+            
+            <div class="weather-main">
+              <div class="weather-temp-group">
+                <i class='bx bx-cloud' style="font-size: 26px; color: #38bdf8;"></i>
+                <div>
+                  <div class="weather-temp">32°C</div>
+                  <div class="weather-condition">Cloudy (Feels like 40°C)</div>
+                </div>
+              </div>
+              <div class="weather-details">
+                <div><i class='bx bx-droplet'></i> 67% Humidity</div>
+                <div><i class='bx bx-wind'></i> 5 mph West</div>
+              </div>
+            </div>
+
+            <div class="weather-forecast-list">
+              <div class="forecast-item">
+                <span class="forecast-day">Today</span>
+                <i class='bx bx-cloud'></i>
+                <span class="forecast-temp">33° / 27°C</span>
+              </div>
+              <div class="forecast-item">
+                <span class="forecast-day">Mon</span>
+                <i class='bx bx-cloud-sun'></i>
+                <span class="forecast-temp">32° / 26°C</span>
+              </div>
+              <div class="forecast-item">
+                <span class="forecast-day">Tue</span>
+                <i class='bx bx-sun'></i>
+                <span class="forecast-temp">33° / 26°C</span>
+              </div>
+              <div class="forecast-item">
+                <span class="forecast-day">Wed</span>
+                <i class='bx bx-cloud'></i>
+                <span class="forecast-temp">33° / 26°C</span>
+              </div>
+              <div class="forecast-item">
+                <span class="forecast-day">Thu</span>
+                <i class='bx bx-cloud-lightning'></i>
+                <span class="forecast-temp">33° / 26°C</span>
+              </div>
+            </div>
+          </div>
+
           <div id="liveDutyContent" style="display: flex; flex-direction: column; gap: 8px;">
             <div style="text-align:center; padding:15px;"><i class='bx bx-loader-alt bx-spin' style="font-size:20px; color:#38bdf8;"></i></div>
           </div>
