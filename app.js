@@ -147,7 +147,7 @@ async function fetchTopPicksAndBoosts() {
       }
     }
 
-    // Fallback data if live list is empty (ensures strictly 7 max, no completed matches)
+    // Fallback data if live list is empty (ensures strictly 7 max, no completed matches, kick-off dates)
     if (allPicks.length === 0) {
       allPicks = [
         {
