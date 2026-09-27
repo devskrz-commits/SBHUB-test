@@ -51,17 +51,17 @@
           <!-- USERNAME INPUT FIELD -->
           <div class="field-wrapper">
             <label class="login-label" for="usernameInput">Username or email</label>
-            <input type="text" id="usernameInput" class="login-input" value="sportsbook2026" required autocomplete="username">
+            <input type="text" id="usernameInput" class="login-input" value="sportsbook2026" required="required" autocomplete="username">
           </div>
 
           <!-- PASSWORD INPUT FIELD -->
           <div class="field-wrapper">
             <div class="field-label-row">
               <label class="login-label" for="passwordInput">Security Key</label>
-              <a href="#" class="forgot-link">Forgot key?</a>
+              <a href="#forgot" class="forgot-link">Forgot key?</a>
             </div>
             <div class="password-field-wrap">
-              <input type="password" id="passwordInput" class="login-input" value="" placeholder="Enter password" required autocomplete="current-password">
+              <input type="password" id="passwordInput" class="login-input" value="" placeholder="Enter password" required="required" autocomplete="current-password">
               <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility()">
                 <i class="bx bx-show" id="togglePassIcon"></i>
               </button>
@@ -70,7 +70,7 @@
 
           <!-- REMEMBER ME CHECKBOX -->
           <div class="remember-row">
-            <input type="checkbox" id="rememberMe" checked>
+            <input type="checkbox" id="rememberMe" checked="checked">
             <label for="rememberMe">Maintain active session</label>
           </div>
 
@@ -150,7 +150,7 @@
           <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1qruVq-HZCyM0uDgnYSqFhccXKnMkqJ8z/edit?gid=1305147410#gid=1305147410" target="_blank" rel="noreferrer"><span>GREEN TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
           <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1OcaMz_AOUeRsWIVplbnk2XAna62m3IKa/edit?gid=457800468#gid=457800468" target="_blank" rel="noreferrer"><span>RED TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
           <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1U-Dmc628kHQabzJGoBeEgRus5PiRhgSd/edit?pli=1&amp;gid=1983372695#gid=1983372695" target="_blank" rel="noreferrer"><span>ORANGE TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
-          <a class="nav-sub-btn" href="#"><span>7A TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
+          <a class="nav-sub-btn" href="#7a"><span>7A TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
           <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/11STKO4Xsj0a8iTuUXSCXC-XEE4-7qmF9/edit?pli=1&amp;gid=1701374259#gid=1701374259" target="_blank" rel="noreferrer"><span>GREEN CRM</span><i class="bx bx-right-arrow-alt"></i></a>
           <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1gPks2FdHyOOTiILvn553miz32WeEtOpx/edit?gid=1701374259#gid=1701374259" target="_blank" rel="noreferrer"><span>RED CRM</span><i class="bx bx-right-arrow-alt"></i></a>
         </div>
@@ -345,23 +345,23 @@
               <div class="dropdown-menu" id="widgetMenu">
                 <label class="menu-option">
                   <span>Top Picks / Boosts</span>
-                  <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-top-picks', this.checked)">
+                  <input type="checkbox" class="widget-checkbox" checked="checked" onchange="toggleWidget('widget-top-picks', this.checked)">
                 </label>
                 <label class="menu-option">
                   <span>Brand Directory</span>
-                  <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-brand-dock', this.checked)">
+                  <input type="checkbox" class="widget-checkbox" checked="checked" onchange="toggleWidget('widget-brand-dock', this.checked)">
                 </label>
                 <label class="menu-option">
                   <span>Daily Task Dock</span>
-                  <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-task-dock', this.checked)">
+                  <input type="checkbox" class="widget-checkbox" checked="checked" onchange="toggleWidget('widget-task-dock', this.checked)">
                 </label>
                 <label class="menu-option">
                   <span>Time-Slot Duties</span>
-                  <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-duties-dock', this.checked)">
+                  <input type="checkbox" class="widget-checkbox" checked="checked" onchange="toggleWidget('widget-duties-dock', this.checked)">
                 </label>
                 <label class="menu-option">
                   <span>Top Games Ticker</span>
-                  <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-games-dock', this.checked)">
+                  <input type="checkbox" class="widget-checkbox" checked="checked" onchange="toggleWidget('widget-games-dock', this.checked)">
                 </label>
               </div>
             </div>
@@ -419,7 +419,7 @@
         </div>
       </div>
 
-      <!-- ORIGINAL 3-COLUMN DASHBOARD GRID (UNTOUCHED ORIGINAL LAYOUT) -->
+      <!-- ORIGINAL 3-COLUMN DASHBOARD GRID (100% UNTOUCHED ORIGINAL LAYOUT) -->
       <div class="dashboard-grid">
 
         <!-- COLUMN 1: BRAND DIRECTORY & DAILY TASKS -->
