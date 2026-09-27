@@ -233,7 +233,7 @@ body {
   border-radius: 14px;
   padding: 13px 42px 13px 16px;
   font-size: 14px;
-  color: #fff;
+  color: #ffffff;
   outline: none;
 }
 
@@ -322,7 +322,7 @@ body {
   background: transparent;
   border: none;
   outline: none;
-  color: #fff;
+  color: #ffffff;
   font-size: 11px;
   width: 100%;
 }
@@ -339,7 +339,7 @@ body {
   border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
-  color: #fff;
+  color: #ffffff;
   cursor: pointer;
   backdrop-filter: var(--card-blur);
   -webkit-backdrop-filter: var(--card-blur);
@@ -551,7 +551,7 @@ body {
   border-radius: 999px;
   font-size: 11px;
   font-weight: 700;
-  color: #fff;
+  color: #ffffff;
   cursor: pointer;
 }
 
@@ -591,7 +591,6 @@ body {
 
 .color-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.4); display: inline-block; }
 
-/* STYLES FOR THE NEW TOP PICKS / BOOSTS WIDGET */
 .top-picks-scroll-row {
   display: flex;
   gap: 14px;
@@ -668,7 +667,6 @@ body {
   border-radius: 8px;
 }
 
-/* 3-COLUMN DASHBOARD GRID (UNTOUCHED PIC 1 DESIGN) */
 .dashboard-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -695,7 +693,7 @@ body {
 .tab-pill.active {
   background: rgba(255, 255, 255, 0.35);
   border-color: rgba(255, 255, 255, 0.7);
-  color: #fff;
+  color: #ffffff;
 }
 
 .action-row {
@@ -708,7 +706,7 @@ body {
   border-radius: 14px;
   font-size: 11px;
   font-weight: 700;
-  color: #fff;
+  color: #ffffff;
   text-decoration: none;
 }
 
