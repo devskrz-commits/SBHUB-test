@@ -89,7 +89,7 @@
   <!-- DASHBOARD APP CONTAINER -->
   <div id="dashboardApp">
 
-    <!-- SIDEBAR NAVIGATION -->
+    <!-- SIDEBAR NAVIGATION (INDEPENDENT FLOATING BUTTONS) -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <span>SPORTSBOOK HUB</span>
@@ -264,7 +264,7 @@
         </div>
       </div>
 
-      <!-- ADMIN PROFILE (BELOW PROCEDURES AT SIDEBAR BOTTOM) -->
+      <!-- ADMIN PROFILE (SIDEBAR FOOTER PILL) -->
       <div class="sidebar-admin-footer">
         <div class="admin-top-pill">
           <img src="https://ui-avatars.com/api/?name=Admin" alt="Admin Profile" class="avatar-img">
@@ -289,12 +289,12 @@
           
           <div class="banner-left-group">
             <div class="banner-title-area">
-              <div class="banner-title">Sportsbook Hub Overview</div>
+              <div class="banner-title">SPORTSBOOK HUB OVERVIEW</div>
               <div class="banner-subtitle">Glass dashboard management system & operations monitor</div>
             </div>
           </div>
 
-          <!-- COMPACT PHILIPPINES WEATHER WIDGET (DYNAMIC TARGETS) -->
+          <!-- COMPACT PHILIPPINES WEATHER WIDGET -->
           <div class="weather-banner-widget">
             <div class="weather-banner-header">
               <span class="weather-banner-title">PHILIPPINES WEATHER</span>
@@ -364,7 +364,7 @@
               </div>
             </div>
 
-            <!-- THEME CUSTOMIZER DROPDOWN (10 THEMES) -->
+            <!-- THEME CUSTOMIZER DROPDOWN -->
             <div class="dropdown-container">
               <button class="dropdown-btn" onclick="toggleDropdown('themeMenu')">
                 <i class="bx bx-palette"></i> Theme <i class="bx bx-chevron-down"></i>
@@ -411,7 +411,7 @@
           <div class="glass-card" id="widget-brand-dock">
             <div class="card-header">
               <span style="color: #f59e0b;"><i class="bx bx-pin"></i> BRAND DIRECTORY DOCK</span>
-              <div class="actions"><span>DRAG / RESIZE</span><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-brand-dock')"></i></div>
+              <div class="actions"><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-brand-dock')"></i></div>
             </div>
             
             <div class="tab-pills">
@@ -427,7 +427,7 @@
           <div class="glass-card" id="widget-task-dock">
             <div class="card-header">
               <span style="color: #ef4444;"><i class="bx bx-list-ul"></i> DAILY TASK DOCK</span>
-              <div class="actions"><span>DRAG / RESIZE</span><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-task-dock')"></i></div>
+              <div class="actions"><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-task-dock')"></i></div>
             </div>
             <a class="action-row" href="boostschedule.html"><span>TOP PICKS (SCHEDULE)</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="action-row" href="https://docs.google.com/spreadsheets/d/1E-34VRXSaQG0oFrNPjfxLZe8L05oNYWXcoX-rDhdVCE/edit?gid=477417890#gid=477417890" target="_blank"><span>EDGE BOOST (EXCEL)</span><i class="bx bx-right-arrow-alt"></i></a>
@@ -441,18 +441,18 @@
         <div class="glass-card" id="widget-duties-dock">
           <div class="card-header">
             <span style="color: #f97316;"><i class="bx bx-time"></i> LIVE TIME-SLOT DUTIES</span>
-            <div class="actions"><span>DRAG</span><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-duties-dock')"></i></div>
+            <div class="actions"><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-duties-dock')"></i></div>
           </div>
           <div id="liveDutyContent" style="display: flex; flex-direction: column; gap: 8px;">
             <div style="text-align:center; padding:15px;"><i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#38bdf8;"></i></div>
           </div>
         </div>
 
-        <!-- COLUMN 3: TOP GAMES (FLASHSCORE GMT+8 SYNC) -->
+        <!-- COLUMN 3: TOP GAMES -->
         <div class="glass-card" id="widget-games-dock">
           <div class="card-header">
             <span style="color: #38bdf8;"><i class="bx bx-play-circle"></i> TOP GAMES (7-DAY FIXTURES)</span>
-            <div class="actions"><span>FLASHSCORE GMT+8</span><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-games-dock')"></i></div>
+            <div class="actions"><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-games-dock')"></i></div>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.15); padding: 8px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.15);">
             <i class="bx bx-chevron-left" style="cursor: pointer;" onclick="navigateMatchDay(-1)"></i>
