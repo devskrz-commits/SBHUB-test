@@ -364,18 +364,27 @@
               </div>
             </div>
 
-            <!-- THEME CUSTOMIZER DROPDOWN -->
+            <!-- THEME CUSTOMIZER DROPDOWN (10 THEMES) -->
             <div class="dropdown-container">
               <button class="dropdown-btn" onclick="toggleDropdown('themeMenu')">
                 <i class='bx bx-palette'></i> Theme <i class='bx bx-chevron-down'></i>
               </button>
               <div class="dropdown-menu" id="themeMenu">
-                <button class="menu-option" onclick="setGradient('cyberpunk')"><span>Cyberpunk Dark</span><span class="color-dot" style="background: linear-gradient(135deg, #090d16, #38bdf8);"></span></button>
-                <button class="menu-option" onclick="setGradient('maroon')"><span>Midnight Maroon</span><span class="color-dot" style="background: linear-gradient(135deg, #2a080c, #4a0e17);"></span></button>
-                <button class="menu-option" onclick="setGradient('obsidian')"><span>Obsidian Carbon</span><span class="color-dot" style="background: linear-gradient(135deg, #09090b, #1f1f23);"></span></button>
-                <button class="menu-option" onclick="setGradient('ocean')"><span>Deep Ocean</span><span class="color-dot" style="background: linear-gradient(135deg, #06111e, #0f2027);"></span></button>
-                <button class="menu-option" onclick="setGradient('royal')"><span>Royal Emerald</span><span class="color-dot" style="background: linear-gradient(135deg, #100a1c, #042f2e);"></span></button>
-                <button class="menu-option" onclick="setGradient('sunset')"><span>Sunset Midnight</span><span class="color-dot" style="background: linear-gradient(135deg, #1e1b2e, #451a03);"></span></button>
+                <div class="dropdown-section-title">PLAIN COLORS</div>
+                <button class="menu-option" onclick="setGradient('plain-slate')"><span>Dark Slate</span><span class="color-dot" style="background: #0f172a;"></span></button>
+                <button class="menu-option" onclick="setGradient('plain-navy')"><span>Deep Navy</span><span class="color-dot" style="background: #0b1329;"></span></button>
+                <button class="menu-option" onclick="setGradient('plain-onyx')"><span>Onyx Black</span><span class="color-dot" style="background: #121212;"></span></button>
+                
+                <div class="dropdown-section-title">MID-DARK GRADIENTS</div>
+                <button class="menu-option" onclick="setGradient('cyberpunk')"><span>Cyberpunk Blue</span><span class="color-dot" style="background: linear-gradient(135deg, #090d16, #0284c7);"></span></button>
+                <button class="menu-option" onclick="setGradient('maroon')"><span>Midnight Maroon</span><span class="color-dot" style="background: linear-gradient(135deg, #2a080c, #7f1d1d);"></span></button>
+                <button class="menu-option" onclick="setGradient('ocean-teal')"><span>Ocean Teal</span><span class="color-dot" style="background: linear-gradient(135deg, #06111e, #0f766e);"></span></button>
+                <button class="menu-option" onclick="setGradient('sunset-violet')"><span>Sunset Violet</span><span class="color-dot" style="background: linear-gradient(135deg, #1e1b2e, #7e22ce);"></span></button>
+                <button class="menu-option" onclick="setGradient('emerald')"><span>Emerald Forest</span><span class="color-dot" style="background: linear-gradient(135deg, #022c22, #047857);"></span></button>
+
+                <div class="dropdown-section-title">ABSTRACT THEMES</div>
+                <button class="menu-option" onclick="setGradient('fluid-prism')"><span>Fluid Prism</span><span class="color-dot" style="background: radial-gradient(circle, #ec4899, #38bdf8, #f59e0b);"></span></button>
+                <button class="menu-option" onclick="setGradient('biolava')"><span>Biolava Neon</span><span class="color-dot" style="background: radial-gradient(circle, #8b5cf6, #ec4899, #0c0a20);"></span></button>
               </div>
             </div>
 
