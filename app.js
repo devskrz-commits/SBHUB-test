@@ -480,7 +480,7 @@ async function fetchLiveGames() {
     const labelEl = document.getElementById("matchDayDisplay");
     if (labelEl) labelEl.textContent = `${dayTag} (${dateLabelStr})`;
 
-    // Explicit Top Tier Leagues requested
+    // Top Tier Leagues
     const primaryLeagues = [
       { name: "EUROPEAN CHAMPIONSHIPS", code: "uefa.euro", priority: "P1" },
       { name: "GB ENGLAND PREMIER LEAGUE", code: "eng.1", priority: "P1" },
@@ -492,7 +492,7 @@ async function fetchLiveGames() {
       { name: "NL NETHERLANDS EREDIVISIE", code: "ned.1", priority: "P1" }
     ];
 
-    // Explicit Backup Secondary Leagues requested
+    // Backup Secondary Leagues
     const backupLeagues = [
       { name: "ASIA: FIFA ASEAN CUP - DIV 1", code: "aff.championship", priority: "P2" },
       { name: "EUROPE: UEFA NATIONS LEAGUE", code: "uefa.nations", priority: "P2" },
@@ -510,9 +510,34 @@ async function fetchLiveGames() {
       );
       const results = await Promise.all(promises);
       let matches = [];
+
       results.forEach(result => {
         if (result.events && result.events.length > 0) {
-          result.events.forEach(e => {
+          let leagueEvents = result.events;
+
+          // SPECIAL RULE: Limit UEFA Nations League to max 10 matches per day, choosing top matchups
+          if (result.league.code === 'uefa.nations' && leagueEvents.length > 10) {
+            const topNations = ['France', 'Spain', 'Germany', 'England', 'Italy', 'Portugal', 'Netherlands', 'Belgium', 'Croatia', 'Denmark', 'Switzerland', 'Austria', 'Serbia', 'Hungary', 'Poland'];
+            
+            leagueEvents.sort((a, b) => {
+              const getScore = (evt) => {
+                const comp = evt.competitions?.[0];
+                const home = comp?.competitors?.find(c => c.homeAway === 'home')?.team?.displayName || '';
+                const away = comp?.competitors?.find(c => c.homeAway === 'away')?.team?.displayName || '';
+                let score = 0;
+                topNations.forEach(n => {
+                  if (home.toLowerCase().includes(n.toLowerCase())) score += 2;
+                  if (away.toLowerCase().includes(n.toLowerCase())) score += 2;
+                });
+                return score;
+              };
+              return getScore(b) - getScore(a);
+            });
+
+            leagueEvents = leagueEvents.slice(0, 10);
+          }
+
+          leagueEvents.forEach(e => {
             matches.push({ event: e, league: result.league });
           });
         }
