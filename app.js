@@ -62,11 +62,10 @@ function switchBrandTab(tabName) {
 
 /* --- ANIMATED PLASMA BACKGROUND CANVAS --- */
 const canvas = document.getElementById('bgCanvas');
-const ctx = canvas ? canvas.getContext('2d') : null;
+const ctx = canvas.getContext('2d');
 let width, height, particles = [];
 
 function resizeCanvas() {
-  if (!canvas) return;
   width = canvas.width = window.innerWidth;
   height = canvas.height = window.innerHeight;
 }
@@ -75,8 +74,8 @@ resizeCanvas();
 
 class Particle {
   constructor() {
-    this.x = Math.random() * (width || window.innerWidth);
-    this.y = Math.random() * (height || window.innerHeight);
+    this.x = Math.random() * width;
+    this.y = Math.random() * height;
     this.radius = Math.random() * 2 + 1;
     this.vx = (Math.random() - 0.5) * 0.8;
     this.vy = (Math.random() - 0.5) * 0.8;
@@ -89,7 +88,6 @@ class Particle {
     if (this.y < 0 || this.y > height) this.vy *= -1;
   }
   draw() {
-    if (!ctx) return;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(56, 189, 248, ${this.alpha})`;
@@ -99,19 +97,17 @@ class Particle {
   }
 }
 
-if (canvas) {
-  for (let i = 0; i < 45; i++) particles.push(new Particle());
+for (let i = 0; i < 45; i++) particles.push(new Particle());
 
-  function animateCanvas() {
-    ctx.clearRect(0, 0, width, height);
-    particles.forEach(p => {
-      p.update();
-      p.draw();
-    });
-    requestAnimationFrame(animateCanvas);
-  }
-  animateCanvas();
+function animateCanvas() {
+  ctx.clearRect(0, 0, width, height);
+  particles.forEach(p => {
+    p.update();
+    p.draw();
+  });
+  requestAnimationFrame(animateCanvas);
 }
+animateCanvas();
 
 /* --- SITTING ROBOT EYE & HEAD SKELETON TRACKING --- */
 const robotStage = document.getElementById('sittingRobotStage');
@@ -123,8 +119,7 @@ const passInput = document.getElementById('passwordInput');
 let isPeeking = false;
 
 document.addEventListener('mousemove', (e) => {
-  const overlay = document.getElementById('authOverlay');
-  if (!robotStage || (overlay && overlay.classList.contains('unlocked'))) return;
+  if (!robotStage || document.getElementById('authOverlay').classList.contains('unlocked')) return;
 
   const rect = robotStage.getBoundingClientRect();
   const centerX = rect.left + rect.width / 2;
@@ -152,16 +147,14 @@ document.addEventListener('mousemove', (e) => {
 
 if (passInput) {
   passInput.addEventListener('focus', () => {
-    if (!isPeeking && robotStage) {
+    if (!isPeeking) {
       robotStage.classList.add('covering-eyes');
       robotStage.classList.remove('peeking');
     }
   });
 
   passInput.addEventListener('blur', () => {
-    if (robotStage) {
-      robotStage.classList.remove('covering-eyes', 'peeking');
-    }
+    robotStage.classList.remove('covering-eyes', 'peeking');
     isPeeking = false;
   });
 }
@@ -172,18 +165,14 @@ function togglePasswordVisibility() {
     passInput.type = 'text';
     if (icon) icon.className = 'bx bx-hide';
     isPeeking = true;
-    if (robotStage) {
-      robotStage.classList.remove('covering-eyes');
-      robotStage.classList.add('peeking');
-    }
+    robotStage.classList.remove('covering-eyes');
+    robotStage.classList.add('peeking');
   } else {
     passInput.type = 'password';
     if (icon) icon.className = 'bx bx-show';
     isPeeking = false;
-    if (robotStage) {
-      robotStage.classList.remove('peeking');
-      robotStage.classList.add('covering-eyes');
-    }
+    robotStage.classList.remove('peeking');
+    robotStage.classList.add('covering-eyes');
   }
 }
 
@@ -191,16 +180,13 @@ function togglePasswordVisibility() {
 function updateWorldClocks() {
   const now = new Date();
   const optionsGMT8 = { timeZone: 'Asia/Singapore', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
-  const gmt8El = document.getElementById('clock-gmt8');
-  if (gmt8El) gmt8El.textContent = new Intl.DateTimeFormat('en-GB', optionsGMT8).format(now);
+  document.getElementById('clock-gmt8').textContent = new Intl.DateTimeFormat('en-GB', optionsGMT8).format(now);
 
   const optionsCET = { timeZone: 'Europe/Berlin', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
-  const cetEl = document.getElementById('clock-cet');
-  if (cetEl) cetEl.textContent = new Intl.DateTimeFormat('en-GB', optionsCET).format(now);
+  document.getElementById('clock-cet').textContent = new Intl.DateTimeFormat('en-GB', optionsCET).format(now);
 
   const optionsGMT2 = { timeZone: 'Europe/Athens', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
-  const gmt2El = document.getElementById('clock-gmt2');
-  if (gmt2El) gmt2El.textContent = new Intl.DateTimeFormat('en-GB', optionsGMT2).format(now);
+  document.getElementById('clock-gmt2').textContent = new Intl.DateTimeFormat('en-GB', optionsGMT2).format(now);
 }
 setInterval(updateWorldClocks, 1000);
 updateWorldClocks();
@@ -216,31 +202,31 @@ async function fetchManilaWeather() {
   if (!tempEl) return;
 
   try {
-    const url = 'https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&current_weather=true&timezone=Asia%2FManila';
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current_weather=true&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=Asia%2FManila';
     const response = await fetch(url);
-    if (!response.ok) throw new Error('Weather API network response failed');
+    if (!response.ok) throw new Error('Network error');
     const data = await response.json();
 
     let temp, humidity, wind, code;
 
-    if (data.current) {
-      temp = Math.round(data.current.temperature_2m ?? data.current_weather?.temperature ?? 31);
-      humidity = data.current.relative_humidity_2m ?? 65;
-      wind = Math.round(data.current.wind_speed_10m ?? data.current_weather?.windspeed ?? 10);
-      code = data.current.weather_code ?? data.current_weather?.weathercode ?? 2;
-    } else if (data.current_weather) {
+    if (data && data.current) {
+      temp = Math.round(data.current.temperature_2m ?? data.current_weather?.temperature);
+      humidity = data.current.relative_humidity_2m ?? 56;
+      wind = Math.round(data.current.wind_speed_10m ?? data.current_weather?.windspeed ?? 7);
+      code = data.current.weather_code ?? data.current_weather?.weathercode ?? 3;
+    } else if (data && data.current_weather) {
       temp = Math.round(data.current_weather.temperature);
-      humidity = 65;
+      humidity = 56;
       wind = Math.round(data.current_weather.windspeed);
       code = data.current_weather.weathercode;
     } else {
-      throw new Error('Invalid weather data layout');
+      throw new Error('Invalid weather payload');
     }
 
     const weatherMeta = parseWMOWeatherCode(code);
 
     tempEl.textContent = `${temp}°C`;
-    condEl.textContent = weatherMeta.label;
+    if (condEl) condEl.textContent = weatherMeta.label;
     if (humEl) humEl.textContent = `Humidity: ${humidity}%`;
     if (windEl) windEl.textContent = `Wind: ${wind} km/h`;
 
@@ -249,15 +235,11 @@ async function fetchManilaWeather() {
       iconEl.style.color = weatherMeta.color;
     }
   } catch (err) {
-    console.warn('Live weather fetch notice (using fallback live estimate):', err);
-    tempEl.textContent = `31°C`;
-    if (condEl) condEl.textContent = 'PARTLY CLOUDY';
-    if (humEl) humEl.textContent = `Humidity: 68%`;
-    if (windEl) windEl.textContent = `Wind: 11 km/h`;
-    if (iconEl) {
-      iconEl.className = 'bx bx-cloud-sun';
-      iconEl.style.color = '#f59e0b';
-    }
+    console.warn('Weather fetch fallback triggered:', err);
+    tempEl.textContent = '32°C';
+    if (condEl) condEl.textContent = 'OVERCAST';
+    if (humEl) humEl.textContent = 'Humidity: 56%';
+    if (windEl) windEl.textContent = 'Wind: 7 km/h';
   }
 }
 
@@ -285,11 +267,11 @@ function handleLogin(event) {
     unlockDashboard();
   } else {
     errorMsg.textContent = "ACCESS DENIED: Invalid Security Key";
-    if (robotStage) robotStage.classList.add('error-state');
-    if (card) card.classList.add('shake');
+    robotStage.classList.add('error-state');
+    card.classList.add('shake');
     setTimeout(() => {
-      if (card) card.classList.remove('shake');
-      if (robotStage) robotStage.classList.remove('error-state');
+      card.classList.remove('shake');
+      robotStage.classList.remove('error-state');
     }, 500);
     document.getElementById('passwordInput').focus();
     document.getElementById('passwordInput').select();
@@ -297,45 +279,37 @@ function handleLogin(event) {
 }
 
 function unlockDashboard() {
-  const overlay = document.getElementById('authOverlay');
-  const app = document.getElementById('dashboardApp');
-  if (overlay) overlay.classList.add('unlocked');
-  if (app) app.classList.add('unlocked');
+  document.getElementById('authOverlay').classList.add('unlocked');
+  document.getElementById('dashboardApp').classList.add('unlocked');
 }
 
 function handleLogout() {
   sessionStorage.removeItem('sbhub_auth');
-  const passIn = document.getElementById('passwordInput');
-  const errIn = document.getElementById('loginErrorMsg');
-  const app = document.getElementById('dashboardApp');
-  const overlay = document.getElementById('authOverlay');
-
-  if (passIn) passIn.value = '';
-  if (errIn) errIn.textContent = '';
-  if (app) app.classList.remove('unlocked');
-  if (overlay) overlay.classList.remove('unlocked');
+  document.getElementById('passwordInput').value = '';
+  document.getElementById('loginErrorMsg').textContent = '';
+  document.getElementById('dashboardApp').classList.remove('unlocked');
+  document.getElementById('authOverlay').classList.remove('unlocked');
   if (robotStage) robotStage.classList.remove('covering-eyes', 'peeking');
 }
 
 /* --- UI TOGGLES & WIDGET MANAGEMENT --- */
 function toggleMenu(menuId, btnElement) {
   const targetMenu = document.getElementById(menuId);
-  if (!targetMenu) return;
   const isCollapsed = targetMenu.classList.contains('collapsed');
   const icon = btnElement.querySelector('.toggle-icon');
   
   if (isCollapsed) {
     targetMenu.classList.remove('collapsed');
-    if (icon) icon.style.transform = 'rotate(0deg)';
+    icon.style.transform = 'rotate(0deg)';
   } else {
     targetMenu.classList.add('collapsed');
-    if (icon) icon.style.transform = 'rotate(-90deg)';
+    icon.style.transform = 'rotate(-90deg)';
   }
 }
 
 function toggleDropdown(menuId) {
   const menu = document.getElementById(menuId);
-  if (menu) menu.classList.toggle('show');
+  menu.classList.toggle('show');
 }
 
 function toggleWidget(widgetId, show) {
@@ -351,7 +325,6 @@ function hideWidgetDirect(widgetId) {
 
 function setGradient(theme) {
   const body = document.getElementById('pageBody');
-  if (!body) return;
   let gradientCSS = '';
 
   switch(theme) {
@@ -377,8 +350,7 @@ function setGradient(theme) {
 
   body.style.background = gradientCSS;
   body.style.backgroundAttachment = 'fixed';
-  const themeMenu = document.getElementById('themeMenu');
-  if (themeMenu) themeMenu.classList.remove('show');
+  document.getElementById('themeMenu').classList.remove('show');
   localStorage.setItem('sbhub_theme', gradientCSS);
 }
 
@@ -476,9 +448,16 @@ function renderLiveDutyWidget(rosterData) {
 }
 
 /* --- 7-DAY TOP GAMES SCOREBOARD ENGINE (FLASHSCORE GMT+8 SYNC) --- */
+function getGMT8DateObj(offsetDays = 0) {
+  const now = new Date();
+  const gmt8String = now.toLocaleString("en-US", { timeZone: "Asia/Manila" });
+  const gmt8Date = new Date(gmt8String);
+  gmt8Date.setDate(gmt8Date.getDate() + offsetDays);
+  return gmt8Date;
+}
+
 function getFormattedDateQuery(daysAhead) {
-  const d = new Date();
-  d.setDate(d.getDate() + daysAhead);
+  const d = getGMT8DateObj(daysAhead);
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
@@ -492,8 +471,7 @@ async function fetchLiveGames() {
   
   try {
     const targetDateQuery = getFormattedDateQuery(selectedGameDayOffset);
-    const targetDateObj = new Date();
-    targetDateObj.setDate(targetDateObj.getDate() + selectedGameDayOffset);
+    const targetDateObj = getGMT8DateObj(selectedGameDayOffset);
     const dateLabelStr = targetDateObj.toLocaleDateString("en-US", { month: 'short', day: 'numeric' }).toUpperCase();
     
     let dayTag = `DAY ${selectedGameDayOffset + 1}`;
@@ -502,8 +480,9 @@ async function fetchLiveGames() {
     const labelEl = document.getElementById("matchDayDisplay");
     if (labelEl) labelEl.textContent = `${dayTag} (${dateLabelStr})`;
 
+    // Explicit Top Tier Leagues requested
     const primaryLeagues = [
-      { name: "EU UEFA CHAMPIONS LEAGUE", code: "uefa.champions", priority: "P1" },
+      { name: "EUROPEAN CHAMPIONSHIPS", code: "uefa.euro", priority: "P1" },
       { name: "GB ENGLAND PREMIER LEAGUE", code: "eng.1", priority: "P1" },
       { name: "ES SPAIN LA LIGA", code: "esp.1", priority: "P1" },
       { name: "DE GERMANY BUNDESLIGA", code: "ger.1", priority: "P1" },
@@ -513,11 +492,13 @@ async function fetchLiveGames() {
       { name: "NL NETHERLANDS EREDIVISIE", code: "ned.1", priority: "P1" }
     ];
 
+    // Explicit Backup Secondary Leagues requested
     const backupLeagues = [
-      { name: "US USA MLS", code: "usa.1", priority: "P2" },
-      { name: "FI FINLAND VEIKKAUSLIIGA", code: "fin.1", priority: "P2" },
-      { name: "NO NORWAY ELITESERIEN", code: "nor.1", priority: "P2" },
-      { name: "EU UEFA NATIONS LEAGUE", code: "uefa.nations.a", priority: "P2" }
+      { name: "ASIA: FIFA ASEAN CUP - DIV 1", code: "aff.championship", priority: "P2" },
+      { name: "EUROPE: UEFA NATIONS LEAGUE", code: "uefa.nations", priority: "P2" },
+      { name: "USA: MLS", code: "usa.1", priority: "P2" },
+      { name: "AFRICA: AFCON QUALIFICATION", code: "caf.nations_qual", priority: "P2" },
+      { name: "ASIA: ASIAN GAMES WOMEN", code: "asia.games.w", priority: "P2" }
     ];
 
     const fetchLeagueData = async (leagues) => {
@@ -552,17 +533,16 @@ async function fetchLiveGames() {
       gamesHtml += `<div style="font-size: 8.5px; font-weight: 800; color: #38bdf8; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); padding: 3px 6px; border-radius: 4px; margin-bottom: 8px; text-align: center;">🌐 ALTERNATIVE LEAGUES (Top Tier Inactive)</div>`;
     }
 
-    allMatches.slice(0, 5).forEach(item => {
+    allMatches.forEach(item => {
       const match = item.event.competitions[0];
       const home = match.competitors?.find(c => c.homeAway === 'home')?.team?.shortDisplayName || "Home";
       const away = match.competitors?.find(c => c.homeAway === 'away')?.team?.shortDisplayName || "Away";
       const dateObj = new Date(item.event.date);
       
-      // FLASHSCORE GMT+8 TIMEZONE FORMATTING
-      const timeStr = new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Asia/Manila",
-        hour: "2-digit",
-        minute: "2-digit",
+      const timeStr = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Manila',
+        hour: '2-digit',
+        minute: '2-digit',
         hour12: false
       }).format(dateObj);
       
@@ -620,7 +600,7 @@ function calculateActiveTraders() {
   if (el) el.textContent = activeCount + ' Working';
 }
 
-/* --- INITIALIZATION & RECOVERY ENGINE --- */
+/* --- INITIALIZATION --- */
 function initDashboardApp() {
   const savedTheme = localStorage.getItem('sbhub_theme');
   if (savedTheme) {
@@ -641,14 +621,12 @@ function initDashboardApp() {
   listenToLiveDutyRoster();
   fetchLiveGames();
   calculateActiveTraders();
-  
-  // IMMEDIATELY FETCH WEATHER ON LOAD & AUTO-REFRESH
   fetchManilaWeather();
   setInterval(fetchManilaWeather, 15 * 60 * 1000);
 }
 
 if (document.readyState === 'loading') {
-  window.addEventListener('DOMContentLoaded', initDashboardApp);
+  document.addEventListener('DOMContentLoaded', initDashboardApp);
 } else {
   initDashboardApp();
 }
