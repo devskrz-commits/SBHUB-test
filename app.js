@@ -258,10 +258,11 @@ async function fetchTopPicksAndBoosts() {
 
 /* --- ANIMATED PLASMA BACKGROUND CANVAS --- */
 const canvas = document.getElementById('bgCanvas');
-const ctx = canvas.getContext('2d');
-let width, height, particles = [];
+const ctx = canvas ? canvas.getContext('2d') : null;
+let width = 0, height = 0, particles = [];
 
 function resizeCanvas() {
+  if (!canvas) return;
   width = canvas.width = window.innerWidth;
   height = canvas.height = window.innerHeight;
 }
@@ -284,6 +285,7 @@ class Particle {
     if (this.y < 0 || this.y > height) this.vy *= -1;
   }
   draw() {
+    if (!ctx) return;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(56, 189, 248, ${this.alpha})`;
@@ -293,9 +295,12 @@ class Particle {
   }
 }
 
-for (let i = 0; i < 45; i++) particles.push(new Particle());
+if (canvas) {
+  for (let i = 0; i < 45; i++) particles.push(new Particle());
+}
 
 function animateCanvas() {
+  if (!canvas || !ctx) return;
   ctx.clearRect(0, 0, width, height);
   particles.forEach(p => {
     p.update();
@@ -303,19 +308,20 @@ function animateCanvas() {
   });
   requestAnimationFrame(animateCanvas);
 }
-animateCanvas();
+if (canvas) animateCanvas();
 
 /* --- SITTING ROBOT EYE & HEAD TRACKING --- */
-const robotStage = document.getElementById('sittingRobotStage');
-const robotBodyWrapper = document.getElementById('robotBodyWrapper');
-const robotHead = document.getElementById('robotHead');
-const leftEye = document.getElementById('leftEye');
-const rightEye = document.getElementById('rightEye');
-const passInput = document.getElementById('passwordInput');
 let isPeeking = false;
 
 document.addEventListener('mousemove', (e) => {
-  if (!robotStage || document.getElementById('authOverlay').classList.contains('unlocked')) return;
+  const robotStage = document.getElementById('sittingRobotStage');
+  const authOverlay = document.getElementById('authOverlay');
+  if (!robotStage || (authOverlay && authOverlay.classList.contains('unlocked'))) return;
+
+  const leftEye = document.getElementById('leftEye');
+  const rightEye = document.getElementById('rightEye');
+  const robotHead = document.getElementById('robotHead');
+  const robotBodyWrapper = document.getElementById('robotBodyWrapper');
 
   const rect = robotStage.getBoundingClientRect();
   const centerX = rect.left + rect.width / 2;
@@ -341,48 +347,20 @@ document.addEventListener('mousemove', (e) => {
   if (robotBodyWrapper) robotBodyWrapper.style.transform = `rotateY(${rotateY * 0.3}deg)`;
 });
 
-if (passInput) {
-  passInput.addEventListener('focus', () => {
-    if (!isPeeking) {
-      robotStage.classList.add('covering-eyes');
-      robotStage.classList.remove('peeking');
-    }
-  });
-
-  passInput.addEventListener('blur', () => {
-    robotStage.classList.remove('covering-eyes', 'peeking');
-    isPeeking = false;
-  });
-}
-
-function togglePasswordVisibility() {
-  const icon = document.getElementById('togglePassIcon');
-  if (passInput.type === 'password') {
-    passInput.type = 'text';
-    if (icon) icon.className = 'bx bx-hide';
-    isPeeking = true;
-    robotStage.classList.remove('covering-eyes');
-    robotStage.classList.add('peeking');
-  } else {
-    passInput.type = 'password';
-    if (icon) icon.className = 'bx bx-show';
-    isPeeking = false;
-    robotStage.classList.remove('peeking');
-    robotStage.classList.add('covering-eyes');
-  }
-}
-
 /* --- WORLD CLOCKS SYSTEM --- */
 function updateWorldClocks() {
   const now = new Date();
   const optionsGMT8 = { timeZone: 'Asia/Singapore', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
-  document.getElementById('clock-gmt8').textContent = new Intl.DateTimeFormat('en-GB', optionsGMT8).format(now);
+  const gmt8El = document.getElementById('clock-gmt8');
+  if (gmt8El) gmt8El.textContent = new Intl.DateTimeFormat('en-GB', optionsGMT8).format(now);
 
   const optionsCET = { timeZone: 'Europe/Berlin', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
-  document.getElementById('clock-cet').textContent = new Intl.DateTimeFormat('en-GB', optionsCET).format(now);
+  const cetEl = document.getElementById('clock-cet');
+  if (cetEl) cetEl.textContent = new Intl.DateTimeFormat('en-GB', optionsCET).format(now);
 
   const optionsGMT2 = { timeZone: 'Europe/Athens', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
-  document.getElementById('clock-gmt2').textContent = new Intl.DateTimeFormat('en-GB', optionsGMT2).format(now);
+  const gmt2El = document.getElementById('clock-gmt2');
+  if (gmt2El) gmt2El.textContent = new Intl.DateTimeFormat('en-GB', optionsGMT2).format(now);
 }
 setInterval(updateWorldClocks, 1000);
 updateWorldClocks();
@@ -453,59 +431,74 @@ function parseWMOWeatherCode(code) {
 /* --- AUTHENTICATION --- */
 function handleLogin(event) {
   event.preventDefault();
-  const userVal = document.getElementById('usernameInput').value.trim();
-  const passVal = document.getElementById('passwordInput').value;
+  const userInput = document.getElementById('usernameInput');
+  const passInput = document.getElementById('passwordInput');
+  const userVal = userInput ? userInput.value.trim() : '';
+  const passVal = passInput ? passInput.value : '';
   const errorMsg = document.getElementById('loginErrorMsg');
   const card = document.getElementById('loginCard');
+  const robotStage = document.getElementById('sittingRobotStage');
 
   if ((userVal === DEFAULT_USER || userVal === "sportsbookhub") && passVal === DEFAULT_PASS) {
     sessionStorage.setItem('sbhub_auth', 'true');
     unlockDashboard();
   } else {
-    errorMsg.textContent = "ACCESS DENIED: Invalid Security Key";
-    robotStage.classList.add('error-state');
-    card.classList.add('shake');
-    setTimeout(() => {
-      card.classList.remove('shake');
-      robotStage.classList.remove('error-state');
-    }, 500);
-    document.getElementById('passwordInput').focus();
-    document.getElementById('passwordInput').select();
+    if (errorMsg) errorMsg.textContent = "ACCESS DENIED: Invalid Security Key";
+    if (robotStage) robotStage.classList.add('error-state');
+    if (card) {
+      card.classList.add('shake');
+      setTimeout(() => {
+        card.classList.remove('shake');
+        if (robotStage) robotStage.classList.remove('error-state');
+      }, 500);
+    }
+    if (passInput) {
+      passInput.focus();
+      passInput.select();
+    }
   }
 }
 
 function unlockDashboard() {
-  document.getElementById('authOverlay').classList.add('unlocked');
-  document.getElementById('dashboardApp').classList.add('unlocked');
+  const authOverlay = document.getElementById('authOverlay');
+  const dashboardApp = document.getElementById('dashboardApp');
+  if (authOverlay) authOverlay.classList.add('unlocked');
+  if (dashboardApp) dashboardApp.classList.add('unlocked');
 }
 
 function handleLogout() {
   sessionStorage.removeItem('sbhub_auth');
-  document.getElementById('passwordInput').value = '';
-  document.getElementById('loginErrorMsg').textContent = '';
-  document.getElementById('dashboardApp').classList.remove('unlocked');
-  document.getElementById('authOverlay').classList.remove('unlocked');
+  const passInput = document.getElementById('passwordInput');
+  if (passInput) passInput.value = '';
+  const errorMsg = document.getElementById('loginErrorMsg');
+  if (errorMsg) errorMsg.textContent = '';
+  const dashboardApp = document.getElementById('dashboardApp');
+  const authOverlay = document.getElementById('authOverlay');
+  const robotStage = document.getElementById('sittingRobotStage');
+  if (dashboardApp) dashboardApp.classList.remove('unlocked');
+  if (authOverlay) authOverlay.classList.remove('unlocked');
   if (robotStage) robotStage.classList.remove('covering-eyes', 'peeking');
 }
 
 /* --- UI TOGGLES & WIDGET MANAGEMENT --- */
 function toggleMenu(menuId, btnElement) {
   const targetMenu = document.getElementById(menuId);
+  if (!targetMenu) return;
   const isCollapsed = targetMenu.classList.contains('collapsed');
-  const icon = btnElement.querySelector('.toggle-icon');
+  const icon = btnElement ? btnElement.querySelector('.toggle-icon') : null;
   
   if (isCollapsed) {
     targetMenu.classList.remove('collapsed');
-    icon.style.transform = 'rotate(0deg)';
+    if (icon) icon.style.transform = 'rotate(0deg)';
   } else {
     targetMenu.classList.add('collapsed');
-    icon.style.transform = 'rotate(-90deg)';
+    if (icon) icon.style.transform = 'rotate(-90deg)';
   }
 }
 
 function toggleDropdown(menuId) {
   const menu = document.getElementById(menuId);
-  menu.classList.toggle('show');
+  if (menu) menu.classList.toggle('show');
 }
 
 function toggleWidget(widgetId, show) {
@@ -522,6 +515,7 @@ function hideWidgetDirect(widgetId) {
 /* --- VISUAL TEXTURE & SILK WAVE THEME ENGINE --- */
 function setGradient(theme) {
   const body = document.getElementById('pageBody');
+  if (!body) return;
   let backgroundStyle = '';
 
   switch(theme) {
@@ -559,7 +553,8 @@ function setGradient(theme) {
   body.style.backgroundAttachment = 'fixed';
   body.style.backgroundRepeat = 'no-repeat';
 
-  document.getElementById('themeMenu').classList.remove('show');
+  const themeMenu = document.getElementById('themeMenu');
+  if (themeMenu) themeMenu.classList.remove('show');
   localStorage.setItem('sbhub_theme', backgroundStyle);
 }
 
@@ -656,7 +651,7 @@ function renderLiveDutyWidget(rosterData) {
   calculateActiveTraders();
 }
 
-/* --- 7-DAY TOP GAMES SCOREBOARD ENGINE (MATCHING REFERENCE IMAGE 3d62da.png) --- */
+/* --- 7-DAY TOP GAMES SCOREBOARD ENGINE --- */
 function getGMT8DateObj(offsetDays = 0) {
   const now = new Date();
   const gmt8String = now.toLocaleString("en-US", { timeZone: "Asia/Manila" });
