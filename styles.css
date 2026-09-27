@@ -1,499 +1,293 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  -webkit-font-smoothing: antialiased;
+const DEFAULT_USER = "sportsbook2026";
+const DEFAULT_PASS = "sb2026";
+
+/* --- BRAND DIRECTORY DATA --- */
+const brandDirectoryData = {
+  ibet: {
+    id: "ibet",
+    badge: "BET",
+    title: "iBet Admin",
+    subLinks: [
+      { name: "IBET ADMIN", url: "https://mga-betbook.center/ibet/bets" },
+      { name: "BETSSON", url: "https://b2b.betssonbusiness.com/" },
+      { name: "BET CONSTRUCT", url: "https://backoffice.betconstruct.com/" }
+    ]
+  },
+  edge: {
+    id: "edge",
+    badge: "EDGE",
+    title: "Edge",
+    subLinks: [
+      { name: "KT SBX", url: "https://p2ibet.sbx.bet/bets" },
+      { name: "EDGE ADMIN", url: "https://admin.edgegaming.io/admin/qbet/homepage" },
+      { name: "SERVICE DESK", url: "https://kickertech.atlassian.net/servicedesk/customer/user/login?destination=portals" }
+    ]
+  },
+  pubs: {
+    id: "pubs",
+    badge: "PUBS",
+    title: "Pubs",
+    subLinks: [
+      { name: "GO GAMING", url: "https://gg-backoffice-eu.gogaming.cc/en-US/member/list" }
+    ]
+  }
+};
+
+function renderBrandDirectory() {
+  const container = document.getElementById('brandDirectoryContainer');
+  if (!container) return;
+  container.innerHTML = '';
+
+  Object.keys(brandDirectoryData).forEach(key => {
+    const brand = brandDirectoryData[key];
+    const brandCard = document.createElement('div');
+    brandCard.className = 'brand-accordion-card';
+    brandCard.id = `brand-card-${brand.id}`;
+
+    let subLinksHtml = brand.subLinks.map(link => `
+      <a href="${link.url}" target="_blank" class="brand-sub-link">
+        <span>${link.name}</span>
+        <i class='bx bx-right-arrow-alt'></i>
+      </a>
+    `).join('');
+
+    brandCard.innerHTML = `
+      <div class="brand-header-row" onclick="toggleBrandAccordion('${brand.id}')">
+        <div class="brand-left">
+          <span class="brand-badge-pill">${brand.badge}</span>
+          <span class="brand-title-text">${brand.title}</span>
+        </div>
+        <i class='bx bx-chevron-right brand-chevron-icon' id="chevron-${brand.id}"></i>
+      </div>
+      <div class="brand-sub-menu collapsed" id="sub-menu-${brand.id}">
+        ${subLinksHtml}
+      </div>
+    `;
+
+    container.appendChild(brandCard);
+  });
 }
 
-body {
-  min-height: 100vh;
-  background: #080d19;
-  color: #ffffff;
-  display: flex;
-  padding: 20px;
-  gap: 20px;
-  overflow-x: hidden;
-  position: relative;
+function toggleBrandAccordion(brandId) {
+  const subMenu = document.getElementById(`sub-menu-${brandId}`);
+  const chevron = document.getElementById(`chevron-${brandId}`);
+  const card = document.getElementById(`brand-card-${brandId}`);
+
+  if (!subMenu) return;
+
+  const isCollapsed = subMenu.classList.contains('collapsed');
+
+  document.querySelectorAll('.brand-sub-menu').forEach(menu => menu.classList.add('collapsed'));
+  document.querySelectorAll('.brand-chevron-icon').forEach(icon => icon.style.transform = 'rotate(0deg)');
+  document.querySelectorAll('.brand-accordion-card').forEach(c => c.classList.remove('active'));
+
+  if (isCollapsed) {
+    subMenu.classList.remove('collapsed');
+    if (chevron) chevron.style.transform = 'rotate(90deg)';
+    if (card) card.classList.add('active');
+  }
 }
 
-#bgCanvas {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
+/* --- REAL-TIME TOP PICKS / HOT BOOSTS ENGINE (ESPN API SYNC) --- */
+async function fetchTopPicksAndBoosts() {
+  const container = document.getElementById('topPicksContainer');
+  if (!container) return;
+
+  container.innerHTML = `<div style="text-align:center; padding:15px; width:100%;"><i class='bx bx-loader-alt bx-spin' style="font-size:20px; color:#38bdf8;"></i></div>`;
+
+  try {
+    const primaryLeagues = [
+      { code: "uefa.euro", name: "UEFA EURO" },
+      { code: "eng.1", name: "Premier League" },
+      { code: "esp.1", name: "La Liga" },
+      { code: "uefa.champions", name: "UEFA Champions League" },
+      { code: "uefa.nations", name: "UEFA Nations League" },
+      { code: "ger.1", name: "Bundesliga" },
+      { code: "ita.1", name: "Serie A" }
+    ];
+
+    let allPicks = [];
+
+    for (const league of primaryLeagues) {
+      if (allPicks.length >= 6) break;
+      try {
+        const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard`);
+        if (!res.ok) continue;
+        const data = await res.json();
+
+        if (data && data.events && data.events.length > 0) {
+          data.events.forEach((evt, idx) => {
+            if (allPicks.length >= 8) return;
+            const comp = evt.competitions?.[0];
+            if (!comp) return;
+
+            const homeTeam = comp.competitors?.find(c => c.homeAway === 'home');
+            const awayTeam = comp.competitors?.find(c => c.homeAway === 'away');
+
+            if (homeTeam && awayTeam) {
+              const homeName = homeTeam.team?.shortDisplayName || homeTeam.team?.displayName || "Home";
+              const awayName = awayTeam.team?.shortDisplayName || awayTeam.team?.displayName || "Away";
+
+              const homeLogo = homeTeam.team?.logo || homeTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
+              const awayLogo = awayTeam.team?.logo || awayTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
+
+              const markets = [
+                `${homeName} to Win + Over 2.5 Goals`,
+                `${homeName} vs ${awayName} - Both Teams to Score`,
+                `${homeName} to Win + Have 2+ Goals`,
+                `${awayName} to Win or Draw + Over 1.5 Goals`
+              ];
+
+              const selectedMarket = markets[idx % markets.length];
+              const baseOdds = (1.85 + (idx * 0.15)).toFixed(2);
+
+              allPicks.push({
+                homeName,
+                awayName,
+                homeLogo,
+                awayLogo,
+                leagueName: league.name,
+                market: selectedMarket,
+                badge: (idx % 2 === 0) ? "TOP PICK" : "HOT",
+                odds: baseOdds
+              });
+            }
+          });
+        }
+      } catch (err) {
+        console.warn(`Error fetching ${league.code}:`, err);
+      }
+    }
+
+    if (allPicks.length === 0) {
+      allPicks = [
+        {
+          homeName: "England",
+          awayName: "Czechia",
+          homeLogo: "https://a.espncdn.com/i/teamlogos/countries/500/eng.png",
+          awayLogo: "https://a.espncdn.com/i/teamlogos/countries/500/cze.png",
+          leagueName: "UEFA Nations League",
+          market: "England to Win + Have 2+ Goals",
+          badge: "TOP PICK",
+          odds: "2.10"
+        },
+        {
+          homeName: "Real Madrid",
+          awayName: "Atletico Madrid",
+          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/86.png",
+          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/1068.png",
+          leagueName: "La Liga",
+          market: "Real Madrid to Win + Over 2.5 Goals",
+          badge: "HOT",
+          odds: "1.95"
+        }
+      ];
+    }
+
+    let cardsHtml = "";
+    allPicks.forEach(pick => {
+      const isTopPick = pick.badge === "TOP PICK";
+      cardsHtml += `
+        <div class="boost-card ${isTopPick ? 'highlight-border' : ''}">
+          <div class="flags-row">
+            <img src="${pick.homeLogo}" alt="${pick.homeName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+            <span class="vs-text">VS</span>
+            <img src="${pick.awayLogo}" alt="${pick.awayName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+          </div>
+          
+          <div class="boost-match-info">
+            <div class="boost-match-title">${pick.homeName} <span class="vs-light">vs</span> ${pick.awayName}</div>
+            <div class="boost-league-sub">${pick.leagueName}</div>
+          </div>
+
+          <div>
+            <span class="boost-badge ${isTopPick ? 'top-pick' : 'hot'}">${pick.badge}</span>
+          </div>
+
+          <div class="boost-market-desc">${pick.market}</div>
+
+          <div class="boost-card-bottom">
+            <div class="boost-odds-btn">${pick.odds}</div>
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = cardsHtml;
+  } catch (e) {
+    container.innerHTML = `<div style="text-align:center; padding:10px; font-size:11px; color:#f87171;">Failed to fetch live boosts.</div>`;
+  }
 }
 
-/* LOGIN OVERLAY MODAL */
-#authOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(5, 9, 18, 0.92);
-  backdrop-filter: blur(25px);
-  z-index: 999999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  transition: opacity 0.5s ease, visibility 0.5s ease;
+/* --- CLOCKS & WEATHER --- */
+function updateWorldClocks() {
+  const now = new Date();
+  const optionsGMT8 = { timeZone: 'Asia/Singapore', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+  document.getElementById('clock-gmt8').textContent = new Intl.DateTimeFormat('en-GB', optionsGMT8).format(now);
+
+  const optionsCET = { timeZone: 'Europe/Berlin', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+  document.getElementById('clock-cet').textContent = new Intl.DateTimeFormat('en-GB', optionsCET).format(now);
+
+  const optionsGMT2 = { timeZone: 'Europe/Athens', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+  document.getElementById('clock-gmt2').textContent = new Intl.DateTimeFormat('en-GB', optionsGMT2).format(now);
+}
+setInterval(updateWorldClocks, 1000);
+
+async function fetchManilaWeather() {
+  const tempEl = document.getElementById('weatherTemp');
+  if (!tempEl) return;
+  try {
+    const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current_weather=true&timezone=Asia%2FManila');
+    const data = await res.json();
+    tempEl.textContent = `${Math.round(data.current_weather.temperature)}°C`;
+    document.getElementById('weatherCond').textContent = 'CLEAR';
+  } catch (e) {
+    tempEl.textContent = '31°C';
+  }
 }
 
-#authOverlay.unlocked {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
+/* --- AUTHENTICATION --- */
+function handleLogin(event) {
+  event.preventDefault();
+  const userVal = document.getElementById('usernameInput').value.trim();
+  const passVal = document.getElementById('passwordInput').value;
+
+  if (userVal === DEFAULT_USER && passVal === DEFAULT_PASS) {
+    sessionStorage.setItem('sbhub_auth', 'true');
+    unlockDashboard();
+  }
 }
 
-.login-container {
-  width: 100%;
-  max-width: 420px;
-  position: relative;
-  margin-top: 50px;
+function unlockDashboard() {
+  document.getElementById('authOverlay').classList.add('unlocked');
+  document.getElementById('dashboardApp').classList.add('unlocked');
 }
 
-.login-card {
-  width: 100%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(35px);
-  border-radius: 28px;
-  padding: 32px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 16px;
+function handleLogout() {
+  sessionStorage.removeItem('sbhub_auth');
+  document.getElementById('dashboardApp').classList.remove('unlocked');
+  document.getElementById('authOverlay').classList.remove('unlocked');
 }
 
-.login-title { font-size: 24px; font-weight: 800; color: #fff; }
-.login-subtitle { font-size: 10px; color: rgba(255, 255, 255, 0.6); }
-
-.login-input-group {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  text-align: left;
+function toggleMenu(menuId, btnElement) {
+  const targetMenu = document.getElementById(menuId);
+  targetMenu.classList.toggle('collapsed');
 }
 
-.field-wrapper { display: flex; flex-direction: column; gap: 6px; }
-.login-label { font-size: 10px; font-weight: 700; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; }
-
-.login-input {
-  width: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  padding: 12px 16px;
-  font-size: 13px;
-  color: #fff;
-  outline: none;
+/* --- INITIALIZATION --- */
+function initDashboardApp() {
+  if (sessionStorage.getItem('sbhub_auth') === 'true') {
+    unlockDashboard();
+  }
+  renderBrandDirectory();
+  toggleBrandAccordion('ibet');
+  fetchTopPicksAndBoosts();
+  updateWorldClocks();
+  fetchManilaWeather();
 }
 
-.login-btn {
-  width: 100%;
-  background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
-  border: none;
-  border-radius: 12px;
-  padding: 13px;
-  font-size: 14px;
-  font-weight: 800;
-  color: #fff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initDashboardApp);
+} else {
+  initDashboardApp();
 }
-
-#dashboardApp {
-  display: flex;
-  gap: 20px;
-  width: 100%;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.5s ease;
-  position: relative;
-  z-index: 10;
-}
-
-#dashboardApp.unlocked {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* SIDEBAR */
-.sidebar {
-  width: 250px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.sidebar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.search-box {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 999px;
-  padding: 8px 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.search-box input {
-  background: transparent;
-  border: none;
-  outline: none;
-  color: #fff;
-  font-size: 11px;
-  width: 100%;
-}
-
-.nav-main-btn {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.icon-badge {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-}
-
-.icon-internal { background: #1d4ed8; }
-.icon-tasks    { background: #c2410c; }
-.icon-back     { background: #b91c1c; }
-
-.sub-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding-left: 12px;
-  margin-top: 4px;
-}
-
-.sub-menu.collapsed { display: none; }
-
-.nav-sub-btn {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.9);
-  text-decoration: none;
-}
-
-/* WORKSPACE */
-.main-workspace {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
-}
-
-.glass-card {
-  background: #0b1329;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 18px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-}
-
-.top-banner-card {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.banner-top-row, .banner-bottom-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.banner-title { font-size: 18px; font-weight: 800; }
-.banner-subtitle { font-size: 10px; color: #94a3b8; }
-
-.weather-banner-widget {
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 14px;
-  padding: 8px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.weather-banner-header { display: flex; justify-content: space-between; font-size: 9px; font-weight: 800; color: #38bdf8; }
-.weather-banner-body { display: flex; align-items: center; gap: 12px; }
-.weather-banner-main { display: flex; align-items: center; gap: 8px; }
-.weather-banner-temp { font-size: 18px; font-weight: 800; }
-.weather-banner-cond { font-size: 8px; color: #94a3b8; }
-.weather-banner-details { font-size: 8px; text-align: right; }
-
-.world-clocks { display: flex; gap: 8px; }
-.clock-badge {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 4px 10px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.clock-label { font-size: 8px; opacity: 0.7; }
-.clock-time { font-size: 11px; font-weight: 800; color: #38bdf8; font-family: monospace; }
-
-/* --- REFERENCE-MATCHED WIDGETS SECTION --- */
-.widgets-main-grid {
-  display: grid;
-  grid-template-columns: 1.8fr 1.2fr 1fr;
-  gap: 16px;
-  width: 100%;
-}
-
-@media (max-width: 1300px) {
-  .widgets-main-grid { grid-template-columns: 1fr; }
-}
-
-.widget-container {
-  background: #0b1329;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.header-title-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.icon-flame { color: #ff4d4d; font-size: 20px; filter: drop-shadow(0 0 8px rgba(255, 77, 77, 0.6)); }
-.icon-quicklinks { color: #ffb703; font-size: 20px; filter: drop-shadow(0 0 8px rgba(255, 183, 3, 0.6)); }
-.icon-brand { color: #38bdf8; font-size: 20px; filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6)); }
-
-.header-title { font-size: 13px; font-weight: 800; letter-spacing: 0.5px; color: #ffffff; }
-.header-subtitle { font-size: 10px; color: #94a3b8; font-weight: 500; }
-
-.view-all-link {
-  font-size: 11px;
-  color: #94a3b8;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.view-all-link:hover { color: #38bdf8; }
-
-/* TOP PICKS CARDS */
-.top-picks-scroll-row {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding-bottom: 6px;
-  scrollbar-width: thin;
-}
-
-.boost-card {
-  min-width: 200px;
-  max-width: 220px;
-  background: linear-gradient(180deg, #111a33 0%, #0a0f24 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 10px;
-  flex-shrink: 0;
-  transition: all 0.2s ease;
-}
-
-.boost-card.highlight-border {
-  border-color: rgba(56, 189, 248, 0.4);
-  box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
-}
-
-.flags-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.team-flag-img {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
-  background: #1e293b;
-}
-
-.vs-text { font-size: 9px; font-weight: 800; color: #64748b; }
-.vs-light { font-size: 10px; font-weight: 400; color: #64748b; }
-
-.boost-match-info { text-align: center; }
-.boost-match-title { font-size: 11px; font-weight: 800; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.boost-league-sub { font-size: 9px; color: #64748b; margin-top: 2px; }
-
-.boost-badge {
-  font-size: 8.5px;
-  font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 10px;
-  text-transform: uppercase;
-}
-
-.boost-badge.top-pick { background: #0284c7; color: #ffffff; }
-.boost-badge.hot { background: #dc2626; color: #ffffff; }
-
-.boost-market-desc { font-size: 10.5px; font-weight: 600; color: #cbd5e1; line-height: 1.3; min-height: 28px; }
-
-.boost-card-bottom { display: flex; justify-content: flex-end; }
-.boost-odds-btn {
-  background: #0f2b48;
-  border: 1px solid rgba(56, 189, 248, 0.4);
-  color: #38bdf8;
-  font-size: 12px;
-  font-weight: 800;
-  padding: 5px 12px;
-  border-radius: 8px;
-}
-
-/* QUICK LINKS */
-.quick-links-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.quick-link-btn {
-  background: #111a33;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 14px 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  text-decoration: none;
-  color: #ffffff;
-  transition: all 0.2s ease;
-}
-
-.quick-link-btn:hover {
-  background: #18284d;
-  border-color: rgba(56, 189, 248, 0.4);
-}
-
-.quick-link-btn i { font-size: 22px; color: #38bdf8; }
-.quick-link-btn span { font-size: 10.5px; font-weight: 700; text-align: center; }
-.quick-links-footer { display: flex; justify-content: center; padding-top: 6px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
-
-/* BRAND DIRECTORY */
-.brand-directory-list { display: flex; flex-direction: column; gap: 10px; }
-
-.brand-accordion-card {
-  background: #111a33;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.brand-accordion-card.active { border-color: rgba(56, 189, 248, 0.5); }
-
-.brand-header-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 14px;
-  cursor: pointer;
-}
-
-.brand-left { display: flex; align-items: center; gap: 12px; }
-
-.brand-badge-pill {
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #ffffff;
-  font-size: 9.5px;
-  font-weight: 800;
-  padding: 3px 10px;
-  border-radius: 999px;
-  min-width: 44px;
-  text-align: center;
-}
-
-.brand-accordion-card:nth-child(1) .brand-badge-pill { border-color: #38bdf8; color: #38bdf8; }
-.brand-accordion-card:nth-child(2) .brand-badge-pill { border-color: #f97316; color: #f97316; }
-.brand-accordion-card:nth-child(3) .brand-badge-pill { border-color: #a855f7; color: #a855f7; }
-
-.brand-title-text { font-size: 12px; font-weight: 700; color: #ffffff; }
-.brand-chevron-icon { font-size: 16px; color: #94a3b8; transition: transform 0.2s ease; }
-
-.brand-sub-menu { display: flex; flex-direction: column; gap: 6px; padding: 0 12px 12px 12px; }
-.brand-sub-menu.collapsed { display: none; }
-
-.brand-sub-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 10.5px;
-  font-weight: 700;
-  color: #ffffff;
-  text-decoration: none;
-}
-
-.brand-sub-link:hover {
-  background: rgba(56, 189, 248, 0.15);
-  border-color: rgba(56, 189, 248, 0.4);
-  color: #38bdf8;
-}
-
-.dashboard-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; }
