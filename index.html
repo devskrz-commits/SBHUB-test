@@ -274,21 +274,23 @@
         <!-- TOP ROW: ADMIN PROFILE (LEFT CORNER), TITLE, WEATHER WIDGET (RIGHT CORNER) -->
         <div class="banner-top-row">
           
-          <!-- ADMIN PROFILE PILL (LEFT END CORNER) -->
-          <div class="admin-top-pill">
-            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMSEhUTExMVFhUXGBgXGBgYGBgaGBgYGBgYGBgYGBgYHSggGB4lHRgXITEhJSkrLi4uGB8zODMtNygtLisBCgoKDg0OGxAQGy8mICUvLS0vLS8vLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/A1AARCAD3ATsDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhBxJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hbfExAAICAQ4BRAMFBgcAAAABAxEACQECBEFRYRIiA2JxMoGR8IChsRNSweEGF0LR4vIHFyU0Y3KCkpL/25S1RjN1N1RkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hbfExAAICAQ4BRAMFBgcAAAABAxEACQECBEFRYRIiA2JxMoGR8IChsRNSweEGF0LR4vIHFyU0Y3KCkpL/25S1RjN1N1RkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hb/2gAMAwleftD/9k=" alt="Admin Profile" class="avatar-img">
-            <div class="user-info">
-              <span class="user-title">Admin</span>
+          <div class="banner-left-group">
+            <!-- ADMIN PROFILE PILL (LEFT END CORNER) -->
+            <div class="admin-top-pill">
+              <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMSEhUTExMVFhUXGBgXGBgYGBgaGBgYGBgYGBgYGBgYHSggGB4lHRgXITEhJSkrLi4uGB8zODMtNygtLisBCgoKDg0OGxAQGy8mICUvLS0vLS8vLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/A1AARCAD3ATsDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhBxJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hbfExAAICAQ4BRAMFBgcAAAABAxEACQECBEFRYRIiA2JxMoGR8IChsRNSweEGF0LR4vIHFyU0Y3KCkpL/25S1RjN1N1RkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hbfExAAICAQ4BRAMFBgcAAAABAxEACQECBEFRYRIiA2JxMoGR8IChsRNSweEGF0LR4vIHFyU0Y3KCkpL/25S1RjN1N1RkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hb/2gAMAwleftD/9k=" alt="Admin Profile" class="avatar-img">
+              <div class="user-info">
+                <span class="user-title">Admin</span>
+              </div>
+              <button class="logout-action-btn" onclick="handleLogout()" title="Lock Session">
+                <i class='bx bx-log-out'></i> Lock
+              </button>
             </div>
-            <button class="logout-action-btn" onclick="handleLogout()" title="Lock Session">
-              <i class='bx bx-log-out'></i> Lock
-            </button>
-          </div>
 
-          <!-- BANNER TITLE AREA -->
-          <div class="banner-title-area">
-            <div class="banner-title">Sportsbook Hub Overview</div>
-            <div class="banner-subtitle">Glass dashboard management system & operations monitor</div>
+            <!-- BANNER TITLE AREA -->
+            <div class="banner-title-area">
+              <div class="banner-title">Sportsbook Hub Overview</div>
+              <div class="banner-subtitle">Glass dashboard management system & operations monitor</div>
+            </div>
           </div>
 
           <!-- COMPACT PHILIPPINES WEATHER WIDGET (UPPER RIGHT CORNER) -->
@@ -302,7 +304,7 @@
             </div>
             <div class="weather-banner-body">
               <div class="weather-banner-main">
-                <i class='bx bx-cloud' style="font-size: 26px; color: #f59e0b;"></i>
+                <i class='bx bx-cloud' style="font-size: 24px; color: #f59e0b;"></i>
                 <div>
                   <div class="weather-banner-temp">32°C</div>
                   <div class="weather-banner-cond">OVERCAST</div>
@@ -425,7 +427,7 @@
           </div>
         </div>
 
-        <!-- COLUMN 2: LIVE TIME-SLOT DUTIES (REVERTED BACK TO CLEAN ORIGINAL STATE) -->
+        <!-- COLUMN 2: LIVE TIME-SLOT DUTIES (REVERTED BACK) -->
         <div class="glass-card" id="widget-duties-dock">
           <div class="card-header">
             <span style="color: #f97316;"><i class='bx bx-time'></i> LIVE TIME-SLOT DUTIES</span>
