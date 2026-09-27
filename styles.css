@@ -506,12 +506,14 @@ body {
   box-shadow: var(--glass-shadow);
 }
 
-/* --- TOP BANNER CARD (UPDATED FULL WIDTH & SPACE-BETWEEN) --- */
+/* --- TOP BANNER CARD (FIXED COMPRESSED DISPLAY & RESPONSIVE WRAP) --- */
 .top-banner-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 18px 24px;
   width: 100%;
 }
 
@@ -519,6 +521,7 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-wrap: wrap;
 }
 
 .admin-top-pill {
@@ -557,13 +560,19 @@ body {
 .banner-title { font-size: 17px; font-weight: 800; }
 .banner-subtitle { font-size: 11px; opacity: 0.75; }
 
-.metrics-group { display: flex; gap: 12px; align-items: center; }
+.metrics-group { 
+  display: flex; 
+  gap: 12px; 
+  align-items: center; 
+  flex-wrap: wrap;
+}
 
 /* --- WORLD CLOCKS --- */
 .world-clocks {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .clock-badge {
@@ -655,7 +664,7 @@ body {
   .dashboard-grid { grid-template-columns: 1fr; }
 }
 
-.tab-pills { display: flex; gap: 6px; }
+.tab-pills { display: flex; gap: 6px; flex-wrap: wrap; }
 .tab-pill {
   padding: 5px 12px;
   background: rgba(255, 255, 255, 0.12);
