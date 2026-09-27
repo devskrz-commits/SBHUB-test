@@ -263,6 +263,19 @@
           <a class="nav-sub-btn" href="workspace.html"><span>WORKSPACE</span><i class='bx bx-right-arrow-alt'></i></a>
         </div>
       </div>
+
+      <!-- ADMIN PROFILE (BELOW PROCEDURES AT SIDEBAR BOTTOM) -->
+      <div class="sidebar-admin-footer">
+        <div class="admin-top-pill">
+          <img src="https://ui-avatars.com/api/?name=Admin&background=0f172a&color=38bdf8&bold=true" alt="Admin Profile" class="avatar-img">
+          <div class="user-info">
+            <span class="user-title">Admin</span>
+          </div>
+          <button class="logout-action-btn" onclick="handleLogout()" title="Lock Session">
+            <i class='bx bx-log-out'></i> Lock
+          </button>
+        </div>
+      </div>
     </aside>
 
     <!-- DASHBOARD WORKSPACE -->
@@ -271,22 +284,10 @@
       <!-- TOP WIDE BANNER CARD -->
       <div class="glass-card top-banner-card">
         
-        <!-- TOP ROW: ADMIN PROFILE (FAR LEFT) & WEATHER (FAR RIGHT) -->
+        <!-- TOP ROW: TITLE (LEFT) & WEATHER (FAR RIGHT) -->
         <div class="banner-top-row">
           
           <div class="banner-left-group">
-            <!-- ADMIN PROFILE PILL -->
-            <div class="admin-top-pill">
-              <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMSEhUTExMVFhUXGBgXGBgYGBgaGBgYGBgYGBgYGBgYHSggGB4lHRgXITEhJSkrLi4uGB8zODMtNygtLisBCgoKDg0OGxAQGy8mICUvLS0vLS8vLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/A1AARCAD3ATsDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhBxJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hbfExAAICAQ4BRAMFBgcAAAABAxEACQECBEFRYRIiA2JxMoGR8IChsRNSweEGF0LR4vIHFyU0Y3KCkpL/25S1RjN1N1RkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hbfExAAICAQ4BRAMFBgcAAAABAxEACQECBEFRYRIiA2JxMoGR8IChsRNSweEGF0LR4vIHFyU0Y3KCkpL/25S1RjN1N1RkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eX34hb/2gAMAwleftD/9k=" alt="Admin Profile" class="avatar-img">
-              <div class="user-info">
-                <span class="user-title">Admin</span>
-              </div>
-              <button class="logout-action-btn" onclick="handleLogout()" title="Lock Session">
-                <i class='bx bx-log-out'></i> Lock
-              </button>
-            </div>
-
-            <!-- BANNER TITLE AREA -->
             <div class="banner-title-area">
               <div class="banner-title">Sportsbook Hub Overview</div>
               <div class="banner-subtitle">Glass dashboard management system & operations monitor</div>
@@ -438,15 +439,15 @@
           </div>
         </div>
 
-        <!-- COLUMN 3: TOP GAMES (LIVE SCOREBOARD API CONTAINER) -->
+        <!-- COLUMN 3: TOP GAMES (FLASHSCORE GMT+8 SYNC) -->
         <div class="glass-card" id="widget-games-dock">
           <div class="card-header">
             <span style="color: #38bdf8;"><i class='bx bx-play-circle'></i> TOP GAMES (7-DAY FIXTURES)</span>
-            <div class="actions"><span>DRAG</span><i class='bx bx-x' style="cursor:pointer;" onclick="hideWidgetDirect('widget-games-dock')"></i></div>
+            <div class="actions"><span>FLASHSCORE GMT+8</span><i class='bx bx-x' style="cursor:pointer;" onclick="hideWidgetDirect('widget-games-dock')"></i></div>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.15); padding: 8px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.15);">
             <i class='bx bx-chevron-left' style="cursor: pointer;" onclick="navigateMatchDay(-1)"></i>
-            <span id="matchDayDisplay">TODAY</span>
+            <span id="matchDayDisplay">TODAY (GMT+8)</span>
             <i class='bx bx-chevron-right' style="cursor: pointer;" onclick="navigateMatchDay(1)"></i>
           </div>
           <div id="gamesContainer" style="display: flex; flex-direction: column; gap: 10px;">
