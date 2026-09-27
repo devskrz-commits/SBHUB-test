@@ -295,7 +295,7 @@ function setGradient(theme) {
 function getCurrentSlotInfo() {
   const now = new Date();
   const hours = now.getHours();
-  if (hours >= 6 && hours < 9)   return { slotId: "slot_6_9", label: "7:00 - 9:00" };
+  if (hours >= 6 && hours < 9)    return { slotId: "slot_6_9", label: "7:00 - 9:00" };
   if (hours >= 9 && hours < 12)  return { slotId: "slot_9_12", label: "9:00 - 12:00" };
   if (hours >= 12 && hours < 15) return { slotId: "slot_12_15", label: "12:00 - 15:00" };
   if (hours >= 15 && hours < 18) return { slotId: "slot_15_18", label: "15:00 - 18:00" };
@@ -381,9 +381,10 @@ function renderLiveDutyWidget(rosterData) {
   });
 
   container.innerHTML = html;
+  calculateActiveTraders();
 }
 
-/* --- 7-DAY TOP GAMES SCOREBOARD ENGINE --- */
+/* --- 7-DAY TOP GAMES SCOREBOARD ENGINE (WITH HIERARCHICAL FALLBACK) --- */
 function getFormattedDateQuery(daysAhead) {
   const d = new Date();
   d.setDate(d.getDate() + daysAhead);
@@ -411,21 +412,21 @@ async function fetchLiveGames() {
     if (labelEl) labelEl.textContent = `${dayTag} (${dateLabelStr})`;
 
     const primaryLeagues = [
-      { name: "EU UEFA CHAMPIONS LEAGUE", code: "uefa.champions", link: "https://www.flashscore.com/football/europe/champions-league/", priority: "P1" },
-      { name: "GB ENGLAND PREMIER LEAGUE", code: "eng.1", link: "https://www.flashscore.ph/football/england/premier-league/", priority: "P1" },
-      { name: "ES SPAIN LA LIGA", code: "esp.1", link: "https://www.flashscore.ph/football/spain/laliga/", priority: "P1" },
-      { name: "DE GERMANY BUNDESLIGA", code: "ger.1", link: "https://www.flashscore.ph/football/germany/bundesliga/", priority: "P1" },
-      { name: "IT ITALY SERIE A", code: "ita.1", link: "https://www.flashscore.ph/football/italy/serie-a/", priority: "P1" },
-      { name: "FR FRANCE LIGUE 1", code: "fra.1", link: "https://www.flashscore.ph/football/france/ligue-1/", priority: "P1" },
-      { name: "PT PORTUGAL LIGA", code: "por.1", link: "https://www.flashscore.ph/football/portugal/liga-portugal/", priority: "P1" },
-      { name: "NL NETHERLANDS EREDIVISIE", code: "ned.1", link: "https://www.flashscore.ph/football/netherlands/eredivisie/", priority: "P1" }
+      { name: "EU UEFA CHAMPIONS LEAGUE", code: "uefa.champions", priority: "P1" },
+      { name: "GB ENGLAND PREMIER LEAGUE", code: "eng.1", priority: "P1" },
+      { name: "ES SPAIN LA LIGA", code: "esp.1", priority: "P1" },
+      { name: "DE GERMANY BUNDESLIGA", code: "ger.1", priority: "P1" },
+      { name: "IT ITALY SERIE A", code: "ita.1", priority: "P1" },
+      { name: "FR FRANCE LIGUE 1", code: "fra.1", priority: "P1" },
+      { name: "PT PORTUGAL LIGA", code: "por.1", priority: "P1" },
+      { name: "NL NETHERLANDS EREDIVISIE", code: "ned.1", priority: "P1" }
     ];
 
     const backupLeagues = [
-      { name: "US USA MLS", code: "usa.1", link: "https://www.flashscore.ph/football/usa/mls/", priority: "P2" },
-      { name: "FI FINLAND VEIKKAUSLIIGA", code: "fin.1", link: "https://www.flashscore.ph/football/finland/veikkausliiga/", priority: "P2" },
-      { name: "NO NORWAY ELITESERIEN", code: "nor.1", link: "https://www.flashscore.ph/football/norway/eliteserien/", priority: "P2" },
-      { name: "EU UEFA NATIONS LEAGUE", code: "uefa.nations.a", link: "https://www.flashscore.ph/football/europe/uefa-nations-league/", priority: "P2" }
+      { name: "US USA MLS", code: "usa.1", priority: "P2" },
+      { name: "FI FINLAND VEIKKAUSLIIGA", code: "fin.1", priority: "P2" },
+      { name: "NO NORWAY ELITESERIEN", code: "nor.1", priority: "P2" },
+      { name: "EU UEFA NATIONS LEAGUE", code: "uefa.nations.a", priority: "P2" }
     ];
 
     const fetchLeagueData = async (leagues) => {
@@ -447,9 +448,11 @@ async function fetchLiveGames() {
       return matches;
     };
 
+    // Hierarchical Fallback Strategy: Check primary top-tier leagues first
     let allMatches = await fetchLeagueData(primaryLeagues);
     let isBackupUsed = false;
 
+    // If no top-tier matches found, fallback to secondary/regional leagues
     if (allMatches.length === 0) {
       isBackupUsed = true;
       allMatches = await fetchLeagueData(backupLeagues);
@@ -472,7 +475,7 @@ async function fetchLiveGames() {
       else if (item.event.status?.type?.completed === true) status = "FINAL";
 
       gamesHtml += `
-        <div class="game-card">
+        <div class="game-card" style="background: rgba(255,255,255,0.05); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); font-size: 11px; margin-bottom: 8px;">
           <div style="font-size: 10px; opacity: 0.75; font-weight: 700; display:flex; justify-content:space-between;">
             <span>${item.league.name}</span>
             <span style="color:${item.league.priority==='P1'?'#fbbf24':'#38bdf8'}; font-size:9px;">${item.league.priority==='P1'?'TOP TIER':'SECONDARY'}</span>
@@ -487,8 +490,8 @@ async function fetchLiveGames() {
       `;
     });
 
-    if (!gamesHtml) {
-      gamesHtml = `<div style="text-align:center; padding:20px; font-size:11px; opacity:0.7;">No live matches scheduled for this date.</div>`;
+    if (!gamesHtml || allMatches.length === 0) {
+      gamesHtml = `<div style="text-align:center; padding:20px; font-size:11px; opacity:0.7;">No live or secondary matches scheduled for this date.</div>`;
     }
 
     container.innerHTML = gamesHtml;
