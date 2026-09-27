@@ -400,11 +400,9 @@ body {
   -webkit-backdrop-filter: var(--card-blur);
 }
 
-/* SIDEBAR FOOTER ADMIN PROFILE - PINNED AT LOWEST/BOTTOM PART */
 .sidebar-admin-footer {
   margin-top: auto;
   padding-top: 10px;
-  position: -webkit-sticky;
   position: sticky;
   bottom: 0;
   z-index: 20;
@@ -464,7 +462,6 @@ body {
   opacity: 0.6;
 }
 
-/* FROZEN (STICKY) TOP BANNER CARD */
 .top-banner-card {
   display: flex;
   flex-direction: column;
@@ -473,7 +470,6 @@ body {
   width: 100%;
   box-sizing: border-box;
   overflow: visible;
-  position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 1000;
