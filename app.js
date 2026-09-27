@@ -60,12 +60,10 @@ function switchBrandTab(tabName) {
   });
 }
 
-/* --- REAL-TIME TOP PICKS / HOT BOOSTS ENGINE (MAX 7 POPULAR, KICK-OFF DATES, REMOVE COMPLETED) --- */
+/* --- REAL-TIME TOP PICKS / HOT BOOSTS ENGINE (PRE-GAME ONLY, AUTO-REFRESH) --- */
 async function fetchTopPicksAndBoosts() {
   const container = document.getElementById('topPicksContainer');
   if (!container) return;
-
-  container.innerHTML = `<div style="text-align:center; padding:15px; width:100%;"><i class='bx bx-loader-alt bx-spin' style="font-size:20px; color:#38bdf8;"></i></div>`;
 
   try {
     const primaryLeagues = [
@@ -92,9 +90,9 @@ async function fetchTopPicksAndBoosts() {
             if (allPicks.length >= 7) break;
             const evt = data.events[i];
 
-            // 1. FILTER OUT FINISHED MATCHES
-            const isCompleted = evt.status?.type?.completed === true || evt.status?.type?.state === 'post';
-            if (isCompleted) continue;
+            // PRE-GAME FILTER ONLY: Remove matches automatically once they kick off (state !== 'pre')
+            const isPreGame = evt.status?.type?.state === 'pre';
+            if (!isPreGame) continue;
 
             const comp = evt.competitions?.[0];
             if (!comp) continue;
@@ -147,7 +145,7 @@ async function fetchTopPicksAndBoosts() {
       }
     }
 
-    // Fallback data if live list is empty (ensures strictly 7 max, no completed matches, kick-off dates)
+    // Fallback list of popular upcoming pre-game matches
     if (allPicks.length === 0) {
       allPicks = [
         {
@@ -223,7 +221,6 @@ async function fetchTopPicksAndBoosts() {
       ];
     }
 
-    // Limit strictly to 7 items
     allPicks = allPicks.slice(0, 7);
 
     let cardsHtml = "";
@@ -858,6 +855,10 @@ function initDashboardApp() {
 
   switchBrandTab('ibet');
   fetchTopPicksAndBoosts();
+  
+  // AUTO-REFRESH TOP PICKS / BOOSTS EVERY 2 MINUTES (Auto-removes kicked off matches)
+  setInterval(fetchTopPicksAndBoosts, 2 * 60 * 1000);
+
   listenToLiveDutyRoster();
   fetchLiveGames();
   calculateActiveTraders();
