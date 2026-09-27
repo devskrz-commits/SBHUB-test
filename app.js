@@ -60,7 +60,7 @@ function switchBrandTab(tabName) {
   });
 }
 
-/* --- REAL-TIME TOP PICKS / HOT BOOSTS ENGINE --- */
+/* --- REAL-TIME TOP PICKS / HOT BOOSTS ENGINE (MAX 7 POPULAR, KICK-OFF DATES, REMOVE COMPLETED) --- */
 async function fetchTopPicksAndBoosts() {
   const container = document.getElementById('topPicksContainer');
   if (!container) return;
@@ -73,23 +73,31 @@ async function fetchTopPicksAndBoosts() {
       { code: "eng.1", name: "Premier League" },
       { code: "esp.1", name: "La Liga" },
       { code: "uefa.champions", name: "UEFA Champions League" },
-      { code: "uefa.nations", name: "UEFA Nations League" }
+      { code: "uefa.nations", name: "UEFA Nations League" },
+      { code: "ger.1", name: "Bundesliga" },
+      { code: "ita.1", name: "Serie A" }
     ];
 
     let allPicks = [];
 
     for (const league of primaryLeagues) {
-      if (allPicks.length >= 6) break;
+      if (allPicks.length >= 7) break;
       try {
         const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard`);
         if (!res.ok) continue;
         const data = await res.json();
 
         if (data && data.events && data.events.length > 0) {
-          data.events.forEach((evt, idx) => {
-            if (allPicks.length >= 8) return;
+          for (let i = 0; i < data.events.length; i++) {
+            if (allPicks.length >= 7) break;
+            const evt = data.events[i];
+
+            // 1. FILTER OUT FINISHED MATCHES
+            const isCompleted = evt.status?.type?.completed === true || evt.status?.type?.state === 'post';
+            if (isCompleted) continue;
+
             const comp = evt.competitions?.[0];
-            if (!comp) return;
+            if (!comp) continue;
 
             const homeTeam = comp.competitors?.find(c => c.homeAway === 'home');
             const awayTeam = comp.competitors?.find(c => c.homeAway === 'away');
@@ -101,6 +109,17 @@ async function fetchTopPicksAndBoosts() {
               const homeLogo = homeTeam.team?.logo || homeTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
               const awayLogo = awayTeam.team?.logo || awayTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
 
+              // Extract & Format Kick-off Date & Time
+              const dateObj = new Date(evt.date || comp.date);
+              const kickOffStr = new Intl.DateTimeFormat('en-GB', {
+                timeZone: 'Asia/Manila',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+              }).format(dateObj).toUpperCase();
+
               const markets = [
                 `${homeName} to Win + Over 2.5 Goals`,
                 `${homeName} vs ${awayName} - Both Teams to Score`,
@@ -108,8 +127,7 @@ async function fetchTopPicksAndBoosts() {
                 `${awayName} to Win or Draw + Over 1.5 Goals`
               ];
 
-              const selectedMarket = markets[idx % markets.length];
-              const baseOdds = (1.85 + (idx * 0.15)).toFixed(2);
+              const selectedMarket = markets[allPicks.length % markets.length];
 
               allPicks.push({
                 homeName,
@@ -118,17 +136,18 @@ async function fetchTopPicksAndBoosts() {
                 awayLogo,
                 leagueName: league.name,
                 market: selectedMarket,
-                badge: (idx % 2 === 0) ? "TOP PICK" : "HOT",
-                odds: baseOdds
+                badge: (allPicks.length % 2 === 0) ? "TOP PICK" : "HOT",
+                kickOff: kickOffStr
               });
             }
-          });
+          }
         }
       } catch (err) {
         console.warn(`Error fetching ${league.code}:`, err);
       }
     }
 
+    // Fallback data if live list is empty (ensures strictly 7 max, no completed matches)
     if (allPicks.length === 0) {
       allPicks = [
         {
@@ -139,7 +158,7 @@ async function fetchTopPicksAndBoosts() {
           leagueName: "UEFA EURO",
           market: "Spain to Win + Over 2.5 Goals",
           badge: "TOP PICK",
-          odds: "1.85"
+          kickOff: "27 SEP, 21:00"
         },
         {
           homeName: "Bournemouth",
@@ -149,7 +168,7 @@ async function fetchTopPicksAndBoosts() {
           leagueName: "Premier League",
           market: "Bournemouth to Win + Over 2.5 Goals",
           badge: "TOP PICK",
-          odds: "1.85"
+          kickOff: "28 SEP, 00:30"
         },
         {
           homeName: "Leeds",
@@ -159,10 +178,53 @@ async function fetchTopPicksAndBoosts() {
           leagueName: "Premier League",
           market: "Leeds vs C Palace - Both Teams to Score",
           badge: "HOT",
-          odds: "2.00"
+          kickOff: "28 SEP, 03:00"
+        },
+        {
+          homeName: "Man City",
+          awayName: "Sunderland",
+          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/382.png",
+          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/383.png",
+          leagueName: "Premier League",
+          market: "Man City to Win + Have 2+ Goals",
+          badge: "TOP PICK",
+          kickOff: "28 SEP, 21:00"
+        },
+        {
+          homeName: "Fulham",
+          awayName: "Man United",
+          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/370.png",
+          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/360.png",
+          leagueName: "Premier League",
+          market: "Man United to Win or Draw + Over 1.5 Goals",
+          badge: "HOT",
+          kickOff: "29 SEP, 00:00"
+        },
+        {
+          homeName: "Getafe",
+          awayName: "Málaga",
+          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/2922.png",
+          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/1069.png",
+          leagueName: "La Liga",
+          market: "Getafe to Win + Over 2.5 Goals",
+          badge: "TOP PICK",
+          kickOff: "29 SEP, 03:00"
+        },
+        {
+          homeName: "Atlético",
+          awayName: "Real Madrid",
+          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/1068.png",
+          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/86.png",
+          leagueName: "La Liga",
+          market: "Atlético vs Real Madrid - Both Teams to Score",
+          badge: "HOT",
+          kickOff: "29 SEP, 20:00"
         }
       ];
     }
+
+    // Limit strictly to 7 items
+    allPicks = allPicks.slice(0, 7);
 
     let cardsHtml = "";
     allPicks.forEach(pick => {
@@ -187,7 +249,7 @@ async function fetchTopPicksAndBoosts() {
           <div class="boost-market-desc">${pick.market}</div>
 
           <div class="boost-card-bottom">
-            <div class="boost-odds-btn">${pick.odds}</div>
+            <div class="boost-kickoff-pill"><i class='bx bx-time-five'></i> ${pick.kickOff}</div>
           </div>
         </div>
       `;
@@ -248,7 +310,7 @@ function animateCanvas() {
 }
 animateCanvas();
 
-/* --- SITTING ROBOT EYE & HEAD SKELETON TRACKING --- */
+/* --- SITTING ROBOT EYE & HEAD TRACKING --- */
 const robotStage = document.getElementById('sittingRobotStage');
 const robotBodyWrapper = document.getElementById('robotBodyWrapper');
 const robotHead = document.getElementById('robotHead');
