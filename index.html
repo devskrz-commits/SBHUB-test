@@ -6,7 +6,7 @@
   <title>Sportsbook Hub - Secured Dashboard</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
@@ -17,7 +17,7 @@
 </head>
 <body id="pageBody">
 
-  <!-- ANIMATED BACKGROUND CANVAS -->
+  <!-- ANIMATED PLASMA BACKGROUND CANVAS -->
   <canvas id="bgCanvas"></canvas>
 
   <!-- FRONT SECURITY LOGIN OVERLAY MODAL -->
@@ -271,7 +271,7 @@
           <div class="user-info">
             <span class="user-title">Admin</span>
           </div>
-          <button class="logout-action-btn" onclick="handleLogout()" title="Lock Session">
+          <button class="logout-action-btn" type="button" onclick="handleLogout()" title="Lock Session">
             <i class="bx bx-log-out"></i> Lock
           </button>
         </div>
@@ -293,7 +293,7 @@
             </div>
           </div>
 
-          <!-- COMPACT PHILIPPINES WEATHER WIDGET -->
+          <!-- PHILIPPINES WEATHER WIDGET -->
           <div class="weather-banner-widget">
             <div class="weather-banner-header">
               <span class="weather-banner-title">PHILIPPINES WEATHER</span>
@@ -339,7 +339,7 @@
           <div class="banner-controls-group">
             <!-- MANAGE WIDGETS DROPDOWN -->
             <div class="dropdown-container">
-              <button class="dropdown-btn" onclick="toggleDropdown('widgetMenu')">
+              <button class="dropdown-btn" type="button" onclick="toggleDropdown('widgetMenu')">
                 <i class="bx bx-slider-alt"></i> Widgets <i class="bx bx-chevron-down"></i>
               </button>
               <div class="dropdown-menu" id="widgetMenu">
@@ -368,25 +368,25 @@
 
             <!-- THEME CUSTOMIZER DROPDOWN -->
             <div class="dropdown-container">
-              <button class="dropdown-btn" onclick="toggleDropdown('themeMenu')">
+              <button class="dropdown-btn" type="button" onclick="toggleDropdown('themeMenu')">
                 <i class="bx bx-palette"></i> Theme <i class="bx bx-chevron-down"></i>
               </button>
               <div class="dropdown-menu" id="themeMenu">
                 <div class="dropdown-section-title">PLAIN COLORS</div>
-                <button class="menu-option" onclick="setGradient('plain-slate')"><span>Dark Slate</span><span class="color-dot" style="background: #0f172a;"></span></button>
-                <button class="menu-option" onclick="setGradient('plain-navy')"><span>Deep Navy</span><span class="color-dot" style="background: #0b1329;"></span></button>
-                <button class="menu-option" onclick="setGradient('plain-onyx')"><span>Onyx Black</span><span class="color-dot" style="background: #121212;"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('plain-slate')"><span>Dark Slate</span><span class="color-dot" style="background: #0f172a;"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('plain-navy')"><span>Deep Navy</span><span class="color-dot" style="background: #0b1329;"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('plain-onyx')"><span>Onyx Black</span><span class="color-dot" style="background: #121212;"></span></button>
                 
                 <div class="dropdown-section-title">SILK &amp; SATIN WAVES</div>
-                <button class="menu-option" onclick="setGradient('silk-lavender')"><span>Lavender Silk</span><span class="color-dot" style="background: linear-gradient(135deg, #2e1065, #3b82f6, #ec4899);"></span></button>
-                <button class="menu-option" onclick="setGradient('silk-coral')"><span>Coral Rose Satin</span><span class="color-dot" style="background: linear-gradient(135deg, #4c0519, #be123c, #fb923c);"></span></button>
-                <button class="menu-option" onclick="setGradient('silk-pastel')"><span>Pastel Flow</span><span class="color-dot" style="background: linear-gradient(135deg, #1e1b4b, #6366f1, #f472b6);"></span></button>
-                <button class="menu-option" onclick="setGradient('silk-mint')"><span>Mint Aurora</span><span class="color-dot" style="background: linear-gradient(135deg, #022c22, #0d9488, #a7f3d0);"></span></button>
-                <button class="menu-option" onclick="setGradient('silk-iridescent')"><span>Iridescent Waves</span><span class="color-dot" style="background: linear-gradient(135deg, #311042, #7c3aed, #38bdf8);"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('silk-lavender')"><span>Lavender Silk</span><span class="color-dot" style="background: linear-gradient(135deg, #2e1065, #3b82f6, #ec4899);"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('silk-coral')"><span>Coral Rose Satin</span><span class="color-dot" style="background: linear-gradient(135deg, #4c0519, #be123c, #fb923c);"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('silk-pastel')"><span>Pastel Flow</span><span class="color-dot" style="background: linear-gradient(135deg, #1e1b4b, #6366f1, #f472b6);"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('silk-mint')"><span>Mint Aurora</span><span class="color-dot" style="background: linear-gradient(135deg, #022c22, #0d9488, #a7f3d0);"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('silk-iridescent')"><span>Iridescent Waves</span><span class="color-dot" style="background: linear-gradient(135deg, #311042, #7c3aed, #38bdf8);"></span></button>
 
                 <div class="dropdown-section-title">ABSTRACT BUBBLES</div>
-                <button class="menu-option" onclick="setGradient('abstract-bubbles')"><span>Oil Bubble Spectrum</span><span class="color-dot" style="background: radial-gradient(circle, #ec4899, #38bdf8, #f59e0b);"></span></button>
-                <button class="menu-option" onclick="setGradient('abstract-lava')"><span>Lava Bubble Orbs</span><span class="color-dot" style="background: radial-gradient(circle, #a855f7, #3b82f6, #ec4899);"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('abstract-bubbles')"><span>Oil Bubble Spectrum</span><span class="color-dot" style="background: radial-gradient(circle, #ec4899, #38bdf8, #f59e0b);"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('abstract-lava')"><span>Lava Bubble Orbs</span><span class="color-dot" style="background: radial-gradient(circle, #a855f7, #3b82f6, #ec4899);"></span></button>
               </div>
             </div>
 
@@ -403,7 +403,7 @@
 
       </div>
 
-      <!-- NEW ADDED WIDGET: TOP PICKS / HOT BOOSTS -->
+      <!-- NEWLY ADDED WIDGET: TOP PICKS / HOT BOOSTS -->
       <div class="glass-card" id="widget-top-picks">
         <div class="card-header">
           <span style="color: #ff4d4d; display: flex; align-items: center; gap: 8px;">
@@ -419,7 +419,7 @@
         </div>
       </div>
 
-      <!-- ORIGINAL 3-COLUMN GRID (100% UNTOUCHED DESIGN) -->
+      <!-- ORIGINAL 3-COLUMN DASHBOARD GRID (UNTOUCHED ORIGINAL LAYOUT) -->
       <div class="dashboard-grid">
 
         <!-- COLUMN 1: BRAND DIRECTORY & DAILY TASKS -->
