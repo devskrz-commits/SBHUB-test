@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sportsbook Hub - Operational Portal</title>
+  <title>Sportsbook Hub - Secured Dashboard</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,14 +17,14 @@
 </head>
 <body id="pageBody">
 
-  <!-- ANIMATED PLASMA BACKGROUND CANVAS -->
+  <!-- ANIMATED BACKGROUND CANVAS -->
   <canvas id="bgCanvas"></canvas>
 
-  <!-- SECURITY LOGIN OVERLAY MODAL -->
+  <!-- FRONT SECURITY LOGIN OVERLAY MODAL -->
   <div id="authOverlay">
     <div class="login-container">
 
-      <!-- ROBOT SITTING ON TOP OF LOGIN BOX -->
+      <!-- ROBOT SITTING ON TOP OF THE LOGIN BOX -->
       <div class="sitting-robot-stage" id="sittingRobotStage">
         <div class="robot-body-wrapper" id="robotBodyWrapper">
           <div class="robot-antenna"></div>
@@ -48,11 +48,13 @@
         <div class="login-subtitle">SPORTSBOOK HUB OPERATIONAL PORTAL</div>
         
         <form class="login-input-group" onsubmit="handleLogin(event)">
+          <!-- USERNAME INPUT FIELD -->
           <div class="field-wrapper">
             <label class="login-label" for="usernameInput">Username or email</label>
             <input type="text" id="usernameInput" class="login-input" value="sportsbook2026" required autocomplete="username">
           </div>
 
+          <!-- PASSWORD INPUT FIELD -->
           <div class="field-wrapper">
             <div class="field-label-row">
               <label class="login-label" for="passwordInput">Security Key</label>
@@ -66,6 +68,7 @@
             </div>
           </div>
 
+          <!-- REMEMBER ME CHECKBOX -->
           <div class="remember-row">
             <input type="checkbox" id="rememberMe" checked>
             <label for="rememberMe">Maintain active session</label>
@@ -73,6 +76,7 @@
 
           <div class="login-error" id="loginErrorMsg"></div>
 
+          <!-- SUBMIT BUTTON -->
           <button type="submit" class="login-btn">
             <i class="bx bx-key"></i> ACCESS DASHBOARD
           </button>
@@ -289,7 +293,7 @@
             </div>
           </div>
 
-          <!-- PHILIPPINES WEATHER WIDGET -->
+          <!-- COMPACT PHILIPPINES WEATHER WIDGET -->
           <div class="weather-banner-widget">
             <div class="weather-banner-header">
               <span class="weather-banner-title">PHILIPPINES WEATHER</span>
@@ -344,12 +348,12 @@
                   <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-top-picks', this.checked)">
                 </label>
                 <label class="menu-option">
-                  <span>Quick Links</span>
-                  <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-quick-links', this.checked)">
-                </label>
-                <label class="menu-option">
                   <span>Brand Directory</span>
                   <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-brand-dock', this.checked)">
+                </label>
+                <label class="menu-option">
+                  <span>Daily Task Dock</span>
+                  <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-task-dock', this.checked)">
                 </label>
                 <label class="menu-option">
                   <span>Time-Slot Duties</span>
@@ -399,86 +403,59 @@
 
       </div>
 
-      <!-- REFERENCE-MATCHED WIDGETS SECTION (ROW 1) -->
-      <div class="reference-widgets-row">
-
-        <!-- WIDGET 1: TOP PICKS / HOT BOOSTS -->
-        <div class="widget-container" id="widget-top-picks">
-          <div class="card-header">
-            <div class="header-title-group">
-              <i class='bx bxs-flame icon-flame'></i>
-              <span class="header-title">TOP PICKS / HOT BOOSTS</span>
-            </div>
-            <a href="boostschedule.html" class="view-all-link">View All <i class='bx bx-right-arrow-alt'></i></a>
-          </div>
-
-          <div id="topPicksContainer" class="top-picks-scroll-row">
-            <!-- Dynamically populated real boost cards with flags -->
+      <!-- NEW ADDED WIDGET: TOP PICKS / HOT BOOSTS -->
+      <div class="glass-card" id="widget-top-picks">
+        <div class="card-header">
+          <span style="color: #ff4d4d; display: flex; align-items: center; gap: 8px;">
+            <i class='bx bxs-flame' style="font-size: 18px;"></i> TOP PICKS / HOT BOOSTS
+          </span>
+          <div class="actions">
+            <a href="boostschedule.html" style="color: rgba(255,255,255,0.7); text-decoration: none; font-size: 11px;">View All &rarr;</a>
+            <i class="bx bx-x" style="cursor:pointer; margin-left: 10px;" onclick="hideWidgetDirect('widget-top-picks')"></i>
           </div>
         </div>
-
-        <!-- WIDGET 2: QUICK LINKS -->
-        <div class="widget-container" id="widget-quick-links">
-          <div class="card-header">
-            <div class="header-title-group">
-              <i class='bx bxs-zap icon-quicklinks'></i>
-              <span class="header-title">QUICK LINKS</span>
-            </div>
-          </div>
-
-          <div class="quick-links-grid">
-            <a href="https://www.flashscore.com/" target="_blank" rel="noreferrer" class="quick-link-btn">
-              <i class='bx bx-football'></i>
-              <span>Flashscore</span>
-            </a>
-            <a href="https://www.oddschecker.com/" target="_blank" rel="noreferrer" class="quick-link-btn">
-              <i class='bx bx-line-chart'></i>
-              <span>Oddschecker</span>
-            </a>
-            <a href="https://www.futbol24.com/" target="_blank" rel="noreferrer" class="quick-link-btn">
-              <i class='bx bx-football'></i>
-              <span>Futbol24</span>
-            </a>
-            <a href="https://portal.betradar.com/" target="_blank" rel="noreferrer" class="quick-link-btn">
-              <i class='bx bx-headphone'></i>
-              <span>Betazon OS</span>
-            </a>
-            <a href="https://www.betfair.com/exchange/plus/" target="_blank" rel="noreferrer" class="quick-link-btn">
-              <i class='bx bx-transfer-alt'></i>
-              <span>Betfair</span>
-            </a>
-            <a href="https://t.me/" target="_blank" rel="noreferrer" class="quick-link-btn">
-              <i class='bx bxl-telegram'></i>
-              <span>Telegram</span>
-            </a>
-          </div>
-
-          <div class="quick-links-footer">
-            <a href="#" class="view-all-link">View All Links <i class='bx bx-right-arrow-alt'></i></a>
-          </div>
+        <div id="topPicksContainer" class="top-picks-scroll-row">
+          <div style="text-align:center; padding:15px; width:100%;"><i class='bx bx-loader-alt bx-spin' style="font-size:20px; color:#38bdf8;"></i></div>
         </div>
-
-        <!-- WIDGET 3: BRAND DIRECTORY -->
-        <div class="widget-container" id="widget-brand-dock">
-          <div class="card-header">
-            <div class="header-title-group">
-              <i class='bx bx-link icon-brand'></i>
-              <div>
-                <span class="header-title">BRAND DIRECTORY</span>
-                <div class="header-subtitle">Quick access to your platforms</div>
-              </div>
-            </div>
-          </div>
-
-          <div id="brandDirectoryContainer" class="brand-directory-list">
-            <!-- Dynamically populated IBET, EDGE, and PUBS accordions -->
-          </div>
-        </div>
-
       </div>
 
-      <!-- LOWER DASHBOARD CARDS (LIVE DUTIES & TOP GAMES FIXTURES) -->
+      <!-- ORIGINAL 3-COLUMN GRID (100% UNTOUCHED DESIGN) -->
       <div class="dashboard-grid">
+
+        <!-- COLUMN 1: BRAND DIRECTORY & DAILY TASKS -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          
+          <!-- WIDGET: BRAND DIRECTORY -->
+          <div class="glass-card" id="widget-brand-dock">
+            <div class="card-header">
+              <span style="color: #f59e0b;"><i class="bx bx-pin"></i> BRAND DIRECTORY DOCK</span>
+              <div class="actions"><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-brand-dock')"></i></div>
+            </div>
+            
+            <div class="tab-pills">
+              <div class="tab-pill active" id="tab-ibet" onclick="switchBrandTab('ibet')">IBET</div>
+              <div class="tab-pill" id="tab-edge" onclick="switchBrandTab('edge')">EDGE</div>
+              <div class="tab-pill" id="tab-pubs" onclick="switchBrandTab('pubs')">PUBS</div>
+            </div>
+
+            <div id="brandLinksContainer" style="display: flex; flex-direction: column; gap: 10px;"></div>
+          </div>
+
+          <!-- WIDGET: DAILY TASK DOCK -->
+          <div class="glass-card" id="widget-task-dock">
+            <div class="card-header">
+              <span style="color: #ef4444;"><i class="bx bx-list-ul"></i> DAILY TASK DOCK</span>
+              <div class="actions"><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-task-dock')"></i></div>
+            </div>
+            <a class="action-row" href="boostschedule.html"><span>TOP PICKS (SCHEDULE)</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="action-row" href="https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit?gid=1450723096#gid=1450723096" target="_blank" rel="noreferrer"><span>EDGE BOOST (MIG)</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="action-row" href="https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit?gid=784209986#gid=784209986" target="_blank" rel="noreferrer"><span>IBET BOOST (MIG)</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="action-row" href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank" rel="noreferrer"><span>KT SPORTS CHECK</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="action-row" href="https://polymarket.com/breaking" target="_blank" rel="noreferrer"><span>PREDICTION OFFER CHECK</span><i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+        </div>
+
+        <!-- COLUMN 2: LIVE TIME-SLOT DUTIES -->
         <div class="glass-card" id="widget-duties-dock">
           <div class="card-header">
             <span style="color: #f97316;"><i class="bx bx-time"></i> LIVE TIME-SLOT DUTIES</span>
@@ -489,7 +466,8 @@
           </div>
         </div>
 
-        <div class="glass-card" id="widget-games-dock" style="grid-column: span 2;">
+        <!-- COLUMN 3: TOP GAMES (FLASHSCORE GMT+8 SYNC) -->
+        <div class="glass-card" id="widget-games-dock">
           <div class="card-header">
             <span style="color: #38bdf8;"><i class="bx bx-play-circle"></i> TOP GAMES (7-DAY FIXTURES)</span>
             <div class="actions"><span>FLASHSCORE GMT+8</span><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-games-dock')"></i></div>
@@ -499,10 +477,11 @@
             <span id="matchDayDisplay">TODAY (GMT+8)</span>
             <i class="bx bx-chevron-right" style="cursor: pointer;" onclick="navigateMatchDay(1)"></i>
           </div>
-          <div id="gamesContainer" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+          <div id="gamesContainer" style="display: flex; flex-direction: column; gap: 10px;">
             <div style="text-align:center; padding:15px;"><i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#38bdf8;"></i></div>
           </div>
         </div>
+
       </div>
 
     </main>
