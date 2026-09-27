@@ -203,11 +203,11 @@ body {
 
 .covering-eyes .robot-hand.left { transform: translateY(-24px) rotate(15deg); }
 .covering-eyes .robot-hand.right { transform: translateY(-24px) rotate(-15deg); }
-.covering-eyes .robot-eye { transform: scaleY(0.1) !important; }
+.covering-eyes .robot-eye { transform: scaleY(0.1); }
 
 .peeking .robot-hand.left { transform: translateY(-22px) translateX(-8px) rotate(30deg); }
 .peeking .robot-hand.right { transform: translateY(-22px) translateX(8px) rotate(-30deg); }
-.peeking .robot-eye { transform: scaleY(1) !important; background: #fbbf24; }
+.peeking .robot-eye { transform: scaleY(1); background: #fbbf24; }
 
 .login-title { font-size: 26px; font-weight: 800; color: #ffffff; margin-top: 10px; }
 .login-subtitle { font-size: 11px; color: rgba(255, 255, 255, 0.65); margin-top: -12px; }
@@ -445,7 +445,6 @@ body {
   opacity: 0.6;
 }
 
-/* FROZEN (STICKY) TOP BANNER CARD */
 .top-banner-card {
   display: flex;
   flex-direction: column;
@@ -453,9 +452,8 @@ body {
   padding: 20px 24px;
   width: 100%;
   box-sizing: border-box;
-  overflow: visible !important;
-  position: -webkit-sticky !important;
-  position: sticky !important;
+  overflow: visible;
+  position: sticky;
   top: 0;
   z-index: 1000;
   backdrop-filter: blur(35px) saturate(160%);
