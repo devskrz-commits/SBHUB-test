@@ -323,7 +323,7 @@ function hideWidgetDirect(widgetId) {
   if (checkbox) checkbox.checked = false;
 }
 
-/* --- EXPANDED 10-THEME SWITCHER WITH CONTRAST OVERSIGHT --- */
+/* --- UPDATED THEME SWITCHER (IMAGE 1 & IMAGE 2 PALETTE) --- */
 function setGradient(theme) {
   const body = document.getElementById('pageBody');
   let gradientCSS = '';
@@ -340,29 +340,29 @@ function setGradient(theme) {
       gradientCSS = '#121212';
       break;
 
-    // 5 MID-DARK GRADIENTS
-    case 'cyberpunk':
-      gradientCSS = 'linear-gradient(135deg, #090d16 0%, #0284c7 100%)';
+    // 5 SOFT WAVE / SILK GRADIENTS (IMAGE 1 INSPIRED)
+    case 'silk-lavender':
+      gradientCSS = 'linear-gradient(135deg, #2e1065 0%, #3b82f6 50%, #ec4899 100%)';
       break;
-    case 'maroon':
-      gradientCSS = 'linear-gradient(125deg, #2a080c 0%, #7f1d1d 100%)';
+    case 'silk-coral':
+      gradientCSS = 'linear-gradient(135deg, #4c0519 0%, #be123c 40%, #fb923c 100%)';
       break;
-    case 'ocean-teal':
-      gradientCSS = 'linear-gradient(135deg, #06111e 0%, #0f766e 100%)';
+    case 'silk-pastel':
+      gradientCSS = 'linear-gradient(135deg, #1e1b4b 0%, #6366f1 40%, #f472b6 80%, #fb7185 100%)';
       break;
-    case 'sunset-violet':
-      gradientCSS = 'linear-gradient(135deg, #1e1b2e 0%, #7e22ce 100%)';
+    case 'silk-mint':
+      gradientCSS = 'linear-gradient(135deg, #022c22 0%, #0d9488 40%, #a7f3d0 100%)';
       break;
-    case 'emerald':
-      gradientCSS = 'linear-gradient(135deg, #022c22 0%, #047857 100%)';
+    case 'silk-iridescent':
+      gradientCSS = 'linear-gradient(125deg, #311042 0%, #7c3aed 45%, #38bdf8 85%, #f472b6 100%)';
       break;
 
-    // 2 ABSTRACT FLUID/BUBBLE THEMES
-    case 'fluid-prism':
-      gradientCSS = 'radial-gradient(circle at 20% 20%, rgba(236,72,153,0.35) 0%, transparent 45%), radial-gradient(circle at 80% 80%, rgba(56,189,248,0.4) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(245,158,11,0.25) 0%, transparent 55%), #090d16';
+    // 2 ABSTRACT BUBBLE / LAVA THEMES (IMAGE 2 INSPIRED)
+    case 'abstract-bubbles':
+      gradientCSS = 'radial-gradient(circle at 15% 25%, rgba(56,189,248,0.6) 0%, transparent 40%), radial-gradient(circle at 85% 30%, rgba(236,72,153,0.6) 0%, transparent 45%), radial-gradient(circle at 50% 80%, rgba(245,158,11,0.5) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(139,92,246,0.6) 0%, transparent 40%), #090d16';
       break;
-    case 'biolava':
-      gradientCSS = 'radial-gradient(circle at 75% 25%, rgba(139,92,246,0.45) 0%, transparent 50%), radial-gradient(circle at 25% 75%, rgba(236,72,153,0.4) 0%, transparent 50%), radial-gradient(circle at 50% 10%, rgba(16,185,129,0.3) 0%, transparent 40%), #0c0a20';
+    case 'abstract-lava':
+      gradientCSS = 'radial-gradient(circle at 30% 30%, rgba(168,85,247,0.6) 0%, transparent 45%), radial-gradient(circle at 75% 65%, rgba(59,130,246,0.55) 0%, transparent 45%), radial-gradient(circle at 20% 80%, rgba(236,72,153,0.5) 0%, transparent 40%), #0c0a20';
       break;
   }
 
