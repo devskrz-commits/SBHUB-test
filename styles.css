@@ -411,6 +411,7 @@ body {
   overflow-y: auto;
   width: 100%;
   min-width: 0;
+  position: relative;
 }
 
 .glass-card {
@@ -444,6 +445,7 @@ body {
   opacity: 0.6;
 }
 
+/* FROZEN (STICKY) TOP BANNER CARD */
 .top-banner-card {
   display: flex;
   flex-direction: column;
