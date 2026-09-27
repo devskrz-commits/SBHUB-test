@@ -322,6 +322,7 @@ body {
   visibility: visible;
 }
 
+/* SIDEBAR CONTAINER (CLEAN INDEPENDENT FLOATING BUTTONS) */
 .sidebar {
   width: 270px;
   display: flex;
@@ -330,12 +331,9 @@ body {
   flex-shrink: 0;
   max-height: calc(100vh - 48px);
   overflow-y: auto;
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: var(--card-blur);
-  -webkit-backdrop-filter: var(--card-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: 24px;
-  padding: 16px;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
 .sidebar-header {
@@ -356,6 +354,8 @@ body {
   align-items: center;
   gap: 8px;
   font-size: 11px;
+  backdrop-filter: var(--card-blur);
+  -webkit-backdrop-filter: var(--card-blur);
 }
 
 .search-box input {
@@ -385,6 +385,8 @@ body {
   font-weight: 700;
   color: #fff;
   cursor: pointer;
+  backdrop-filter: var(--card-blur);
+  -webkit-backdrop-filter: var(--card-blur);
 }
 
 .nav-main-left {
@@ -435,13 +437,15 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 7px 12px 7px 16px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
   font-size: 11px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   text-decoration: none;
+  backdrop-filter: var(--card-blur);
+  -webkit-backdrop-filter: var(--card-blur);
 }
 
 /* SIDEBAR FOOTER ADMIN PROFILE */
@@ -453,6 +457,8 @@ body {
 .sidebar-admin-footer .admin-top-pill {
   width: 100%;
   justify-content: space-between;
+  backdrop-filter: var(--card-blur);
+  -webkit-backdrop-filter: var(--card-blur);
 }
 
 .main-workspace {
@@ -497,7 +503,7 @@ body {
   opacity: 0.6;
 }
 
-/* TOP BANNER STACKING CONTEXT FIX */
+/* TOP BANNER CARD */
 .top-banner-card {
   display: flex;
   flex-direction: column;
@@ -530,7 +536,13 @@ body {
   flex-direction: column;
 }
 
-.banner-title { font-size: 17px; font-weight: 800; }
+.banner-title { 
+  font-size: 20px; 
+  font-weight: 800; 
+  text-transform: uppercase; 
+  letter-spacing: 0.5px; 
+}
+
 .banner-subtitle { font-size: 11px; opacity: 0.75; }
 
 .admin-top-pill {
@@ -565,7 +577,7 @@ body {
   cursor: pointer;
 }
 
-/* COMPACT WEATHER WIDGET (FAR RIGHT ALIGNED) */
+/* COMPACT WEATHER WIDGET */
 .weather-banner-widget {
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.25);
@@ -644,7 +656,7 @@ body {
   color: #ffffff;
 }
 
-/* BANNER BOTTOM ROW (EXPANSION & OVERFLOW VISIBLE) */
+/* BANNER BOTTOM ROW */
 .banner-bottom-row {
   display: flex;
   justify-content: space-between;
@@ -697,7 +709,7 @@ body {
   font-weight: 700;
 }
 
-/* DROPDOWN MENU ABSOLUTE OVERLAY & SCROLLING FIX */
+/* DROPDOWN MENU ABSOLUTE OVERLAY */
 .dropdown-container {
   position: relative;
   display: inline-block;
