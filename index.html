@@ -294,27 +294,27 @@
             </div>
           </div>
 
-          <!-- COMPACT PHILIPPINES WEATHER WIDGET (FAR RIGHT) -->
+          <!-- COMPACT PHILIPPINES WEATHER WIDGET (DYNAMIC TARGETS) -->
           <div class="weather-banner-widget">
             <div class="weather-banner-header">
               <span class="weather-banner-title">PHILIPPINES WEATHER</span>
               <div class="weather-banner-actions">
-                <i class='bx bx-refresh' title="Refresh"></i>
+                <i class='bx bx-refresh' title="Refresh Weather" onclick="fetchManilaWeather()" style="cursor:pointer;"></i>
                 <i class='bx bx-x' style="cursor:pointer;" title="Hide"></i>
               </div>
             </div>
             <div class="weather-banner-body">
               <div class="weather-banner-main">
-                <i class='bx bx-cloud' style="font-size: 24px; color: #f59e0b;"></i>
+                <i class='bx bx-cloud' id="weatherIcon" style="font-size: 24px; color: #f59e0b;"></i>
                 <div>
-                  <div class="weather-banner-temp">32°C</div>
-                  <div class="weather-banner-cond">OVERCAST</div>
+                  <div class="weather-banner-temp" id="weatherTemp">--°C</div>
+                  <div class="weather-banner-cond" id="weatherCond">LOADING...</div>
                 </div>
               </div>
               <div class="weather-banner-details">
                 <div class="weather-location-tag"><i class='bx bx-map-pin' style="color: #ef4444;"></i> Metro Manila, PH</div>
-                <div>Humidity: 56%</div>
-                <div>Wind: 7 km/h</div>
+                <div id="weatherHumidity">Humidity: --%</div>
+                <div id="weatherWind">Wind: -- km/h</div>
               </div>
             </div>
           </div>
