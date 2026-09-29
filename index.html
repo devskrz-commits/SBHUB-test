@@ -285,38 +285,13 @@
               </div>
               <i class="bx bx-export" style="font-size: 13px; opacity: 0.7;"></i>
             </a>
-            <a href="javascript:void(0)" onclick="handlePendingRiskTool()" class="quick-launch-btn">
+            <a href="file:///C:/Users/KriztelJoyDeVilla/Downloads/Edge_Gaming_Client_Risk_Segmentation_Tool_July_2026_Dashboard.html" target="_blank" rel="noreferrer" class="quick-launch-btn">
               <div class="btn-left">
                 <div class="icon-badge icon-risk"><i class="bx bx-shield-quarter"></i></div>
                 <span>Risk Seg. Tool</span>
               </div>
               <i class="bx bx-export" style="font-size: 13px; opacity: 0.7;"></i>
             </a>
-          </div>
-        </div>
-
-        <!-- TRANSPARENT AI ASSISTANT ROBOT MASCOT TRIGGER (EXACT MATCH TO image_3afe42.png) -->
-        <div class="sidebar-robot-mascot-area">
-          <div class="robot-mascot-wrapper" onclick="toggleAiChatModal()" title="Click to chat with AI Assistant">
-            <svg class="robot-svg-graphic" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Golden Yellow Speech Bubble Outer Ring -->
-              <path d="M 50 12 C 26 12 8 30 8 52 C 8 66 18 78 32 85 L 28 95 L 46 89 C 47.3 89 48.6 89.2 50 89.2 C 74 89.2 92 71.2 92 52 C 92 30 74 12 50 12 Z" fill="#EAB308"/>
-              <!-- Inner Dark Face Shield Base -->
-              <circle cx="50" cy="50" r="30" fill="#0A0F1D"/>
-              <rect x="28" y="32" width="44" height="34" rx="14" fill="#F8FAFC"/>
-              <rect x="32" y="35" width="36" height="28" rx="10" fill="#080C1A"/>
-              <!-- Green Glowing Headset Eyes -->
-              <ellipse cx="42" cy="48" rx="4.5" ry="6.5" fill="#22C55E"/>
-              <circle cx="42" cy="48" r="2.5" fill="#86EFAC"/>
-              <ellipse cx="58" cy="48" rx="4.5" ry="6.5" fill="#22C55E"/>
-              <circle cx="58" cy="48" r="2.5" fill="#86EFAC"/>
-              <!-- Headset & Microphone -->
-              <path d="M 26 46 C 26 26 74 26 74 46" stroke="#334155" stroke-width="3.5" fill="none"/>
-              <rect x="23" y="40" width="5" height="12" rx="2.5" fill="#1E293B"/>
-              <rect x="72" y="40" width="5" height="12" rx="2.5" fill="#1E293B"/>
-              <path d="M 26 50 Q 30 62 42 60" stroke="#1E293B" stroke-width="2.5" fill="none"/>
-              <circle cx="43" cy="60" r="2.5" fill="#22C55E"/>
-            </svg>
           </div>
         </div>
 
@@ -542,33 +517,52 @@
     </main>
   </div>
 
-  <!-- INTERACTIVE AI ASSISTANT CHAT MODAL OVERLAY -->
-  <div id="aiChatOverlay" class="ai-chat-overlay" onclick="closeAiChatModal(event)">
-    <div class="ai-chat-window" onclick="event.stopPropagation()">
-      <div class="ai-chat-header">
-        <div class="ai-chat-header-left">
-          <div class="ai-chat-avatar-badge">
-            <i class="bx bx-bot" style="font-size: 20px; color: #22c55e;"></i>
-          </div>
-          <div>
-            <div class="ai-chat-title">SPORTSBOOK AI ASSISTANT</div>
-            <div class="ai-chat-status"><span class="status-dot"></span> Online &bull; Trading &amp; Ops Monitor</div>
-          </div>
-        </div>
-        <button class="ai-chat-close-btn" type="button" onclick="toggleAiChatModal()">&times;</button>
-      </div>
-
-      <div class="ai-chat-messages" id="aiChatMessages">
-        <div class="chat-bubble ai-bubble">
-          Hello Admin! I'm your Sportsbook Assistant. How can I assist with duty rosters, match schedules, market checks, or quick operational links today?
-        </div>
-      </div>
-
-      <form class="ai-chat-input-row" onsubmit="handleAiChatSubmit(event)">
-        <input type="text" id="aiChatInput" class="ai-chat-input" placeholder="Type a message or ask a question..." autocomplete="off">
-        <button type="submit" class="ai-chat-send-btn"><i class="bx bx-paper-plane"></i></button>
-      </form>
+  <!-- FLOATING AI ASSISTANT CHATBOT TRIGGER BUBBLE (IMAGE MATCH 46c49f) -->
+  <div class="chat-trigger-bubble" id="chatTriggerBtn" onclick="toggleAiChatWidget()" title="AI Personal Assistant">
+    <div class="bot-bubble-face">
+      <div class="bot-bubble-eye left"></div>
+      <div class="bot-bubble-eye right"></div>
+      <div class="bot-bubble-mic"></div>
     </div>
+  </div>
+
+  <!-- AI ASSISTANT CHATBOX MODAL WINDOW -->
+  <div class="ai-chat-window" id="aiChatWindow">
+    <div class="ai-chat-header">
+      <div class="ai-header-left">
+        <div class="ai-avatar-mini">
+          <div class="mini-eye"></div><div class="mini-eye"></div>
+        </div>
+        <div>
+          <div class="ai-header-title">AI ASSISTANT</div>
+          <div class="ai-header-status"><span class="status-dot"></span> Online &bull; Saved on Desktop</div>
+        </div>
+      </div>
+      <div class="ai-header-actions">
+        <button class="ai-header-btn" onclick="clearAiChatHistory()" title="Clear Local Chat History"><i class="bx bx-trash"></i></button>
+        <button class="ai-header-btn" onclick="toggleAiChatWidget()" title="Close"><i class="bx bx-x"></i></button>
+      </div>
+    </div>
+
+    <!-- QUICK ACTION CHIPS -->
+    <div class="ai-quick-chips">
+      <button class="chip-btn" onclick="triggerQuickAction('enhance')">✨ Enhance Text</button>
+      <button class="chip-btn" onclick="triggerQuickAction('search')">🔍 Search Hub</button>
+      <a href="https://chatgpt.com" target="_blank" rel="noreferrer" class="chip-btn external-chip">🤖 Open ChatGPT <i class="bx bx-export"></i></a>
+    </div>
+
+    <!-- MESSAGES CONTAINER -->
+    <div class="ai-chat-messages" id="aiChatMessages">
+      <!-- Messages dynamically rendered here -->
+    </div>
+
+    <!-- INPUT BAR -->
+    <form class="ai-chat-input-bar" onsubmit="handleAiChatSubmit(event)">
+      <input type="text" id="aiChatInput" placeholder="Ask AI anything, enhance text, search links..." autocomplete="off">
+      <button type="submit" class="ai-send-btn" title="Send Message">
+        <i class="bx bx-paper-plane"></i>
+      </button>
+    </form>
   </div>
 
 </body>
