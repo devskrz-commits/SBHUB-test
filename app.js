@@ -819,6 +819,231 @@ function calculateActiveTraders() {
   if (el) el.textContent = activeCount + ' Working';
 }
 
+/* --- KRIZTEL AI COPILOT ENGINE --- */
+const KriztelAI = {
+  hubContextEnabled: true,
+  webSearchEnabled: false,
+  attachedFile: null,
+  chatHistory: [],
+  isGenerating: false,
+
+  togglePanel() {
+    const panel = document.getElementById('aiChatPanel');
+    if (panel) panel.classList.toggle('open');
+  },
+  openPanel() {
+    const panel = document.getElementById('aiChatPanel');
+    if (panel) panel.classList.add('open');
+  },
+  closePanel() {
+    const panel = document.getElementById('aiChatPanel');
+    if (panel) panel.classList.remove('open');
+  },
+  toggleHubContext() {
+    this.hubContextEnabled = !this.hubContextEnabled;
+    const tag = document.getElementById('contextStatusTag');
+    const btn = document.getElementById('aiContextToggle');
+    if (tag) {
+      tag.textContent = this.hubContextEnabled ? '● HUB Context ON' : '○ HUB Context OFF';
+    }
+    if (btn) {
+      btn.classList.toggle('off', !this.hubContextEnabled);
+    }
+  },
+  toggleSearchMode() {
+    this.webSearchEnabled = !this.webSearchEnabled;
+    const btn = document.getElementById('btnWebSearch');
+    if (btn) btn.classList.toggle('active', this.webSearchEnabled);
+  },
+  clearChat() {
+    this.chatHistory = [];
+    const wrap = document.getElementById('aiMessagesWrap');
+    if (wrap) {
+      wrap.innerHTML = `
+        <div class="ai-welcome-box" id="aiWelcomeBox">
+          <div class="welcome-title">Ask anything or select a task...</div>
+          <div class="quick-prompts-grid">
+            <button class="prompt-chip" onclick="KriztelAI.usePrompt('What are my pending tasks and duties right now?')">
+              <i class="bx bx-task" style="color:#ef4444;"></i> What are my pending tasks?
+            </button>
+            <button class="prompt-chip" onclick="KriztelAI.usePrompt('Summarize today\\'s live duties and match schedule.')">
+              <i class="bx bx-file" style="color:#f59e0b;"></i> Summarize today's duties
+            </button>
+            <button class="prompt-chip" onclick="KriztelAI.usePrompt('Search the web for the latest football news and transfer updates.')">
+              <i class="bx bx-globe" style="color:#38bdf8;"></i> Search latest sports news
+            </button>
+            <button class="prompt-chip" onclick="KriztelAI.usePrompt('Explain quantum computing in simple terms.')">
+              <i class="bx bx-brain" style="color:#ec4899;"></i> Explain a complex topic
+            </button>
+          </div>
+        </div>
+      `;
+    }
+  },
+  usePrompt(promptText) {
+    const input = document.getElementById('aiPromptInput');
+    if (input) {
+      input.value = promptText;
+      this.sendMessage();
+    }
+  },
+  autoResize(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';
+  },
+  handleKeyDown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      this.sendMessage();
+    }
+  },
+  handleFileAttach(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    this.attachedFile = file;
+    const badge = document.getElementById('attachedFileBadge');
+    const nameEl = document.getElementById('attachedFileName');
+    if (badge && nameEl) {
+      nameEl.textContent = file.name;
+      badge.style.display = 'flex';
+    }
+  },
+  removeAttachment() {
+    this.attachedFile = null;
+    const badge = document.getElementById('attachedFileBadge');
+    const input = document.getElementById('aiFileInput');
+    if (badge) badge.style.display = 'none';
+    if (input) input.value = '';
+  },
+  setStatus(show, text) {
+    const statusEl = document.getElementById('aiToolStatus');
+    const textEl = document.getElementById('aiToolStatusText');
+    if (statusEl) {
+      if (show) statusEl.classList.add('active');
+      else statusEl.classList.remove('active');
+    }
+    if (textEl && text) textEl.textContent = text;
+  },
+  getHubDataSnapshot() {
+    const activeTrader = document.getElementById('activeTraderCount')?.textContent || "0 Working";
+    const weather = document.getElementById('weatherTemp')?.textContent || "--";
+    const weatherCond = document.getElementById('weatherCond')?.textContent || "--";
+    
+    const dutyCards = document.querySelectorAll('#liveDutyContent .duty-card');
+    let dutiesSummary = [];
+    dutyCards.forEach(card => {
+      const name = card.querySelector('.duty-top span:first-child')?.textContent || '';
+      const shift = card.querySelector('.duty-top .badge-time')?.textContent || '';
+      const descs = Array.from(card.querySelectorAll('.duty-desc')).map(d => d.textContent.trim()).join(', ');
+      if (name) dutiesSummary.push(`${name} (${shift}): ${descs}`);
+    });
+
+    const gameCards = document.querySelectorAll('#gamesContainer .top-game-card');
+    let gamesSummary = [];
+    gameCards.forEach(gc => {
+      const title = gc.querySelector('.top-game-title')?.textContent || '';
+      const league = gc.querySelector('.top-game-league')?.textContent || '';
+      if (title) gamesSummary.push(`${title} [${league}]`);
+    });
+
+    return {
+      activeTraders: activeTrader,
+      weather: `${weather}, ${weatherCond}`,
+      currentSlotDuties: dutiesSummary,
+      topGamesToday: gamesSummary
+    };
+  },
+  async sendMessage() {
+    const input = document.getElementById('aiPromptInput');
+    if (!input || this.isGenerating) return;
+    const text = input.value.trim();
+    if (!text && !this.attachedFile) return;
+
+    const welcomeBox = document.getElementById('aiWelcomeBox');
+    if (welcomeBox) welcomeBox.style.display = 'none';
+
+    const wrap = document.getElementById('aiMessagesWrap');
+    const userMsgDiv = document.createElement('div');
+    userMsgDiv.className = 'ai-msg user';
+    let fileTag = this.attachedFile ? `<div class="msg-tag"><i class='bx bx-file'></i> ${this.attachedFile.name}</div>` : '';
+    userMsgDiv.innerHTML = `${fileTag}<div class="msg-bubble">${escapeHtml(text)}</div>`;
+    wrap.appendChild(userMsgDiv);
+
+    input.value = '';
+    input.style.height = 'auto';
+    this.removeAttachment();
+    wrap.scrollTop = wrap.scrollHeight;
+
+    this.chatHistory.push({ role: 'user', content: text });
+
+    const assistantMsgDiv = document.createElement('div');
+    assistantMsgDiv.className = 'ai-msg assistant';
+    let sourceBadge = this.webSearchEnabled ? '🌐 Web' : (this.hubContextEnabled ? '📊 HUB' : '✨ AI');
+    assistantMsgDiv.innerHTML = `<div class="msg-tag">${sourceBadge}</div><div class="msg-bubble"><i class='bx bx-loader-alt bx-spin'></i></div>`;
+    wrap.appendChild(assistantMsgDiv);
+    wrap.scrollTop = wrap.scrollHeight;
+
+    const bubble = assistantMsgDiv.querySelector('.msg-bubble');
+
+    this.isGenerating = true;
+    this.setStatus(true, this.webSearchEnabled ? '🔎 Searching the web...' : (this.hubContextEnabled ? '📊 Reading HUB data...' : '✨ Thinking...'));
+
+    try {
+      const hubData = this.hubContextEnabled ? this.getHubDataSnapshot() : null;
+
+      const response = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: this.chatHistory,
+          hubContext: this.hubContextEnabled,
+          searchWeb: this.webSearchEnabled,
+          hubData: hubData
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('API request failed');
+      }
+
+      const data = await response.json();
+      const replyText = data.content || "I'm having trouble retrieving a response.";
+
+      bubble.innerHTML = formatMarkdown(replyText);
+      this.chatHistory.push({ role: 'assistant', content: replyText });
+
+    } catch (err) {
+      console.warn("AI Backend call failed or API route unavailable:", err);
+      let fallbackReply = "";
+      if (this.hubContextEnabled && (text.toLowerCase().includes('duty') || text.toLowerCase().includes('task') || text.toLowerCase().includes('who') || text.toLowerCase().includes('working'))) {
+        const hubInfo = this.getHubDataSnapshot();
+        fallbackReply = `📊 **Sportsbook Hub Status Overview**:\n\n* **Active Traders Working**: ${hubInfo.activeTraders}\n* **Manila Weather**: ${hubInfo.weather}\n* **Live Duty Shift Status**:\n${hubInfo.currentSlotDuties.length > 0 ? hubInfo.currentSlotDuties.map(d => `• ${d}`).join('\n') : 'Loaded live from Firebase Roster.'}\n\n*Note: Connect your \`OPENAI_API_KEY\` to enable full conversational LLM reasoning.*`;
+      } else {
+        fallbackReply = `I'm having trouble connecting to the AI server endpoint (\`/api/ai\`). Please ensure your backend server is running and your \`OPENAI_API_KEY\` environment variable is configured.`;
+      }
+
+      bubble.innerHTML = formatMarkdown(fallbackReply);
+      this.chatHistory.push({ role: 'assistant', content: fallbackReply });
+    } finally {
+      this.isGenerating = false;
+      this.setStatus(false, '');
+      wrap.scrollTop = wrap.scrollHeight;
+    }
+  }
+};
+
+function escapeHtml(str) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+function formatMarkdown(str) {
+  let html = escapeHtml(str);
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/`(.*?)`/g, '<code>$1</code>');
+  html = html.replace(/\n/g, '<br>');
+  return html;
+}
+
 /* --- INITIALIZATION --- */
 function initDashboardApp() {
   const savedTheme = localStorage.getItem('sbhub_theme');
