@@ -1,6 +1,9 @@
 const DEFAULT_USER = "sportsbook2026";
 const DEFAULT_PASS = "sb2026";
 
+// ⚠️ TEMPORARY LOCAL TESTING ONLY — REMOVE BEFORE COMMITTING TO PUBLIC GITHUB
+const LOCAL_GEMINI_KEY = ""; // Paste your key between the quotes to test locally
+
 /* --- FIREBASE ROSTER INITIALIZATION --- */
 let rosterDb = null;
 try {
@@ -953,6 +956,37 @@ const KriztelAI = {
       topGamesToday: gamesSummary
     };
   },
+  async callGeminiDirect(promptText) {
+    const key = (typeof LOCAL_GEMINI_KEY !== 'undefined' && LOCAL_GEMINI_KEY) ? LOCAL_GEMINI_KEY : '';
+    if (!key) throw new Error("No client-side Gemini key set.");
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+    
+    let contextAddition = "";
+    if (this.hubContextEnabled) {
+      contextAddition = `\n\n[CURRENT AUTHORIZED HUB CONTEXT DATA]:\n${JSON.stringify(this.getHubDataSnapshot(), null, 2)}`;
+    }
+
+    const systemInstructions = `You are Kriztel AI (KD AI), an authentic, highly adaptive, and intelligent AI Copilot living inside Sportsbook Hub. You are GENERAL AI FIRST and HUB ASSISTANT SECOND. Answer general questions, write code, explain concepts, summarize, perform math, and analyze files with precision. Never say "This question is outside the scope of HUB."${contextAddition}`;
+
+    const fullPrompt = `${systemInstructions}\n\nUser Question: ${promptText}`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: fullPrompt }] }]
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(`Gemini Direct Error: ${err}`);
+    }
+
+    const data = await response.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+  },
   async sendMessage() {
     const input = document.getElementById('aiPromptInput');
     if (!input || this.isGenerating) return;
@@ -989,37 +1023,41 @@ const KriztelAI = {
     this.setStatus(true, this.webSearchEnabled ? '🔎 Searching the web...' : (this.hubContextEnabled ? '📊 Reading HUB data...' : '✨ Thinking...'));
 
     try {
-      const hubData = this.hubContextEnabled ? this.getHubDataSnapshot() : null;
+      let replyText = "";
 
-      const response = await fetch('/api/ai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: this.chatHistory,
-          hubContext: this.hubContextEnabled,
-          searchWeb: this.webSearchEnabled,
-          hubData: hubData
-        })
-      });
+      // 1. Check if a local direct Gemini testing key is present
+      if (typeof LOCAL_GEMINI_KEY !== 'undefined' && LOCAL_GEMINI_KEY.trim().length > 0) {
+        replyText = await this.callGeminiDirect(text);
+      } else {
+        // 2. Fall back to secure backend server endpoint (/api/ai)
+        const hubData = this.hubContextEnabled ? this.getHubDataSnapshot() : null;
+        const response = await fetch('/api/ai', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: this.chatHistory,
+            hubContext: this.hubContextEnabled,
+            searchWeb: this.webSearchEnabled,
+            hubData: hubData
+          })
+        });
 
-      if (!response.ok) {
-        throw new Error('API request failed');
+        if (!response.ok) throw new Error('API request failed');
+        const data = await response.json();
+        replyText = data.content || "I'm having trouble retrieving a response.";
       }
-
-      const data = await response.json();
-      const replyText = data.content || "I'm having trouble retrieving a response.";
 
       bubble.innerHTML = formatMarkdown(replyText);
       this.chatHistory.push({ role: 'assistant', content: replyText });
 
     } catch (err) {
-      console.warn("AI Backend call failed or API route unavailable:", err);
+      console.warn("AI call failed:", err);
       let fallbackReply = "";
       if (this.hubContextEnabled && (text.toLowerCase().includes('duty') || text.toLowerCase().includes('task') || text.toLowerCase().includes('who') || text.toLowerCase().includes('working'))) {
         const hubInfo = this.getHubDataSnapshot();
-        fallbackReply = `📊 **Sportsbook Hub Status Overview**:\n\n* **Active Traders Working**: ${hubInfo.activeTraders}\n* **Manila Weather**: ${hubInfo.weather}\n* **Live Duty Shift Status**:\n${hubInfo.currentSlotDuties.length > 0 ? hubInfo.currentSlotDuties.map(d => `• ${d}`).join('\n') : 'Loaded live from Firebase Roster.'}\n\n*Note: Connect your \`OPENAI_API_KEY\` to enable full conversational LLM reasoning.*`;
+        fallbackReply = `📊 **Sportsbook Hub Status Overview**:\n\n* **Active Traders Working**: ${hubInfo.activeTraders}\n* **Manila Weather**: ${hubInfo.weather}\n* **Live Duty Shift Status**:\n${hubInfo.currentSlotDuties.length > 0 ? hubInfo.currentSlotDuties.map(d => `• ${d}`).join('\n') : 'Loaded live from Firebase Roster.'}\n\n*Note: Configure \`GEMINI_API_KEY\` in Vercel settings or set \`LOCAL_GEMINI_KEY\` at the top of app.js for direct browser testing.*`;
       } else {
-        fallbackReply = `I'm having trouble connecting to the AI server endpoint (\`/api/ai\`). Please ensure your backend server is running and your \`OPENAI_API_KEY\` environment variable is configured.`;
+        fallbackReply = `I'm having trouble connecting to the AI endpoint. If testing locally, paste your Gemini API key into \`LOCAL_GEMINI_KEY\` at the top of \`app.js\`. For production, add \`GEMINI_API_KEY\` in your Vercel Environment Variables.`;
       }
 
       bubble.innerHTML = formatMarkdown(fallbackReply);
