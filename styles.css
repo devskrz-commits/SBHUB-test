@@ -370,8 +370,8 @@ body {
 .icon-brands   { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
 .icon-price    { background: linear-gradient(135deg, #84cc16, #4d7c0f); }
 .icon-proc     { background: linear-gradient(135deg, #ec4899, #be185d); }
-.icon-claude   { background: linear-gradient(135deg, #d97706, #b45309); }
-.icon-risk     { background: linear-gradient(135deg, #10b981, #047857); }
+.icon-claude   { background: #d97706 !important; }
+.icon-risk     { background: #10b981 !important; }
 
 .sub-menu {
   display: flex;
@@ -472,6 +472,37 @@ body {
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
+}
+
+/* TRANSPARENT AI ASSISTANT ROBOT MASCOT */
+.sidebar-robot-mascot-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 0 4px 0;
+}
+
+.robot-mascot-wrapper {
+  width: 90px;
+  height: 90px;
+  cursor: pointer;
+  transition: transform 0.25s ease, filter 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important;
+  border: none !important;
+}
+
+.robot-mascot-wrapper:hover {
+  transform: scale(1.08) translateY(-2px);
+  filter: drop-shadow(0 0 16px rgba(234, 179, 8, 0.7));
+}
+
+.robot-svg-graphic {
+  width: 100%;
+  height: 100%;
+  background: transparent !important;
 }
 
 /* DOCKED ADMIN PROFILE FOOTER PILL */
@@ -1003,4 +1034,167 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+/* AI CHAT MODAL OVERLAY STYLING */
+.ai-chat-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 9, 18, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  padding: 20px;
+}
+
+.ai-chat-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.ai-chat-window {
+  width: 100%;
+  max-width: 440px;
+  height: 520px;
+  background: rgba(10, 15, 28, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 24px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ai-chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.ai-chat-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ai-chat-avatar-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-chat-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.ai-chat-status {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.65);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+}
+
+.ai-chat-close-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 24px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.ai-chat-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scrollbar-width: thin;
+}
+
+.chat-bubble {
+  max-width: 82%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 500;
+  word-wrap: break-word;
+}
+
+.ai-bubble {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f1f5f9;
+  border-top-left-radius: 4px;
+}
+
+.user-bubble {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #ffffff;
+  border-top-right-radius: 4px;
+}
+
+.ai-chat-input-row {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.25);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.ai-chat-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-size: 12px;
+  color: #ffffff;
+  outline: none;
+}
+
+.ai-chat-send-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
+  border: none;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 15px;
+  flex-shrink: 0;
 }
