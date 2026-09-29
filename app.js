@@ -482,17 +482,25 @@ function restoreSavedWidgets() {
   }
 }
 
-/* --- THEME CUSTOMIZER --- */
+/* --- VIBRANT ABSTRACT WALLPAPER THEMES (MATCHING REFERENCE GRAPHICS) --- */
 function setGradient(theme) {
   const body = document.getElementById('pageBody');
   if (!body) return;
   let backgroundStyle = '';
 
   switch(theme) {
-    case 'plain-slate': backgroundStyle = '#0f172a'; break;
-    case 'plain-navy': backgroundStyle = '#0b1329'; break;
-    case 'plain-onyx': backgroundStyle = '#121212'; break;
+    /* PLAIN DARK BASE THEMES */
+    case 'plain-slate':
+      backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.92)), #0f172a';
+      break;
+    case 'plain-navy':
+      backgroundStyle = 'linear-gradient(rgba(11, 19, 41, 0.92), rgba(11, 19, 41, 0.92)), #0b1329';
+      break;
+    case 'plain-onyx':
+      backgroundStyle = 'linear-gradient(rgba(18, 18, 18, 0.92), rgba(18, 18, 18, 0.92)), #121212';
+      break;
 
+    /* SILK & SATIN WAVE WALLPAPERS */
     case 'silk-lavender':
       backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920&auto=format&fit=crop")';
       break;
@@ -509,12 +517,15 @@ function setGradient(theme) {
       backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.4)), url("https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=1920&auto=format&fit=crop")';
       break;
 
+    /* ABSTRACT LIQUID, ORB & NEON ARTWORK */
     case 'abstract-bubbles':
       backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.4)), url("https://images.unsplash.com/photo-1520690214124-2405c50470c6?q=80&w=1920&auto=format&fit=crop")';
       break;
     case 'abstract-lava':
       backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url("https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=1920&auto=format&fit=crop")';
       break;
+    default:
+      backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920&auto=format&fit=crop")';
   }
 
   body.style.background = backgroundStyle;
