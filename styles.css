@@ -460,33 +460,34 @@ body {
   opacity: 0.6;
 }
 
-/* HIGH-FIDELITY OVERVIEW BANNER (MATCHING REFERENCE IMAGE 2d4c1c.jpg) */
+/* HIGH-VIBRANCY FULL-FRAME BANNER CARD (EXACT MATCH TO REFERENCE IMAGE 2d53bf.jpg) */
 .top-banner-card {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: 18px 22px;
+  padding: 16px 20px;
   width: 100%;
+  min-height: 145px;
   box-sizing: border-box;
-  overflow: visible;
+  overflow: hidden;
   position: sticky;
   top: 0;
   z-index: 1000;
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.22);
 
-  /* DARK GLASS OVERLAY + NEON SPORTS BANNER BACKGROUND */
-  background: 
-    linear-gradient(
-      180deg, 
-      rgba(10, 14, 26, 0.68) 0%, 
-      rgba(8, 11, 20, 0.82) 100%
-    ), 
-    url('./sports-banner.jpg') center/cover no-repeat !important;
+  /* PURE UNFILTERED HIGH-DEFINITION NEON BANNER IMAGE */
+  background-color: #0b0f19 !important;
+  background-image: 
+    url('./sports-banner.jpg'), 
+    url('./american-football-player-neon-style_23-2151827356.avif') !important;
 
-  backdrop-filter: blur(16px) saturate(130%);
-  -webkit-backdrop-filter: blur(16px) saturate(130%);
+  /* PERFECT VERTICAL ALIGNMENT FOR THE 3 FOOTBALL PLAYERS */
+  background-position: center 28% !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.25), 0 20px 50px rgba(0, 0, 0, 0.65);
 }
 
 .banner-top-row {
@@ -503,18 +504,18 @@ body {
   flex-shrink: 0;
 }
 
-/* ENCAPSULATED TITLE PILL CONTAINER (EXACT MATCH TO REF IMAGE) */
+/* ENCAPSULATED TITLE FROSTED GLASS PILL CONTAINER */
 .top-banner-card .banner-title-area {
-  background: rgba(6, 10, 20, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 16px;
-  padding: 10px 18px;
+  background: rgba(8, 12, 22, 0.82) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 14px;
+  padding: 8px 16px;
   display: flex;
   flex-direction: column;
   gap: 2px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(14px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
 }
 
 .top-banner-card .banner-title {
@@ -527,23 +528,23 @@ body {
 
 .top-banner-card .banner-subtitle {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.72);
   font-weight: 500;
 }
 
-/* PHILIPPINES WEATHER WIDGET PILL */
+/* PHILIPPINES WEATHER WIDGET FROSTED GLASS PILL */
 .top-banner-card .weather-banner-widget {
-  background: rgba(6, 10, 20, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 16px;
+  background: rgba(8, 12, 22, 0.82) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 14px;
   padding: 8px 14px;
   display: flex;
   flex-direction: column;
   gap: 4px;
   min-width: 240px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(14px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
   flex-shrink: 0;
 }
 
@@ -554,8 +555,8 @@ body {
 .weather-banner-main { display: flex; align-items: center; gap: 8px; }
 .weather-banner-temp { font-size: 18px; font-weight: 800; line-height: 1; color: #ffffff; }
 .weather-banner-cond { font-size: 9px; font-weight: 700; color: rgba(255, 255, 255, 0.7); }
-.weather-banner-details { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; font-size: 8.5px; color: rgba(255, 255, 255, 0.75); font-weight: 600; }
 .weather-location-tag { font-weight: 700; color: #ffffff; }
+.weather-banner-details { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; font-size: 8.5px; color: rgba(255, 255, 255, 0.75); font-weight: 600; }
 
 /* INNER HORIZONTAL SEPARATOR LINE */
 .banner-bottom-row {
@@ -564,7 +565,7 @@ body {
   align-items: center;
   width: 100%;
   padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
   z-index: 1001;
 }
 
@@ -572,16 +573,16 @@ body {
 
 /* FROSTED GLASS CLOCK BADGES */
 .top-banner-card .clock-badge {
-  background: rgba(6, 10, 20, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(8, 12, 22, 0.82) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
   padding: 5px 12px;
   border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-width: 76px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
@@ -592,8 +593,8 @@ body {
 
 /* FROSTED GLASS BUTTONS & METRIC PILL */
 .top-banner-card .metric-pill {
-  background: rgba(6, 10, 20, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(8, 12, 22, 0.82) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
   padding: 6px 14px;
   border-radius: 999px;
   display: flex;
@@ -601,23 +602,23 @@ body {
   gap: 8px;
   font-size: 11px;
   font-weight: 700;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
 .dropdown-container { position: relative; display: inline-block; z-index: 1002; }
 .top-banner-card .dropdown-btn {
-  background: rgba(6, 10, 20, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(8, 12, 22, 0.82) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
   padding: 7px 14px;
   border-radius: 999px;
   font-size: 11px;
   font-weight: 700;
   color: #ffffff;
   cursor: pointer;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
   display: flex;
   align-items: center;
