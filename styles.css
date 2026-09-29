@@ -358,6 +358,7 @@ body {
   justify-content: center;
   font-size: 13px;
   color: #ffffff;
+  flex-shrink: 0;
 }
 
 .icon-internal { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
@@ -369,6 +370,8 @@ body {
 .icon-brands   { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
 .icon-price    { background: linear-gradient(135deg, #84cc16, #4d7c0f); }
 .icon-proc     { background: linear-gradient(135deg, #ec4899, #be185d); }
+.icon-claude   { background: linear-gradient(135deg, #d97706, #b45309); }
+.icon-risk     { background: linear-gradient(135deg, #10b981, #047857); }
 
 .sub-menu {
   display: flex;
@@ -402,18 +405,18 @@ body {
   -webkit-backdrop-filter: var(--card-blur);
 }
 
-/* QUICK LAUNCH DOCK IN SIDEBAR FREE SPACE */
+/* HIGH-FIDELITY QUICK LAUNCH DOCK */
 .sidebar-quick-dock {
-  margin-top: 12px;
+  margin-top: 14px;
   padding: 12px;
-  background: rgba(15, 23, 42, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 18px;
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  backdrop-filter: var(--card-blur);
+  -webkit-backdrop-filter: var(--card-blur);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .quick-dock-title {
@@ -424,6 +427,8 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
+  text-transform: uppercase;
+  padding-left: 2px;
 }
 
 .quick-dock-buttons {
@@ -433,38 +438,40 @@ body {
 }
 
 .quick-launch-btn {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #ffffff;
-  text-decoration: none;
-  transition: all 0.2s ease;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 8px 12px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 999px !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+  backdrop-filter: var(--card-blur);
+  -webkit-backdrop-filter: var(--card-blur);
+  box-sizing: border-box !important;
+}
+
+.quick-launch-btn:visited,
+.quick-launch-btn:active,
+.quick-launch-btn:hover {
+  color: #ffffff !important;
+  text-decoration: none !important;
 }
 
 .quick-launch-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(56, 189, 248, 0.5);
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(56, 189, 248, 0.5) !important;
+  transform: translateX(3px);
 }
 
 .quick-launch-btn .btn-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.claude-btn i.bx-bot {
-  color: #f59e0b;
-}
-
-.risk-tool-btn i.bx-shield-quarter {
-  color: #10b981;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
 }
 
 /* DOCKED ADMIN PROFILE FOOTER PILL */
