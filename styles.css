@@ -1,3 +1,12 @@
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.12);
+  --glass-card-bg: rgba(15, 23, 42, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.28);
+  --glass-highlight: inset 0 1px 2px rgba(255, 255, 255, 0.4), inset 0 -1px 2px rgba(0, 0, 0, 0.2);
+  --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  --card-blur: blur(30px) saturate(150%);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -20,15 +29,6 @@ body {
   overflow-x: hidden;
   transition: background 0.5s ease;
   position: relative;
-}
-
-:root {
-  --glass-bg: rgba(255, 255, 255, 0.12);
-  --glass-card-bg: rgba(15, 23, 42, 0.65);
-  --glass-border: rgba(255, 255, 255, 0.28);
-  --glass-highlight: inset 0 1px 2px rgba(255, 255, 255, 0.4), inset 0 -1px 2px rgba(0, 0, 0, 0.2);
-  --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-  --card-blur: blur(30px) saturate(150%);
 }
 
 #bgCanvas {
@@ -201,14 +201,6 @@ body {
 .robot-hand.left { left: 10px; }
 .robot-hand.right { right: 10px; }
 
-.covering-eyes .robot-hand.left { transform: translateY(-24px) rotate(15deg); }
-.covering-eyes .robot-hand.right { transform: translateY(-24px) rotate(-15deg); }
-.covering-eyes .robot-eye { transform: scaleY(0.1); }
-
-.peeking .robot-hand.left { transform: translateY(-22px) translateX(-8px) rotate(30deg); }
-.peeking .robot-hand.right { transform: translateY(-22px) translateX(8px) rotate(-30deg); }
-.peeking .robot-eye { transform: scaleY(1); background: #fbbf24; }
-
 .login-title { font-size: 26px; font-weight: 800; color: #ffffff; margin-top: 10px; }
 .login-subtitle { font-size: 11px; color: rgba(255, 255, 255, 0.65); margin-top: -12px; }
 
@@ -282,23 +274,33 @@ body {
   visibility: visible;
 }
 
+/* SIDEBAR LAYOUT (ADMIN FOOTER PINNED AT VERY BOTTOM) */
 .sidebar {
   width: 270px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  justify-content: space-between;
   flex-shrink: 0;
+  height: calc(100vh - 48px);
   max-height: calc(100vh - 48px);
-  overflow-y: auto;
   background: transparent;
   border: none;
   padding: 0;
   position: relative;
 }
 
+.sidebar-menu-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 4px;
+  scrollbar-width: thin;
+}
+
 .sidebar-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 4px 6px;
   font-size: 13px;
@@ -401,15 +403,11 @@ body {
 }
 
 .sidebar-admin-footer {
-  margin-top: auto;
-  padding-top: 10px;
-  position: sticky;
-  bottom: 0;
+  margin-top: 12px;
+  padding-top: 6px;
+  flex-shrink: 0;
+  width: 100%;
   z-index: 20;
-  background: rgba(9, 13, 22, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 999px;
 }
 
 .sidebar-admin-footer .admin-top-pill {
@@ -462,6 +460,7 @@ body {
   opacity: 0.6;
 }
 
+/* SPORTSBOOK HUB OVERVIEW BANNER (WITH sports-banner.jpg) */
 .top-banner-card {
   display: flex;
   flex-direction: column;
@@ -473,15 +472,54 @@ body {
   position: sticky;
   top: 0;
   z-index: 1000;
-  backdrop-filter: blur(35px) saturate(160%);
-  -webkit-backdrop-filter: blur(35px) saturate(160%);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+
+  /* DARK MULTI-STAGE GRADIENT + sports-banner.jpg BACKGROUND */
+  background: 
+    linear-gradient(
+      135deg, 
+      rgba(9, 14, 28, 0.85) 0%, 
+      rgba(15, 23, 42, 0.80) 50%, 
+      rgba(9, 14, 28, 0.90) 100%
+    ), 
+    url('./sports-banner.jpg') center/cover no-repeat !important;
+
+  backdrop-filter: blur(25px) saturate(160%);
+  -webkit-backdrop-filter: blur(25px) saturate(160%);
+}
+
+/* READABILITY ENHANCEMENTS FOR OVERVIEW BANNER */
+.top-banner-card .banner-title {
+  font-size: 20px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+}
+
+.top-banner-card .banner-subtitle {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+}
+
+.top-banner-card .weather-banner-widget,
+.top-banner-card .clock-badge,
+.top-banner-card .metric-pill,
+.top-banner-card .dropdown-btn {
+  background: rgba(5, 10, 20, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
 .banner-top-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
 .banner-left-group { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
 .banner-title-area { display: flex; flex-direction: column; }
-.banner-title { font-size: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-.banner-subtitle { font-size: 11px; opacity: 0.75; }
 
 .admin-top-pill {
   display: flex;
@@ -691,7 +729,6 @@ body {
   gap: 4px;
 }
 
-/* TOP GAMES CARD (MATCHING REFERENCE IMAGE 3d62da.png) */
 .top-game-card {
   background: rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.15);
