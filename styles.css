@@ -274,7 +274,7 @@ body {
   visibility: visible;
 }
 
-/* SIDEBAR LAYOUT */
+/* SIDEBAR NAVIGATION */
 .sidebar {
   width: 270px;
   display: flex;
@@ -400,6 +400,71 @@ body {
   text-decoration: none;
   backdrop-filter: var(--card-blur);
   -webkit-backdrop-filter: var(--card-blur);
+}
+
+/* QUICK LAUNCH DOCK IN SIDEBAR FREE SPACE */
+.sidebar-quick-dock {
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quick-dock-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: #38bdf8;
+  letter-spacing: 0.8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.quick-dock-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.quick-launch-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.quick-launch-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(56, 189, 248, 0.5);
+  transform: translateY(-1px);
+}
+
+.quick-launch-btn .btn-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.claude-btn i.bx-bot {
+  color: #f59e0b;
+}
+
+.risk-tool-btn i.bx-shield-quarter {
+  color: #10b981;
 }
 
 /* DOCKED ADMIN PROFILE FOOTER PILL */
