@@ -60,20 +60,19 @@ function switchBrandTab(tabName) {
   });
 }
 
-/* --- REAL-TIME TOP PICKS / HOT BOOSTS ENGINE (PRE-GAME ONLY, AUTO-REFRESH) --- */
+/* --- REAL-TIME TOP PICKS / HOT BOOSTS ENGINE --- */
 async function fetchTopPicksAndBoosts() {
   const container = document.getElementById('topPicksContainer');
   if (!container) return;
 
   try {
     const primaryLeagues = [
-      { code: "uefa.euro", name: "UEFA EURO" },
+      { code: "uefa.champions", name: "UEFA Champions League" },
       { code: "eng.1", name: "Premier League" },
       { code: "esp.1", name: "La Liga" },
-      { code: "uefa.champions", name: "UEFA Champions League" },
-      { code: "uefa.nations", name: "UEFA Nations League" },
       { code: "ger.1", name: "Bundesliga" },
-      { code: "ita.1", name: "Serie A" }
+      { code: "ita.1", name: "Serie A" },
+      { code: "fra.1", name: "Ligue 1" }
     ];
 
     let allPicks = [];
@@ -90,7 +89,6 @@ async function fetchTopPicksAndBoosts() {
             if (allPicks.length >= 7) break;
             const evt = data.events[i];
 
-            // PRE-GAME FILTER ONLY: Remove matches automatically once they kick off
             const isPreGame = evt.status?.type?.state === 'pre';
             if (!isPreGame) continue;
 
@@ -140,83 +138,13 @@ async function fetchTopPicksAndBoosts() {
           }
         }
       } catch (err) {
-        console.warn(`Error fetching ${league.code}:`, err);
+        console.warn(`Error fetching boosts for ${league.code}:`, err);
       }
     }
 
     if (allPicks.length === 0) {
-      allPicks = [
-        {
-          homeName: "Spain",
-          awayName: "England",
-          homeLogo: "https://a.espncdn.com/i/teamlogos/countries/500/esp.png",
-          awayLogo: "https://a.espncdn.com/i/teamlogos/countries/500/eng.png",
-          leagueName: "UEFA EURO",
-          market: "Spain to Win + Over 2.5 Goals",
-          badge: "TOP PICK",
-          kickOff: "27 SEP, 21:00"
-        },
-        {
-          homeName: "Bournemouth",
-          awayName: "Liverpool",
-          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/349.png",
-          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/364.png",
-          leagueName: "Premier League",
-          market: "Bournemouth to Win + Over 2.5 Goals",
-          badge: "TOP PICK",
-          kickOff: "28 SEP, 00:30"
-        },
-        {
-          homeName: "Leeds",
-          awayName: "C Palace",
-          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/341.png",
-          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/384.png",
-          leagueName: "Premier League",
-          market: "Leeds vs C Palace - Both Teams to Score",
-          badge: "HOT",
-          kickOff: "28 SEP, 03:00"
-        },
-        {
-          homeName: "Man City",
-          awayName: "Sunderland",
-          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/382.png",
-          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/383.png",
-          leagueName: "Premier League",
-          market: "Man City to Win + Have 2+ Goals",
-          badge: "TOP PICK",
-          kickOff: "28 SEP, 21:00"
-        },
-        {
-          homeName: "Fulham",
-          awayName: "Man United",
-          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/370.png",
-          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/360.png",
-          leagueName: "Premier League",
-          market: "Man United to Win or Draw + Over 1.5 Goals",
-          badge: "HOT",
-          kickOff: "29 SEP, 00:00"
-        },
-        {
-          homeName: "Getafe",
-          awayName: "Málaga",
-          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/2922.png",
-          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/1069.png",
-          leagueName: "La Liga",
-          market: "Getafe to Win + Over 2.5 Goals",
-          badge: "TOP PICK",
-          kickOff: "29 SEP, 03:00"
-        },
-        {
-          homeName: "Atlético",
-          awayName: "Real Madrid",
-          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/1068.png",
-          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/86.png",
-          leagueName: "La Liga",
-          market: "Atlético vs Real Madrid - Both Teams to Score",
-          badge: "HOT",
-          kickOff: "29 SEP, 20:00"
-        }
-      ];
+      container.innerHTML = `<div style="text-align:center; padding:15px; width:100%; font-size:11px; opacity:0.7;">No active pre-game boosts available at this moment.</div>`;
+      return;
     }
 
     allPicks = allPicks.slice(0, 7);
@@ -311,8 +239,6 @@ function animateCanvas() {
 if (canvas) animateCanvas();
 
 /* --- SITTING ROBOT EYE & HEAD TRACKING --- */
-let isPeeking = false;
-
 document.addEventListener('mousemove', (e) => {
   const robotStage = document.getElementById('sittingRobotStage');
   const authOverlay = document.getElementById('authOverlay');
@@ -428,19 +354,41 @@ function parseWMOWeatherCode(code) {
   return { label: 'CLOUDY', icon: 'bx-cloud', color: '#38bdf8' };
 }
 
-/* --- AUTHENTICATION --- */
+/* --- AUTHENTICATION & PERSISTENT SESSION ENGINE --- */
+function togglePasswordVisibility() {
+  const passInput = document.getElementById('passwordInput');
+  const icon = document.getElementById('togglePassIcon');
+  if (!passInput || !icon) return;
+  
+  if (passInput.type === 'password') {
+    passInput.type = 'text';
+    icon.className = 'bx bx-hide';
+  } else {
+    passInput.type = 'password';
+    icon.className = 'bx bx-show';
+  }
+}
+
 function handleLogin(event) {
   event.preventDefault();
   const userInput = document.getElementById('usernameInput');
   const passInput = document.getElementById('passwordInput');
+  const rememberCheckbox = document.getElementById('rememberMe');
+
   const userVal = userInput ? userInput.value.trim() : '';
   const passVal = passInput ? passInput.value : '';
+  const isRemember = rememberCheckbox ? rememberCheckbox.checked : false;
+
   const errorMsg = document.getElementById('loginErrorMsg');
   const card = document.getElementById('loginCard');
   const robotStage = document.getElementById('sittingRobotStage');
 
   if ((userVal === DEFAULT_USER || userVal === "sportsbookhub") && passVal === DEFAULT_PASS) {
-    sessionStorage.setItem('sbhub_auth', 'true');
+    if (isRemember) {
+      localStorage.setItem('sbhub_auth', 'true');
+    } else {
+      sessionStorage.setItem('sbhub_auth', 'true');
+    }
     unlockDashboard();
   } else {
     if (errorMsg) errorMsg.textContent = "ACCESS DENIED: Invalid Security Key";
@@ -467,7 +415,9 @@ function unlockDashboard() {
 }
 
 function handleLogout() {
+  localStorage.removeItem('sbhub_auth');
   sessionStorage.removeItem('sbhub_auth');
+
   const passInput = document.getElementById('passwordInput');
   if (passInput) passInput.value = '';
   const errorMsg = document.getElementById('loginErrorMsg');
@@ -480,7 +430,7 @@ function handleLogout() {
   if (robotStage) robotStage.classList.remove('covering-eyes', 'peeking');
 }
 
-/* --- UI TOGGLES & WIDGET MANAGEMENT --- */
+/* --- UI TOGGLES & WIDGET MANAGEMENT (WITH LOCALSTORAGE PERSISTENCE) --- */
 function toggleMenu(menuId, btnElement) {
   const targetMenu = document.getElementById(menuId);
   if (!targetMenu) return;
@@ -504,15 +454,35 @@ function toggleDropdown(menuId) {
 function toggleWidget(widgetId, show) {
   const el = document.getElementById(widgetId);
   if (el) el.style.display = show ? 'flex' : 'none';
+
+  const checkbox = document.querySelector(`input[onchange*="${widgetId}"]`);
+  if (checkbox) checkbox.checked = show;
+
+  try {
+    const savedWidgets = JSON.parse(localStorage.getItem('sbhub_widgets') || '{}');
+    savedWidgets[widgetId] = show;
+    localStorage.setItem('sbhub_widgets', JSON.stringify(savedWidgets));
+  } catch(e) {
+    console.warn("Could not save widget preference:", e);
+  }
 }
 
 function hideWidgetDirect(widgetId) {
   toggleWidget(widgetId, false);
-  const checkbox = document.querySelector(`input[onchange*="${widgetId}"]`);
-  if (checkbox) checkbox.checked = false;
 }
 
-/* --- VISUAL TEXTURE & SILK WAVE THEME ENGINE --- */
+function restoreSavedWidgets() {
+  try {
+    const savedWidgets = JSON.parse(localStorage.getItem('sbhub_widgets') || '{}');
+    Object.keys(savedWidgets).forEach(widgetId => {
+      toggleWidget(widgetId, savedWidgets[widgetId]);
+    });
+  } catch(e) {
+    console.warn("Could not load widget preferences:", e);
+  }
+}
+
+/* --- THEME CUSTOMIZER --- */
 function setGradient(theme) {
   const body = document.getElementById('pageBody');
   if (!body) return;
@@ -651,7 +621,7 @@ function renderLiveDutyWidget(rosterData) {
   calculateActiveTraders();
 }
 
-/* --- 7-DAY TOP GAMES SCOREBOARD ENGINE --- */
+/* --- TOP GAMES DYNAMIC MATCHDAY ENGINE --- */
 function getGMT8DateObj(offsetDays = 0) {
   const now = new Date();
   const gmt8String = now.toLocaleString("en-US", { timeZone: "Asia/Manila" });
@@ -686,80 +656,39 @@ async function fetchLiveGames() {
 
     const primaryLeagues = [
       { name: "UEFA Champions League", code: "uefa.champions" },
-      { name: "European Championships", code: "uefa.euro" },
       { name: "Premier League", code: "eng.1" },
       { name: "La Liga", code: "esp.1" },
       { name: "Bundesliga", code: "ger.1" },
       { name: "Serie A", code: "ita.1" },
       { name: "Ligue 1", code: "fra.1" },
+      { name: "UEFA European Championship", code: "uefa.euro" },
       { name: "UEFA Nations League", code: "uefa.nations" }
     ];
 
-    let matches = [];
+    const secondaryLeagues = [
+      { name: "UEFA Europa League", code: "uefa.europa" },
+      { name: "UEFA Conference League", code: "uefa.europa.conf" },
+      { name: "EFL Championship", code: "eng.2" },
+      { name: "Eredivisie", code: "ned.1" },
+      { name: "Primeira Liga", code: "por.1" },
+      { name: "Copa Libertadores", code: "conmebol.libertadores" },
+      { name: "MLS", code: "usa.1" },
+      { name: "Brasileirão Série A", code: "bra.1" },
+      { name: "J1 League", code: "jpn.1" },
+      { name: "Scottish Premiership", code: "sco.1" },
+      { name: "Süper Lig", code: "tur.1" },
+      { name: "Argentine Primera", code: "arg.1" }
+    ];
 
-    for (const league of primaryLeagues) {
-      if (matches.length >= 7) break;
-      try {
-        const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard?dates=${targetDateQuery}`);
-        if (!res.ok) continue;
-        const data = await res.json();
+    let matches = await fetchLeagueList(primaryLeagues, targetDateQuery);
 
-        if (data && data.events && data.events.length > 0) {
-          for (let i = 0; i < data.events.length; i++) {
-            if (matches.length >= 7) break;
-            const evt = data.events[i];
-            const comp = evt.competitions?.[0];
-            if (!comp) continue;
-
-            const homeTeam = comp.competitors?.find(c => c.homeAway === 'home');
-            const awayTeam = comp.competitors?.find(c => c.homeAway === 'away');
-
-            if (homeTeam && awayTeam) {
-              const homeName = homeTeam.team?.shortDisplayName || homeTeam.team?.displayName || "Home";
-              const awayName = awayTeam.team?.shortDisplayName || awayTeam.team?.displayName || "Away";
-
-              const homeLogo = homeTeam.team?.logo || homeTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
-              const awayLogo = awayTeam.team?.logo || awayTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
-
-              matches.push({
-                homeName,
-                awayName,
-                homeLogo,
-                awayLogo,
-                leagueName: league.name
-              });
-            }
-          }
-        }
-      } catch (err) {
-        console.warn(`Error fetching ${league.code}:`, err);
-      }
+    if (matches.length === 0) {
+      matches = await fetchLeagueList(secondaryLeagues, targetDateQuery);
     }
 
     if (matches.length === 0) {
-      matches = [
-        {
-          homeName: "Lens",
-          awayName: "Sporting",
-          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/163.png",
-          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/121.png",
-          leagueName: "UEFA Champions League"
-        },
-        {
-          homeName: "Real Madrid",
-          awayName: "Atlético Madrid",
-          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/86.png",
-          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/1068.png",
-          leagueName: "La Liga"
-        },
-        {
-          homeName: "Arsenal",
-          awayName: "Chelsea",
-          homeLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/359.png",
-          awayLogo: "https://a.espncdn.com/i/teamlogos/soccer/500/363.png",
-          leagueName: "Premier League"
-        }
-      ];
+      container.innerHTML = `<div style="text-align:center; padding:20px; font-size:11px; color:rgba(255,255,255,0.65);">No scheduled fixtures for ${dateLabelStr} (GMT+8).</div>`;
+      return;
     }
 
     matches = matches.slice(0, 7);
@@ -774,7 +703,7 @@ async function fetchLiveGames() {
             <img src="${item.awayLogo}" alt="${item.awayName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
           </div>
           <div class="top-game-title">${item.homeName} <span class="vs-light">vs</span> ${item.awayName}</div>
-          <div class="top-game-league">${item.leagueName}</div>
+          <div class="top-game-league">${item.leagueName}${item.kickOffTime ? ' &bull; <span style="color:#38bdf8;">' + item.kickOffTime + '</span>' : ''}</div>
         </div>
       `;
     });
@@ -782,8 +711,63 @@ async function fetchLiveGames() {
     container.innerHTML = gamesHtml;
 
   } catch (e) {
+    console.error("Fetch Live Games Error:", e);
     container.innerHTML = `<div style="text-align:center; padding:10px; font-size:11px; color:#f87171;">Failed to fetch live fixture data.</div>`;
   }
+}
+
+async function fetchLeagueList(leagueList, dateQuery) {
+  const fetchPromises = leagueList.map(league =>
+    fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard?dates=${dateQuery}`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => data ? { league, data } : null)
+      .catch(() => null)
+  );
+
+  const results = await Promise.all(fetchPromises);
+  let matches = [];
+
+  for (const item of results) {
+    if (!item || !item.data || !item.data.events) continue;
+    for (const evt of item.data.events) {
+      if (matches.length >= 7) break;
+      const comp = evt.competitions?.[0];
+      if (!comp) continue;
+
+      const homeTeam = comp.competitors?.find(c => c.homeAway === 'home');
+      const awayTeam = comp.competitors?.find(c => c.homeAway === 'away');
+
+      if (homeTeam && awayTeam) {
+        const homeName = homeTeam.team?.shortDisplayName || homeTeam.team?.displayName || "Home";
+        const awayName = awayTeam.team?.shortDisplayName || awayTeam.team?.displayName || "Away";
+
+        const homeLogo = homeTeam.team?.logo || homeTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
+        const awayLogo = awayTeam.team?.logo || awayTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
+
+        let kickOffTime = "";
+        if (evt.date || comp.date) {
+          const dObj = new Date(evt.date || comp.date);
+          kickOffTime = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Manila',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }).format(dObj);
+        }
+
+        matches.push({
+          homeName,
+          awayName,
+          homeLogo,
+          awayLogo,
+          leagueName: item.league.name,
+          kickOffTime
+        });
+      }
+    }
+  }
+
+  return matches;
 }
 
 function navigateMatchDay(dir) {
@@ -800,7 +784,7 @@ function calculateActiveTraders() {
     const timeBadge = card.querySelector('.badge-time');
     if (timeBadge) {
       const text = timeBadge.textContent.trim().toUpperCase();
-      if (!text.includes('OFF') && !text.includes('REST') && !text.includes('RD')) {
+      if (!text.includes('OFF') && !text.includes('REST') && !text.includes('RD') && !text.includes('LEAVE')) {
         activeCount++;
       }
     }
@@ -825,14 +809,15 @@ function initDashboardApp() {
     setGradient('silk-lavender');
   }
 
-  if (sessionStorage.getItem('sbhub_auth') === 'true') {
+  // CHECK PERSISTENT SESSION (LOCALSTORAGE OR SESSIONSTORAGE)
+  if (localStorage.getItem('sbhub_auth') === 'true' || sessionStorage.getItem('sbhub_auth') === 'true') {
     unlockDashboard();
   }
 
   switchBrandTab('ibet');
+  restoreSavedWidgets();
+
   fetchTopPicksAndBoosts();
-  
-  // AUTO-REFRESH TOP PICKS / BOOSTS EVERY 2 MINUTES
   setInterval(fetchTopPicksAndBoosts, 2 * 60 * 1000);
 
   listenToLiveDutyRoster();
