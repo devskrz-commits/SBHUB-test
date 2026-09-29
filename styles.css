@@ -460,7 +460,7 @@ body {
   opacity: 0.6;
 }
 
-/* HIGH-FIDELITY FULL-SCREEN RESPONSIVE BANNER CARD */
+/* FULL EDGE-TO-EDGE OVERVIEW BANNER CARD (ZERO LETTERBOXING) */
 .top-banner-card {
   display: flex;
   flex-direction: column;
@@ -468,7 +468,7 @@ body {
   gap: 16px;
   padding: 18px 22px;
   width: 100%;
-  min-height: 190px; /* ENFORCES PROPER VERTICAL HEIGHT ON 1080P/2K/4K SCREENS */
+  min-height: 160px;
   box-sizing: border-box;
   overflow: hidden;
   position: sticky;
@@ -477,16 +477,16 @@ body {
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.22);
 
-  /* BASE COLOR MATCHES NEON SMOKE OUTSKIRTS */
+  /* BASE COLOR MATCHING NEON GRAPHIC OUTSKIRTS */
   background-color: #080c1a !important;
 
-  /* DUAL-FILE STACK WITH FULL-VISIBILITY SCALING */
+  /* IMAGE STACK FALLBACKS */
   background-image: 
     url('./sports-banner.jpg'), 
     url('./american-football-player-neon-style_23-2151827356.avif') !important;
 
-  /* PREVENTS STRETCHING AND CROPPING ON FULL-SCREEN RESOLUTIONS */
-  background-size: contain !important;
+  /* STRETCHES 100% HORIZONTALLY AND VERTICALLY ACROSS ENTIRE BOX */
+  background-size: 100% 100% !important;
   background-position: center center !important;
   background-repeat: no-repeat !important;
 
