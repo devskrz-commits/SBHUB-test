@@ -1,8 +1,8 @@
 const DEFAULT_USER = "sportsbook2026";
 const DEFAULT_PASS = "sb2026";
 
-// ⚠️ TEMPORARY LOCAL TESTING ONLY — REMOVE BEFORE COMMITTING TO PUBLIC GITHUB
-const LOCAL_GEMINI_KEY = ""; // Paste your key between the quotes to test locally
+/* --- HELPER FOR MOBILE SCREEN DETECTION --- */
+const isMobileDevice = () => window.innerWidth <= 768;
 
 /* --- FIREBASE ROSTER INITIALIZATION --- */
 let rosterDb = null;
@@ -26,15 +26,35 @@ try {
 
 let selectedGameDayOffset = 0;
 
+/* --- MOBILE DRAWER NAVIGATION SYSTEM --- */
+function toggleMobileSidebar(forceState) {
+  const sidebar = document.getElementById('mainSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (!sidebar || !overlay) return;
+
+  const isActive = forceState !== undefined ? forceState : !sidebar.classList.contains('mobile-open');
+
+  if (isActive) {
+    sidebar.classList.add('mobile-open');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  } else {
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+}
+
 /* --- BRAND DIRECTORY TAB DATA & SWITCHER --- */
 const brandTabData = {
   ibet: [
     { name: "IBET ADMIN", url: "https://mga-betbook.center/ibet/bets" },
-    { name: "BETSSON", url: "https://b2b.betssonbusiness.com/" },
+    { name: "IBET BETSSON", url: "https://b2b.betssonbusiness.com/" },
     { name: "BET CONSTRUCT", url: "https://backoffice.betconstruct.com/" }
   ],
   edge: [
     { name: "KT SBX", url: "https://p2ibet.sbx.bet/bets" },
+    { name: "KT PROJECTS", url: "https://kickertech.atlassian.net/jira/projects" },
     { name: "EDGE ADMIN", url: "https://admin.edgegaming.io/admin/qbet/homepage" },
     { name: "SERVICE DESK", url: "https://kickertech.atlassian.net/servicedesk/customer/user/login?destination=portals" }
   ],
@@ -63,128 +83,226 @@ function switchBrandTab(tabName) {
   });
 }
 
-/* --- REAL-TIME TOP PICKS / HOT BOOSTS ENGINE --- */
+/* --- DYNAMIC MARKET BOOST DESCRIPTION GENERATOR --- */
+function generateScriptedMarket(homeName, awayName, index) {
+  const templates = [
+    `${homeName} to Win + Over 2.5 Goals`,
+    `${homeName} vs ${awayName} - Both Teams to Score`,
+    `${homeName} to Win + Have 2+ Goals`,
+    `${awayName} to Win or Draw + Over 1.5 Goals`,
+    `${homeName} vs ${awayName} - Both Teams to Score + Over 2.5 Goals`,
+    `${homeName} to Win First Half & Over 1.5 Goals`
+  ];
+  return templates[index % templates.length];
+}
+
+/* --- RANKED PRIORITY TOURNAMENTS --- */
+const PRIORITY_LEAGUES = [
+  { rank: 1, key: "uefa.champions", name: "UEFA Champions League", code: "uefa.champions" },
+  { rank: 2, key: "eng.1",          name: "Premier League",         code: "eng.1" },
+  { rank: 3, key: "esp.1",          name: "La Liga",                code: "esp.1" },
+  { rank: 4, key: "ger.1",          name: "Bundesliga",             code: "ger.1" },
+  { rank: 5, key: "ita.1",          name: "Serie A",                code: "ita.1" },
+  { rank: 6, key: "fra.1",          name: "Ligue 1",                code: "fra.1" },
+  { rank: 7, key: "por.1",          name: "Primeira Liga",          code: "por.1" },
+  { rank: 8, key: "ned.1",          name: "Eredivisie",             code: "ned.1" }
+];
+
+const TOP_TIER_LEAGUES = PRIORITY_LEAGUES;
+const SECONDARY_LEAGUES = [
+  { name: "UEFA Nations League", code: "uefa.nations" },
+  { name: "Major League Soccer", code: "usa.1" },
+  { name: "Veikkausliiga", code: "fin.1" },
+  { name: "Eliteserien", code: "nor.1" }
+];
+
+let cachedTopPicks = [];
+let currentFilterKey = 'eng.1'; // Default active tab is EPL
+
+function getLeagueDisplayName(key) {
+  const lg = PRIORITY_LEAGUES.find(l => l.key === key);
+  return lg ? lg.name : key.toUpperCase();
+}
+
+/* --- INSTANT LOCAL STORAGE CACHE LOADER (0ms PAGE LOAD) --- */
+function loadCachedTopPicks() {
+  try {
+    const stored = localStorage.getItem('sbhub_toppicks_cache');
+    if (stored) {
+      cachedTopPicks = JSON.parse(stored);
+      renderFilteredTopPicks();
+    }
+  } catch (e) {
+    console.warn("Could not parse top picks cache:", e);
+  }
+}
+
+/* --- PARALLEL FETCHING ENGINE WITH FULL MATCHDAY COVERAGE (&limit=100) --- */
 async function fetchTopPicksAndBoosts() {
   const container = document.getElementById('topPicksContainer');
   if (!container) return;
 
   try {
-    const primaryLeagues = [
-      { code: "uefa.champions", name: "UEFA Champions League" },
-      { code: "eng.1", name: "Premier League" },
-      { code: "esp.1", name: "La Liga" },
-      { code: "ger.1", name: "Bundesliga" },
-      { code: "ita.1", name: "Serie A" },
-      { code: "fra.1", name: "Ligue 1" }
-    ];
+    const now = new Date();
+    const seenMatchKeys = new Set();
 
-    let allPicks = [];
+    // Query target matchday dates (Oct 10, 11, 12, 14) with limit=100
+    // so ESPN returns ALL games in the daily lineup for La Liga, EPL, etc.
+    const targetDates = ["20261010", "20261011", "20261012", "20261014"];
 
-    for (const league of primaryLeagues) {
-      if (allPicks.length >= 7) break;
-      try {
-        const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard`);
-        if (!res.ok) continue;
-        const data = await res.json();
-
-        if (data && data.events && data.events.length > 0) {
-          for (let i = 0; i < data.events.length; i++) {
-            if (allPicks.length >= 7) break;
-            const evt = data.events[i];
-
-            const isPreGame = evt.status?.type?.state === 'pre';
-            if (!isPreGame) continue;
-
-            const comp = evt.competitions?.[0];
-            if (!comp) continue;
-
-            const homeTeam = comp.competitors?.find(c => c.homeAway === 'home');
-            const awayTeam = comp.competitors?.find(c => c.homeAway === 'away');
-
-            if (homeTeam && awayTeam) {
-              const homeName = homeTeam.team?.shortDisplayName || homeTeam.team?.displayName || "Home";
-              const awayName = awayTeam.team?.shortDisplayName || awayTeam.team?.displayName || "Away";
-
-              const homeLogo = homeTeam.team?.logo || homeTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
-              const awayLogo = awayTeam.team?.logo || awayTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
-
-              const dateObj = new Date(evt.date || comp.date);
-              const kickOffStr = new Intl.DateTimeFormat('en-GB', {
-                timeZone: 'Asia/Manila',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-              }).format(dateObj).toUpperCase();
-
-              const markets = [
-                `${homeName} to Win + Over 2.5 Goals`,
-                `${homeName} vs ${awayName} - Both Teams to Score`,
-                `${homeName} to Win + Have 2+ Goals`,
-                `${awayName} to Win or Draw + Over 1.5 Goals`
-              ];
-
-              const selectedMarket = markets[allPicks.length % markets.length];
-
-              allPicks.push({
-                homeName,
-                awayName,
-                homeLogo,
-                awayLogo,
-                leagueName: league.name,
-                market: selectedMarket,
-                badge: (allPicks.length % 2 === 0) ? "TOP PICK" : "HOT",
-                kickOff: kickOffStr
-              });
-            }
-          }
-        }
-      } catch (err) {
-        console.warn(`Error fetching boosts for ${league.code}:`, err);
+    const fetchPromises = [];
+    for (const league of PRIORITY_LEAGUES) {
+      for (const dateStr of targetDates) {
+        fetchPromises.push(
+          fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard?dates=${dateStr}&limit=100`)
+            .then(res => res.ok ? res.json() : null)
+            .then(data => ({ league, data }))
+            .catch(() => null)
+        );
       }
     }
 
-    if (allPicks.length === 0) {
-      container.innerHTML = `<div style="text-align:center; padding:15px; width:100%; font-size:11px; opacity:0.7;">No active pre-game boosts available at this moment.</div>`;
-      return;
+    const results = await Promise.all(fetchPromises);
+    let apiPicks = [];
+
+    for (const resItem of results) {
+      if (!resItem || !resItem.data || !resItem.data.events) continue;
+      const { league, data } = resItem;
+
+      for (const evt of data.events) {
+        const gameState = evt.status?.type?.state;
+        const evtDate = new Date(evt.date);
+
+        // Strict pre-kickoff rule: Disappears instantly once match kicks off or goes live
+        if (gameState !== 'pre' || evtDate <= now) continue;
+
+        const comp = evt.competitions?.[0];
+        if (!comp) continue;
+
+        const homeTeam = comp.competitors?.find(c => c.homeAway === 'home');
+        const awayTeam = comp.competitors?.find(c => c.homeAway === 'away');
+
+        if (homeTeam && awayTeam) {
+          const homeName = homeTeam.team?.shortDisplayName || homeTeam.team?.displayName || "Home";
+          const awayName = awayTeam.team?.shortDisplayName || awayTeam.team?.displayName || "Away";
+
+          const matchKey = evt.id || `${homeName}-${awayName}-${evt.date}`;
+          if (seenMatchKeys.has(matchKey)) continue;
+          seenMatchKeys.add(matchKey);
+
+          const homeLogo = homeTeam.team?.logo || homeTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
+          const awayLogo = awayTeam.team?.logo || awayTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
+
+          const kickOffStr = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Manila',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }).format(evtDate).toUpperCase();
+
+          const scriptedMarket = generateScriptedMarket(homeName, awayName, apiPicks.length);
+
+          apiPicks.push({
+            leagueKey: league.key,
+            leagueRank: league.rank,
+            kickOffTimestamp: evtDate.getTime(),
+            homeName,
+            awayName,
+            homeLogo,
+            awayLogo,
+            leagueName: data.leagues?.[0]?.name || league.name,
+            market: scriptedMarket,
+            badge: (apiPicks.length % 2 === 0) ? "TOP PICK" : "HOT",
+            kickOff: kickOffStr
+          });
+        }
+      }
     }
 
-    allPicks = allPicks.slice(0, 7);
-
-    let cardsHtml = "";
-    allPicks.forEach(pick => {
-      const isTopPick = pick.badge === "TOP PICK";
-      cardsHtml += `
-        <div class="boost-card ${isTopPick ? 'highlight-border' : ''}">
-          <div class="flags-row">
-            <img src="${pick.homeLogo}" alt="${pick.homeName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
-            <span class="vs-text">VS</span>
-            <img src="${pick.awayLogo}" alt="${pick.awayName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
-          </div>
-          
-          <div class="boost-match-info">
-            <div class="boost-match-title">${pick.homeName} <span class="vs-light">vs</span> ${pick.awayName}</div>
-            <div class="boost-league-sub">${pick.leagueName}</div>
-          </div>
-
-          <div>
-            <span class="boost-badge ${isTopPick ? 'top-pick' : 'hot'}">${pick.badge}</span>
-          </div>
-
-          <div class="boost-market-desc">${pick.market}</div>
-
-          <div class="boost-card-bottom">
-            <div class="boost-kickoff-pill"><i class='bx bx-time-five'></i> ${pick.kickOff}</div>
-          </div>
-        </div>
-      `;
+    // Sort by League Rank first, then chronologically by kickoff time
+    apiPicks.sort((a, b) => {
+      if (a.leagueRank !== b.leagueRank) return a.leagueRank - b.leagueRank;
+      return a.kickOffTimestamp - b.kickOffTimestamp;
     });
 
-    container.innerHTML = cardsHtml;
+    if (apiPicks.length > 0) {
+      cachedTopPicks = apiPicks;
+      localStorage.setItem('sbhub_toppicks_cache', JSON.stringify(apiPicks));
+    }
+    
+    renderFilteredTopPicks();
   } catch (e) {
-    container.innerHTML = `<div style="text-align:center; padding:10px; font-size:11px; color:#f87171;">Failed to fetch live boosts.</div>`;
+    console.error("Fetch Top Picks Error:", e);
+    renderFilteredTopPicks();
   }
+}
+
+/* --- FILTER AND RENDER TOP PICKS BY SELECTED TOURNAMENT --- */
+function filterTopPicks(leagueKey, btnElement) {
+  currentFilterKey = leagueKey;
+
+  document.querySelectorAll('.boost-filter-btn').forEach(btn => btn.classList.remove('active'));
+  if (btnElement) {
+    btnElement.classList.add('active');
+  } else {
+    const defaultBtn = document.getElementById(`btn-boost-${leagueKey}`);
+    if (defaultBtn) defaultBtn.classList.add('active');
+  }
+
+  renderFilteredTopPicks();
+}
+
+function renderFilteredTopPicks() {
+  const container = document.getElementById('topPicksContainer');
+  if (!container) return;
+
+  const now = new Date();
+
+  // Guarantee any pick that reached kickoff time while user is viewing is removed
+  let activePicks = cachedTopPicks.filter(pick => pick.kickOffTimestamp > now.getTime());
+  let displayPicks = activePicks.filter(pick => pick.leagueKey === currentFilterKey);
+
+  // Display notice if no real pre-kickoff matches exist for the selected category
+  if (displayPicks.length === 0) {
+    const categoryLabel = getLeagueDisplayName(currentFilterKey);
+    container.innerHTML = `<div style="text-align:center; padding:25px; width:100%; font-size:12px; font-weight:600; color:rgba(255,255,255,0.65);">No upcoming scheduled ${categoryLabel} matches available at this time.</div>`;
+    return;
+  }
+
+  displayPicks = displayPicks.slice(0, 12);
+
+  let cardsHtml = "";
+  displayPicks.forEach(pick => {
+    const isTopPick = pick.badge === "TOP PICK";
+    cardsHtml += `
+      <div class="boost-card ${isTopPick ? 'highlight-border' : ''}">
+        <div class="flags-row">
+          <img src="${pick.homeLogo}" alt="${pick.homeName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+          <span class="vs-text">VS</span>
+          <img src="${pick.awayLogo}" alt="${pick.awayName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+        </div>
+        
+        <div class="boost-match-info">
+          <div class="boost-match-title">${pick.homeName} <span class="vs-light">vs</span> ${pick.awayName}</div>
+          <div class="boost-league-sub">${pick.leagueName}</div>
+        </div>
+
+        <div>
+          <span class="boost-badge ${isTopPick ? 'top-pick' : 'hot'}">${pick.badge}</span>
+        </div>
+
+        <div class="boost-market-desc">${pick.market}</div>
+
+        <div class="boost-card-bottom">
+          <div class="boost-kickoff-pill"><i class='bx bx-time-five'></i> ${pick.kickOff}</div>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = cardsHtml;
 }
 
 /* --- ANIMATED PLASMA BACKGROUND CANVAS --- */
@@ -196,17 +314,23 @@ function resizeCanvas() {
   if (!canvas) return;
   width = canvas.width = window.innerWidth;
   height = canvas.height = window.innerHeight;
+  initParticles();
 }
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  if (!isMobileDevice()) toggleMobileSidebar(false);
+});
 
 class Particle {
   constructor() {
+    this.reset();
+  }
+  reset() {
     this.x = Math.random() * width;
     this.y = Math.random() * height;
-    this.radius = Math.random() * 2 + 1;
-    this.vx = (Math.random() - 0.5) * 0.8;
-    this.vy = (Math.random() - 0.5) * 0.8;
+    this.radius = Math.random() * (isMobileDevice() ? 1.5 : 2) + 1;
+    this.vx = (Math.random() - 0.5) * (isMobileDevice() ? 0.4 : 0.8);
+    this.vy = (Math.random() - 0.5) * (isMobileDevice() ? 0.4 : 0.8);
     this.alpha = Math.random() * 0.4 + 0.1;
   }
   update() {
@@ -220,15 +344,24 @@ class Particle {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(56, 189, 248, ${this.alpha})`;
-    ctx.shadowBlur = 8;
-    ctx.shadowColor = '#00f2fe';
+    if (!isMobileDevice()) {
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = '#00f2fe';
+    } else {
+      ctx.shadowBlur = 0;
+    }
     ctx.fill();
   }
 }
 
-if (canvas) {
-  for (let i = 0; i < 45; i++) particles.push(new Particle());
+function initParticles() {
+  if (!canvas) return;
+  particles = [];
+  const particleCount = isMobileDevice() ? 15 : 45;
+  for (let i = 0; i < particleCount; i++) particles.push(new Particle());
 }
+
+resizeCanvas();
 
 function animateCanvas() {
   if (!canvas || !ctx) return;
@@ -243,6 +376,8 @@ if (canvas) animateCanvas();
 
 /* --- SITTING ROBOT EYE & HEAD TRACKING --- */
 document.addEventListener('mousemove', (e) => {
+  if (isMobileDevice()) return;
+
   const robotStage = document.getElementById('sittingRobotStage');
   const authOverlay = document.getElementById('authOverlay');
   if (!robotStage || (authOverlay && authOverlay.classList.contains('unlocked'))) return;
@@ -384,7 +519,6 @@ function handleLogin(event) {
 
   const errorMsg = document.getElementById('loginErrorMsg');
   const card = document.getElementById('loginCard');
-  const robotStage = document.getElementById('sittingRobotStage');
 
   if ((userVal === DEFAULT_USER || userVal === "sportsbookhub") && passVal === DEFAULT_PASS) {
     if (isRemember) {
@@ -395,12 +529,10 @@ function handleLogin(event) {
     unlockDashboard();
   } else {
     if (errorMsg) errorMsg.textContent = "ACCESS DENIED: Invalid Security Key";
-    if (robotStage) robotStage.classList.add('error-state');
     if (card) {
       card.classList.add('shake');
       setTimeout(() => {
         card.classList.remove('shake');
-        if (robotStage) robotStage.classList.remove('error-state');
       }, 500);
     }
     if (passInput) {
@@ -427,13 +559,11 @@ function handleLogout() {
   if (errorMsg) errorMsg.textContent = '';
   const dashboardApp = document.getElementById('dashboardApp');
   const authOverlay = document.getElementById('authOverlay');
-  const robotStage = document.getElementById('sittingRobotStage');
   if (dashboardApp) dashboardApp.classList.remove('unlocked');
   if (authOverlay) authOverlay.classList.remove('unlocked');
-  if (robotStage) robotStage.classList.remove('covering-eyes', 'peeking');
 }
 
-/* --- UI TOGGLES & WIDGET MANAGEMENT (WITH LOCALSTORAGE PERSISTENCE) --- */
+/* --- UI TOGGLES & WIDGET MANAGEMENT --- */
 function toggleMenu(menuId, btnElement) {
   const targetMenu = document.getElementById(menuId);
   if (!targetMenu) return;
@@ -485,20 +615,15 @@ function restoreSavedWidgets() {
   }
 }
 
-/* --- HIGH-DEFINITION VECTOR ABSTRACT WALLPAPER DATA URIs --- */
-const lavenderSvg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080' viewBox='0 0 1920 1080'><defs><linearGradient id='bg' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23090d16'/><stop offset='50%' stop-color='%23130d24'/><stop offset='100%' stop-color='%23050811'/></linearGradient><linearGradient id='w1' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0%' stop-color='%23ec4899'/><stop offset='50%' stop-color='%23a855f7'/><stop offset='100%' stop-color='%2338bdf8'/></linearGradient><linearGradient id='w2' x1='0%' y1='100%' x2='100%' y2='0%'><stop offset='0%' stop-color='%2338bdf8'/><stop offset='50%' stop-color='%23818cf8'/><stop offset='100%' stop-color='%23f43f5e'/></linearGradient><filter id='b1'><feGaussianBlur stdDeviation='40'/></filter><filter id='b2'><feGaussianBlur stdDeviation='15'/></filter></defs><rect width='100%' height='100%' fill='url(%23bg)'/><path d='M-100 700 Q 400 200 900 650 T 1900 300 T 2100 800' stroke='url(%23w1)' stroke-width='140' fill='none' opacity='0.75' filter='url(%23b1)'/><path d='M-100 700 Q 400 200 900 650 T 1900 300 T 2100 800' stroke='url(%23w1)' stroke-width='40' fill='none' opacity='0.9' filter='url(%23b2)'/><path d='M-100 350 Q 500 850 1100 250 T 2100 600' stroke='url(%23w2)' stroke-width='100' fill='none' opacity='0.65' filter='url(%23b1)'/><path d='M-100 350 Q 500 850 1100 250 T 2100 600' stroke='url(%23w2)' stroke-width='25' fill='none' opacity='0.85' filter='url(%23b2)'/></svg>";
-
-const coralSvg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080' viewBox='0 0 1920 1080'><defs><linearGradient id='bg' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%231a050d'/><stop offset='50%' stop-color='%232d0617'/><stop offset='100%' stop-color='%23080206'/></linearGradient><linearGradient id='w1' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0%' stop-color='%23fb923c'/><stop offset='50%' stop-color='%23f43f5e'/><stop offset='100%' stop-color='%23a855f7'/></linearGradient><filter id='b1'><feGaussianBlur stdDeviation='45'/></filter><filter id='b2'><feGaussianBlur stdDeviation='18'/></filter></defs><rect width='100%' height='100%' fill='url(%23bg)'/><path d='M-100 400 Q 450 900 1000 300 T 2100 700' stroke='url(%23w1)' stroke-width='160' fill='none' opacity='0.8' filter='url(%23b1)'/><path d='M-100 400 Q 450 900 1000 300 T 2100 700' stroke='url(%23w1)' stroke-width='45' fill='none' opacity='0.95' filter='url(%23b2)'/><path d='M-100 800 Q 600 200 1200 800 T 2100 200' stroke='%23fbbf24' stroke-width='90' fill='none' opacity='0.6' filter='url(%23b1)'/></svg>";
-
-const pastelSvg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080' viewBox='0 0 1920 1080'><defs><linearGradient id='bg' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23030712'/><stop offset='50%' stop-color='%230f172a'/><stop offset='100%' stop-color='%23020617'/></linearGradient><linearGradient id='w1' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%2338bdf8'/><stop offset='33%' stop-color='%23818cf8'/><stop offset='66%' stop-color='%23f43f5e'/><stop offset='100%' stop-color='%23fbbf24'/></linearGradient><filter id='b1'><feGaussianBlur stdDeviation='50'/></filter><filter id='b2'><feGaussianBlur stdDeviation='20'/></filter></defs><rect width='100%' height='100%' fill='url(%23bg)'/><path d='M-100 200 C 500 800, 800 -200, 1400 700 C 1800 1200, 2000 100, 2100 400' stroke='url(%23w1)' stroke-width='180' fill='none' opacity='0.75' filter='url(%23b1)'/><path d='M-100 200 C 500 800, 800 -200, 1400 700 C 1800 1200, 2000 100, 2100 400' stroke='url(%23w1)' stroke-width='50' fill='none' opacity='0.9' filter='url(%23b2)'/></svg>";
-
-const mintSvg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080' viewBox='0 0 1920 1080'><defs><linearGradient id='bg' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23022c22'/><stop offset='50%' stop-color='%23064e3b'/><stop offset='100%' stop-color='%23020617'/></linearGradient><linearGradient id='w1' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0%' stop-color='%2334d399'/><stop offset='50%' stop-color='%232dd4bf'/><stop offset='100%' stop-color='%2338bdf8'/></linearGradient><filter id='b1'><feGaussianBlur stdDeviation='40'/></filter><filter id='b2'><feGaussianBlur stdDeviation='15'/></filter></defs><rect width='100%' height='100%' fill='url(%23bg)'/><path d='M-100 650 Q 500 150 1100 600 T 2100 250' stroke='url(%23w1)' stroke-width='150' fill='none' opacity='0.8' filter='url(%23b1)'/><path d='M-100 650 Q 500 150 1100 600 T 2100 250' stroke='url(%23w1)' stroke-width='40' fill='none' opacity='0.95' filter='url(%23b2)'/></svg>";
-
-const iridescentSvg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080' viewBox='0 0 1920 1080'><defs><linearGradient id='bg' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%231e1b4b'/><stop offset='50%' stop-color='%232e1065'/><stop offset='100%' stop-color='%23090d16'/></linearGradient><linearGradient id='w1' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23a855f7'/><stop offset='25%' stop-color='%23ec4899'/><stop offset='50%' stop-color='%23f59e0b'/><stop offset='75%' stop-color='%2310b981'/><stop offset='100%' stop-color='%2306b6d4'/></linearGradient><filter id='b1'><feGaussianBlur stdDeviation='45'/></filter><filter id='b2'><feGaussianBlur stdDeviation='18'/></filter></defs><rect width='100%' height='100%' fill='url(%23bg)'/><path d='M-100 300 C 400 900, 900 100, 1400 800 C 1800 1300, 2000 200, 2100 500' stroke='url(%23w1)' stroke-width='160' fill='none' opacity='0.8' filter='url(%23b1)'/><path d='M-100 300 C 400 900, 900 100, 1400 800 C 1800 1300, 2000 200, 2100 500' stroke='url(%23w1)' stroke-width='45' fill='none' opacity='0.95' filter='url(%23b2)'/></svg>";
-
-const bubblesSvg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080' viewBox='0 0 1920 1080'><defs><linearGradient id='bg' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23020617'/><stop offset='50%' stop-color='%230f172a'/><stop offset='100%' stop-color='%23090d16'/></linearGradient><radialGradient id='o1' cx='30%' cy='30%' r='50%'><stop offset='0%' stop-color='%23ec4899'/><stop offset='50%' stop-color='%238b5cf6'/><stop offset='100%' stop-color='transparent'/></radialGradient><radialGradient id='o2' cx='70%' cy='70%' r='60%'><stop offset='0%' stop-color='%2338bdf8'/><stop offset='50%' stop-color='%230284c7'/><stop offset='100%' stop-color='transparent'/></radialGradient><radialGradient id='o3' cx='50%' cy='40%' r='45%'><stop offset='0%' stop-color='%23f59e0b'/><stop offset='60%' stop-color='%23ef4444'/><stop offset='100%' stop-color='transparent'/></radialGradient><filter id='b'><feGaussianBlur stdDeviation='60'/></filter></defs><rect width='100%' height='100%' fill='url(%23bg)'/><circle cx='400' cy='350' r='450' fill='url(%23o1)' opacity='0.75' filter='url(%23b)'/><circle cx='1400' cy='700' r='550' fill='url(%23o2)' opacity='0.8' filter='url(%23b)'/><circle cx='960' cy='500' r='380' fill='url(%23o3)' opacity='0.65' filter='url(%23b)'/></svg>";
-
-const lavaSvg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080' viewBox='0 0 1920 1080'><defs><linearGradient id='bg' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%2318020c'/><stop offset='50%' stop-color='%232e0818'/><stop offset='100%' stop-color='%23090207'/></linearGradient><radialGradient id='l1' cx='20%' cy='80%' r='65%'><stop offset='0%' stop-color='%23f97316'/><stop offset='40%' stop-color='%23dc2626'/><stop offset='100%' stop-color='transparent'/></radialGradient><radialGradient id='l2' cx='80%' cy='20%' r='60%'><stop offset='0%' stop-color='%23a855f7'/><stop offset='50%' stop-color='%23ec4899'/><stop offset='100%' stop-color='transparent'/></radialGradient><filter id='b'><feGaussianBlur stdDeviation='65'/></filter></defs><rect width='100%' height='100%' fill='url(%23bg)'/><circle cx='300' cy='800' r='550' fill='url(%23l1)' opacity='0.85' filter='url(%23b)'/><circle cx='1600' cy='250' r='500' fill='url(%23l2)' opacity='0.8' filter='url(%23b)'/></svg>";
+/* --- ABSTRACT WALLPAPERS --- */
+const ABSTRACT_WALLPAPERS = {
+  '3d-chrome-swirl': 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2560&auto=format&fit=crop',
+  'cyan-liquid-glass': 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2560&auto=format&fit=crop',
+  'deep-liquid-chrome': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=2560&auto=format&fit=crop',
+  'neon-line-ribbon': 'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=2560&auto=format&fit=crop',
+  'neural-wireframe': 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2560&auto=format&fit=crop',
+  'dark-energy-vortex': 'https://images.unsplash.com/photo-1604076913837-52ab5629fba9?q=80&w=2560&auto=format&fit=crop'
+};
 
 /* --- THEME SWITCHER ENGINE --- */
 function setGradient(theme) {
@@ -506,44 +631,40 @@ function setGradient(theme) {
   if (!body) return;
   let backgroundStyle = '';
 
-  switch(theme) {
-    /* PLAIN DARK BASE THEMES */
-    case 'plain-slate':
-      backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.95)), #0f172a';
-      break;
-    case 'plain-navy':
-      backgroundStyle = 'linear-gradient(rgba(11, 19, 41, 0.95), rgba(11, 19, 41, 0.95)), #0b1329';
-      break;
-    case 'plain-onyx':
-      backgroundStyle = 'linear-gradient(rgba(18, 18, 18, 0.95), rgba(18, 18, 18, 0.95)), #121212';
-      break;
+  const lightThemes = ['plain-daylight', 'plain-sky-light', 'plain-warm-light'];
+  if (lightThemes.includes(theme)) {
+    body.classList.add('light-theme');
+  } else {
+    body.classList.remove('light-theme');
+  }
 
-    /* SILK & SATIN NEON WAVE GRAPHICS */
-    case 'silk-lavender':
-      backgroundStyle = `url("${lavenderSvg}")`;
-      break;
-    case 'silk-coral':
-      backgroundStyle = `url("${coralSvg}")`;
-      break;
-    case 'silk-pastel':
-      backgroundStyle = `url("${pastelSvg}")`;
-      break;
-    case 'silk-mint':
-      backgroundStyle = `url("${mintSvg}")`;
-      break;
-    case 'silk-iridescent':
-      backgroundStyle = `url("${iridescentSvg}")`;
-      break;
-
-    /* 3D RIBBON FOLDS & FLUID SWIRLS */
-    case 'abstract-bubbles':
-      backgroundStyle = `url("${bubblesSvg}")`;
-      break;
-    case 'abstract-lava':
-      backgroundStyle = `url("${lavaSvg}")`;
-      break;
-    default:
-      backgroundStyle = `url("${lavenderSvg}")`;
+  if (ABSTRACT_WALLPAPERS[theme]) {
+    backgroundStyle = `url("${ABSTRACT_WALLPAPERS[theme]}")`;
+  } else if (typeof theme === 'string' && (theme.startsWith('http') || theme.startsWith('url('))) {
+    backgroundStyle = theme.startsWith('url(') ? theme : `url("${theme}")`;
+  } else {
+    switch(theme) {
+      case 'plain-slate':
+        backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.95)), #0f172a';
+        break;
+      case 'plain-navy':
+        backgroundStyle = 'linear-gradient(rgba(11, 19, 41, 0.95), rgba(11, 19, 41, 0.95)), #0b1329';
+        break;
+      case 'plain-onyx':
+        backgroundStyle = 'linear-gradient(rgba(18, 18, 18, 0.95), rgba(18, 18, 18, 0.95)), #121212';
+        break;
+      case 'plain-daylight':
+        backgroundStyle = 'linear-gradient(rgba(248, 250, 252, 0.95), rgba(248, 250, 252, 0.95)), #f8fafc';
+        break;
+      case 'plain-sky-light':
+        backgroundStyle = 'linear-gradient(rgba(224, 242, 254, 0.95), rgba(224, 242, 254, 0.95)), #e0f2fe';
+        break;
+      case 'plain-warm-light':
+        backgroundStyle = 'linear-gradient(rgba(245, 245, 244, 0.95), rgba(245, 245, 244, 0.95)), #f5f5f4';
+        break;
+      default:
+        backgroundStyle = `url("${ABSTRACT_WALLPAPERS['3d-chrome-swirl']}")`;
+    }
   }
 
   body.style.background = backgroundStyle;
@@ -554,13 +675,21 @@ function setGradient(theme) {
 
   const themeMenu = document.getElementById('themeMenu');
   if (themeMenu) themeMenu.classList.remove('show');
-  localStorage.setItem('sbhub_theme', backgroundStyle);
+  localStorage.setItem('sbhub_theme', theme);
 }
 
-/* --- REAL-TIME LIVE DUTY ROSTER (FIREBASE) --- */
+/* --- REAL-TIME LIVE DUTY ROSTER (ACCURATE GMT+8 / MANILA TIME) --- */
+function getGMT8IsoDate() {
+  const nowManila = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
+  const year = nowManila.getFullYear();
+  const month = String(nowManila.getMonth() + 1).padStart(2, '0');
+  const day = String(nowManila.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 function getCurrentSlotInfo() {
-  const now = new Date();
-  const hours = now.getHours();
+  const nowManila = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
+  const hours = nowManila.getHours();
   if (hours >= 6 && hours < 9)    return { slotId: "slot_6_9", label: "7:00 - 9:00" };
   if (hours >= 9 && hours < 12)  return { slotId: "slot_9_12", label: "9:00 - 12:00" };
   if (hours >= 12 && hours < 15) return { slotId: "slot_12_15", label: "12:00 - 15:00" };
@@ -585,13 +714,22 @@ function renderLiveDutyWidget(rosterData) {
     return;
   }
 
-  const todayIso = new Date().toISOString().split('T')[0];
+  const todayIso = getGMT8IsoDate();
   const { slotId, label: slotLabel } = getCurrentSlotInfo();
 
-  let activeDayKey = Object.keys(rosterData).find(key => key !== 'archives' && rosterData[key]?.isoDate === todayIso);
+  let activeDayKey = Object.keys(rosterData).find(key => {
+    if (key === 'archives') return false;
+    const entry = rosterData[key];
+    return entry?.isoDate === todayIso || entry?.date === todayIso || key === todayIso || key.includes(todayIso);
+  });
+
   if (!activeDayKey) {
     const activeKeys = Object.keys(rosterData).filter(k => k !== 'archives');
-    activeKeys.sort((a, b) => (rosterData[b]?.isoDate || '').localeCompare(rosterData[a]?.isoDate || ''));
+    activeKeys.sort((a, b) => {
+      const dateA = rosterData[b]?.isoDate || rosterData[b]?.date || b;
+      const dateB = rosterData[a]?.isoDate || rosterData[a]?.date || a;
+      return String(dateA).localeCompare(String(dateB));
+    });
     activeDayKey = activeKeys[0];
   }
 
@@ -601,6 +739,7 @@ function renderLiveDutyWidget(rosterData) {
   }
 
   const dayData = rosterData[activeDayKey];
+  const displayDate = dayData.isoDate || dayData.date || todayIso;
   const teamMembers = [
     { id: 'ann', name: 'ANN' }, { id: 'dave', name: 'DAVE' },
     { id: 'ken', name: 'KEN' }, { id: 'kriztel', name: 'KRIZTEL' }
@@ -608,7 +747,7 @@ function renderLiveDutyWidget(rosterData) {
 
   let html = `
     <div style="font-size:11px; font-weight:700; opacity:0.9; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-      <span>📅 ${dayData.isoDate || todayIso}</span>
+      <span>📅 ${displayDate}</span>
       <span class="badge-time">⏰ ${slotLabel}</span>
     </div>
   `;
@@ -650,7 +789,7 @@ function renderLiveDutyWidget(rosterData) {
   calculateActiveTraders();
 }
 
-/* --- TOP GAMES DYNAMIC MATCHDAY ENGINE --- */
+/* --- TOP GAMES ENGINE --- */
 function getGMT8DateObj(offsetDays = 0) {
   const now = new Date();
   const gmt8String = now.toLocaleString("en-US", { timeZone: "Asia/Manila" });
@@ -683,36 +822,19 @@ async function fetchLiveGames() {
     const labelEl = document.getElementById("matchDayDisplay");
     if (labelEl) labelEl.textContent = `${dayTag} (${dateLabelStr})`;
 
-    const primaryLeagues = [
-      { name: "UEFA Champions League", code: "uefa.champions" },
-      { name: "Premier League", code: "eng.1" },
-      { name: "La Liga", code: "esp.1" },
-      { name: "Bundesliga", code: "ger.1" },
-      { name: "Serie A", code: "ita.1" },
-      { name: "Ligue 1", code: "fra.1" },
-      { name: "UEFA European Championship", code: "uefa.euro" },
-      { name: "UEFA Nations League", code: "uefa.nations" }
-    ];
+    let matches = await fetchLeagueList(TOP_TIER_LEAGUES, targetDateQuery);
 
-    const secondaryLeagues = [
-      { name: "UEFA Europa League", code: "uefa.europa" },
-      { name: "UEFA Conference League", code: "uefa.europa.conf" },
-      { name: "EFL Championship", code: "eng.2" },
-      { name: "Eredivisie", code: "ned.1" },
-      { name: "Primeira Liga", code: "por.1" },
-      { name: "Copa Libertadores", code: "conmebol.libertadores" },
-      { name: "MLS", code: "usa.1" },
-      { name: "Brasileirão Série A", code: "bra.1" },
-      { name: "J1 League", code: "jpn.1" },
-      { name: "Scottish Premiership", code: "sco.1" },
-      { name: "Süper Lig", code: "tur.1" },
-      { name: "Argentine Primera", code: "arg.1" }
-    ];
-
-    let matches = await fetchLeagueList(primaryLeagues, targetDateQuery);
-
-    if (matches.length === 0) {
-      matches = await fetchLeagueList(secondaryLeagues, targetDateQuery);
+    if (matches.length < 10) {
+      const secondaryMatches = await fetchLeagueList(SECONDARY_LEAGUES, targetDateQuery);
+      const seenMatchKeys = new Set(matches.map(m => `${m.homeName}-${m.awayName}`));
+      
+      for (const sm of secondaryMatches) {
+        const key = `${sm.homeName}-${sm.awayName}`;
+        if (!seenMatchKeys.has(key)) {
+          seenMatchKeys.add(key);
+          matches.push(sm);
+        }
+      }
     }
 
     if (matches.length === 0) {
@@ -720,7 +842,7 @@ async function fetchLiveGames() {
       return;
     }
 
-    matches = matches.slice(0, 7);
+    matches = matches.slice(0, 10);
 
     let gamesHtml = "";
     matches.forEach(item => {
@@ -746,20 +868,28 @@ async function fetchLiveGames() {
 }
 
 async function fetchLeagueList(leagueList, dateQuery) {
-  const fetchPromises = leagueList.map(league =>
-    fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard?dates=${dateQuery}`)
+  const uniqueCodeToLeagues = new Map();
+  leagueList.forEach(league => {
+    if (!uniqueCodeToLeagues.has(league.code)) {
+      uniqueCodeToLeagues.set(league.code, league.name);
+    }
+  });
+
+  const fetchPromises = Array.from(uniqueCodeToLeagues.entries()).map(([code, defaultName]) =>
+    fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${code}/scoreboard?dates=${dateQuery}`)
       .then(res => res.ok ? res.json() : null)
-      .then(data => data ? { league, data } : null)
+      .then(data => data ? { code, defaultName, data } : null)
       .catch(() => null)
   );
 
   const results = await Promise.all(fetchPromises);
   let matches = [];
+  const seenMatchKeys = new Set();
 
   for (const item of results) {
     if (!item || !item.data || !item.data.events) continue;
     for (const evt of item.data.events) {
-      if (matches.length >= 7) break;
+      if (matches.length >= 15) break;
       const comp = evt.competitions?.[0];
       if (!comp) continue;
 
@@ -769,6 +899,10 @@ async function fetchLeagueList(leagueList, dateQuery) {
       if (homeTeam && awayTeam) {
         const homeName = homeTeam.team?.shortDisplayName || homeTeam.team?.displayName || "Home";
         const awayName = awayTeam.team?.shortDisplayName || awayTeam.team?.displayName || "Away";
+
+        const matchKey = evt.id || `${homeName}-${awayName}`;
+        if (seenMatchKeys.has(matchKey)) continue;
+        seenMatchKeys.add(matchKey);
 
         const homeLogo = homeTeam.team?.logo || homeTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
         const awayLogo = awayTeam.team?.logo || awayTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
@@ -784,12 +918,14 @@ async function fetchLeagueList(leagueList, dateQuery) {
           }).format(dObj);
         }
 
+        const displayedLeagueName = item.data.leagues?.[0]?.name || item.defaultName;
+
         matches.push({
           homeName,
           awayName,
           homeLogo,
           awayLogo,
-          leagueName: item.league.name,
+          leagueName: displayedLeagueName,
           kickOffTime
         });
       }
@@ -822,283 +958,15 @@ function calculateActiveTraders() {
   if (el) el.textContent = activeCount + ' Working';
 }
 
-/* --- KRIZTEL AI COPILOT ENGINE --- */
-const KriztelAI = {
-  hubContextEnabled: true,
-  webSearchEnabled: false,
-  attachedFile: null,
-  chatHistory: [],
-  isGenerating: false,
-
-  togglePanel() {
-    const panel = document.getElementById('aiChatPanel');
-    if (panel) panel.classList.toggle('open');
-  },
-  openPanel() {
-    const panel = document.getElementById('aiChatPanel');
-    if (panel) panel.classList.add('open');
-  },
-  closePanel() {
-    const panel = document.getElementById('aiChatPanel');
-    if (panel) panel.classList.remove('open');
-  },
-  toggleHubContext() {
-    this.hubContextEnabled = !this.hubContextEnabled;
-    const tag = document.getElementById('contextStatusTag');
-    const btn = document.getElementById('aiContextToggle');
-    if (tag) {
-      tag.textContent = this.hubContextEnabled ? '● HUB Context ON' : '○ HUB Context OFF';
-    }
-    if (btn) {
-      btn.classList.toggle('off', !this.hubContextEnabled);
-    }
-  },
-  toggleSearchMode() {
-    this.webSearchEnabled = !this.webSearchEnabled;
-    const btn = document.getElementById('btnWebSearch');
-    if (btn) btn.classList.toggle('active', this.webSearchEnabled);
-  },
-  clearChat() {
-    this.chatHistory = [];
-    const wrap = document.getElementById('aiMessagesWrap');
-    if (wrap) {
-      wrap.innerHTML = `
-        <div class="ai-welcome-box" id="aiWelcomeBox">
-          <div class="welcome-title">Ask anything or select a task...</div>
-          <div class="quick-prompts-grid">
-            <button class="prompt-chip" onclick="KriztelAI.usePrompt('What are my pending tasks and duties right now?')">
-              <i class="bx bx-task" style="color:#ef4444;"></i> What are my pending tasks?
-            </button>
-            <button class="prompt-chip" onclick="KriztelAI.usePrompt('Summarize today\\'s live duties and match schedule.')">
-              <i class="bx bx-file" style="color:#f59e0b;"></i> Summarize today's duties
-            </button>
-            <button class="prompt-chip" onclick="KriztelAI.usePrompt('Search the web for the latest football news and transfer updates.')">
-              <i class="bx bx-globe" style="color:#38bdf8;"></i> Search latest sports news
-            </button>
-            <button class="prompt-chip" onclick="KriztelAI.usePrompt('Explain quantum computing in simple terms.')">
-              <i class="bx bx-brain" style="color:#ec4899;"></i> Explain a complex topic
-            </button>
-          </div>
-        </div>
-      `;
-    }
-  },
-  usePrompt(promptText) {
-    const input = document.getElementById('aiPromptInput');
-    if (input) {
-      input.value = promptText;
-      this.sendMessage();
-    }
-  },
-  autoResize(textarea) {
-    textarea.style.height = 'auto';
-    textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';
-  },
-  handleKeyDown(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      this.sendMessage();
-    }
-  },
-  handleFileAttach(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    this.attachedFile = file;
-    const badge = document.getElementById('attachedFileBadge');
-    const nameEl = document.getElementById('attachedFileName');
-    if (badge && nameEl) {
-      nameEl.textContent = file.name;
-      badge.style.display = 'flex';
-    }
-  },
-  removeAttachment() {
-    this.attachedFile = null;
-    const badge = document.getElementById('attachedFileBadge');
-    const input = document.getElementById('aiFileInput');
-    if (badge) badge.style.display = 'none';
-    if (input) input.value = '';
-  },
-  setStatus(show, text) {
-    const statusEl = document.getElementById('aiToolStatus');
-    const textEl = document.getElementById('aiToolStatusText');
-    if (statusEl) {
-      if (show) statusEl.classList.add('active');
-      else statusEl.classList.remove('active');
-    }
-    if (textEl && text) textEl.textContent = text;
-  },
-  getHubDataSnapshot() {
-    const activeTrader = document.getElementById('activeTraderCount')?.textContent || "0 Working";
-    const weather = document.getElementById('weatherTemp')?.textContent || "--";
-    const weatherCond = document.getElementById('weatherCond')?.textContent || "--";
-    
-    const dutyCards = document.querySelectorAll('#liveDutyContent .duty-card');
-    let dutiesSummary = [];
-    dutyCards.forEach(card => {
-      const name = card.querySelector('.duty-top span:first-child')?.textContent || '';
-      const shift = card.querySelector('.duty-top .badge-time')?.textContent || '';
-      const descs = Array.from(card.querySelectorAll('.duty-desc')).map(d => d.textContent.trim()).join(', ');
-      if (name) dutiesSummary.push(`${name} (${shift}): ${descs}`);
-    });
-
-    const gameCards = document.querySelectorAll('#gamesContainer .top-game-card');
-    let gamesSummary = [];
-    gameCards.forEach(gc => {
-      const title = gc.querySelector('.top-game-title')?.textContent || '';
-      const league = gc.querySelector('.top-game-league')?.textContent || '';
-      if (title) gamesSummary.push(`${title} [${league}]`);
-    });
-
-    return {
-      activeTraders: activeTrader,
-      weather: `${weather}, ${weatherCond}`,
-      currentSlotDuties: dutiesSummary,
-      topGamesToday: gamesSummary
-    };
-  },
-  async callGeminiDirect(promptText) {
-    const key = (typeof LOCAL_GEMINI_KEY !== 'undefined' && LOCAL_GEMINI_KEY) ? LOCAL_GEMINI_KEY : '';
-    if (!key) throw new Error("No client-side Gemini key set.");
-
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
-    
-    let contextAddition = "";
-    if (this.hubContextEnabled) {
-      contextAddition = `\n\n[CURRENT AUTHORIZED HUB CONTEXT DATA]:\n${JSON.stringify(this.getHubDataSnapshot(), null, 2)}`;
-    }
-
-    const systemInstructions = `You are Kriztel AI (KD AI), an authentic, highly adaptive, and intelligent AI Copilot living inside Sportsbook Hub. You are GENERAL AI FIRST and HUB ASSISTANT SECOND. Answer general questions, write code, explain concepts, summarize, perform math, and analyze files with precision. Never say "This question is outside the scope of HUB."${contextAddition}`;
-
-    const fullPrompt = `${systemInstructions}\n\nUser Question: ${promptText}`;
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: fullPrompt }] }]
-      })
-    });
-
-    if (!response.ok) {
-      const err = await response.text();
-      throw new Error(`Gemini Direct Error: ${err}`);
-    }
-
-    const data = await response.json();
-    return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
-  },
-  async sendMessage() {
-    const input = document.getElementById('aiPromptInput');
-    if (!input || this.isGenerating) return;
-    const text = input.value.trim();
-    if (!text && !this.attachedFile) return;
-
-    const welcomeBox = document.getElementById('aiWelcomeBox');
-    if (welcomeBox) welcomeBox.style.display = 'none';
-
-    const wrap = document.getElementById('aiMessagesWrap');
-    const userMsgDiv = document.createElement('div');
-    userMsgDiv.className = 'ai-msg user';
-    let fileTag = this.attachedFile ? `<div class="msg-tag"><i class='bx bx-file'></i> ${this.attachedFile.name}</div>` : '';
-    userMsgDiv.innerHTML = `${fileTag}<div class="msg-bubble">${escapeHtml(text)}</div>`;
-    wrap.appendChild(userMsgDiv);
-
-    input.value = '';
-    input.style.height = 'auto';
-    this.removeAttachment();
-    wrap.scrollTop = wrap.scrollHeight;
-
-    this.chatHistory.push({ role: 'user', content: text });
-
-    const assistantMsgDiv = document.createElement('div');
-    assistantMsgDiv.className = 'ai-msg assistant';
-    let sourceBadge = this.webSearchEnabled ? '🌐 Web' : (this.hubContextEnabled ? '📊 HUB' : '✨ AI');
-    assistantMsgDiv.innerHTML = `<div class="msg-tag">${sourceBadge}</div><div class="msg-bubble"><i class='bx bx-loader-alt bx-spin'></i></div>`;
-    wrap.appendChild(assistantMsgDiv);
-    wrap.scrollTop = wrap.scrollHeight;
-
-    const bubble = assistantMsgDiv.querySelector('.msg-bubble');
-
-    this.isGenerating = true;
-    this.setStatus(true, this.webSearchEnabled ? '🔎 Searching the web...' : (this.hubContextEnabled ? '📊 Reading HUB data...' : '✨ Thinking...'));
-
-    try {
-      let replyText = "";
-
-      // 1. Check if a local direct Gemini testing key is present
-      if (typeof LOCAL_GEMINI_KEY !== 'undefined' && LOCAL_GEMINI_KEY.trim().length > 0) {
-        replyText = await this.callGeminiDirect(text);
-      } else {
-        // 2. Fall back to secure backend server endpoint (/api/ai)
-        const hubData = this.hubContextEnabled ? this.getHubDataSnapshot() : null;
-        const response = await fetch('/api/ai', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            messages: this.chatHistory,
-            hubContext: this.hubContextEnabled,
-            searchWeb: this.webSearchEnabled,
-            hubData: hubData
-          })
-        });
-
-        if (!response.ok) throw new Error('API request failed');
-        const data = await response.json();
-        replyText = data.content || "I'm having trouble retrieving a response.";
-      }
-
-      bubble.innerHTML = formatMarkdown(replyText);
-      this.chatHistory.push({ role: 'assistant', content: replyText });
-
-    } catch (err) {
-      console.warn("AI call failed:", err);
-      let fallbackReply = "";
-      if (this.hubContextEnabled && (text.toLowerCase().includes('duty') || text.toLowerCase().includes('task') || text.toLowerCase().includes('who') || text.toLowerCase().includes('working'))) {
-        const hubInfo = this.getHubDataSnapshot();
-        fallbackReply = `📊 **Sportsbook Hub Status Overview**:\n\n* **Active Traders Working**: ${hubInfo.activeTraders}\n* **Manila Weather**: ${hubInfo.weather}\n* **Live Duty Shift Status**:\n${hubInfo.currentSlotDuties.length > 0 ? hubInfo.currentSlotDuties.map(d => `• ${d}`).join('\n') : 'Loaded live from Firebase Roster.'}\n\n*Note: Configure \`GEMINI_API_KEY\` in Vercel settings or set \`LOCAL_GEMINI_KEY\` at the top of app.js for direct browser testing.*`;
-      } else {
-        fallbackReply = `I'm having trouble connecting to the AI endpoint. If testing locally, paste your Gemini API key into \`LOCAL_GEMINI_KEY\` at the top of \`app.js\`. For production, add \`GEMINI_API_KEY\` in your Vercel Environment Variables.`;
-      }
-
-      bubble.innerHTML = formatMarkdown(fallbackReply);
-      this.chatHistory.push({ role: 'assistant', content: fallbackReply });
-    } finally {
-      this.isGenerating = false;
-      this.setStatus(false, '');
-      wrap.scrollTop = wrap.scrollHeight;
-    }
-  }
-};
-
-function escapeHtml(str) {
-  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-}
-
-function formatMarkdown(str) {
-  let html = escapeHtml(str);
-  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/`(.*?)`/g, '<code>$1</code>');
-  html = html.replace(/\n/g, '<br>');
-  return html;
-}
-
 /* --- INITIALIZATION --- */
 function initDashboardApp() {
   const savedTheme = localStorage.getItem('sbhub_theme');
   if (savedTheme) {
-    const pageBody = document.getElementById('pageBody');
-    if (pageBody) {
-      pageBody.style.background = savedTheme;
-      pageBody.style.backgroundSize = 'cover';
-      pageBody.style.backgroundPosition = 'center';
-      pageBody.style.backgroundAttachment = 'fixed';
-      pageBody.style.backgroundRepeat = 'no-repeat';
-    }
+    setGradient(savedTheme);
   } else {
-    setGradient('silk-lavender');
+    setGradient('3d-chrome-swirl');
   }
 
-  // CHECK PERSISTENT SESSION (LOCALSTORAGE OR SESSIONSTORAGE)
   if (localStorage.getItem('sbhub_auth') === 'true' || sessionStorage.getItem('sbhub_auth') === 'true') {
     unlockDashboard();
   }
@@ -1106,6 +974,10 @@ function initDashboardApp() {
   switchBrandTab('ibet');
   restoreSavedWidgets();
 
+  // Load local cache instantly (0ms delay on refresh)
+  loadCachedTopPicks();
+
+  // Background fetch to update cached data
   fetchTopPicksAndBoosts();
   setInterval(fetchTopPicksAndBoosts, 2 * 60 * 1000);
 
