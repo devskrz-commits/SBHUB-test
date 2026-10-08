@@ -288,8 +288,56 @@
         <!-- LEFT BASKETBALL PLAYER GRAPHIC CUTOUT CONTAINER -->
         <div class="hero-left-graphic">
           <div class="athlete-img-wrapper">
-            <img src="./player-cutout.png" alt="Marcus Huntington - Basketball Player Cutout" class="athlete-hero-img" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/devskrz/assets/main/basketball_player.png';">
+            <!-- EMBEDDED HIGH-RES PLAYER SVG (GUARANTEED NO 404 OR BROKEN IMAGE) -->
+            <svg viewBox="0 0 400 500" class="athlete-hero-img" preserveAspectRatio="xMidYMax meet">
+              <defs>
+                <radialGradient id="ballGlowGrad" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#ff8c3b"/>
+                  <stop offset="70%" stop-color="#e65100"/>
+                  <stop offset="100%" stop-color="#6b2100"/>
+                </radialGradient>
+                <linearGradient id="jerseyGradRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ff4d3d"/>
+                  <stop offset="100%" stop-color="#b71c1c"/>
+                </linearGradient>
+                <linearGradient id="skinToneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#9a5b28"/>
+                  <stop offset="100%" stop-color="#4e2b10"/>
+                </linearGradient>
+                <filter id="shadowFilter">
+                  <feDropShadow dx="0" dy="18" stdDeviation="14" flood-color="#000000" flood-opacity="0.75"/>
+                </filter>
+              </defs>
+
+              <g filter="url(#shadowFilter)">
+                <!-- Body Silhouette & Skin -->
+                <ellipse cx="200" cy="110" rx="36" ry="44" fill="url(#skinToneGrad)"/>
+                <path d="M160,95 Q170,55 185,60 Q195,45 205,55 Q220,45 230,60 Q242,65 240,95 Z" fill="#110700"/>
+                
+                <!-- Muscular Arms -->
+                <path d="M140,160 Q110,180 90,240 Q115,260 135,210 L155,175 Z" fill="url(#skinToneGrad)"/>
+                <path d="M260,160 Q295,190 315,260 Q290,285 270,250 L245,175 Z" fill="url(#skinToneGrad)"/>
+
+                <!-- Red Tank Jersey -->
+                <path d="M150,160 L250,160 L260,330 L140,330 Z" fill="url(#jerseyGradRed)"/>
+                <!-- LT Chest Logo -->
+                <path d="M185,200 L195,200 L195,225 L215,225 L215,235 L185,235 Z" fill="#ffffff" opacity="0.9"/>
+
+                <!-- White Shorts -->
+                <path d="M140,330 L260,330 L270,410 L205,410 L200,370 L195,410 L130,410 Z" fill="#ffffff"/>
+
+                <!-- Left Arm holding Basketball -->
+                <g transform="translate(265, 250)">
+                  <circle cx="50" cy="50" r="52" fill="url(#ballGlowGrad)"/>
+                  <path d="M -2,50 A 52,52 0 0,0 102,50" stroke="#120626" stroke-width="3.5" fill="none"/>
+                  <path d="M 50,-2 A 52,52 0 0,0 50,102" stroke="#120626" stroke-width="3.5" fill="none"/>
+                  <path d="M 12,12 A 52,52 0 0,1 88,88" stroke="#120626" stroke-width="2.5" fill="none"/>
+                  <path d="M 88,12 A 52,52 0 0,1 12,88" stroke="#120626" stroke-width="2.5" fill="none"/>
+                </g>
+              </g>
+            </svg>
           </div>
+
           <div class="athlete-graphic-badge">
             <i class="bx bx-basketball"></i>
             <span>LIVE OPERATIONAL HUB</span>
