@@ -85,7 +85,7 @@ function renderTable(list) {
 }
 
 function renderMatches(list) {
-  const container = document.getElementById("matchCardsContainer");
+  const container = document.getElementById("sidebarMatchCards");
   if (!container || !Array.isArray(list)) return;
 
   container.innerHTML = list.map(m => `
@@ -114,6 +114,22 @@ function renderMatches(list) {
   `).join('');
 }
 
+function initSearch() {
+  const input = document.getElementById("globalSearchInput");
+  if (!input) return;
+
+  input.addEventListener("input", (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    const filtered = playerStore.gamesStats.filter(g =>
+      g.matchName.toLowerCase().includes(query) ||
+      g.result.toLowerCase().includes(query) ||
+      g.date.toLowerCase().includes(query)
+    );
+    renderTable(filtered);
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   renderDashboard(playerStore);
+  initSearch();
 });
