@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Marcus Huntington - Basketball Player Profile</title>
+  <title>Sportsbook Hub - Operational Portal</title>
   
-  <!-- Fonts & Icons -->
+  <!-- Preconnect and Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500;700;800&amp;display=swap" rel="stylesheet">
+  
+  <!-- Boxicons CSS -->
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   
-  <!-- Project Stylesheet -->
+  <!-- Stylesheet -->
   <link rel="stylesheet" href="./styles.css">
 
   <!-- External Libraries -->
@@ -19,212 +21,500 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   
-  <!-- Project App JS -->
+  <!-- App JS -->
   <script src="./app.js" defer></script>
 </head>
 <body id="pageBody">
 
-  <!-- MAIN OUTER PROFILE WRAPPER -->
-  <div class="app-viewport">
-    <div class="dashboard-card">
+  <!-- ANIMATED CANVAS BACKGROUND -->
+  <canvas id="bgCanvas"></canvas>
 
-      <!-- TOP HEADER / NAV BAR -->
-      <header class="dashboard-header">
-        <div class="brand-logo">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <path d="M4 4H14V14H4V4Z" stroke="white" stroke-width="3" stroke-linejoin="round"/>
-            <path d="M14 14H24V24H14V24Z" stroke="white" stroke-width="3" stroke-linejoin="round"/>
-            <path d="M14 4V24" stroke="white" stroke-width="3"/>
-          </svg>
-        </div>
-
-        <div class="header-center-nav">
-          <div class="nav-pill-group">
-            <button class="nav-icon-btn active" title="Overview"><i class="bx bx-file"></i></button>
-            <button class="nav-icon-btn" title="Roster"><i class="bx bx-group"></i></button>
-            <button class="nav-icon-btn" title="Stats"><i class="bx bx-run"></i></button>
-            <button class="nav-icon-btn" title="Schedule"><i class="bx bx-basketball"></i></button>
-            <button class="nav-icon-btn" title="Analytics"><i class="bx bx-bar-chart-alt-2"></i></button>
+  <!-- SECURITY GATEWAY LOGIN MODAL -->
+  <div id="authOverlay">
+    <div class="login-container">
+      <div class="sitting-robot-stage" id="sittingRobotStage">
+        <div class="robot-body-wrapper" id="robotBodyWrapper">
+          <div class="robot-antenna"></div>
+          <div class="robot-head" id="robotHead">
+            <div class="robot-visor">
+              <div class="robot-eye" id="leftEye"></div>
+              <div class="robot-eye" id="rightEye"></div>
+            </div>
           </div>
+          <div class="robot-torso"></div>
+          <div class="robot-leg left"></div>
+          <div class="robot-leg right"></div>
+          <div class="robot-hand left"></div>
+          <div class="robot-hand right"></div>
+        </div>
+      </div>
+
+      <div class="login-card" id="loginCard">
+        <div class="login-title">Security Gateway</div>
+        <div class="login-subtitle">SPORTSBOOK HUB OPERATIONAL PORTAL</div>
+        
+        <form class="login-input-group" onsubmit="handleLogin(event)">
+          <div class="field-wrapper">
+            <label class="login-label" for="usernameInput">Username or email</label>
+            <input type="text" id="usernameInput" class="login-input" value="sportsbook2026" required autocomplete="username">
+          </div>
+
+          <div class="field-wrapper">
+            <div class="field-label-row">
+              <label class="login-label" for="passwordInput">Security Key</label>
+              <a href="#forgot" class="forgot-link">Forgot key?</a>
+            </div>
+            <div class="password-field-wrap">
+              <input type="password" id="passwordInput" class="login-input" placeholder="Enter password" required autocomplete="current-password">
+              <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility()" aria-label="Toggle Password Visibility">
+                <i class="bx bx-show" id="togglePassIcon"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="remember-row">
+            <input type="checkbox" id="rememberMe" checked>
+            <label for="rememberMe">Maintain active session</label>
+          </div>
+
+          <div class="login-error" id="loginErrorMsg"></div>
+
+          <button type="submit" class="login-btn">
+            <i class="bx bx-key"></i> ACCESS DASHBOARD
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN FULL-WIDTH DASHBOARD CONTAINER -->
+  <div id="dashboardApp">
+
+    <main class="main-workspace full-width">
+
+      <!-- TOP HEADER BAR WITH FUNCTIONAL CATEGORY DROPDOWNS -->
+      <header class="top-nav-bar">
+        <div class="nav-brand-logo">
+          <span class="logo-box">LT</span>
+          <span class="logo-text">SPORTSBOOK HUB</span>
         </div>
 
-        <div class="header-right-tools">
-          <div class="search-input-wrap">
+        <!-- HORIZONTAL TOP CATEGORY PILLS WITH DROPDOWNS -->
+        <nav class="nav-category-pills">
+          
+          <!-- 1. INTERNAL -->
+          <div class="nav-pill-item">
+            <button class="icon-pill-btn" type="button" onclick="toggleNavDropdown('nav-internal', event)" title="Internal Links">
+              <i class="bx bx-home-alt"></i> <span>INTERNAL</span> <i class="bx bx-chevron-down"></i>
+            </button>
+            <div class="nav-dropdown-menu" id="nav-internal">
+              <a class="dropdown-link-item" href="duties.html" target="_blank" rel="noreferrer"><span>DAILY DUTY</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="rota.html" target="_blank" rel="noreferrer"><span>ROTA</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://reliancedigi-my.sharepoint.com/:x:/p/ann/IQCWP022FAMHSY-z3-eV0c9XAWFWLrVAPb9xSCUut_VuZ9U" target="_blank" rel="noreferrer"><span>DAILY BIG WINNERS</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="handover.html" target="_blank" rel="noreferrer"><span>HANDOVER</span><i class="bx bx-right-arrow-alt"></i></a>
+            </div>
+          </div>
+
+          <!-- 2. DAILY TASKS -->
+          <div class="nav-pill-item">
+            <button class="icon-pill-btn" type="button" onclick="toggleNavDropdown('nav-tasks', event)" title="Daily Tasks">
+              <i class="bx bx-task"></i> <span>TASKS</span> <i class="bx bx-chevron-down"></i>
+            </button>
+            <div class="nav-dropdown-menu" id="nav-tasks">
+              <a class="dropdown-link-item" href="boostschedule.html" target="_blank" rel="noreferrer"><span>TOP PICKS</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit#gid=1450723096" target="_blank" rel="noreferrer"><span>EDGE BOOST (MIG)</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit#gid=784209986" target="_blank" rel="noreferrer"><span>IBET BOOST (MIG)</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit#gid=0" target="_blank" rel="noreferrer"><span>KT SPORTS CHECK</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://polymarket.com/breaking" target="_blank" rel="noreferrer"><span>PREDICTION OFFER CHECK</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="edge_boosts.html" target="_blank" rel="noreferrer"><span>EDGE BOOST SYS</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="ibet_boosts.html" target="_blank" rel="noreferrer"><span>IBET BOOST SYS</span><i class="bx bx-right-arrow-alt"></i></a>
+            </div>
+          </div>
+
+          <!-- 3. MONITORING -->
+          <div class="nav-pill-item">
+            <button class="icon-pill-btn" type="button" onclick="toggleNavDropdown('nav-monitor', event)" title="Monitoring">
+              <i class="bx bx-line-chart"></i> <span>MONITORING</span> <i class="bx bx-chevron-down"></i>
+            </button>
+            <div class="nav-dropdown-menu" id="nav-monitor">
+              <a class="dropdown-link-item" href="https://docs.google.com/spreadsheets/d/1qruVq-HZCyM0uDgnYSqFhccXKnMkqJ8z/edit#gid=1305147410" target="_blank" rel="noreferrer"><span>GREEN TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://docs.google.com/spreadsheets/d/1OcaMz_AOUeRsWIVplbnk2XAna62m3IKa/edit#gid=457800468" target="_blank" rel="noreferrer"><span>RED TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://docs.google.com/spreadsheets/d/1U-Dmc628kHQabzJGoBeEgRus5PiRhgSd/edit#gid=1983372695" target="_blank" rel="noreferrer"><span>ORANGE TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://docs.google.com/spreadsheets/d/11STKO4Xsj0a8iTuUXSCXC-XEE4-7qmF9/edit#gid=1701374259" target="_blank" rel="noreferrer"><span>GREEN CRM</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://docs.google.com/spreadsheets/d/1gPks2FdHyOOTiILvn553miz32WeEtOpx/edit#gid=1701374259" target="_blank" rel="noreferrer"><span>RED CRM</span><i class="bx bx-right-arrow-alt"></i></a>
+            </div>
+          </div>
+
+          <!-- 4. BACK OFFICE -->
+          <div class="nav-pill-item">
+            <button class="icon-pill-btn" type="button" onclick="toggleNavDropdown('nav-backoffice', event)" title="Back Office">
+              <i class="bx bx-briefcase-alt-2"></i> <span>BACK OFFICE</span> <i class="bx bx-chevron-down"></i>
+            </button>
+            <div class="nav-dropdown-menu" id="nav-backoffice">
+              <a class="dropdown-link-item" href="https://betbook.center/qbet/bets" target="_blank" rel="noreferrer"><span>QBET/55/30</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://mga-betbook.center/ibet/bets" target="_blank" rel="noreferrer"><span>IBET</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://eu-b7k.center/pubs8/bets" target="_blank" rel="noreferrer"><span>PUBS</span><i class="bx bx-right-arrow-alt"></i></a>
+            </div>
+          </div>
+
+          <!-- 5. MULTI MONITOR -->
+          <div class="nav-pill-item">
+            <button class="icon-pill-btn" type="button" onclick="toggleNavDropdown('nav-multi', event)" title="Multi Monitor">
+              <i class="bx bx-desktop"></i> <span>MULTI-MONITOR</span> <i class="bx bx-chevron-down"></i>
+            </button>
+            <div class="nav-dropdown-menu" id="nav-multi">
+              <a class="dropdown-link-item" href="https://betbook.center/monitor?providerIds=prediction_markets" target="_blank" rel="noreferrer"><span>EDGE PREDICTION TICKER</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://eu-b7k.center/monitor?providerIds=prediction_markets" target="_blank" rel="noreferrer"><span>PUBS PREDICTION TICKER</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://betbook.center/monitor" target="_blank" rel="noreferrer"><span>QBET/55/30 REJECTED</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://eu-b7k.center/monitor" target="_blank" rel="noreferrer"><span>PUBS REJECTED</span><i class="bx bx-right-arrow-alt"></i></a>
+            </div>
+          </div>
+
+          <!-- 6. BRANDS AND REFS -->
+          <div class="nav-pill-item">
+            <button class="icon-pill-btn" type="button" onclick="toggleNavDropdown('nav-brands', event)" title="Brands &amp; References">
+              <i class="bx bx-layer"></i> <span>BRANDS &amp; REFS</span> <i class="bx bx-chevron-down"></i>
+            </button>
+            <div class="nav-dropdown-menu" id="nav-brands">
+              <div class="dropdown-section-header">OWN BRANDS</div>
+              <a class="dropdown-link-item" href="https://www.7abet.com/en-UN" target="_blank" rel="noreferrer"><span>7A</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://www.qbet.com/en-UN" target="_blank" rel="noreferrer"><span>QBET</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://www.55bet.com/en-UN" target="_blank" rel="noreferrer"><span>55BET</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://www.ibet.com/en-UN/sportsbook/price-boost/football" target="_blank" rel="noreferrer"><span>IBET</span><i class="bx bx-right-arrow-alt"></i></a>
+              
+              <div class="dropdown-section-header" style="margin-top:8px;">PRICE REFERENCES</div>
+              <a class="dropdown-link-item" href="https://www.flashscore.com/" target="_blank" rel="noreferrer"><span>FLASHSCORE</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://www.oddsportal.com/football/" target="_blank" rel="noreferrer"><span>ODDSPORTAL</span><i class="bx bx-right-arrow-alt"></i></a>
+              <a class="dropdown-link-item" href="https://www.betfair.com/exchange/plus/" target="_blank" rel="noreferrer"><span>BETFAIR</span><i class="bx bx-right-arrow-alt"></i></a>
+            </div>
+          </div>
+
+          <!-- 7. QUICK LAUNCH -->
+          <div class="nav-pill-item">
+            <button class="icon-pill-btn accent" type="button" onclick="toggleNavDropdown('nav-quick', event)" title="Quick Launch">
+              <i class="bx bx-rocket"></i> <span>QUICK LAUNCH</span> <i class="bx bx-chevron-down"></i>
+            </button>
+            <div class="nav-dropdown-menu" id="nav-quick">
+              <a class="dropdown-link-item" href="https://claude.ai" target="_blank" rel="noreferrer"><span>Claude AI</span><i class="bx bx-export"></i></a>
+              <a class="dropdown-link-item" href="Edge_Gaming_Client_Risk_Segmentation_Tool_July_2026_Dashboard.html" target="_blank" rel="noreferrer"><span>Risk Seg. Tool</span><i class="bx bx-export"></i></a>
+              <a class="dropdown-link-item" href="https://mtsc-its.betradar.com/" target="_blank" rel="noreferrer"><span>MTS Betradar</span><i class="bx bx-export"></i></a>
+            </div>
+          </div>
+
+          <!-- 8. WIDGET OPTIONS AND SETTINGS -->
+          <div class="nav-pill-item">
+            <button class="icon-pill-btn settings" type="button" onclick="toggleNavDropdown('nav-widgets', event)" title="Widget Options">
+              <i class="bx bx-slider-alt"></i> <span>WIDGETS</span> <i class="bx bx-chevron-down"></i>
+            </button>
+            <div class="nav-dropdown-menu" id="nav-widgets">
+              <div class="dropdown-section-header"><i class="bx bx-slider-alt"></i> WIDGET OPTIONS</div>
+              <label class="dropdown-option-toggle">
+                <span>Hot Boosts / Top Picks</span>
+                <input type="checkbox" checked onchange="toggleWidgetSection('topPicksSection', this.checked)">
+              </label>
+              <label class="dropdown-option-toggle">
+                <span>Today Matchday Ticker</span>
+                <input type="checkbox" checked onchange="toggleWidgetSection('todayMatchdayWidget', this.checked)">
+              </label>
+              <label class="dropdown-option-toggle">
+                <span>Brand Directory Dock</span>
+                <input type="checkbox" checked onchange="toggleWidgetSection('brandDockWidget', this.checked)">
+              </label>
+              <label class="dropdown-option-toggle">
+                <span>Jira Alerts Banner</span>
+                <input type="checkbox" checked onchange="toggleWidgetSection('jiraAlertBanner', this.checked)">
+              </label>
+              <label class="dropdown-option-toggle">
+                <span>Urgent Handover Banner</span>
+                <input type="checkbox" checked onchange="toggleWidgetSection('urgentHandoverBanner', this.checked)">
+              </label>
+
+              <div class="dropdown-section-header" style="margin-top: 8px;"><i class="bx bx-palette"></i> THEME PRESETS</div>
+              <button class="dropdown-link-item" type="button" onclick="setGradient('purple-glass')">
+                <span>Deep Violet Glass</span><span class="color-dot" style="background: #8b5cf6;"></span>
+              </button>
+              <button class="dropdown-link-item" type="button" onclick="setGradient('plain-navy')">
+                <span>Dark Navy Slate</span><span class="color-dot" style="background: #0b1329;"></span>
+              </button>
+            </div>
+          </div>
+
+        </nav>
+
+        <div class="top-nav-right">
+          <div class="nav-search-wrap">
             <i class="bx bx-search"></i>
-            <input type="text" id="playerSearchInput" placeholder="Search.." autocomplete="off">
+            <input type="text" placeholder="Search categories..">
           </div>
-          <div class="user-avatar-pill">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="User Profile">
+          
+          <div class="admin-profile-pill">
+            <div class="user-avatar-sm">AD</div>
+            <span class="user-name-text">Admin</span>
+            <button class="lock-session-btn" type="button" onclick="handleLogout()" title="Lock Session">
+              <i class="bx bx-log-out"></i>
+            </button>
           </div>
         </div>
       </header>
 
-      <!-- UPPER HERO / STATS SECTION -->
-      <div class="hero-section">
-
-        <!-- OVERLAPPING BASKETBALL PLAYER IMAGE -->
-        <div class="player-cutout-container">
-          <div class="player-shadow"></div>
-          <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=900&q=80" id="playerHeroImg" alt="Basketball Player" class="player-hero-img">
+      <!-- ALERT BANNERS ROW -->
+      <div class="alert-banners-row">
+        <div id="jiraAlertBanner" class="jira-static-alert-banner">
+          <div class="jira-alert-badge">
+            <i class="bx bx-error-circle"></i> PENDING JIRA (&gt;24H)
+          </div>
+          <div class="jira-ticket-pills-container" id="jiraPillsContainer"></div>
+          <a href="jira.html" target="_blank" rel="noreferrer" class="jira-open-btn">
+            View Tracker <i class="bx bx-right-arrow-alt"></i>
+          </a>
         </div>
 
-        <!-- CENTER SPIDER/RADAR CHART WITH STAT CALLOUTS -->
-        <div class="spider-chart-stage">
-          <div class="jersey-bg-number">23</div>
-          
-          <!-- SVG Radar Chart Graphic -->
-          <svg class="radar-svg" viewBox="0 0 320 280">
-            <!-- Axis lines -->
-            <polygon points="160,30 270,95 240,210 80,210 50,95" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" />
-            <polygon points="160,65 235,110 215,190 105,190 85,110" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" />
-            <polygon points="160,100 200,125 190,170 130,170 120,125" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" />
-            
-            <line x1="160" y1="140" x2="160" y2="30" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
-            <line x1="160" y1="140" x2="270" y2="95" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
-            <line x1="160" y1="140" x2="240" y2="210" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
-            <line x1="160" y1="140" x2="80" y2="210" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
-            <line x1="160" y1="140" x2="50" y2="95" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
-
-            <!-- Active Stat Polygon -->
-            <polygon points="160,42 265,102 232,200 95,195 58,105" fill="rgba(239, 68, 68, 0.15)" stroke="#f43f5e" stroke-width="2.5" stroke-linejoin="round" />
-            
-            <!-- Nodes -->
-            <circle cx="160" cy="42" r="4" fill="#f43f5e" />
-            <circle cx="265" cy="102" r="4" fill="#f43f5e" />
-            <circle cx="232" cy="200" r="4" fill="#f43f5e" />
-            <circle cx="95" cy="195" r="4" fill="#f43f5e" />
-            <circle cx="58" cy="105" r="4" fill="#f43f5e" />
-          </svg>
-
-          <!-- Stat Node Labels Positioned Around Chart -->
-          <div class="stat-node node-ppg">
-            <span class="node-label">PPG</span>
-            <span class="node-val" id="valPPG">29.1</span>
-          </div>
-          <div class="stat-node node-apg">
-            <span class="node-label">APG</span>
-            <span class="node-val" id="valAPG">10.3</span>
-          </div>
-          <div class="stat-node node-fg">
-            <span class="node-label">FG%</span>
-            <span class="node-val" id="valFG">57.5</span>
-          </div>
-          <div class="stat-node node-3p">
-            <span class="node-label">3P%</span>
-            <span class="node-val" id="val3P">41.0</span>
-          </div>
-          <div class="stat-node node-rpg">
-            <span class="node-label">RPG</span>
-            <span class="node-val" id="valRPG">24.6</span>
-          </div>
-        </div>
-
-        <!-- RIGHT SIDE PLAYER METRICS BLOCK -->
-        <div class="player-info-column">
-          
-          <div class="player-title-box">
-            <h1 class="player-name-text" id="playerName">Marcus<br>Huntington</h1>
-            <div class="player-team-row">
-              <div class="team-shield-icon">
-                <i class="bx bxs-shield-alt-2"></i>
-              </div>
-              <span class="team-name-text" id="playerTeam">Liberty Deer</span>
+        <div id="urgentHandoverBanner" class="urgent-handover-banner active">
+          <div class="handover-header-row">
+            <div class="handover-alert-badge" id="handoverAlertBadge">
+              <i class="bx bx-alarm-exclamation"></i> URGENT HANDOVER
             </div>
+            <button type="button" class="handover-manage-btn" onclick="openHandoverModal()">
+              <i class="bx bx-plus-circle"></i> Manage Notes
+            </button>
           </div>
-
-          <!-- TOP 3 METRIC CARDS (WINS, LOSSES, WINNING %) -->
-          <div class="top-stats-row">
-            <div class="metric-card card-orange">
-              <i class="bx bx-trophy card-icon"></i>
-              <span class="metric-label">Wins</span>
-              <span class="metric-value" id="statWins">84</span>
-            </div>
-            <div class="metric-card card-purple">
-              <i class="bx bx-basketball card-icon"></i>
-              <span class="metric-label">Losses</span>
-              <span class="metric-value" id="statLosses">18</span>
-            </div>
-            <div class="metric-card card-white">
-              <i class="bx bx-star card-icon"></i>
-              <span class="metric-label">Winning %</span>
-              <span class="metric-value" id="statWinRate">82.3%</span>
-            </div>
-          </div>
-
-          <!-- BOTTOM 2x2 SPEC CARDS (HEIGHT, WEIGHT, AGE, COUNTRY) -->
-          <div class="specs-grid">
-            <div class="spec-card">
-              <span class="spec-label">Height</span>
-              <span class="spec-val" id="specHeight">2.06 m</span>
-            </div>
-            <div class="spec-card">
-              <span class="spec-label">Weight</span>
-              <span class="spec-val" id="specWeight">113 kg</span>
-            </div>
-            <div class="spec-card">
-              <span class="spec-label">Age</span>
-              <span class="spec-val" id="specAge">40 years</span>
-            </div>
-            <div class="spec-card">
-              <span class="spec-label">Country</span>
-              <span class="spec-val" id="specCountry">🇺🇸 USA</span>
-            </div>
-          </div>
-
+          <div class="handover-pills-container" id="handoverPillsContainer"></div>
         </div>
       </div>
 
-      <!-- LOWER DATA SECTION (TABLE & LIVE CARDS) -->
-      <div class="lower-section-grid">
+      <!-- HERO DASHBOARD CARD WITH BASKETBALL PLAYER HOLDING A BALL -->
+      <div class="glass-card hero-dashboard-card">
         
-        <!-- LEFT GAMES TABLE PANEL -->
-        <div class="games-panel">
-          <div class="panel-header-row">
-            <h2 class="panel-title">Games Stats</h2>
-            <div class="panel-filter-dropdown">
-              <span>By Date</span>
-              <i class="bx bx-chevron-down"></i>
+        <!-- LEFT BASKETBALL PLAYER GRAPHIC CUTOUT CONTAINER -->
+        <div class="hero-left-graphic">
+          <div class="athlete-img-wrapper">
+            <!-- EMBEDDED HIGH-RES PLAYER SVG (GUARANTEED NO 404 OR BROKEN IMAGE) -->
+            <svg viewBox="0 0 400 500" class="athlete-hero-img" preserveAspectRatio="xMidYMax meet">
+              <defs>
+                <radialGradient id="ballGlowGrad" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#ff8c3b"/>
+                  <stop offset="70%" stop-color="#e65100"/>
+                  <stop offset="100%" stop-color="#6b2100"/>
+                </radialGradient>
+                <linearGradient id="jerseyGradRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ff4d3d"/>
+                  <stop offset="100%" stop-color="#b71c1c"/>
+                </linearGradient>
+                <linearGradient id="skinToneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#9a5b28"/>
+                  <stop offset="100%" stop-color="#4e2b10"/>
+                </linearGradient>
+                <filter id="shadowFilter">
+                  <feDropShadow dx="0" dy="18" stdDeviation="14" flood-color="#000000" flood-opacity="0.75"/>
+                </filter>
+              </defs>
+
+              <g filter="url(#shadowFilter)">
+                <!-- Body Silhouette & Skin -->
+                <ellipse cx="200" cy="110" rx="36" ry="44" fill="url(#skinToneGrad)"/>
+                <path d="M160,95 Q170,55 185,60 Q195,45 205,55 Q220,45 230,60 Q242,65 240,95 Z" fill="#110700"/>
+                
+                <!-- Muscular Arms -->
+                <path d="M140,160 Q110,180 90,240 Q115,260 135,210 L155,175 Z" fill="url(#skinToneGrad)"/>
+                <path d="M260,160 Q295,190 315,260 Q290,285 270,250 L245,175 Z" fill="url(#skinToneGrad)"/>
+
+                <!-- Red Tank Jersey -->
+                <path d="M150,160 L250,160 L260,330 L140,330 Z" fill="url(#jerseyGradRed)"/>
+                <!-- LT Chest Logo -->
+                <path d="M185,200 L195,200 L195,225 L215,225 L215,235 L185,235 Z" fill="#ffffff" opacity="0.9"/>
+
+                <!-- White Shorts -->
+                <path d="M140,330 L260,330 L270,410 L205,410 L200,370 L195,410 L130,410 Z" fill="#ffffff"/>
+
+                <!-- Left Arm holding Basketball -->
+                <g transform="translate(265, 250)">
+                  <circle cx="50" cy="50" r="52" fill="url(#ballGlowGrad)"/>
+                  <path d="M -2,50 A 52,52 0 0,0 102,50" stroke="#120626" stroke-width="3.5" fill="none"/>
+                  <path d="M 50,-2 A 52,52 0 0,0 50,102" stroke="#120626" stroke-width="3.5" fill="none"/>
+                  <path d="M 12,12 A 52,52 0 0,1 88,88" stroke="#120626" stroke-width="2.5" fill="none"/>
+                  <path d="M 88,12 A 52,52 0 0,1 12,88" stroke="#120626" stroke-width="2.5" fill="none"/>
+                </g>
+              </g>
+            </svg>
+          </div>
+
+          <div class="athlete-graphic-badge">
+            <i class="bx bx-basketball"></i>
+            <span>LIVE OPERATIONAL HUB</span>
+          </div>
+        </div>
+
+        <!-- CENTER SPIDER RADAR CHART -->
+        <div class="hero-center-radar">
+          <div class="radar-watermark-num">23</div>
+          <canvas id="heroRadarChart" width="280" height="280"></canvas>
+          
+          <div class="radar-stat-label ppg">PPG <span>29.1</span></div>
+          <div class="radar-stat-label rpg">RPG <span>24.6</span></div>
+          <div class="radar-stat-label apg">APG <span>10.3</span></div>
+          <div class="radar-stat-label fg">FG% <span>57.5</span></div>
+          <div class="radar-stat-label tp">3P% <span>41.0</span></div>
+        </div>
+
+        <!-- RIGHT KPI METRICS CLUSTER -->
+        <div class="hero-right-metrics">
+          <div class="player-profile-header">
+            <h1 class="player-name">Marcus Huntington</h1>
+            <div class="player-team-tag">
+              <i class="bx bx-shield-alt-2"></i> Liberty Deer Operational Core
             </div>
           </div>
 
-          <div class="table-container">
-            <table class="games-table">
+          <!-- KPI TILES (ORANGE, BLUE, WHITE) -->
+          <div class="kpi-tiles-row">
+            <div class="kpi-card orange-card">
+              <div class="kpi-icon"><i class="bx bx-trophy"></i></div>
+              <div class="kpi-label">Active Traders</div>
+              <div class="kpi-val" id="activeTraderCount">84</div>
+            </div>
+
+            <div class="kpi-card blue-card">
+              <div class="kpi-icon"><i class="bx bx-football"></i></div>
+              <div class="kpi-label">Pending Jira</div>
+              <div class="kpi-val" id="pendingJiraCount">18</div>
+            </div>
+
+            <div class="kpi-card white-card">
+              <div class="kpi-icon"><i class="bx bx-star"></i></div>
+              <div class="kpi-label">SLA Rate %</div>
+              <div class="kpi-val">82.3%</div>
+            </div>
+          </div>
+
+          <!-- CLEAN CONCISE INFO PILLS (FIXED LABELING) -->
+          <div class="info-pills-grid">
+            <div class="info-pill-item">
+              <span class="pill-title">Manila Temp</span>
+              <span class="pill-value" id="weatherTemp">30°C</span>
+            </div>
+            <div class="info-pill-item">
+              <span class="pill-title">Humidity</span>
+              <span class="pill-value" id="weatherHumidity">71%</span>
+            </div>
+            <div class="info-pill-item">
+              <span class="pill-title">CET Time</span>
+              <span class="pill-value" id="clock-cet">00:00:00</span>
+            </div>
+            <div class="info-pill-item">
+              <span class="pill-title">GMT+8 Time</span>
+              <span class="pill-value" id="clock-gmt8">00:00:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN CONTENT SECTION: HOT BOOSTS / TOP PICKS IN REFERENCE TABLE DESIGN -->
+      <div class="dashboard-grid-layout">
+        
+        <!-- MAIN TABLE SECTION: HOT BOOSTS / TOP PICKS -->
+        <div class="glass-card games-stats-card" id="topPicksSection">
+          <div class="card-table-header">
+            <div class="table-title">HOT BOOSTS / TOP PICKS</div>
+            
+            <div class="table-filter-group">
+              <div class="dropdown-filter">
+                <span>By League</span> <i class="bx bx-chevron-down"></i>
+              </div>
+
+              <div class="status-tab-pills">
+                <button class="status-tab active" type="button" onclick="filterTopPicks('eng.1', this)"><span class="live-dot"></span> Premier League</button>
+                <button class="status-tab" type="button" onclick="filterTopPicks('esp.1', this)">La Liga</button>
+                <button class="status-tab" type="button" onclick="filterTopPicks('ger.1', this)">Bundesliga</button>
+                <button class="status-tab" type="button" onclick="filterTopPicks('ita.1', this)">Serie A</button>
+                <button class="status-tab" type="button" onclick="filterTopPicks('fra.1', this)">Ligue 1</button>
+                <button class="status-tab" type="button" onclick="filterTopPicks('uefa.champions', this)">UEFA</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- REFERENCE-STYLED TABLE FOR HOT BOOSTS AND TOP PICKS -->
+          <div class="stats-table-wrapper">
+            <table class="stats-table">
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>Match</th>
-                  <th>Final Score</th>
-                  <th>Result</th>
-                  <th>PTS</th>
-                  <th>REB</th>
-                  <th>AST</th>
-                  <th>FG%</th>
+                  <th>Kickoff</th>
+                  <th>Matchup</th>
+                  <th>Boost Market Selection</th>
+                  <th>Status</th>
+                  <th>Boost Odds</th>
+                  <th>Action</th>
                 </tr>
               </thead>
-              <tbody id="gamesTableBody">
-                <!-- Dynamically populated from JS -->
+              <tbody id="topPicksTableBody">
+                <tr>
+                  <td colspan="6" style="text-align: center; padding: 25px;">
+                    <i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#8b5cf6;"></i>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- RIGHT UPCOMING / LIVE GAMES SIDEBAR -->
-        <div class="upcoming-panel">
-          <div class="upcoming-tabs-row">
-            <button class="tab-btn active">Live <span class="live-dot"></span></button>
-            <button class="tab-btn">Yesterday</button>
-            <button class="tab-btn">Today</button>
-            <button class="tab-btn">Upcoming</button>
-            <button class="tab-btn">Archived</button>
+        <!-- RIGHT SIDEBAR SECTION: TODAY MATCHDAY TICKER AND BRAND DOCK -->
+        <div class="glass-card match-cards-card">
+          
+          <div id="todayMatchdayWidget">
+            <div class="card-header">
+              <span style="color: #ffffff;"><i class="bx bx-calendar-event"></i> TODAY MATCHDAY</span>
+              <div class="actions">
+                <i class="bx bx-chevron-left" style="cursor: pointer;" onclick="navigateMatchDay(-1)"></i>
+                <span id="matchDayDisplay">MATCHDAY (OCT 8)</span>
+                <i class="bx bx-chevron-right" style="cursor: pointer;" onclick="navigateMatchDay(1)"></i>
+              </div>
+            </div>
+
+            <div id="gamesContainer" class="stacked-matches-list">
+              <div style="text-align:center; padding:15px;"><i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#8b5cf6;"></i></div>
+            </div>
           </div>
 
-          <div class="match-cards-column" id="matchCardsContainer">
-            <!-- Dynamically populated from JS -->
+          <!-- BRAND DIRECTORY DOCK -->
+          <div class="brand-dock-section" id="brandDockWidget">
+            <div class="dock-header">BRAND DIRECTORY DOCK</div>
+            <div class="tab-pills">
+              <div class="tab-pill active" id="tab-ibet" onclick="switchBrandTab('ibet')">IBET</div>
+              <div class="tab-pill" id="tab-edge" onclick="switchBrandTab('edge')">EDGE</div>
+              <div class="tab-pill" id="tab-pubs" onclick="switchBrandTab('pubs')">PUBS</div>
+            </div>
+            <div id="brandLinksContainer" class="brand-links-list"></div>
           </div>
+
         </div>
 
       </div>
 
+    </main>
+  </div>
+
+  <!-- INTERACTIVE URGENT HANDOVER MODAL -->
+  <div id="handoverModal" class="handover-modal-overlay">
+    <div class="handover-modal-card">
+      <div class="handover-modal-header">
+        <span class="handover-modal-title"><i class="bx bx-alarm-exclamation" style="color: #facc15;"></i> Manage Handovers</span>
+        <i class="bx bx-x handover-modal-close" onclick="closeHandoverModal()"></i>
+      </div>
+      
+      <form onsubmit="addUrgentHandover(event)" class="handover-modal-form">
+        <div class="handover-form-group">
+          <select id="handoverPriorityInput" class="handover-field select-priority" required>
+            <option value="URGENT/CRITICAL" selected>🚨 URGENT / CRITICAL</option>
+            <option value="Need Attention">⚠️ Need Attention</option>
+            <option value="Normal">ℹ️ Normal</option>
+          </select>
+          <input type="text" id="handoverBrandInput" placeholder="Brand/Topic (e.g. IBET, QBET, MTS)" required class="handover-field short">
+          <input type="text" id="handoverMsgInput" placeholder="Handover Note / Issue Details..." required class="handover-field flex-1">
+          <button type="submit" class="handover-post-btn"><i class="bx bx-plus"></i> Post Note</button>
+        </div>
+      </form>
+
+      <div class="handover-modal-subtitle">ACTIVE HANDOVERS</div>
+      <div class="handover-items-list" id="handoverModalList"></div>
     </div>
   </div>
 
