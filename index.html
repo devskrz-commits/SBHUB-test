@@ -26,14 +26,12 @@
 </head>
 <body id="pageBody">
 
-  <!-- ANIMATED PLASMA BACKGROUND CANVAS -->
+  <!-- ANIMATED PLASMA CANVAS BACKGROUND -->
   <canvas id="bgCanvas"></canvas>
 
-  <!-- FRONT SECURITY LOGIN OVERLAY MODAL -->
+  <!-- SECURITY GATEWAY MODAL -->
   <div id="authOverlay">
     <div class="login-container">
-
-      <!-- SITTING ROBOT STAGE -->
       <div class="sitting-robot-stage" id="sittingRobotStage">
         <div class="robot-body-wrapper" id="robotBodyWrapper">
           <div class="robot-antenna"></div>
@@ -51,7 +49,6 @@
         </div>
       </div>
 
-      <!-- SOLID LOGIN CARD -->
       <div class="login-card" id="loginCard">
         <div class="login-title">Security Gateway</div>
         <div class="login-subtitle">SPORTSBOOK HUB OPERATIONAL PORTAL</div>
@@ -68,7 +65,7 @@
               <a href="#forgot" class="forgot-link">Forgot key?</a>
             </div>
             <div class="password-field-wrap">
-              <input type="password" id="passwordInput" class="login-input" value="" placeholder="Enter password" required autocomplete="current-password">
+              <input type="password" id="passwordInput" class="login-input" placeholder="Enter password" required autocomplete="current-password">
               <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility()" aria-label="Toggle Password Visibility">
                 <i class="bx bx-show" id="togglePassIcon"></i>
               </button>
@@ -87,16 +84,15 @@
           </button>
         </form>
       </div>
-
     </div>
   </div>
 
   <!-- DASHBOARD APP CONTAINER -->
   <div id="dashboardApp">
 
-    <!-- MOBILE NAVIGATION HEADER -->
+    <!-- MOBILE NAVIGATION HEADER (MOBILE ONLY) -->
     <div class="mobile-nav-header">
-      <button type="button" class="mobile-menu-toggle" id="mobileMenuBtn" onclick="toggleMobileSidebar()" aria-label="Toggle Navigation Menu">
+      <button type="button" class="mobile-menu-toggle" id="mobileMenuBtn" onclick="toggleMobileSidebar(true)" aria-label="Toggle Navigation Menu">
         <i class="bx bx-menu"></i>
       </button>
       <div class="mobile-brand-title">SPORTSBOOK HUB</div>
@@ -105,10 +101,9 @@
       </button>
     </div>
 
-    <!-- SIDEBAR BACKDROP OVERLAY FOR MOBILE -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar(false)"></div>
 
-    <!-- SIDEBAR NAVIGATION (COMPLETE ORIGINAL DATA) -->
+    <!-- CLEAN SIDEBAR NAVIGATION -->
     <aside class="sidebar" id="mainSidebar">
       <div class="sidebar-menu-scroll">
         <div class="sidebar-header">
@@ -135,7 +130,7 @@
           <div class="sub-menu collapsed" id="sub-internal">
             <a class="nav-sub-btn" href="duties.html" target="_blank" rel="noreferrer"><span>DAILY DUTY</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="nav-sub-btn" href="rota.html" target="_blank" rel="noreferrer"><span>ROTA</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://reliancedigi-my.sharepoint.com/:x:/p/ann/IQCWP022FAMHSY-z3-eV0c9XAWFWLrVAPb9xSCUut_VuZ9U?rtime=BxZTEFXS3kg" target="_blank" rel="noreferrer"><span>DAILY BIG WINNERS</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://reliancedigi-my.sharepoint.com/:x:/p/ann/IQCWP022FAMHSY-z3-eV0c9XAWFWLrVAPb9xSCUut_VuZ9U" target="_blank" rel="noreferrer"><span>DAILY BIG WINNERS</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="nav-sub-btn" href="handover.html" target="_blank" rel="noreferrer"><span>HANDOVER</span><i class="bx bx-right-arrow-alt"></i></a>
           </div>
         </div>
@@ -310,7 +305,7 @@
 
       </div>
 
-      <!-- ADMIN FOOTER PILL -->
+      <!-- DOCKED ADMIN FOOTER -->
       <div class="sidebar-admin-footer">
         <div class="admin-top-pill">
           <div class="avatar-circle">AD</div>
@@ -322,21 +317,65 @@
       </div>
     </aside>
 
-    <!-- MAIN WORKSPACE -->
+    <!-- MAIN DASHBOARD WORKSPACE -->
     <main class="main-workspace">
 
-      <!-- TOP CONTROL & NAV HEADER BAR -->
+      <!-- TOP CONTROL HEADER WITH FUNCTIONAL CLICKABLE ICON PILLS -->
       <div class="top-nav-bar">
         <div class="nav-brand-logo">
           <span class="logo-box">LT</span>
         </div>
-        
+
+        <!-- CLICKABLE ICON PILLS FOR WIDGET OPTIONS -->
         <div class="nav-icon-pills">
-          <button class="icon-pill-btn active" type="button" title="User Focus"><i class="bx bx-user"></i></button>
-          <button class="icon-pill-btn" type="button" title="Team Duties"><i class="bx bx-group"></i></button>
-          <button class="icon-pill-btn" type="button" title="Live Operations"><i class="bx bx-run"></i></button>
-          <button class="icon-pill-btn" type="button" title="Matches"><i class="bx bx-football"></i></button>
-          <button class="icon-pill-btn" type="button" title="Tools"><i class="bx bx-closet"></i></button>
+          <button class="icon-pill-btn active" type="button" onclick="toggleWidgetDropdown(event)" title="Widget Controls &amp; Settings">
+            <i class="bx bx-slider-alt"></i>
+          </button>
+          <button class="icon-pill-btn" type="button" onclick="toggleWidgetDropdown(event)" title="User Profile Options">
+            <i class="bx bx-user"></i>
+          </button>
+          <button class="icon-pill-btn" type="button" onclick="toggleWidgetDropdown(event)" title="Team Roster Duties">
+            <i class="bx bx-group"></i>
+          </button>
+          <button class="icon-pill-btn" type="button" onclick="toggleWidgetDropdown(event)" title="Live Match Tracker">
+            <i class="bx bx-run"></i>
+          </button>
+          <button class="icon-pill-btn" type="button" onclick="toggleWidgetDropdown(event)" title="Sports Fixtures">
+            <i class="bx bx-football"></i>
+          </button>
+        </div>
+
+        <!-- DROPDOWN MENU FOR WIDGET OPTIONS -->
+        <div class="dropdown-menu top-pill-widget-menu" id="widgetMenu">
+          <div class="dropdown-section-title"><i class="bx bx-slider-alt"></i> WIDGET OPTIONS</div>
+          <label class="menu-option">
+            <span>Hot Boosts / Top Picks</span>
+            <input type="checkbox" checked onchange="toggleWidgetSection('topPicksSection', this.checked)">
+          </label>
+          <label class="menu-option">
+            <span>Today Matchday Ticker</span>
+            <input type="checkbox" checked onchange="toggleWidgetSection('todayMatchdayWidget', this.checked)">
+          </label>
+          <label class="menu-option">
+            <span>Brand Directory Dock</span>
+            <input type="checkbox" checked onchange="toggleWidgetSection('brandDockWidget', this.checked)">
+          </label>
+          <label class="menu-option">
+            <span>Jira Alerts Banner</span>
+            <input type="checkbox" checked onchange="toggleWidgetSection('jiraAlertBanner', this.checked)">
+          </label>
+          <label class="menu-option">
+            <span>Urgent Handover Banner</span>
+            <input type="checkbox" checked onchange="toggleWidgetSection('urgentHandoverBanner', this.checked)">
+          </label>
+
+          <div class="dropdown-section-title" style="margin-top: 8px;"><i class="bx bx-palette"></i> THEME SELECTION</div>
+          <button class="menu-option" type="button" onclick="setGradient('purple-glass')">
+            <span>Deep Violet Glass</span><span class="color-dot" style="background: #8b5cf6;"></span>
+          </button>
+          <button class="menu-option" type="button" onclick="setGradient('plain-navy')">
+            <span>Dark Navy</span><span class="color-dot" style="background: #0b1329;"></span>
+          </button>
         </div>
 
         <div class="top-nav-right">
@@ -352,7 +391,7 @@
         </div>
       </div>
 
-      <!-- ALERT BANNERS ROW (JIRA + HANDOVER) -->
+      <!-- ALERT BANNERS ROW -->
       <div class="alert-banners-row">
         <div id="jiraAlertBanner" class="jira-static-alert-banner">
           <div class="jira-alert-badge">
@@ -377,20 +416,21 @@
         </div>
       </div>
 
-      <!-- HERO DASHBOARD CARD (LAYOUT MATCHING REFERENCE IMAGE) -->
+      <!-- HERO DASHBOARD CARD WITH BASKETBALL PLAYER CUTOUT IMAGE -->
       <div class="glass-card hero-dashboard-card">
         
-        <!-- LEFT GRAPHIC BADGE -->
+        <!-- LEFT BASKETBALL PLAYER GRAPHIC CUTOUT -->
         <div class="hero-left-graphic">
+          <img src="https://raw.githubusercontent.com/devskrz/assets/main/basketball_player.png" alt="Basketball Player" class="athlete-hero-img" onerror="this.onerror=null; this.src='https://pngimg.com/uploads/basketball_player/basketball_player_PNG15.png';">
           <div class="athlete-graphic-badge">
             <i class="bx bx-basketball"></i>
             <span>LIVE OPERATIONAL HUB</span>
           </div>
         </div>
 
-        <!-- CENTER SPIDER RADAR CHART -->
+        <!-- CENTER RADAR SPIDER CHART -->
         <div class="hero-center-radar">
-          <div class="radar-watermark-num">26</div>
+          <div class="radar-watermark-num">23</div>
           <canvas id="heroRadarChart" width="280" height="280"></canvas>
           
           <div class="radar-stat-label ppg">PPG <span>29.1</span></div>
@@ -400,16 +440,16 @@
           <div class="radar-stat-label tp">3P% <span>41.0</span></div>
         </div>
 
-        <!-- RIGHT KPI METRICS -->
+        <!-- RIGHT KPI METRICS CLUSTER -->
         <div class="hero-right-metrics">
           <div class="player-profile-header">
-            <h1 class="player-name">Sportsbook Hub</h1>
+            <h1 class="player-name">Marcus Huntington</h1>
             <div class="player-team-tag">
               <i class="bx bx-shield-alt-2"></i> Liberty Deer Operational Core
             </div>
           </div>
 
-          <!-- KPI TILES TRIO (ORANGE, BLUE, WHITE) -->
+          <!-- KPI TILES (ORANGE, BLUE, WHITE) -->
           <div class="kpi-tiles-row">
             <div class="kpi-card orange-card">
               <div class="kpi-icon"><i class="bx bx-trophy"></i></div>
@@ -430,134 +470,96 @@
             </div>
           </div>
 
-          <!-- BOTTOM INFO PILLS (MANILA WEATHER & WORLD CLOCKS) -->
+          <!-- BOTTOM INFO PILLS (MANILA TEMP, HUMIDITY, CET, GMT+8) -->
           <div class="info-pills-grid">
             <div class="info-pill-item">
-              <span class="pill-title">Manila Temp</span>
-              <span class="pill-value" id="weatherTemp">--°C</span>
+              <span class="pill-title">Height / Manila Temp</span>
+              <span class="pill-value" id="weatherTemp">30°C</span>
             </div>
             <div class="info-pill-item">
-              <span class="pill-title">Humidity</span>
-              <span class="pill-value" id="weatherHumidity">--%</span>
+              <span class="pill-title">Weight / Humidity</span>
+              <span class="pill-value" id="weatherHumidity">71%</span>
             </div>
             <div class="info-pill-item">
-              <span class="pill-title">CET Time</span>
+              <span class="pill-title">Age / CET Time</span>
               <span class="pill-value" id="clock-cet">00:00:00</span>
             </div>
             <div class="info-pill-item">
-              <span class="pill-title">GMT+8</span>
+              <span class="pill-title">Country / GMT+8</span>
               <span class="pill-value" id="clock-gmt8">00:00:00</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- MAIN CONTENT GRID -->
+      <!-- MAIN CONTENT SECTION: HOT BOOSTS / TOP PICKS IN REFERENCE TABLE DESIGN -->
       <div class="dashboard-grid-layout">
         
-        <!-- LEFT: GAMES STATS & TOP PICKS TABLE -->
-        <div class="glass-card games-stats-card">
+        <!-- MAIN SECTION: HOT BOOSTS / TOP PICKS (REPLACING DUMMY GAMES STATS) -->
+        <div class="glass-card games-stats-card" id="topPicksSection">
           <div class="card-table-header">
-            <div class="table-title">Games Stats</div>
+            <div class="table-title">HOT BOOSTS / TOP PICKS</div>
             
             <div class="table-filter-group">
               <div class="dropdown-filter">
-                <span>By Date</span> <i class="bx bx-chevron-down"></i>
+                <span>By League</span> <i class="bx bx-chevron-down"></i>
               </div>
 
               <div class="status-tab-pills">
-                <button class="status-tab active" type="button" onclick="filterTopPicks('eng.1', this)"><span class="live-dot"></span> Live</button>
+                <button class="status-tab active" type="button" onclick="filterTopPicks('eng.1', this)"><span class="live-dot"></span> Premier League</button>
                 <button class="status-tab" type="button" onclick="filterTopPicks('esp.1', this)">La Liga</button>
                 <button class="status-tab" type="button" onclick="filterTopPicks('ger.1', this)">Bundesliga</button>
                 <button class="status-tab" type="button" onclick="filterTopPicks('ita.1', this)">Serie A</button>
                 <button class="status-tab" type="button" onclick="filterTopPicks('fra.1', this)">Ligue 1</button>
+                <button class="status-tab" type="button" onclick="filterTopPicks('uefa.champions', this)">UEFA</button>
               </div>
             </div>
           </div>
 
-          <!-- TABLE -->
+          <!-- REFERENCE-STYLED TABLE FOR HOT BOOSTS & TOP PICKS -->
           <div class="stats-table-wrapper">
             <table class="stats-table">
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>Match</th>
-                  <th>Final Score</th>
-                  <th>Result</th>
-                  <th>PTS</th>
-                  <th>REB</th>
-                  <th>AST</th>
-                  <th>FG%</th>
+                  <th>Kickoff</th>
+                  <th>Matchup</th>
+                  <th>Boost Market Selection</th>
+                  <th>Status</th>
+                  <th>Boost Odds</th>
+                  <th>Action</th>
                 </tr>
               </thead>
-              <tbody id="gamesStatsBody">
+              <tbody id="topPicksTableBody">
                 <tr>
-                  <td>04 Nov 2026</td>
-                  <td><div class="team-match-cell"><i class="bx bx-shield"></i> Liberty Deer vs All Stars</div></td>
-                  <td>106-112</td>
-                  <td><span class="result-badge win">Win</span></td>
-                  <td>17.7</td>
-                  <td>5.0</td>
-                  <td>8.7</td>
-                  <td>52</td>
-                </tr>
-                <tr>
-                  <td>02 Nov 2026</td>
-                  <td><div class="team-match-cell"><i class="bx bx-shield"></i> Liberty Deer vs Titans</div></td>
-                  <td>102-97</td>
-                  <td><span class="result-badge win">Win</span></td>
-                  <td>15.9</td>
-                  <td>5.7</td>
-                  <td>8.0</td>
-                  <td>60</td>
-                </tr>
-                <tr>
-                  <td>01 Nov 2026</td>
-                  <td><div class="team-match-cell"><i class="bx bx-shield"></i> Liberty Deer vs Eagles</div></td>
-                  <td>82-94</td>
-                  <td><span class="result-badge loss">Loss</span></td>
-                  <td>14.8</td>
-                  <td>4.2</td>
-                  <td>9.1</td>
-                  <td>51</td>
-                </tr>
-                <tr>
-                  <td>27 Oct 2026</td>
-                  <td><div class="team-match-cell"><i class="bx bx-shield"></i> Liberty Deer vs Knights</div></td>
-                  <td>107-90</td>
-                  <td><span class="result-badge win">Win</span></td>
-                  <td>16.5</td>
-                  <td>3.9</td>
-                  <td>7.2</td>
-                  <td>45</td>
+                  <td colspan="6" style="text-align: center; padding: 20px;">
+                    <i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#8b5cf6;"></i>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
-
-          <!-- TOP PICKS GRID CARDS -->
-          <div class="top-picks-section">
-            <div class="sub-section-title">HOT BOOSTS / TOP PICKS</div>
-            <div id="topPicksContainer" class="top-picks-grid"></div>
-          </div>
         </div>
 
-        <!-- RIGHT: MATCHDAY CARDS & BRAND DOCK -->
+        <!-- RIGHT SECTION: TODAY MATCHDAY TICKER & BRAND DOCK -->
         <div class="glass-card match-cards-card">
-          <div class="card-header">
-            <span style="color: #ffffff;"><i class="bx bx-calendar-event"></i> TODAY MATCHDAY</span>
-            <div class="actions">
-              <i class="bx bx-chevron-left" style="cursor: pointer;" onclick="navigateMatchDay(-1)"></i>
-              <span id="matchDayDisplay">TODAY (GMT+8)</span>
-              <i class="bx bx-chevron-right" style="cursor: pointer;" onclick="navigateMatchDay(1)"></i>
+          
+          <div id="todayMatchdayWidget">
+            <div class="card-header">
+              <span style="color: #ffffff;"><i class="bx bx-calendar-event"></i> TODAY MATCHDAY</span>
+              <div class="actions">
+                <i class="bx bx-chevron-left" style="cursor: pointer;" onclick="navigateMatchDay(-1)"></i>
+                <span id="matchDayDisplay">TODAY (OCT 8)</span>
+                <i class="bx bx-chevron-right" style="cursor: pointer;" onclick="navigateMatchDay(1)"></i>
+              </div>
+            </div>
+
+            <div id="gamesContainer" class="stacked-matches-list">
+              <div style="text-align:center; padding:15px;"><i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#8b5cf6;"></i></div>
             </div>
           </div>
 
-          <div id="gamesContainer" class="stacked-matches-list">
-            <div style="text-align:center; padding:15px;"><i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#8b5cf6;"></i></div>
-          </div>
-
-          <div class="brand-dock-section">
+          <!-- BRAND DIRECTORY DOCK -->
+          <div class="brand-dock-section" id="brandDockWidget">
             <div class="dock-header">BRAND DIRECTORY DOCK</div>
             <div class="tab-pills">
               <div class="tab-pill active" id="tab-ibet" onclick="switchBrandTab('ibet')">IBET</div>
@@ -566,6 +568,7 @@
             </div>
             <div id="brandLinksContainer" class="brand-links-list"></div>
           </div>
+
         </div>
 
       </div>
@@ -573,7 +576,7 @@
     </main>
   </div>
 
-  <!-- URGENT HANDOVER MODAL -->
+  <!-- INTERACTIVE URGENT HANDOVER MODAL -->
   <div id="handoverModal" class="handover-modal-overlay">
     <div class="handover-modal-card">
       <div class="handover-modal-header">
