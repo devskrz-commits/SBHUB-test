@@ -92,7 +92,7 @@
 
     <main class="main-workspace full-width">
 
-      <!-- TOP HEADER BAR WITH FUNCTIONAL CATEGORY DROPDOWNS -->
+      <!-- TOP HEADER BAR WITH CATEGORY DROPDOWNS -->
       <header class="top-nav-bar">
         <div class="nav-brand-logo">
           <span class="logo-box">LT</span>
@@ -172,7 +172,7 @@
 
           <!-- 6. BRANDS AND REFS -->
           <div class="nav-pill-item">
-            <button class="icon-pill-btn" type="button" onclick="toggleNavDropdown('nav-brands', event)" title="Brands &amp; Refs">
+            <button class="icon-pill-btn" type="button" onclick="toggleNavDropdown('nav-brands', event)" title="Brands &amp; References">
               <i class="bx bx-layer"></i> <span>BRANDS &amp; REFS</span> <i class="bx bx-chevron-down"></i>
             </button>
             <div class="nav-dropdown-menu" id="nav-brands">
@@ -282,12 +282,14 @@
         </div>
       </div>
 
-      <!-- HERO DASHBOARD CARD WITH DYNAMIC BASKETBALL PLAYER CUTOUT -->
+      <!-- HERO DASHBOARD CARD WITH BASKETBALL PLAYER HOLDING A BALL -->
       <div class="glass-card hero-dashboard-card">
         
-        <!-- LEFT BASKETBALL PLAYER GRAPHIC CUTOUT OVERLAY -->
+        <!-- LEFT BASKETBALL PLAYER GRAPHIC CUTOUT CONTAINER -->
         <div class="hero-left-graphic">
-          <img src="https://raw.githubusercontent.com/devskrz/assets/main/basketball_player.png" alt="Marcus Huntington - Basketball Player" class="athlete-hero-img" onerror="this.onerror=null; this.src='https://pngimg.com/uploads/basketball_player/basketball_player_PNG15.png';">
+          <div class="athlete-img-wrapper">
+            <img src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/3908809.png" alt="Marcus Huntington - Basketball Player Cutout" class="athlete-hero-img">
+          </div>
           <div class="athlete-graphic-badge">
             <i class="bx bx-basketball"></i>
             <span>LIVE OPERATIONAL HUB</span>
