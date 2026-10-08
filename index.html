@@ -24,10 +24,10 @@
 </head>
 <body id="pageBody">
 
-  <!-- CANVAS FOR OPTIONAL PLASMA BACKGROUND -->
+  <!-- CANVAS FOR BACKGROUND PLASMA EFFECT -->
   <canvas id="bgCanvas"></canvas>
 
-  <!-- SECURITY LOGIN OVERLAY MODAL (Preserving application security logic) -->
+  <!-- SECURITY LOGIN OVERLAY MODAL -->
   <div id="authOverlay">
     <div class="login-container">
       <div class="sitting-robot-stage" id="sittingRobotStage">
@@ -89,7 +89,7 @@
   <div id="dashboardApp" class="dashboard-viewport">
     <main class="main-dashboard-card">
 
-      <!-- REAL PHOTOGRAPHIC ATHLETE IMAGE OVERLAPPING THE DASHBOARD -->
+      <!-- REAL ATHLETE IMAGE OVERLAPPING DASHBOARD -->
       <div class="player-cutout-container">
         <img 
           src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1000&q=80" 
@@ -129,19 +129,15 @@
         </div>
       </header>
 
-      <!-- UPPER HERO SECTION (PLAYER PROFILE & SPIDER CHART) -->
+      <!-- UPPER HERO SECTION -->
       <section class="hero-section-grid">
-        
-        <!-- EMPTY HOLDER FOR LEFT OVERLAPPING PLAYER -->
         <div class="player-left-spacer"></div>
 
         <!-- CENTER RADAR SPIDER CHART & WATERMARK 23 -->
         <div class="spider-chart-stage">
           <div class="jersey-watermark-23">23</div>
 
-          <!-- SPIDER RADAR SVG GRAPHIC -->
           <svg class="radar-chart-svg" viewBox="0 0 300 260">
-            <!-- 5-Axis Web Polygons -->
             <polygon points="150,20 255,80 230,195 70,195 45,80" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
             <polygon points="150,55 220,95 203,170 97,170 80,95" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
             <polygon points="150,90 185,110 176,145 124,145 115,110" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
@@ -152,10 +148,8 @@
             <line x1="150" y1="120" x2="70" y2="195" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
             <line x1="150" y1="120" x2="45" y2="80" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
 
-            <!-- Active Stat Red Filled Polygon -->
             <polygon points="150,32 250,88 220,185 85,180 52,90" fill="rgba(239, 68, 68, 0.22)" stroke="#ef4444" stroke-width="2.5" stroke-linejoin="round"/>
 
-            <!-- Red Nodes -->
             <circle cx="150" cy="32" r="4.5" fill="#ef4444"/>
             <circle cx="250" cy="88" r="4.5" fill="#ef4444"/>
             <circle cx="220" cy="185" r="4.5" fill="#ef4444"/>
@@ -163,7 +157,6 @@
             <circle cx="52" cy="90" r="4.5" fill="#ef4444"/>
           </svg>
 
-          <!-- RADAR NODE STAT CALLOUTS -->
           <div class="radar-node node-ppg"><span class="node-label">PPG</span><span class="node-val" id="valPPG">29.1</span></div>
           <div class="radar-node node-apg"><span class="node-label">APG</span><span class="node-val" id="valAPG">10.3</span></div>
           <div class="radar-node node-fg"><span class="node-label">FG%</span><span class="node-val" id="valFG">57.5</span></div>
@@ -173,7 +166,6 @@
 
         <!-- RIGHT SIDE PLAYER METRICS BLOCK -->
         <div class="player-info-column">
-          
           <div class="player-title-header">
             <h1 class="player-display-name" id="playerName">Marcus<br>Huntington</h1>
             <div class="team-subrow">
@@ -182,7 +174,7 @@
             </div>
           </div>
 
-          <!-- TOP 3 STAT CARDS (WINS, LOSSES, WINNING %) -->
+          <!-- TOP 3 STAT CARDS -->
           <div class="top-stat-cards-row">
             <div class="metric-card card-orange">
               <i class="bx bx-trophy card-icon"></i>
@@ -224,7 +216,7 @@
         </div>
       </section>
 
-      <!-- LOWER DATA SECTION (TABLE & UPCOMING GAMES SIDEBAR) -->
+      <!-- LOWER DATA SECTION -->
       <section class="lower-glass-panel">
         
         <!-- LEFT GAMES STATS TABLE -->
@@ -252,7 +244,7 @@
                 </tr>
               </thead>
               <tbody id="gamesTableBody">
-                <!-- Dynamically rendered by app.js -->
+                <!-- Rendered dynamically by app.js -->
               </tbody>
             </table>
           </div>
@@ -269,7 +261,7 @@
           </div>
 
           <div class="sidebar-cards-list" id="sidebarMatchCards">
-            <!-- Dynamically rendered by app.js -->
+            <!-- Rendered dynamically by app.js -->
           </div>
         </div>
 
