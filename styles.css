@@ -36,6 +36,48 @@ body {
   pointer-events: none;
 }
 
+/* STRICT AUTH OVERLAY ISOLATION - PREVENTS CORNER TEXT OVERFLOW */
+#authOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 4, 22, 0.95);
+  -webkit-backdrop-filter: blur(30px);
+  backdrop-filter: blur(30px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+#authOverlay.unlocked,
+#authOverlay.hidden {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* STRICT HANDOVER MODAL OVERLAY ISOLATION */
+.handover-modal-overlay,
+#handoverModal {
+  display: none !important;
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 4, 22, 0.88);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  z-index: 9999999;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.handover-modal-overlay.show,
+#handoverModal.show {
+  display: flex !important;
+}
+
 /* FULL WIDESCREEN WORKSPACE */
 #dashboardApp {
   width: 100%;
@@ -301,23 +343,35 @@ body {
   justify-content: center;
   height: 100%;
   min-height: 280px;
-  background: linear-gradient(180deg, rgba(255, 87, 71, 0.2) 0%, rgba(139, 92, 246, 0.35) 100%);
+  background: linear-gradient(180deg, rgba(255, 87, 71, 0.25) 0%, rgba(139, 92, 246, 0.4) 100%);
   border-radius: 22px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   overflow: visible;
 }
 
+.athlete-img-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: visible;
+  pointer-events: none;
+}
+
 .athlete-hero-img {
   width: 145%;
-  max-width: 380px;
+  max-width: 400px;
   height: auto;
+  max-height: 330px;
   object-fit: contain;
+  object-position: bottom center;
   position: absolute;
-  bottom: -15px;
-  left: -20px;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.8));
   z-index: 10;
-  pointer-events: none;
-  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.75));
 }
 
 .athlete-graphic-badge {
@@ -400,150 +454,4 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-}
-
-.kpi-card.orange-card { background: var(--accent-orange); color: #ffffff; }
-.kpi-card.blue-card { background: var(--accent-blue); color: #ffffff; }
-.kpi-card.white-card { background: #ffffff; color: #120626; }
-
-.kpi-label { font-size: 9px; font-weight: 800; text-transform: uppercase; opacity: 0.8; }
-.kpi-val { font-size: 20px; font-weight: 800; }
-
-.info-pills-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-.info-pill-item {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  padding: 8px 12px;
-  text-align: center;
-}
-
-.pill-title { display: block; font-size: 9px; color: rgba(255, 255, 255, 0.5); font-weight: 700; }
-.pill-value { font-size: 12px; font-weight: 800; color: #ffffff; }
-
-/* HOT BOOSTS / TOP PICKS IN REFERENCE TABLE DESIGN */
-.dashboard-grid-layout {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 20px;
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--glass-border);
-  -webkit-backdrop-filter: var(--card-blur);
-  backdrop-filter: var(--card-blur);
-  border-radius: 24px;
-  padding: 20px;
-}
-
-.card-table-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.table-title { font-size: 14px; font-weight: 800; }
-
-.table-filter-group {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.dropdown-filter {
-  font-size: 11px;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 5px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.status-tab-pills { display: flex; gap: 6px; }
-
-.status-tab {
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 8px;
-  cursor: pointer;
-  border-radius: 6px;
-}
-
-.status-tab.active { color: #ffffff; background: rgba(255, 255, 255, 0.15); }
-
-.live-dot {
-  width: 6px;
-  height: 6px;
-  background: #ff5747;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 4px;
-}
-
-.stats-table-wrapper { width: 100%; overflow-x: auto; }
-
-.stats-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 8px;
-  font-size: 11px;
-}
-
-.stats-table th {
-  text-align: left;
-  color: rgba(255, 255, 255, 0.4);
-  font-weight: 700;
-  padding: 0 12px 6px 12px;
-}
-
-.stats-table td {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 12px;
-  font-weight: 600;
-}
-
-.stats-table tr td:first-child { border-radius: 12px 0 0 12px; }
-.stats-table tr td:last-child { border-radius: 0 12px 12px 0; }
-
-.team-match-cell { display: flex; align-items: center; gap: 8px; font-weight: 700; }
-.team-match-cell img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
-
-.odds-pill {
-  background: rgba(139, 92, 246, 0.2);
-  border: 1px solid #8b5cf6;
-  color: #c4b5fd;
-  padding: 2px 8px;
-  border-radius: 6px;
-  font-weight: 800;
-}
-
-.result-badge { padding: 2px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; }
-.result-badge.win { background: rgba(52, 211, 153, 0.2); color: #34d399; }
-.result-badge.hot { background: rgba(255, 87, 71, 0.2); color: #ff5747; }
-
-/* TODAY MATCHDAY CARDS AND BRAND DOCK */
-.match-cards-card { display: flex; flex-direction: column; gap: 16px; }
-.card-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 800; }
-
-.stacked-matches-list { display: flex; flex-direction: column; gap: 12px; }
-
-.match-card-item {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 14px;
-}
-
-.match-time-sub { font-size: 9px; color: rgba(255, 255, 255, 0.5); margin-bottom: 8px; text-align: center; }
-.match-card-body { display: flex; align-items: center; justify-content: space-between; }
-.match-team { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; font-
+  box-shadow: 0 10px 25px
