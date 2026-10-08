@@ -5,10 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sportsbook Hub - Operational Portal</title>
   
-  <!-- Fonts & Icons -->
+  <!-- Preconnect & Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Boxicons CSS -->
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   
   <!-- Stylesheet -->
@@ -24,12 +26,14 @@
 </head>
 <body id="pageBody">
 
-  <!-- CANVAS BACKGROUND -->
+  <!-- ANIMATED PLASMA BACKGROUND CANVAS -->
   <canvas id="bgCanvas"></canvas>
 
-  <!-- SECURITY LOGIN GATEWAY -->
+  <!-- FRONT SECURITY LOGIN OVERLAY MODAL -->
   <div id="authOverlay">
     <div class="login-container">
+
+      <!-- SITTING ROBOT STAGE -->
       <div class="sitting-robot-stage" id="sittingRobotStage">
         <div class="robot-body-wrapper" id="robotBodyWrapper">
           <div class="robot-antenna"></div>
@@ -47,6 +51,7 @@
         </div>
       </div>
 
+      <!-- SOLID LOGIN CARD -->
       <div class="login-card" id="loginCard">
         <div class="login-title">Security Gateway</div>
         <div class="login-subtitle">SPORTSBOOK HUB OPERATIONAL PORTAL</div>
@@ -63,7 +68,7 @@
               <a href="#forgot" class="forgot-link">Forgot key?</a>
             </div>
             <div class="password-field-wrap">
-              <input type="password" id="passwordInput" class="login-input" placeholder="Enter password" required autocomplete="current-password">
+              <input type="password" id="passwordInput" class="login-input" value="" placeholder="Enter password" required autocomplete="current-password">
               <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility()" aria-label="Toggle Password Visibility">
                 <i class="bx bx-show" id="togglePassIcon"></i>
               </button>
@@ -82,15 +87,16 @@
           </button>
         </form>
       </div>
+
     </div>
   </div>
 
-  <!-- DASHBOARD APP WRAPPER -->
+  <!-- DASHBOARD APP CONTAINER -->
   <div id="dashboardApp">
 
     <!-- MOBILE NAVIGATION HEADER -->
     <div class="mobile-nav-header">
-      <button type="button" class="mobile-menu-toggle" onclick="toggleMobileSidebar(true)" aria-label="Toggle Menu">
+      <button type="button" class="mobile-menu-toggle" id="mobileMenuBtn" onclick="toggleMobileSidebar()" aria-label="Toggle Navigation Menu">
         <i class="bx bx-menu"></i>
       </button>
       <div class="mobile-brand-title">SPORTSBOOK HUB</div>
@@ -99,9 +105,10 @@
       </button>
     </div>
 
+    <!-- SIDEBAR BACKDROP OVERLAY FOR MOBILE -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar(false)"></div>
 
-    <!-- MAIN SIDEBAR -->
+    <!-- SIDEBAR NAVIGATION (COMPLETE ORIGINAL DATA) -->
     <aside class="sidebar" id="mainSidebar">
       <div class="sidebar-menu-scroll">
         <div class="sidebar-header">
@@ -113,10 +120,10 @@
 
         <div class="search-box">
           <i class="bx bx-search"></i>
-          <input type="text" placeholder="Search categories & links...">
+          <input type="text" placeholder="Search categories &amp; links...">
         </div>
 
-        <!-- NAVIGATION GROUPS -->
+        <!-- 1. INTERNAL -->
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-internal', this)">
             <div class="nav-main-left">
@@ -128,11 +135,12 @@
           <div class="sub-menu collapsed" id="sub-internal">
             <a class="nav-sub-btn" href="duties.html" target="_blank" rel="noreferrer"><span>DAILY DUTY</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="nav-sub-btn" href="rota.html" target="_blank" rel="noreferrer"><span>ROTA</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://reliancedigi-my.sharepoint.com/:x:/p/ann/IQCWP022FAMHSY-z3-eV0c9XAWFWLrVAPb9xSCUut_VuZ9U" target="_blank" rel="noreferrer"><span>DAILY BIG WINNERS</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://reliancedigi-my.sharepoint.com/:x:/p/ann/IQCWP022FAMHSY-z3-eV0c9XAWFWLrVAPb9xSCUut_VuZ9U?rtime=BxZTEFXS3kg" target="_blank" rel="noreferrer"><span>DAILY BIG WINNERS</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="nav-sub-btn" href="handover.html" target="_blank" rel="noreferrer"><span>HANDOVER</span><i class="bx bx-right-arrow-alt"></i></a>
           </div>
         </div>
 
+        <!-- 2. DAILY TASKS -->
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-dailytask', this)">
             <div class="nav-main-left">
@@ -152,6 +160,7 @@
           </div>
         </div>
 
+        <!-- 3. DAILY MONITORING -->
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-dailymonitoring', this)">
             <div class="nav-main-left">
@@ -170,6 +179,7 @@
           </div>
         </div>
 
+        <!-- 4. BACK OFFICE -->
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-backoffice', this)">
             <div class="nav-main-left">
@@ -185,6 +195,39 @@
           </div>
         </div>
 
+        <!-- 5. MULTI MONITOR -->
+        <div class="nav-group">
+          <div class="nav-main-btn" onclick="toggleMenu('sub-multimonitor', this)">
+            <div class="nav-main-left">
+              <div class="icon-badge icon-multi"><i class="bx bx-desktop"></i></div>
+              <span>MULTI-MONITOR</span>
+            </div>
+            <i class="bx bx-chevron-down toggle-icon"></i>
+          </div>
+          <div class="sub-menu collapsed" id="sub-multimonitor">
+            <a class="nav-sub-btn" href="https://betbook.center/monitor?providerIds=prediction_markets" target="_blank" rel="noreferrer"><span>EDGE PREDICTION TICKER</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://eu-b7k.center/monitor?providerIds=prediction_markets" target="_blank" rel="noreferrer"><span>PUBS PREDICTION TICKER</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://betbook.center/monitor" target="_blank" rel="noreferrer"><span>QBET/55/30 REJECTED</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://eu-b7k.center/monitor" target="_blank" rel="noreferrer"><span>PUBS REJECTED</span><i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+        </div>
+
+        <!-- 6. BETRADAR -->
+        <div class="nav-group">
+          <div class="nav-main-btn" onclick="toggleMenu('sub-betradar', this)">
+            <div class="nav-main-left">
+              <div class="icon-badge icon-radar"><i class="bx bx-radar"></i></div>
+              <span>BETRADAR</span>
+            </div>
+            <i class="bx bx-chevron-down toggle-icon"></i>
+          </div>
+          <div class="sub-menu collapsed" id="sub-betradar">
+            <a class="nav-sub-btn" href="https://mtsc-its.betradar.com/" target="_blank" rel="noreferrer"><span>MTS</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://portal.betradar.com/" target="_blank" rel="noreferrer"><span>CTRL PORTAL</span><i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+        </div>
+
+        <!-- 7. OWN BRANDS -->
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-ownbrands', this)">
             <div class="nav-main-left">
@@ -204,6 +247,47 @@
           </div>
         </div>
 
+        <!-- 8. PRICE REFERENCES -->
+        <div class="nav-group">
+          <div class="nav-main-btn" onclick="toggleMenu('sub-priceref', this)">
+            <div class="nav-main-left">
+              <div class="icon-badge icon-price"><i class="bx bx-data"></i></div>
+              <span>PRICE REFERENCES</span>
+            </div>
+            <i class="bx bx-chevron-down toggle-icon"></i>
+          </div>
+          <div class="sub-menu collapsed" id="sub-priceref">
+            <a class="nav-sub-btn" href="https://www.flashscore.com/" target="_blank" rel="noreferrer"><span>FLASHSCORE</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://betsapi.com/" target="_blank" rel="noreferrer"><span>BETSAPI</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.oddsportal.com/football/" target="_blank" rel="noreferrer"><span>ODDSPORTAL</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.oddschecker.com/" target="_blank" rel="noreferrer"><span>ODDSCHECKER</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.betfair.com/exchange/plus/" target="_blank" rel="noreferrer"><span>BETFAIR</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.bet365.com/" target="_blank" rel="noreferrer"><span>BET365</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.pinnacle.com/" target="_blank" rel="noreferrer"><span>PINNACLE</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://gg.bet/" target="_blank" rel="noreferrer"><span>GGBET</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.unibet.com.au/" target="_blank" rel="noreferrer"><span>UNIBET</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.sofascore.com/" target="_blank" rel="noreferrer"><span>SOFASCORE</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.marathonbet.com/" target="_blank" rel="noreferrer"><span>MARATHONBET</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://fonbet.com/" target="_blank" rel="noreferrer"><span>FONBET</span><i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+        </div>
+
+        <!-- 9. PROCEDURES -->
+        <div class="nav-group">
+          <div class="nav-main-btn" onclick="toggleMenu('sub-procedures', this)">
+            <div class="nav-main-left">
+              <div class="icon-badge icon-proc"><i class="bx bx-file"></i></div>
+              <span>PROCEDURES</span>
+            </div>
+            <i class="bx bx-chevron-down toggle-icon"></i>
+          </div>
+          <div class="sub-menu collapsed" id="sub-procedures">
+            <a class="nav-sub-btn" href="https://ibet.atlassian.net/wiki/spaces/Sportsbook/overview" target="_blank" rel="noreferrer"><span>CONFLUENCE</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="workspace.html" target="_blank" rel="noreferrer"><span>WORKSPACE</span><i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+        </div>
+
+        <!-- QUICK LAUNCH DOCK -->
         <div class="sidebar-quick-dock">
           <div class="quick-dock-title"><i class="bx bx-rocket"></i> QUICK LAUNCH</div>
           <div class="quick-dock-buttons">
@@ -223,8 +307,10 @@
             </a>
           </div>
         </div>
+
       </div>
 
+      <!-- ADMIN FOOTER PILL -->
       <div class="sidebar-admin-footer">
         <div class="admin-top-pill">
           <div class="avatar-circle">AD</div>
@@ -239,11 +325,12 @@
     <!-- MAIN WORKSPACE -->
     <main class="main-workspace">
 
-      <!-- TOP CONTROL & NAV BAR -->
+      <!-- TOP CONTROL & NAV HEADER BAR -->
       <div class="top-nav-bar">
         <div class="nav-brand-logo">
           <span class="logo-box">LT</span>
         </div>
+        
         <div class="nav-icon-pills">
           <button class="icon-pill-btn active" type="button" title="User Focus"><i class="bx bx-user"></i></button>
           <button class="icon-pill-btn" type="button" title="Team Duties"><i class="bx bx-group"></i></button>
@@ -251,6 +338,7 @@
           <button class="icon-pill-btn" type="button" title="Matches"><i class="bx bx-football"></i></button>
           <button class="icon-pill-btn" type="button" title="Tools"><i class="bx bx-closet"></i></button>
         </div>
+
         <div class="top-nav-right">
           <div class="nav-search-wrap">
             <i class="bx bx-search"></i>
@@ -264,11 +352,11 @@
         </div>
       </div>
 
-      <!-- ALERT BANNERS ROW -->
+      <!-- ALERT BANNERS ROW (JIRA + HANDOVER) -->
       <div class="alert-banners-row">
         <div id="jiraAlertBanner" class="jira-static-alert-banner">
           <div class="jira-alert-badge">
-            <i class="bx bx-error-circle"></i> PENDING JIRA (>24H)
+            <i class="bx bx-error-circle"></i> PENDING JIRA (&gt;24H)
           </div>
           <div class="jira-ticket-pills-container" id="jiraPillsContainer"></div>
           <a href="jira.html" target="_blank" rel="noreferrer" class="jira-open-btn">
@@ -289,8 +377,10 @@
         </div>
       </div>
 
-      <!-- HERO DASHBOARD CARD -->
+      <!-- HERO DASHBOARD CARD (LAYOUT MATCHING REFERENCE IMAGE) -->
       <div class="glass-card hero-dashboard-card">
+        
+        <!-- LEFT GRAPHIC BADGE -->
         <div class="hero-left-graphic">
           <div class="athlete-graphic-badge">
             <i class="bx bx-basketball"></i>
@@ -298,7 +388,7 @@
           </div>
         </div>
 
-        <!-- RADAR CHART WIDGET -->
+        <!-- CENTER SPIDER RADAR CHART -->
         <div class="hero-center-radar">
           <div class="radar-watermark-num">26</div>
           <canvas id="heroRadarChart" width="280" height="280"></canvas>
@@ -310,7 +400,7 @@
           <div class="radar-stat-label tp">3P% <span>41.0</span></div>
         </div>
 
-        <!-- METRICS TILES -->
+        <!-- RIGHT KPI METRICS -->
         <div class="hero-right-metrics">
           <div class="player-profile-header">
             <h1 class="player-name">Sportsbook Hub</h1>
@@ -319,17 +409,18 @@
             </div>
           </div>
 
+          <!-- KPI TILES TRIO (ORANGE, BLUE, WHITE) -->
           <div class="kpi-tiles-row">
             <div class="kpi-card orange-card">
               <div class="kpi-icon"><i class="bx bx-trophy"></i></div>
               <div class="kpi-label">Active Traders</div>
-              <div class="kpi-val" id="activeTraderCount">0</div>
+              <div class="kpi-val" id="activeTraderCount">84</div>
             </div>
 
             <div class="kpi-card blue-card">
               <div class="kpi-icon"><i class="bx bx-football"></i></div>
               <div class="kpi-label">Pending Jira</div>
-              <div class="kpi-val" id="pendingJiraCount">0</div>
+              <div class="kpi-val" id="pendingJiraCount">18</div>
             </div>
 
             <div class="kpi-card white-card">
@@ -339,6 +430,7 @@
             </div>
           </div>
 
+          <!-- BOTTOM INFO PILLS (MANILA WEATHER & WORLD CLOCKS) -->
           <div class="info-pills-grid">
             <div class="info-pill-item">
               <span class="pill-title">Manila Temp</span>
@@ -360,10 +452,10 @@
         </div>
       </div>
 
-      <!-- MAIN CONTENT SECTION -->
+      <!-- MAIN CONTENT GRID -->
       <div class="dashboard-grid-layout">
         
-        <!-- GAMES STATS TABLE -->
+        <!-- LEFT: GAMES STATS & TOP PICKS TABLE -->
         <div class="glass-card games-stats-card">
           <div class="card-table-header">
             <div class="table-title">Games Stats</div>
@@ -383,6 +475,7 @@
             </div>
           </div>
 
+          <!-- TABLE -->
           <div class="stats-table-wrapper">
             <table class="stats-table">
               <thead>
@@ -449,7 +542,7 @@
           </div>
         </div>
 
-        <!-- RIGHT MATCHDAY CARDS & DOCK -->
+        <!-- RIGHT: MATCHDAY CARDS & BRAND DOCK -->
         <div class="glass-card match-cards-card">
           <div class="card-header">
             <span style="color: #ffffff;"><i class="bx bx-calendar-event"></i> TODAY MATCHDAY</span>
