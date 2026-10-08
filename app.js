@@ -104,16 +104,17 @@ function togglePasswordVisibility() {
   icon.className = passInput.type === 'password' ? 'bx bx-show' : 'bx bx-hide';
 }
 
-function toggleMenu(menuId) {
-  const targetMenu = document.getElementById(menuId);
-  if (targetMenu) targetMenu.classList.toggle('collapsed');
-}
+/* --- TOP BAR NAV DROPDOWN TOGGLES --- */
+function toggleNavDropdown(menuId, e) {
+  if (e) e.stopPropagation();
+  const menu = document.getElementById(menuId);
+  const isAlreadyShow = menu ? menu.classList.contains('show') : false;
 
-/* --- TOP BAR ICON PILLS CLICK HANDLER & WIDGET TOGGLE --- */
-function toggleWidgetDropdown(e) {
-  e.stopPropagation();
-  const menu = document.getElementById('widgetMenu');
-  if (menu) menu.classList.toggle('show');
+  document.querySelectorAll('.nav-dropdown-menu').forEach(m => m.classList.remove('show'));
+
+  if (menu && !isAlreadyShow) {
+    menu.classList.add('show');
+  }
 }
 
 function toggleWidgetSection(widgetId, show) {
@@ -192,7 +193,7 @@ function switchBrandTab(tabName) {
   const items = brandTabData[tabName] || [];
   items.forEach(item => {
     const a = document.createElement('a');
-    a.className = 'nav-sub-btn';
+    a.className = 'dropdown-link-item';
     a.style.cssText = "margin-top: 4px; display: flex; justify-content: space-between;";
     a.href = item.url;
     a.target = '_blank';
@@ -201,7 +202,7 @@ function switchBrandTab(tabName) {
   });
 }
 
-/* --- HOT BOOSTS / TOP PICKS RENDERER (IN REFERENCE TABLE DESIGN) --- */
+/* --- HOT BOOSTS / TOP PICKS RENDERER --- */
 let currentFilterLeague = 'eng.1';
 
 async function filterTopPicks(leagueCode, btnEl) {
@@ -392,7 +393,7 @@ function renderUrgentHandovers() {
 
 /* --- INITIALIZATION --- */
 window.addEventListener('click', () => {
-  document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+  document.querySelectorAll('.nav-dropdown-menu').forEach(m => m.classList.remove('show'));
 });
 
 document.addEventListener('DOMContentLoaded', () => {
