@@ -3,33 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sportsbook Hub - Secured Player Profile Dashboard</title>
+  <title>Marcus Huntington - Basketball Player Profile</title>
   
-  <!-- Preconnect & Google Fonts -->
+  <!-- Google Fonts & Boxicons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Boxicons CSS -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   
-  <!-- External Libraries -->
+  <!-- Project Stylesheet -->
+  <link rel="stylesheet" href="./styles.css">
+
+  <!-- External JS Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="./styles.css">
-
-  <!-- App JS -->
+  <!-- Project App JS -->
   <script src="./app.js" defer></script>
 </head>
 <body id="pageBody">
 
-  <!-- PLASMA CANVAS BACKGROUND -->
+  <!-- CANVAS FOR OPTIONAL PLASMA BACKGROUND -->
   <canvas id="bgCanvas"></canvas>
 
-  <!-- SECURITY LOGIN OVERLAY MODAL -->
+  <!-- SECURITY LOGIN OVERLAY MODAL (Preserving application security logic) -->
   <div id="authOverlay">
     <div class="login-container">
       <div class="sitting-robot-stage" id="sittingRobotStage">
@@ -87,70 +85,23 @@
     </div>
   </div>
 
-  <!-- DASHBOARD WORKSPACE CONTAINER -->
+  <!-- MAIN DASHBOARD CONTAINER -->
   <div id="dashboardApp" class="dashboard-viewport">
-    
-    <main class="main-profile-card">
+    <main class="main-dashboard-card">
 
-      <!-- OVERLAPPING BASKETBALL ATHLETE CUTOUT -->
-      <div class="hero-player-wrapper">
-        <svg class="hero-player-svg" viewBox="0 0 450 560" preserveAspectRatio="xMidYMax meet">
-          <defs>
-            <filter id="player-shadow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="-10" dy="18" stdDeviation="15" flood-color="#000" flood-opacity="0.65"/>
-            </filter>
-            <linearGradient id="jersey-red" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#ef4444"/>
-              <stop offset="100%" stop-color="#b91c1c"/>
-            </linearGradient>
-            <radialGradient id="ball-orange" cx="40%" cy="40%" r="60%">
-              <stop offset="0%" stop-color="#f97316"/>
-              <stop offset="70%" stop-color="#ea580c"/>
-              <stop offset="100%" stop-color="#881337"/>
-            </radialGradient>
-          </defs>
-
-          <g filter="url(#player-shadow)">
-            <!-- Head & Dreadlocks -->
-            <path d="M 190 25 C 160 20, 150 50, 165 80 C 150 90, 140 120, 155 145 C 165 160, 180 170, 205 170 C 235 170, 255 155, 260 135 C 270 100, 250 50, 230 25 Z" fill="#2d1a10"/>
-            <path d="M 170 30 Q 165 10 180 15 Q 185 0 200 10 Q 215 -5 225 15 Q 240 5 245 25 Q 260 20 255 40 Q 270 45 260 65 Q 275 80 260 95" fill="#1a0f0a"/>
-            <!-- Face Tone -->
-            <path d="M 175 75 Q 170 120 185 155 Q 205 180 235 170 Q 255 140 250 85 Z" fill="#784227"/>
-            <path d="M 195 155 L 190 205 L 235 205 L 230 155 Z" fill="#5f331d"/>
-            
-            <!-- Left Muscular Arm -->
-            <path d="M 125 210 C 80 220, 30 290, 10 380 C 0 420, 15 470, 45 500 C 60 515, 80 500, 95 470 C 115 420, 130 350, 145 270 Z" fill="#784227"/>
-            <path d="M 35 460 Q 60 480 85 450 Q 110 400 105 360" fill="none" stroke="#522b18" stroke-width="4"/>
-
-            <!-- Red Sleeveless Jersey -->
-            <path d="M 140 215 Q 195 235 255 210 L 290 320 Q 280 430 265 520 L 120 520 Q 115 420 125 310 Z" fill="url(#jersey-red)"/>
-            <path d="M 175 215 Q 200 240 225 215" fill="none" stroke="#ffffff" stroke-width="6"/>
-            <path d="M 140 215 Q 130 260 125 310" fill="none" stroke="#ffffff" stroke-width="5"/>
-            <path d="M 255 210 Q 270 260 280 310" fill="none" stroke="#ffffff" stroke-width="5"/>
-            <path d="M 190 280 L 205 280 L 205 320 L 220 320 M 190 300 L 220 300" stroke="#ffffff" stroke-width="6" fill="none" stroke-linecap="round"/>
-
-            <!-- Right Arm Holding Basketball -->
-            <path d="M 255 210 C 290 225, 330 260, 350 310 C 365 350, 360 400, 330 430 L 285 380 Z" fill="#784227"/>
-            <!-- White Shorts -->
-            <path d="M 115 510 L 275 510 L 285 560 L 105 560 Z" fill="#f8fafc"/>
-            <path d="M 195 510 L 195 560" stroke="#cbd5e1" stroke-width="3"/>
-
-            <!-- Basketball -->
-            <circle cx="340" cy="430" r="62" fill="url(#ball-orange)"/>
-            <path d="M 280 430 A 62 62 0 0 0 402 430" fill="none" stroke="#1c1917" stroke-width="3.5"/>
-            <path d="M 340 368 A 62 62 0 0 0 340 492" fill="none" stroke="#1c1917" stroke-width="3.5"/>
-            <path d="M 295 390 C 330 410, 370 410, 385 390" fill="none" stroke="#1c1917" stroke-width="3"/>
-            <path d="M 295 470 C 330 450, 370 450, 385 470" fill="none" stroke="#1c1917" stroke-width="3"/>
-
-            <!-- Hand Wrapping Basketball -->
-            <path d="M 320 480 C 330 500, 360 500, 370 475 C 380 455, 375 435, 360 425 C 345 420, 335 435, 330 450 Z" fill="#6d3a22"/>
-          </g>
-        </svg>
+      <!-- REAL PHOTOGRAPHIC ATHLETE IMAGE OVERLAPPING THE DASHBOARD -->
+      <div class="player-cutout-container">
+        <img 
+          src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1000&q=80" 
+          id="playerHeroImg" 
+          alt="Basketball Player Holding Basketball" 
+          class="player-hero-img"
+        >
       </div>
 
-      <!-- TOP HEADER CONTROLS BAR -->
-      <header class="top-nav-bar">
-        <div class="brand-symbol">
+      <!-- HEADER NAVIGATION -->
+      <header class="dashboard-header">
+        <div class="brand-logo-area">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="7" height="7"/>
             <rect x="14" y="14" width="7" height="7"/>
@@ -159,34 +110,38 @@
           </svg>
         </div>
 
-        <div class="nav-center-pill">
-          <button class="nav-pill-btn" title="Daily Tasks" onclick="toggleWidget('widget-task-dock', true)"><i class="bx bx-task"></i></button>
-          <button class="nav-pill-btn" title="Brand Directory" onclick="toggleWidget('widget-brand-dock', true)"><i class="bx bx-layer"></i></button>
-          <button class="nav-pill-btn active" title="Time Slot Duties" onclick="toggleWidget('widget-duties-dock', true)"><i class="bx bx-run"></i></button>
-          <button class="nav-pill-btn" title="Top Games" onclick="toggleWidget('widget-games-dock', true)"><i class="bx bx-basketball"></i></button>
-          <button class="nav-pill-btn" title="Jira SLA Tracker" onclick="openHandoverModal()"><i class="bx bx-slider-alt"></i></button>
+        <div class="header-nav-pills">
+          <button class="nav-pill-btn" title="Overview"><i class="bx bx-file-blank"></i></button>
+          <button class="nav-pill-btn" title="Roster"><i class="bx bx-group"></i></button>
+          <button class="nav-pill-btn active" title="Stats"><i class="bx bx-run"></i></button>
+          <button class="nav-pill-btn" title="Schedule"><i class="bx bx-basketball"></i></button>
+          <button class="nav-pill-btn" title="Analytics"><i class="bx bx-slider-alt"></i></button>
         </div>
 
-        <div class="nav-right-cluster">
-          <div class="header-search-box">
+        <div class="header-tools-right">
+          <div class="search-field-wrap">
             <i class="bx bx-search"></i>
             <input type="text" id="globalSearchInput" placeholder="Search..">
           </div>
-          <div class="user-avatar-badge" onclick="handleLogout()" title="Click to Lock Session">
-            <span class="avatar-text">AD</span>
+          <div class="user-avatar-pill" onclick="handleLogout()" title="Click to Lock Session">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="User Profile">
           </div>
         </div>
       </header>
 
-      <!-- HERO STATS / PLAYER PROFILE AREA -->
-      <section class="hero-profile-grid">
-        <div class="player-cutout-spacer"></div>
+      <!-- UPPER HERO SECTION (PLAYER PROFILE & SPIDER CHART) -->
+      <section class="hero-section-grid">
+        
+        <!-- EMPTY HOLDER FOR LEFT OVERLAPPING PLAYER -->
+        <div class="player-left-spacer"></div>
 
         <!-- CENTER RADAR SPIDER CHART & WATERMARK 23 -->
-        <div class="radar-chart-stage">
+        <div class="spider-chart-stage">
           <div class="jersey-watermark-23">23</div>
 
-          <svg class="radar-svg-graphic" viewBox="0 0 300 260">
+          <!-- SPIDER RADAR SVG GRAPHIC -->
+          <svg class="radar-chart-svg" viewBox="0 0 300 260">
+            <!-- 5-Axis Web Polygons -->
             <polygon points="150,20 255,80 230,195 70,195 45,80" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
             <polygon points="150,55 220,95 203,170 97,170 80,95" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
             <polygon points="150,90 185,110 176,145 124,145 115,110" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
@@ -197,8 +152,10 @@
             <line x1="150" y1="120" x2="70" y2="195" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
             <line x1="150" y1="120" x2="45" y2="80" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
 
+            <!-- Active Stat Red Filled Polygon -->
             <polygon points="150,32 250,88 220,185 85,180 52,90" fill="rgba(239, 68, 68, 0.22)" stroke="#ef4444" stroke-width="2.5" stroke-linejoin="round"/>
 
+            <!-- Red Nodes -->
             <circle cx="150" cy="32" r="4.5" fill="#ef4444"/>
             <circle cx="250" cy="88" r="4.5" fill="#ef4444"/>
             <circle cx="220" cy="185" r="4.5" fill="#ef4444"/>
@@ -206,24 +163,26 @@
             <circle cx="52" cy="90" r="4.5" fill="#ef4444"/>
           </svg>
 
-          <div class="radar-node node-ppg"><span class="node-lbl">PPG</span><span class="node-val">29.1</span></div>
-          <div class="radar-node node-apg"><span class="node-lbl">APG</span><span class="node-val">10.3</span></div>
-          <div class="radar-node node-fg"><span class="node-lbl">FG%</span><span class="node-val">57.5</span></div>
-          <div class="radar-node node-3p"><span class="node-lbl">3P%</span><span class="node-val">41.0</span></div>
-          <div class="radar-node node-rpg"><span class="node-lbl">RPG</span><span class="node-val">24.6</span></div>
+          <!-- RADAR NODE STAT CALLOUTS -->
+          <div class="radar-node node-ppg"><span class="node-label">PPG</span><span class="node-val" id="valPPG">29.1</span></div>
+          <div class="radar-node node-apg"><span class="node-label">APG</span><span class="node-val" id="valAPG">10.3</span></div>
+          <div class="radar-node node-fg"><span class="node-label">FG%</span><span class="node-val" id="valFG">57.5</span></div>
+          <div class="radar-node node-3p"><span class="node-label">3P%</span><span class="node-val" id="val3P">41.0</span></div>
+          <div class="radar-node node-rpg"><span class="node-label">RPG</span><span class="node-val" id="valRPG">24.6</span></div>
         </div>
 
-        <!-- RIGHT SIDE PLAYER METRICS COLUMN -->
+        <!-- RIGHT SIDE PLAYER METRICS BLOCK -->
         <div class="player-info-column">
+          
           <div class="player-title-header">
-            <h1 class="player-display-name">Marcus<br>Huntington</h1>
+            <h1 class="player-display-name" id="playerName">Marcus<br>Huntington</h1>
             <div class="team-subrow">
               <i class="bx bxs-shield-alt-2 team-shield-icon"></i>
-              <span>Liberty Deer</span>
+              <span id="playerTeam">Liberty Deer</span>
             </div>
           </div>
 
-          <!-- TOP 3 METRICS CARDS -->
+          <!-- TOP 3 STAT CARDS (WINS, LOSSES, WINNING %) -->
           <div class="top-stat-cards-row">
             <div class="metric-card card-orange">
               <i class="bx bx-trophy card-icon"></i>
@@ -246,31 +205,31 @@
           <div class="specs-grid">
             <div class="spec-card">
               <span class="spec-label">Height</span>
-              <span class="spec-val">2.06 m</span>
+              <span class="spec-val" id="specHeight">2.06 m</span>
             </div>
             <div class="spec-card">
               <span class="spec-label">Weight</span>
-              <span class="spec-val">113 kg</span>
+              <span class="spec-val" id="specWeight">113 kg</span>
             </div>
             <div class="spec-card">
               <span class="spec-label">Age</span>
-              <span class="spec-val">40 years</span>
+              <span class="spec-val" id="specAge">40 years</span>
             </div>
             <div class="spec-card">
               <span class="spec-label">Country</span>
-              <span class="spec-val">🇺🇸 USA</span>
+              <span class="spec-val" id="specCountry">🇺🇸 USA</span>
             </div>
           </div>
 
         </div>
       </section>
 
-      <!-- LOWER DATA AREA (TABLE & SIDEBAR) -->
-      <section class="lower-glass-card">
+      <!-- LOWER DATA SECTION (TABLE & UPCOMING GAMES SIDEBAR) -->
+      <section class="lower-glass-panel">
         
-        <!-- LEFT DATA TABLE -->
+        <!-- LEFT GAMES STATS TABLE -->
         <div class="games-table-column">
-          <div class="panel-header">
+          <div class="panel-header-row">
             <h2 class="panel-heading">Games Stats</h2>
             <div class="panel-dropdown-filter">
               <span>By Date</span>
@@ -293,13 +252,13 @@
                 </tr>
               </thead>
               <tbody id="gamesTableBody">
-                <!-- Dynamically Rendered by app.js -->
+                <!-- Dynamically rendered by app.js -->
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- RIGHT MATCH CARDS SIDEBAR -->
+        <!-- RIGHT UPCOMING / LIVE GAMES COLUMN -->
         <div class="upcoming-sidebar-column">
           <div class="sidebar-tabs-bar">
             <button class="sidebar-tab active">Live <span class="red-live-dot"></span></button>
@@ -310,41 +269,13 @@
           </div>
 
           <div class="sidebar-cards-list" id="sidebarMatchCards">
-            <!-- Dynamically Rendered by app.js -->
+            <!-- Dynamically rendered by app.js -->
           </div>
         </div>
 
       </section>
 
     </main>
-  </div>
-
-  <!-- INTERACTIVE URGENT HANDOVER MODAL -->
-  <div id="handoverModal" class="handover-modal-overlay">
-    <div class="handover-modal-card">
-      <div class="handover-modal-header">
-        <span class="handover-modal-title"><i class="bx bx-alarm-exclamation" style="color: #facc15;"></i> Manage Handovers</span>
-        <i class="bx bx-x handover-modal-close" onclick="closeHandoverModal()"></i>
-      </div>
-      
-      <form onsubmit="addUrgentHandover(event)" class="handover-modal-form">
-        <div class="handover-form-group">
-          <select id="handoverPriorityInput" class="handover-field select-priority" required>
-            <option value="URGENT/CRITICAL" selected>🚨 URGENT / CRITICAL</option>
-            <option value="Need Attention">⚠️ Need Attention</option>
-            <option value="Normal">ℹ️ Normal</option>
-          </select>
-          <input type="text" id="handoverBrandInput" placeholder="Brand/Topic (e.g. IBET, QBET)" required class="handover-field short">
-          <input type="text" id="handoverMsgInput" placeholder="Handover Note / Issue Details..." required class="handover-field flex-1">
-          <button type="submit" class="handover-post-btn"><i class="bx bx-plus"></i> Post Note</button>
-        </div>
-      </form>
-
-      <div class="handover-modal-subtitle">ACTIVE HANDOVERS (Click <i class="bx bx-check"></i> when completed)</div>
-      <div class="handover-items-list" id="handoverModalList">
-        <!-- Rendered Dynamically -->
-      </div>
-    </div>
   </div>
 
 </body>
