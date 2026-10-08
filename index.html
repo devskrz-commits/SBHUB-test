@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sportsbook Hub - Operational Portal</title>
   
-  <!-- Preconnect & Google Fonts -->
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Boxicons CSS -->
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   
   <!-- Stylesheet -->
@@ -29,7 +27,7 @@
   <!-- CANVAS BACKGROUND -->
   <canvas id="bgCanvas"></canvas>
 
-  <!-- AUTHENTICATION OVERLAY -->
+  <!-- SECURITY LOGIN GATEWAY -->
   <div id="authOverlay">
     <div class="login-container">
       <div class="sitting-robot-stage" id="sittingRobotStage">
@@ -87,12 +85,12 @@
     </div>
   </div>
 
-  <!-- DASHBOARD APP CONTAINER -->
+  <!-- DASHBOARD APP WRAPPER -->
   <div id="dashboardApp">
 
     <!-- MOBILE NAVIGATION HEADER -->
     <div class="mobile-nav-header">
-      <button type="button" class="mobile-menu-toggle" onclick="toggleMobileSidebar()" aria-label="Toggle Menu">
+      <button type="button" class="mobile-menu-toggle" onclick="toggleMobileSidebar(true)" aria-label="Toggle Menu">
         <i class="bx bx-menu"></i>
       </button>
       <div class="mobile-brand-title">SPORTSBOOK HUB</div>
@@ -103,7 +101,7 @@
 
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar(false)"></div>
 
-    <!-- SIDEBAR NAVIGATION -->
+    <!-- MAIN SIDEBAR -->
     <aside class="sidebar" id="mainSidebar">
       <div class="sidebar-menu-scroll">
         <div class="sidebar-header">
@@ -206,7 +204,6 @@
           </div>
         </div>
 
-        <!-- QUICK LAUNCH DOCK -->
         <div class="sidebar-quick-dock">
           <div class="quick-dock-title"><i class="bx bx-rocket"></i> QUICK LAUNCH</div>
           <div class="quick-dock-buttons">
@@ -228,7 +225,6 @@
         </div>
       </div>
 
-      <!-- ADMIN FOOTER -->
       <div class="sidebar-admin-footer">
         <div class="admin-top-pill">
           <div class="avatar-circle">AD</div>
@@ -243,17 +239,17 @@
     <!-- MAIN WORKSPACE -->
     <main class="main-workspace">
 
-      <!-- TOP CONTROL & NAV HEADER -->
+      <!-- TOP CONTROL & NAV BAR -->
       <div class="top-nav-bar">
         <div class="nav-brand-logo">
           <span class="logo-box">LT</span>
         </div>
         <div class="nav-icon-pills">
-          <button class="icon-pill-btn active"><i class="bx bx-user"></i></button>
-          <button class="icon-pill-btn"><i class="bx bx-group"></i></button>
-          <button class="icon-pill-btn"><i class="bx bx-run"></i></button>
-          <button class="icon-pill-btn"><i class="bx bx-football"></i></button>
-          <button class="icon-pill-btn"><i class="bx bx-closet"></i></button>
+          <button class="icon-pill-btn active" type="button" title="User Focus"><i class="bx bx-user"></i></button>
+          <button class="icon-pill-btn" type="button" title="Team Duties"><i class="bx bx-group"></i></button>
+          <button class="icon-pill-btn" type="button" title="Live Operations"><i class="bx bx-run"></i></button>
+          <button class="icon-pill-btn" type="button" title="Matches"><i class="bx bx-football"></i></button>
+          <button class="icon-pill-btn" type="button" title="Tools"><i class="bx bx-closet"></i></button>
         </div>
         <div class="top-nav-right">
           <div class="nav-search-wrap">
@@ -268,7 +264,7 @@
         </div>
       </div>
 
-      <!-- BANNERS ROW FOR ALERTS -->
+      <!-- ALERT BANNERS ROW -->
       <div class="alert-banners-row">
         <div id="jiraAlertBanner" class="jira-static-alert-banner">
           <div class="jira-alert-badge">
@@ -293,10 +289,8 @@
         </div>
       </div>
 
-      <!-- HERO STATS SECTION (IDENTICAL TO SCREENSHOT LAYOUT) -->
+      <!-- HERO DASHBOARD CARD -->
       <div class="glass-card hero-dashboard-card">
-        
-        <!-- LEFT ATHLETE / GRAPHIC CUTOUT -->
         <div class="hero-left-graphic">
           <div class="athlete-graphic-badge">
             <i class="bx bx-basketball"></i>
@@ -304,7 +298,7 @@
           </div>
         </div>
 
-        <!-- CENTER RADAR CHART WIDGET -->
+        <!-- RADAR CHART WIDGET -->
         <div class="hero-center-radar">
           <div class="radar-watermark-num">26</div>
           <canvas id="heroRadarChart" width="280" height="280"></canvas>
@@ -316,7 +310,7 @@
           <div class="radar-stat-label tp">3P% <span>41.0</span></div>
         </div>
 
-        <!-- RIGHT KPI METRICS CLUSTER -->
+        <!-- METRICS TILES -->
         <div class="hero-right-metrics">
           <div class="player-profile-header">
             <h1 class="player-name">Sportsbook Hub</h1>
@@ -325,18 +319,17 @@
             </div>
           </div>
 
-          <!-- TOP TILE TRIO (ORANGE, BLUE, WHITE) -->
           <div class="kpi-tiles-row">
             <div class="kpi-card orange-card">
               <div class="kpi-icon"><i class="bx bx-trophy"></i></div>
               <div class="kpi-label">Active Traders</div>
-              <div class="kpi-val" id="activeTraderCount">84</div>
+              <div class="kpi-val" id="activeTraderCount">0</div>
             </div>
 
             <div class="kpi-card blue-card">
               <div class="kpi-icon"><i class="bx bx-football"></i></div>
               <div class="kpi-label">Pending Jira</div>
-              <div class="kpi-val">18</div>
+              <div class="kpi-val" id="pendingJiraCount">0</div>
             </div>
 
             <div class="kpi-card white-card">
@@ -346,7 +339,6 @@
             </div>
           </div>
 
-          <!-- BOTTOM GRID INFO PILLS -->
           <div class="info-pills-grid">
             <div class="info-pill-item">
               <span class="pill-title">Manila Temp</span>
@@ -368,10 +360,10 @@
         </div>
       </div>
 
-      <!-- MAIN CONTENT SECTION (GAMES STATS & SIDEBAR) -->
+      <!-- MAIN CONTENT SECTION -->
       <div class="dashboard-grid-layout">
         
-        <!-- LEFT: GAMES STATS TABLE -->
+        <!-- GAMES STATS TABLE -->
         <div class="glass-card games-stats-card">
           <div class="card-table-header">
             <div class="table-title">Games Stats</div>
@@ -382,16 +374,15 @@
               </div>
 
               <div class="status-tab-pills">
-                <button class="status-tab active"><span class="live-dot"></span> Live</button>
-                <button class="status-tab" onclick="filterTopPicks('eng.1', this)">Yesterday</button>
-                <button class="status-tab" onclick="filterTopPicks('esp.1', this)">Today</button>
-                <button class="status-tab" onclick="filterTopPicks('ger.1', this)">Upcoming</button>
-                <button class="status-tab" onclick="filterTopPicks('ita.1', this)">Archived</button>
+                <button class="status-tab active" type="button" onclick="filterTopPicks('eng.1', this)"><span class="live-dot"></span> Live</button>
+                <button class="status-tab" type="button" onclick="filterTopPicks('esp.1', this)">La Liga</button>
+                <button class="status-tab" type="button" onclick="filterTopPicks('ger.1', this)">Bundesliga</button>
+                <button class="status-tab" type="button" onclick="filterTopPicks('ita.1', this)">Serie A</button>
+                <button class="status-tab" type="button" onclick="filterTopPicks('fra.1', this)">Ligue 1</button>
               </div>
             </div>
           </div>
 
-          <!-- DATA TABLE -->
           <div class="stats-table-wrapper">
             <table class="stats-table">
               <thead>
@@ -406,9 +397,9 @@
                   <th>FG%</th>
                 </tr>
               </thead>
-              <tbody id="topPicksContainer">
+              <tbody id="gamesStatsBody">
                 <tr>
-                  <td>04 Nov 2025</td>
+                  <td>04 Nov 2026</td>
                   <td><div class="team-match-cell"><i class="bx bx-shield"></i> Liberty Deer vs All Stars</div></td>
                   <td>106-112</td>
                   <td><span class="result-badge win">Win</span></td>
@@ -418,7 +409,7 @@
                   <td>52</td>
                 </tr>
                 <tr>
-                  <td>02 Nov 2025</td>
+                  <td>02 Nov 2026</td>
                   <td><div class="team-match-cell"><i class="bx bx-shield"></i> Liberty Deer vs Titans</div></td>
                   <td>102-97</td>
                   <td><span class="result-badge win">Win</span></td>
@@ -428,7 +419,7 @@
                   <td>60</td>
                 </tr>
                 <tr>
-                  <td>01 Nov 2025</td>
+                  <td>01 Nov 2026</td>
                   <td><div class="team-match-cell"><i class="bx bx-shield"></i> Liberty Deer vs Eagles</div></td>
                   <td>82-94</td>
                   <td><span class="result-badge loss">Loss</span></td>
@@ -438,7 +429,7 @@
                   <td>51</td>
                 </tr>
                 <tr>
-                  <td>27 Oct 2025</td>
+                  <td>27 Oct 2026</td>
                   <td><div class="team-match-cell"><i class="bx bx-shield"></i> Liberty Deer vs Knights</div></td>
                   <td>107-90</td>
                   <td><span class="result-badge win">Win</span></td>
@@ -450,60 +441,29 @@
               </tbody>
             </table>
           </div>
+
+          <!-- TOP PICKS GRID CARDS -->
+          <div class="top-picks-section">
+            <div class="sub-section-title">HOT BOOSTS / TOP PICKS</div>
+            <div id="topPicksContainer" class="top-picks-grid"></div>
+          </div>
         </div>
 
-        <!-- RIGHT: UPCOMING MATCH CARDS -->
+        <!-- RIGHT MATCHDAY CARDS & DOCK -->
         <div class="glass-card match-cards-card">
           <div class="card-header">
             <span style="color: #ffffff;"><i class="bx bx-calendar-event"></i> TODAY MATCHDAY</span>
             <div class="actions">
+              <i class="bx bx-chevron-left" style="cursor: pointer;" onclick="navigateMatchDay(-1)"></i>
               <span id="matchDayDisplay">TODAY (GMT+8)</span>
+              <i class="bx bx-chevron-right" style="cursor: pointer;" onclick="navigateMatchDay(1)"></i>
             </div>
           </div>
 
           <div id="gamesContainer" class="stacked-matches-list">
-            <!-- STACKED MATCH CARD 1 -->
-            <div class="match-card-item">
-              <div class="match-time-sub">July 22, 03:35 PM</div>
-              <div class="match-card-body">
-                <div class="match-team">
-                  <i class="bx bx-shield-quarter team-logo-icon"></i>
-                  <span>Liberty Deer</span>
-                </div>
-                <div class="match-score">104 - 112</div>
-                <div class="match-team">
-                  <i class="bx bx-star team-logo-icon alt"></i>
-                  <span>All Stars</span>
-                </div>
-              </div>
-              <div class="match-tags-row">
-                <span class="tag-badge win">W</span>
-                <span class="tag-badge loss">L</span>
-              </div>
-            </div>
-
-            <!-- STACKED MATCH CARD 2 -->
-            <div class="match-card-item">
-              <div class="match-time-sub">July 22, 04:10 PM</div>
-              <div class="match-card-body">
-                <div class="match-team">
-                  <i class="bx bx-shield-quarter team-logo-icon"></i>
-                  <span>Liberty Deer</span>
-                </div>
-                <div class="match-score">109 - 98</div>
-                <div class="match-team">
-                  <i class="bx bx-planet team-logo-icon alt2"></i>
-                  <span>Unity Titans</span>
-                </div>
-              </div>
-              <div class="match-tags-row">
-                <span class="tag-badge win">W</span>
-                <span class="tag-badge loss">L</span>
-              </div>
-            </div>
+            <div style="text-align:center; padding:15px;"><i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#8b5cf6;"></i></div>
           </div>
 
-          <!-- BRAND DIRECTORY DOCK -->
           <div class="brand-dock-section">
             <div class="dock-header">BRAND DIRECTORY DOCK</div>
             <div class="tab-pills">
@@ -520,7 +480,7 @@
     </main>
   </div>
 
-  <!-- INTERACTIVE URGENT HANDOVER MODAL -->
+  <!-- URGENT HANDOVER MODAL -->
   <div id="handoverModal" class="handover-modal-overlay">
     <div class="handover-modal-card">
       <div class="handover-modal-header">
