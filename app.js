@@ -1,7 +1,7 @@
 const DEFAULT_USER = "sportsbook2026";
 const DEFAULT_PASS = "sb2026";
 
-// Live Sportsbook Hub Data Repository
+// Live Sportsbook Application Data Store
 const sportsbookAppStore = {
   player: {
     name: "Marcus Huntington",
@@ -129,9 +129,15 @@ function handleLogout() {
   if (authOverlay) authOverlay.classList.remove('unlocked');
 }
 
-/* --- RENDERING FUNCTIONALITY --- */
+/* --- DATA BINDING AND DYNAMIC RENDERING --- */
 function renderDashboardUI(data) {
   if (!data) return;
+
+  const nameEl = document.getElementById("playerName");
+  if (nameEl) nameEl.innerHTML = (data.player?.name || "Marcus Huntington").replace(" ", "<br>");
+
+  const teamEl = document.getElementById("playerTeam");
+  if (teamEl) teamEl.textContent = data.player?.team || "Liberty Deer";
 
   const winsEl = document.getElementById("statWins");
   if (winsEl) winsEl.textContent = data.player?.wins ?? 84;
@@ -141,6 +147,18 @@ function renderDashboardUI(data) {
 
   const winRateEl = document.getElementById("statWinRate");
   if (winRateEl) winRateEl.textContent = data.player?.winRate ?? "82.3%";
+
+  const hEl = document.getElementById("specHeight");
+  if (hEl) hEl.textContent = data.player?.height || "2.06 m";
+
+  const wEl = document.getElementById("specWeight");
+  if (wEl) wEl.textContent = data.player?.weight || "113 kg";
+
+  const aEl = document.getElementById("specAge");
+  if (aEl) aEl.textContent = data.player?.age || "40 years";
+
+  const cEl = document.getElementById("specCountry");
+  if (cEl) cEl.textContent = data.player?.country || "🇺🇸 USA";
 
   renderGamesTable(data.gamesStats);
   renderUpcomingMatches(data.upcomingMatches);
@@ -224,17 +242,6 @@ function initSearch() {
     );
     renderGamesTable(filtered);
   });
-}
-
-/* --- HANDOVER MODAL CONTROLS --- */
-function openHandoverModal() {
-  const modal = document.getElementById('handoverModal');
-  if (modal) modal.classList.add('show');
-}
-
-function closeHandoverModal() {
-  const modal = document.getElementById('handoverModal');
-  if (modal) modal.classList.remove('show');
 }
 
 /* --- INITIALIZATION --- */
