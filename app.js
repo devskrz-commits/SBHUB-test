@@ -1,5 +1,5 @@
 /**
- * Sportsbook Hub - Tactile Operations Terminal
+ * Sportsbook Hub - Executive Tactile Dashboard
  * Core Application Engine (app.js)
  */
 
@@ -299,13 +299,11 @@ function renderDuties(data) {
 
   const members = [{ id:'ann', name:'ANN' }, { id:'dave', name:'DAVE' }, { id:'ken', name:'KEN' }, { id:'kriztel', name:'KRIZTEL' }];
   let html = '';
-  let activeCount = 0;
 
   members.forEach(m => {
     const mGrid = dayData.grid ? dayData.grid[m.id] : null;
     const shiftId = mGrid?.shift || 'shift-7-16';
     const isRest = ['shift-rd','shift-vl','shift-sl'].includes(shiftId);
-    if (!isRest) activeCount++;
 
     let rawTasks = mGrid?.slots ? mGrid.slots[slot.id] || [] : [];
     const taskText = rawTasks.length ? (typeof rawTasks[0] === 'string' ? rawTasks[0] : rawTasks[0]?.text || '') : 'Active duty';
@@ -325,8 +323,6 @@ function renderDuties(data) {
   });
 
   container.innerHTML = html;
-  const traderDisplay = document.getElementById('activeTraderDisplay');
-  if (traderDisplay) traderDisplay.textContent = `${activeCount} Working`;
 }
 
 /* ==========================================================================
@@ -402,7 +398,6 @@ async function fetchTopPicksAndBoosts() {
         const gameState = evt.status?.type?.state;
         const evtDate = new Date(evt.date);
 
-        // Strict pre-kickoff filter: ONLY real upcoming fixtures
         if (gameState !== 'pre' || evtDate <= now) continue;
 
         const comp = evt.competitions?.[0];
@@ -507,66 +502,7 @@ function renderTopPicks() {
 }
 
 /* ==========================================================================
-   9. TOP GAMES DAILY MATCHDAY
-   ========================================================================== */
-let selectedGameOffset = 0;
-
-async function fetchMatchDayGames() {
-  const container = document.getElementById('gamesContainer');
-  if (!container) return;
-
-  const targetDate = new Date();
-  targetDate.setDate(targetDate.getDate() + selectedGameOffset);
-
-  const year = targetDate.getFullYear();
-  const month = String(targetDate.getMonth() + 1).padStart(2, '0');
-  const day = String(targetDate.getDate()).padStart(2, '0');
-  const queryStr = `${year}${month}${day}`;
-
-  const labelEl = document.getElementById('matchDayDisplay');
-  if (labelEl) {
-    labelEl.textContent = selectedGameOffset === 0 ? 'TODAY' : `DAY +${selectedGameOffset}`;
-  }
-
-  try {
-    const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=${queryStr}`);
-    if (!res.ok) throw new Error('Games fetch failed');
-    const data = await res.json();
-    const events = data?.events || [];
-
-    if (events.length === 0) {
-      container.innerHTML = `<div class="tactile-empty-notice"><span>No fixtures scheduled for this matchday.</span></div>`;
-      return;
-    }
-
-    container.innerHTML = events.slice(0, 6).map(evt => {
-      const comp = evt.competitions?.[0];
-      const h = comp?.competitors?.find(c => c.homeAway === 'home');
-      const a = comp?.competitors?.find(c => c.homeAway === 'away');
-      return `
-        <div class="game-match-row">
-          <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-            ${h?.team?.shortDisplayName || 'Home'} vs ${a?.team?.shortDisplayName || 'Away'}
-          </span>
-          <span class="game-time-tag">${evt.status?.type?.detail || 'PRE'}</span>
-        </div>
-      `;
-    }).join('');
-
-  } catch (e) {
-    container.innerHTML = `<div class="tactile-empty-notice"><span>Matchday fixture feed offline.</span></div>`;
-  }
-}
-
-function navigateMatchDay(dir) {
-  selectedGameOffset += dir;
-  if (selectedGameOffset < 0) selectedGameOffset = 5;
-  if (selectedGameOffset > 5) selectedGameOffset = 0;
-  fetchMatchDayGames();
-}
-
-/* ==========================================================================
-   10. URGENT HANDOVER & JIRA SLA ENGINE
+   9. URGENT HANDOVER & JIRA SLA ENGINE
    ========================================================================== */
 const HANDOVER_KEY = 'sbhub_urgent_handovers';
 const handoverChannel = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel('handover_sync_channel') : null;
@@ -590,15 +526,15 @@ function renderHandovers() {
   if (list.length > 0) {
     const highest = list[0];
     if (mainText) mainText.textContent = `[${highest.brand.toUpperCase()}] ${highest.msg}`;
-    if (badge) badge.textContent = `HANDOVERS (${list.length})`;
+    if (badge) badge.textContent = `handover (${list.length})`;
   } else {
     if (mainText) mainText.textContent = "No active urgent handover notes.";
-    if (badge) badge.textContent = "HANDOVERS";
+    if (badge) badge.textContent = "handover";
   }
 
   if (modalList) {
     if (list.length === 0) {
-      modalList.innerHTML = `<div class="tactile-empty-notice">No active handovers. Post one above!</div>`;
+      modalList.innerHTML = `<div class="tactile-empty-notice"><span>No active handovers. Post one above!</span></div>`;
     } else {
       modalList.innerHTML = list.map((item, idx) => {
         let tagColor = 'blue';
@@ -673,7 +609,7 @@ function checkJiraSLA() {
 }
 
 /* ==========================================================================
-   11. INITIALIZATION & GLOBAL BINDINGS
+   10. INITIALIZATION & GLOBAL BINDINGS
    ========================================================================== */
 window.handleLogin = handleLogin;
 window.handleLogout = handleLogout;
@@ -681,7 +617,6 @@ window.togglePasswordVisibility = togglePasswordVisibility;
 window.toggleTheme = toggleTheme;
 window.switchBrandTab = switchBrandTab;
 window.filterTopPicks = filterTopPicks;
-window.navigateMatchDay = navigateMatchDay;
 window.openHandoverModal = openHandoverModal;
 window.closeHandoverModal = closeHandoverModal;
 window.addHandover = addHandover;
@@ -702,7 +637,6 @@ function initDashboard() {
   fetchTopPicksAndBoosts();
   setInterval(fetchTopPicksAndBoosts, 3 * 60 * 1000);
 
-  fetchMatchDayGames();
   renderHandovers();
   checkJiraSLA();
 }
