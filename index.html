@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sportsbook Hub - Tactile Operations Terminal</title>
+  <title>Sportsbook Hub - Executive Tactile Dashboard</title>
 
   <!-- Google Fonts & Boxicons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -54,7 +54,7 @@
     </div>
   </div>
 
-  <!-- FLOATING TOP TACTILE DOCK (NO SIDEBAR - PRESERVES ALL 40+ LINKS) -->
+  <!-- FLOATING TOP TACTILE NAVBAR -->
   <header class="tactile-navbar">
     
     <!-- BRAND / LOGO -->
@@ -64,11 +64,11 @@
       </div>
       <div class="brand-text">
         <span class="brand-title">Sportsbook Hub</span>
-        <span class="brand-sub">Tactile Operations</span>
+        <span class="brand-sub">TACTILE CORE</span>
       </div>
     </div>
 
-    <!-- CENTER CATEGORIZED MEGA-MENUS -->
+    <!-- CENTER CATEGORIZED NAVIGATION (ALL 8 CATEGORIES & 40+ LINKS) -->
     <nav class="nav-dock" id="mainNavDock">
       
       <!-- 1. INTERNAL -->
@@ -180,30 +180,24 @@
 
     <!-- RIGHT STATUS & CONTROLS -->
     <div class="header-actions">
-      <!-- Manila Weather Pill -->
+      <!-- Weather -->
       <div class="tactile-status-pill" id="weatherWidget" title="Metro Manila Live Weather">
         <div class="squircle-micro-icon amber"><i class='bx bx-sun' id="weatherIcon"></i></div>
         <span id="weatherTemp">--°C</span>
       </div>
 
-      <!-- World Clocks Pill -->
+      <!-- World Clock -->
       <div class="tactile-status-pill" title="Manila GMT+8 Time">
         <div class="squircle-micro-icon blue"><i class='bx bx-time-five'></i></div>
         <span class="mono-num" id="clockGmt8">00:00:00</span>
       </div>
 
-      <!-- Active Trader Pill -->
-      <div class="tactile-status-pill" title="Active On-Duty Traders">
-        <div class="squircle-micro-icon green"><i class='bx bx-user-check'></i></div>
-        <span id="activeTraderDisplay">0 Working</span>
-      </div>
-
-      <!-- Day / Night Toggle -->
+      <!-- Day / Night Mode Toggle -->
       <button class="tactile-icon-btn" type="button" onclick="toggleTheme()" title="Toggle Day / Night Mode">
         <i class='bx bx-sun' id="themeIcon"></i>
       </button>
 
-      <!-- Logout / Lock -->
+      <!-- Lock / Logout -->
       <button class="tactile-icon-btn danger" type="button" onclick="handleLogout()" title="Lock Session">
         <i class='bx bx-lock-alt'></i>
       </button>
@@ -211,52 +205,27 @@
 
   </header>
 
-  <!-- DASHBOARD 100VH VIEWPORT -->
+  <!-- DASHBOARD 100VH VIEWPORT (3-COLUMN LAYOUT MATCHING SKETCH) -->
   <main class="dashboard-viewport">
 
-    <!-- TOP ALERT STRIP (JIRA + HANDOVERS) -->
-    <div class="status-alert-strip">
+    <!-- ==========================================
+         COLUMN 1: OPERATIONS DOCK & DAILY TASK DOCK
+         ========================================== -->
+    <div class="layout-col left-col">
       
-      <!-- JIRA SLA ALERT -->
-      <div class="tactile-alert-card rose" id="jiraAlertBanner">
-        <div class="alert-left">
-          <div class="squircle-micro-icon rose"><i class='bx bx-error-circle'></i></div>
-          <span class="alert-title">OVERDUE JIRA (&gt;24H)</span>
-        </div>
-        <div class="jira-pills-row" id="jiraPillsContainer">
-          <span class="alert-subtext">No overdue tickets.</span>
-        </div>
-        <a href="jira.html" target="_blank" rel="noreferrer" class="tactile-btn-subtle rose">View Tracker &rarr;</a>
-      </div>
-
-      <!-- URGENT HANDOVER ALERT -->
-      <div class="tactile-alert-card amber" id="urgentHandoverBanner">
-        <div class="alert-left">
-          <div class="squircle-micro-icon amber"><i class='bx bx-alarm-exclamation'></i></div>
-          <span class="alert-title" id="handoverAlertBadge">HANDOVERS</span>
-        </div>
-        <div class="handover-text-preview" id="handoverMainText">No active urgent handover notes.</div>
-        <button class="tactile-btn-subtle amber" type="button" onclick="openHandoverModal()">Manage</button>
-      </div>
-
-    </div>
-
-    <!-- MAIN BENTO BOX GRID -->
-    <div class="bento-grid">
-
-      <!-- COL 1: DIRECTORY & TASKS -->
-      <section class="tactile-card">
+      <!-- CARD 1.1: OPERATIONS DOCK -->
+      <section class="tactile-card flex-1">
         <div class="card-header-row">
           <div class="card-title-wrap">
             <div class="squircle-header-icon blue"><i class='bx bx-pin'></i></div>
             <div>
-              <div class="card-title">Operations Dock</div>
+              <div class="card-title">operations dock</div>
               <div class="card-caption">Direct Management Links</div>
             </div>
           </div>
         </div>
 
-        <!-- Sunken Segmented Tab Switcher (SoftStack Style) -->
+        <!-- Sunken Brand Switcher -->
         <div class="sunken-segment-track">
           <button class="segment-tab-btn active" type="button" onclick="switchBrandTab('ibet', this)">IBET</button>
           <button class="segment-tab-btn" type="button" onclick="switchBrandTab('edge', this)">EDGE</button>
@@ -266,9 +235,21 @@
         <div class="dock-links-scroll" id="brandLinksContainer">
           <!-- Populated via JS -->
         </div>
+      </section>
 
-        <div class="section-label-chip">Daily Task Dock</div>
-        <div class="quick-tasks-list">
+      <!-- CARD 1.2: DAILY TASK DOCK -->
+      <section class="tactile-card flex-1">
+        <div class="card-header-row">
+          <div class="card-title-wrap">
+            <div class="squircle-header-icon amber"><i class='bx bx-list-check'></i></div>
+            <div>
+              <div class="card-title">daily task dock</div>
+              <div class="card-caption">Operational Routine Items</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick-tasks-list scrollable">
           <a class="tactile-pill-row" href="boostschedule.html" target="_blank" rel="noreferrer">
             <span>Top Picks Schedule</span><i class='bx bx-right-arrow-alt'></i>
           </a>
@@ -287,18 +268,23 @@
         </div>
       </section>
 
-      <!-- COL 2: TOP PICKS / HOT BOOSTS (STRICT ESPN PRE-MATCH ONLY) -->
-      <section class="tactile-card">
+    </div>
+
+    <!-- ==========================================
+         COLUMN 2: TOP PICKS / HOT BOOSTS (CENTER FULL HEIGHT)
+         ========================================== -->
+    <div class="layout-col center-col">
+      <section class="tactile-card full-height">
         <div class="card-header-row">
           <div class="card-title-wrap">
             <div class="squircle-header-icon rose"><i class='bx bxs-flame'></i></div>
             <div>
-              <div class="card-title">Top Picks / Hot Boosts</div>
+              <div class="card-title">top picks /hot boosts</div>
               <div class="card-caption">Pre-Match ESPN Live Lineup</div>
             </div>
           </div>
 
-          <!-- Sunken Segmented League Filter -->
+          <!-- Sunken Segmented Tournament Filter -->
           <div class="sunken-segment-track scrollable">
             <button class="segment-tab-btn active" id="btn-boost-eng.1" type="button" onclick="filterTopPicks('eng.1', this)">EPL</button>
             <button class="segment-tab-btn" id="btn-boost-esp.1" type="button" onclick="filterTopPicks('esp.1', this)">La Liga</button>
@@ -316,15 +302,53 @@
           </div>
         </div>
       </section>
+    </div>
 
-      <!-- COL 3: DUTIES & DAILY MATCHDAY -->
-      <section class="tactile-card">
-        <!-- Live Duty Roster Section -->
+    <!-- ==========================================
+         COLUMN 3: HANDOVER / OVERDUE JIRA & TIME - SLOT DUTIES
+         ========================================== -->
+    <div class="layout-col right-col">
+      
+      <!-- CARD 3.1: SPLIT CARD (HANDOVER ON TOP, OVERDUE JIRA BELOW) -->
+      <section class="tactile-card split-stacked-card">
+        
+        <!-- UPPER HALF: HANDOVER -->
+        <div class="split-card-section">
+          <div class="card-header-row">
+            <div class="card-title-wrap">
+              <div class="squircle-header-icon amber micro"><i class='bx bx-alarm-exclamation'></i></div>
+              <div class="card-title" id="handoverAlertBadge">handover</div>
+            </div>
+            <button class="tactile-btn-subtle amber" type="button" onclick="openHandoverModal()">Manage</button>
+          </div>
+          <div class="handover-text-preview" id="handoverMainText">No active urgent handover notes.</div>
+        </div>
+
+        <div class="tactile-inset-divider"></div>
+
+        <!-- LOWER HALF: OVERDUE JIRA -->
+        <div class="split-card-section">
+          <div class="card-header-row">
+            <div class="card-title-wrap">
+              <div class="squircle-header-icon rose micro"><i class='bx bx-error-circle'></i></div>
+              <div class="card-title">overdue jira</div>
+            </div>
+            <a href="jira.html" target="_blank" rel="noreferrer" class="tactile-btn-subtle rose">Tracker &rarr;</a>
+          </div>
+          <div class="jira-pills-row" id="jiraPillsContainer">
+            <span class="alert-subtext">No overdue tickets (&gt;24h).</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- CARD 3.2: TIME - SLOT DUTIES -->
+      <section class="tactile-card flex-1">
         <div class="card-header-row">
           <div class="card-title-wrap">
             <div class="squircle-header-icon green"><i class='bx bx-time'></i></div>
             <div>
-              <div class="card-title">Time-Slot Duties</div>
+              <div class="card-title">time - slot duties</div>
               <div class="card-caption">Firebase Active Schedule</div>
             </div>
           </div>
@@ -335,32 +359,6 @@
           <div class="tactile-empty-notice">
             <i class='bx bx-loader-alt bx-spin'></i>
             <span>Syncing roster...</span>
-          </div>
-        </div>
-
-        <div class="tactile-inset-divider"></div>
-
-        <!-- Daily Matchday Section -->
-        <div class="card-header-row">
-          <div class="card-title-wrap">
-            <div class="squircle-header-icon blue"><i class='bx bx-football'></i></div>
-            <div>
-              <div class="card-title">Matchday Schedule</div>
-              <div class="card-caption">Daily Fixture Ticker</div>
-            </div>
-          </div>
-          
-          <div class="sunken-segment-track micro">
-            <button class="segment-tab-btn nav" type="button" onclick="navigateMatchDay(-1)">&larr;</button>
-            <span class="segment-tab-btn label" id="matchDayDisplay">TODAY</span>
-            <button class="segment-tab-btn nav" type="button" onclick="navigateMatchDay(1)">&rarr;</button>
-          </div>
-        </div>
-
-        <div class="games-list-scroll" id="gamesContainer">
-          <div class="tactile-empty-notice">
-            <i class='bx bx-loader-alt bx-spin'></i>
-            <span>Fetching fixtures...</span>
           </div>
         </div>
       </section>
