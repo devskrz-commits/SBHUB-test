@@ -6,41 +6,48 @@
 /* ==========================================================================
    1. AUTHENTICATION & SESSION MANAGEMENT
    ========================================================================== */
-const VALID_USERS = ["sportsbook2026", "sportsbookhub", "admin"];
-const VALID_PASSWORDS = ["sb2026", "sportsbook2026", "sportsbook", "sbhub2026"];
+const VALID_PASSWORDS = ["sb2026", "sportsbook2026", "sbhub2026", "sportsbook", "admin"];
 
 function handleLogin(e) {
-  if (e) e.preventDefault();
+  if (e) {
+    if (typeof e.preventDefault === 'function') e.preventDefault();
+    if (typeof e.stopPropagation === 'function') e.stopPropagation();
+  }
 
   const userInput = document.getElementById('userInput');
   const passInput = document.getElementById('passInput');
   const errorEl = document.getElementById('loginError');
 
   const u = (userInput?.value || '').trim().toLowerCase();
-  const p = (passInput?.value || '').trim();
+  const p = (passInput?.value || '').trim().toLowerCase();
 
-  const isUserValid = VALID_USERS.includes(u);
   const isPassValid = VALID_PASSWORDS.includes(p);
 
-  if (isUserValid && isPassValid) {
+  if (isPassValid) {
     try {
       localStorage.setItem('sbhub_auth', 'true');
+      sessionStorage.setItem('sbhub_auth', 'true');
     } catch (err) {
-      console.warn("Storage not accessible:", err);
+      console.warn("Storage not available:", err);
     }
 
     const overlay = document.getElementById('authOverlay');
-    if (overlay) overlay.classList.add('unlocked');
+    if (overlay) {
+      overlay.classList.add('unlocked');
+      overlay.style.setProperty('display', 'none', 'important');
+    }
     if (errorEl) errorEl.textContent = "";
   } else {
     if (errorEl) {
-      errorEl.textContent = "ACCESS DENIED: Invalid Security Key (Try: sb2026)";
+      errorEl.textContent = 'ACCESS DENIED: Enter security key "sb2026"';
     }
     if (passInput) {
       passInput.focus();
       passInput.select();
     }
   }
+
+  return false;
 }
 
 function handleLogout() {
@@ -50,7 +57,10 @@ function handleLogout() {
   } catch (err) {}
 
   const authEl = document.getElementById('authOverlay');
-  if (authEl) authEl.classList.remove('unlocked');
+  if (authEl) {
+    authEl.classList.remove('unlocked');
+    authEl.style.display = 'flex';
+  }
 
   const passEl = document.getElementById('passInput');
   if (passEl) passEl.value = '';
@@ -75,14 +85,21 @@ function togglePasswordVisibility() {
 
 function setupAuthEvents() {
   const form = document.getElementById('loginForm');
-  if (form) form.addEventListener('submit', handleLogin);
-
-  const toggleBtn = document.getElementById('togglePassBtn');
-  if (toggleBtn) toggleBtn.addEventListener('click', togglePasswordVisibility);
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleLogin(e);
+      return false;
+    });
+  }
 
   try {
     if (localStorage.getItem('sbhub_auth') === 'true' || sessionStorage.getItem('sbhub_auth') === 'true') {
-      document.getElementById('authOverlay')?.classList.add('unlocked');
+      const overlay = document.getElementById('authOverlay');
+      if (overlay) {
+        overlay.classList.add('unlocked');
+        overlay.style.setProperty('display', 'none', 'important');
+      }
     }
   } catch (err) {}
 }
