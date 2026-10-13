@@ -1,5 +1,5 @@
 /**
- * Sportsbook Hub - Executive Operations Dashboard
+ * Sportsbook Hub - Tactile Operations Terminal
  * Core Application Engine (app.js)
  */
 
@@ -140,24 +140,28 @@ function setupNavInteraction() {
 }
 
 /* ==========================================================================
-   3. DAY / NIGHT THEME SYSTEM
+   3. DAY / NIGHT THEME SYSTEM (TACTILE PORCELAIN VS TACTILE OBSIDIAN)
    ========================================================================== */
 function toggleTheme() {
-  const isLight = document.body.classList.toggle('light-mode');
+  const isDark = document.body.classList.toggle('dark-mode');
   const icon = document.getElementById('themeIcon');
-  if (isLight) {
-    if (icon) icon.className = 'bx bx-moon';
-    localStorage.setItem('sbhub_theme_mode', 'light');
-  } else {
+  if (isDark) {
     if (icon) icon.className = 'bx bx-sun';
-    localStorage.setItem('sbhub_theme_mode', 'dark');
+    localStorage.setItem('sbhub_tactile_theme', 'dark');
+  } else {
+    if (icon) icon.className = 'bx bx-moon';
+    localStorage.setItem('sbhub_tactile_theme', 'light');
   }
 }
 
 function restoreSavedTheme() {
-  if (localStorage.getItem('sbhub_theme_mode') === 'light') {
-    document.body.classList.add('light-mode');
-    const icon = document.getElementById('themeIcon');
+  const saved = localStorage.getItem('sbhub_tactile_theme');
+  const icon = document.getElementById('themeIcon');
+  if (saved === 'dark') {
+    document.body.classList.add('dark-mode');
+    if (icon) icon.className = 'bx bx-sun';
+  } else {
+    document.body.classList.remove('dark-mode');
     if (icon) icon.className = 'bx bx-moon';
   }
 }
@@ -215,7 +219,7 @@ const BRAND_LINKS = {
 
 function switchBrandTab(brandKey, el) {
   if (el) {
-    document.querySelectorAll('.dock-tab').forEach(t => t.classList.remove('active'));
+    el.closest('.sunken-segment-track')?.querySelectorAll('.segment-tab-btn').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
   }
   const container = document.getElementById('brandLinksContainer');
@@ -224,7 +228,7 @@ function switchBrandTab(brandKey, el) {
 
   (BRAND_LINKS[brandKey] || []).forEach(item => {
     const a = document.createElement('a');
-    a.className = 'action-pill-row';
+    a.className = 'tactile-pill-row';
     a.href = item.url;
     a.target = '_blank';
     a.rel = 'noreferrer';
@@ -289,7 +293,7 @@ function renderDuties(data) {
 
   const dayData = data[activeDayKey];
   if (!dayData) {
-    container.innerHTML = `<div class="empty-state-notice">No duty roster entry found.</div>`;
+    container.innerHTML = `<div class="tactile-empty-notice"><span>No duty roster entry found.</span></div>`;
     return;
   }
 
@@ -310,10 +314,10 @@ function renderDuties(data) {
       <div class="duty-user-card">
         <div class="duty-user-top">
           <span>${m.name}</span>
-          <span class="duty-shift-pill">${isRest ? 'OFF' : shiftId.replace('shift-','')}</span>
+          <span class="tactile-pill-tag ${isRest ? 'rose' : 'green'}">${isRest ? 'OFF' : shiftId.replace('shift-','')}</span>
         </div>
         <div class="duty-task-row">
-          <i class='bx bx-check-circle' style="color: ${isRest ? 'var(--text-dim)' : 'var(--accent-mint)'}"></i>
+          <i class='bx ${isRest ? 'bx-minus-circle' : 'bx-check-circle'}'></i>
           <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${isRest ? 'Rest Day' : taskText}</span>
         </div>
       </div>
@@ -454,8 +458,10 @@ async function fetchTopPicksAndBoosts() {
 
 function filterTopPicks(leagueKey, el) {
   activeBoostFilter = leagueKey;
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  if (el) el.classList.add('active');
+  if (el) {
+    el.closest('.sunken-segment-track')?.querySelectorAll('.segment-tab-btn').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
   renderTopPicks();
 }
 
@@ -470,8 +476,8 @@ function renderTopPicks() {
     const lg = PRIORITY_LEAGUES.find(l => l.key === activeBoostFilter);
     const leagueName = lg ? lg.name : activeBoostFilter.toUpperCase();
     container.innerHTML = `
-      <div class="empty-state-notice">
-        <i class='bx bx-calendar-x' style="font-size: 26px; color: var(--text-dim);"></i>
+      <div class="tactile-empty-notice">
+        <i class='bx bx-calendar-x'></i>
         <span>No upcoming scheduled ${leagueName} matches available at this time.</span>
       </div>
     `;
@@ -479,8 +485,8 @@ function renderTopPicks() {
   }
 
   container.innerHTML = filtered.slice(0, 12).map(p => `
-    <div class="matte-boost-card">
-      <div class="boost-top-teams">
+    <div class="tactile-boost-card">
+      <div class="boost-teams-row">
         <div class="team-badge-wrap">
           <img src="${p.homeLogo}" alt="${p.homeName}" class="team-logo-small" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
           <span class="team-abbr">${p.homeName}</span>
@@ -492,8 +498,8 @@ function renderTopPicks() {
         </div>
       </div>
       <div class="boost-market-text">${p.market}</div>
-      <div class="boost-bottom-row">
-        <span class="${p.isHot ? 'tag-hot' : 'tag-pick'}">${p.isHot ? 'HOT BOOST' : 'TOP PICK'}</span>
+      <div class="boost-card-footer">
+        <span class="tactile-pill-tag ${p.isHot ? 'rose' : 'blue'}">${p.isHot ? 'HOT BOOST' : 'TOP PICK'}</span>
         <span style="color: var(--text-dim);"><i class='bx bx-time-five'></i> ${p.kickOffStr}</span>
       </div>
     </div>
@@ -529,7 +535,7 @@ async function fetchMatchDayGames() {
     const events = data?.events || [];
 
     if (events.length === 0) {
-      container.innerHTML = `<div class="empty-state-notice"><span>No fixtures scheduled for this matchday.</span></div>`;
+      container.innerHTML = `<div class="tactile-empty-notice"><span>No fixtures scheduled for this matchday.</span></div>`;
       return;
     }
 
@@ -548,7 +554,7 @@ async function fetchMatchDayGames() {
     }).join('');
 
   } catch (e) {
-    container.innerHTML = `<div class="empty-state-notice"><span>Matchday fixture feed offline.</span></div>`;
+    container.innerHTML = `<div class="tactile-empty-notice"><span>Matchday fixture feed offline.</span></div>`;
   }
 }
 
@@ -592,21 +598,23 @@ function renderHandovers() {
 
   if (modalList) {
     if (list.length === 0) {
-      modalList.innerHTML = `<div class="empty-state-notice">No active handovers. Post one above!</div>`;
+      modalList.innerHTML = `<div class="tactile-empty-notice">No active handovers. Post one above!</div>`;
     } else {
       modalList.innerHTML = list.map((item, idx) => {
-        let tagClass = 'normal';
-        if (item.priority === 'URGENT/CRITICAL') tagClass = 'urgent';
-        else if (item.priority === 'Need Attention') tagClass = 'attention';
+        let tagColor = 'blue';
+        if (item.priority === 'URGENT/CRITICAL') tagColor = 'rose';
+        else if (item.priority === 'Need Attention') tagColor = 'amber';
 
         return `
           <div class="handover-modal-row">
-            <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:0;">
-              <span class="priority-tag ${tagClass}">${item.priority || 'NOTE'}</span>
+            <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;">
+              <span class="tactile-pill-tag ${tagColor}">${item.priority || 'NOTE'}</span>
               <span style="font-weight:800; color:var(--text-main);">[${item.brand.toUpperCase()}]</span>
               <span style="color:var(--text-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.msg}</span>
             </div>
-            <button type="button" class="handover-btn-small" onclick="deleteHandover(${idx})" style="background:var(--accent-mint);">Done</button>
+            <button type="button" class="tactile-btn-subtle" onclick="deleteHandover(${idx})" style="background:var(--accent-green-bg); color:var(--accent-green);">
+              <i class='bx bx-check'></i> Done
+            </button>
           </div>
         `;
       }).join('');
@@ -660,7 +668,7 @@ function checkJiraSLA() {
       <a href="jira.html" target="_blank" rel="noreferrer" class="jira-ticket-chip">${t.key || 'TICKET'}</a>
     `).join('');
   } else {
-    container.innerHTML = `<span class="no-alert-subtext">No overdue tickets detected.</span>`;
+    container.innerHTML = `<span class="alert-subtext">No overdue tickets.</span>`;
   }
 }
 
