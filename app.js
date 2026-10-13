@@ -1,58 +1,105 @@
 /**
  * Sportsbook Hub - Executive Operations Dashboard
- * Core Application Engine
+ * Core Application Engine (app.js)
  */
-
-const DEFAULT_USER = "sportsbook2026";
-const DEFAULT_PASS = "sb2026";
 
 /* ==========================================================================
    1. AUTHENTICATION & SESSION MANAGEMENT
    ========================================================================== */
-function handleLogin(e) {
-  e.preventDefault();
-  const u = document.getElementById('userInput')?.value.trim();
-  const p = document.getElementById('passInput')?.value;
+const VALID_USERS = ["sportsbook2026", "sportsbookhub", "admin"];
+const VALID_PASSWORDS = ["sb2026", "sportsbook2026", "sportsbook", "sbhub2026"];
 
-  if ((u === DEFAULT_USER || u === "sportsbookhub") && p === DEFAULT_PASS) {
-    localStorage.setItem('sbhub_auth', 'true');
-    document.getElementById('authOverlay')?.classList.add('unlocked');
+function handleLogin(e) {
+  if (e) e.preventDefault();
+
+  const userInput = document.getElementById('userInput');
+  const passInput = document.getElementById('passInput');
+  const errorEl = document.getElementById('loginError');
+
+  const u = (userInput?.value || '').trim().toLowerCase();
+  const p = (passInput?.value || '').trim();
+
+  const isUserValid = VALID_USERS.includes(u);
+  const isPassValid = VALID_PASSWORDS.includes(p);
+
+  if (isUserValid && isPassValid) {
+    try {
+      localStorage.setItem('sbhub_auth', 'true');
+    } catch (err) {
+      console.warn("Storage not accessible:", err);
+    }
+
+    const overlay = document.getElementById('authOverlay');
+    if (overlay) overlay.classList.add('unlocked');
+    if (errorEl) errorEl.textContent = "";
   } else {
-    const errorEl = document.getElementById('loginError');
-    if (errorEl) errorEl.textContent = "ACCESS DENIED: Invalid Security Key";
+    if (errorEl) {
+      errorEl.textContent = "ACCESS DENIED: Invalid Security Key (Try: sb2026)";
+    }
+    if (passInput) {
+      passInput.focus();
+      passInput.select();
+    }
   }
 }
 
 function handleLogout() {
-  localStorage.removeItem('sbhub_auth');
-  sessionStorage.removeItem('sbhub_auth');
+  try {
+    localStorage.removeItem('sbhub_auth');
+    sessionStorage.removeItem('sbhub_auth');
+  } catch (err) {}
+
   const authEl = document.getElementById('authOverlay');
   if (authEl) authEl.classList.remove('unlocked');
+
   const passEl = document.getElementById('passInput');
   if (passEl) passEl.value = '';
+
+  const errorEl = document.getElementById('loginError');
+  if (errorEl) errorEl.textContent = '';
 }
 
-function checkInitialAuth() {
-  if (localStorage.getItem('sbhub_auth') === 'true' || sessionStorage.getItem('sbhub_auth') === 'true') {
-    document.getElementById('authOverlay')?.classList.add('unlocked');
+function togglePasswordVisibility() {
+  const passInput = document.getElementById('passInput');
+  const icon = document.getElementById('togglePassIcon');
+  if (!passInput || !icon) return;
+
+  if (passInput.type === 'password') {
+    passInput.type = 'text';
+    icon.className = 'bx bx-hide';
+  } else {
+    passInput.type = 'password';
+    icon.className = 'bx bx-show';
   }
 }
 
+function setupAuthEvents() {
+  const form = document.getElementById('loginForm');
+  if (form) form.addEventListener('submit', handleLogin);
+
+  const toggleBtn = document.getElementById('togglePassBtn');
+  if (toggleBtn) toggleBtn.addEventListener('click', togglePasswordVisibility);
+
+  try {
+    if (localStorage.getItem('sbhub_auth') === 'true' || sessionStorage.getItem('sbhub_auth') === 'true') {
+      document.getElementById('authOverlay')?.classList.add('unlocked');
+    }
+  } catch (err) {}
+}
+
 /* ==========================================================================
-   2. TOP NAV MENU LOCK & CLICK HANDLING
+   2. TOP NAV MEGA DOCK INTERACTION (CLICK LOCK & ESCAPE HANDLING)
    ========================================================================== */
 function setupNavInteraction() {
   const navDock = document.getElementById('mainNavDock');
   if (!navDock) return;
 
-  // Toggle on click, so user can lock open and select with ease
   navDock.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const parent = btn.closest('.nav-item');
       const wasOpen = parent?.classList.contains('open');
 
-      // Close all other nav items
       navDock.querySelectorAll('.nav-item').forEach(item => item.classList.remove('open'));
 
       if (!wasOpen && parent) {
@@ -61,14 +108,12 @@ function setupNavInteraction() {
     });
   });
 
-  // Close menus when clicking anywhere outside
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.nav-item')) {
       navDock.querySelectorAll('.nav-item').forEach(item => item.classList.remove('open'));
     }
   });
 
-  // Escape key closes menus
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       navDock.querySelectorAll('.nav-item').forEach(item => item.classList.remove('open'));
@@ -78,7 +123,7 @@ function setupNavInteraction() {
 }
 
 /* ==========================================================================
-   3. DAY / NIGHT THEME SWITCHER
+   3. DAY / NIGHT THEME SYSTEM
    ========================================================================== */
 function toggleTheme() {
   const isLight = document.body.classList.toggle('light-mode');
@@ -101,7 +146,7 @@ function restoreSavedTheme() {
 }
 
 /* ==========================================================================
-   4. LIVE WORLD CLOCKS (GMT+8)
+   4. LIVE WORLD CLOCKS (GMT+8 MANILA TIME)
    ========================================================================== */
 function updateClocks() {
   const now = new Date();
@@ -278,9 +323,6 @@ const PRIORITY_LEAGUES = [
 let cachedPicks = [];
 let activeBoostFilter = 'eng.1';
 
-/**
- * Returns dynamic dates for the next 5 days formatted as YYYYMMDD
- */
 function getUpcomingQueryDates() {
   const dates = [];
   const now = new Date();
@@ -339,7 +381,7 @@ async function fetchTopPicksAndBoosts() {
         const gameState = evt.status?.type?.state;
         const evtDate = new Date(evt.date);
 
-        // Strict pre-kickoff filter: ONLY upcoming matches, NO live or finished games
+        // Strict pre-kickoff filter: ONLY real upcoming fixtures
         if (gameState !== 'pre' || evtDate <= now) continue;
 
         const comp = evt.competitions?.[0];
@@ -383,7 +425,6 @@ async function fetchTopPicksAndBoosts() {
       }
     }
 
-    // Sort chronologically by kickoff timestamp
     realPreMatchPicks.sort((a, b) => a.kickOffTimestamp - b.kickOffTimestamp);
     cachedPicks = realPreMatchPicks;
     renderTopPicks();
@@ -406,7 +447,6 @@ function renderTopPicks() {
   if (!container) return;
 
   const now = Date.now();
-  // Filter active pre-match games for the selected league
   const filtered = cachedPicks.filter(p => p.leagueKey === activeBoostFilter && p.kickOffTimestamp > now);
 
   if (filtered.length === 0) {
@@ -593,7 +633,6 @@ function deleteHandover(idx) {
 if (handoverChannel) handoverChannel.onmessage = renderHandovers;
 window.addEventListener('storage', renderHandovers);
 
-// Check Jira SLA Mock
 function checkJiraSLA() {
   const tickets = JSON.parse(localStorage.getItem('jira_tracked_tickets') || '[]');
   const container = document.getElementById('jiraPillsContainer');
@@ -609,28 +648,42 @@ function checkJiraSLA() {
 }
 
 /* ==========================================================================
-   INITIALIZATION
+   11. INITIALIZATION & GLOBAL BINDINGS
    ========================================================================== */
+window.handleLogin = handleLogin;
+window.handleLogout = handleLogout;
+window.togglePasswordVisibility = togglePasswordVisibility;
+window.toggleTheme = toggleTheme;
+window.switchBrandTab = switchBrandTab;
+window.filterTopPicks = filterTopPicks;
+window.navigateMatchDay = navigateMatchDay;
+window.openHandoverModal = openHandoverModal;
+window.closeHandoverModal = closeHandoverModal;
+window.addHandover = addHandover;
+window.deleteHandover = deleteHandover;
+
 function initDashboard() {
-  checkInitialAuth();
+  setupAuthEvents();
   restoreSavedTheme();
   setupNavInteraction();
   switchBrandTab('ibet');
 
-  // Clocks & Weather
   updateClocks();
   setInterval(updateClocks, 1000);
   fetchWeather();
   setInterval(fetchWeather, 15 * 60 * 1000);
 
-  // Data Listeners & Fetchers
   listenToDutyRoster();
   fetchTopPicksAndBoosts();
-  setInterval(fetchTopPicksAndBoosts, 3 * 60 * 1000); // 3-minute poll
+  setInterval(fetchTopPicksAndBoosts, 3 * 60 * 1000);
 
   fetchMatchDayGames();
   renderHandovers();
   checkJiraSLA();
 }
 
-document.addEventListener('DOMContentLoaded', initDashboard);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initDashboard);
+} else {
+  initDashboard();
+}
