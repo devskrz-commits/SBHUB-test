@@ -5,12 +5,12 @@
   /* SoftStack / VibeDash Porcelain Light Theme (Default) */
   --bg-canvas: #edf3f9;
   --bg-card: #ffffff;
-  --bg-sunken: #e2eaf4;
-  --bg-sunken-field: #e6eef7;
+  --bg-sunken: #dae4f0;
+  --bg-sunken-field: #e3ebf6;
   --bg-hover: #f5f8fc;
   
   --border-light: rgba(255, 255, 255, 0.95);
-  --border-rim: rgba(206, 219, 235, 0.85);
+  --border-rim: rgba(195, 211, 230, 0.85);
 
   --text-main: #0f172a;
   --text-muted: #52637a;
@@ -22,14 +22,14 @@
     0 4px 12px -2px rgba(18, 38, 77, 0.03),
     inset 0 1px 1px var(--border-light);
 
-  /* Visibly Pronounced Debossed Sunken Cavity Shadows */
+  /* Deeply Pronounced Tactile Sunken Cavity Shadows */
   --shadow-sunken: 
-    inset 3px 3px 7px rgba(15, 33, 64, 0.14),
-    inset -2px -2px 6px rgba(255, 255, 255, 0.95);
+    inset 3px 3px 6px rgba(15, 33, 64, 0.18),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.95);
 
   --shadow-sunken-field: 
-    inset 2px 2px 5px rgba(15, 33, 64, 0.12),
-    inset -1px -1px 4px rgba(255, 255, 255, 0.9);
+    inset 2px 2px 5px rgba(15, 33, 64, 0.14),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.9);
 
   --shadow-btn-primary: 
     0 10px 22px -4px rgba(37, 99, 235, 0.42),
@@ -59,7 +59,7 @@ body.dark-mode {
   /* Tactile Obsidian Dark Theme */
   --bg-canvas: #0c0f14;
   --bg-card: #151a23;
-  --bg-sunken: #0c1017;
+  --bg-sunken: #0b0e14;
   --bg-sunken-field: #0e121a;
   --bg-hover: #1b212c;
 
@@ -76,11 +76,11 @@ body.dark-mode {
     inset 0 1px 1px var(--border-light);
 
   --shadow-sunken: 
-    inset 3px 3px 6px rgba(0, 0, 0, 0.6),
+    inset 3px 3px 6px rgba(0, 0, 0, 0.65),
     inset -1px -1px 3px rgba(255, 255, 255, 0.05);
 
   --shadow-sunken-field: 
-    inset 2px 2px 5px rgba(0, 0, 0, 0.55),
+    inset 2px 2px 5px rgba(0, 0, 0, 0.58),
     inset -1px -1px 3px rgba(255, 255, 255, 0.04);
 
   --shadow-btn-primary: 
@@ -248,7 +248,7 @@ html, body {
 
 /* ==========================================================================
    TOP TACTILE NAVBAR
-   ========================================================================== */
+   ========================================================================= */
 .tactile-navbar {
   height: 60px;
   margin: 10px 20px 0 20px;
@@ -555,7 +555,9 @@ html, body {
 
 .card-caption { font-size: 10px; font-weight: 600; color: var(--text-dim); }
 
-/* Sunken Segment Track */
+/* ==========================================================================
+   SUNKEN SEGMENT TRACK (PROMINENT TACTILE DEBOSSED TROUGH)
+   ========================================================================== */
 .sunken-segment-track {
   display: flex;
   gap: 4px;
@@ -589,7 +591,7 @@ html, body {
 .segment-tab-btn.active {
   background: var(--bg-card);
   color: var(--accent-blue);
-  box-shadow: 0 4px 10px rgba(15, 33, 64, 0.12), inset 0 1px 1px #ffffff;
+  box-shadow: 0 4px 10px rgba(15, 33, 64, 0.14), inset 0 1px 1px #ffffff;
 }
 
 /* Col 1: Links & Tasks */
@@ -627,12 +629,14 @@ html, body {
 
 .tactile-pill-row i { font-size: 14px; opacity: 0.4; }
 
-/* Col 2: Top Picks Grid */
+/* ==========================================================================
+   COL 2: TOP PICKS COMPACT GRID & FLAG-VS-FLAG WATERMARK CARDS
+   ========================================================================== */
 .boosts-grid-scroll {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  grid-auto-rows: max-content;
-  align-content: start;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-auto-rows: max-content; /* PREVENTS VERTICAL STRETCHING */
+  align-content: start;        /* LOCKS CONTENT TO NATURAL TOP */
   gap: 12px;
   overflow-y: auto;
   flex: 1;
@@ -649,10 +653,11 @@ html, body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   overflow: hidden;
   transition: transform 0.15s, box-shadow 0.15s;
-  min-height: 140px;
+  min-height: 135px;
+  max-height: 145px; /* PREVENTS UNCONTROLLED VERTICAL STRETCH */
 }
 
 .tactile-boost-card:hover {
@@ -660,33 +665,35 @@ html, body {
   box-shadow: 0 8px 24px rgba(18, 38, 77, 0.09);
 }
 
-/* Watermark Crest Background */
+/* Flag VS Flag Background Watermark */
 .card-crest-watermark-bg {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 6px;
-  opacity: 0.07;
+  padding: 0 10px;
+  opacity: 0.11;
   pointer-events: none;
   z-index: 1;
+  overflow: hidden;
 }
 
 .crest-bg {
-  width: 95px;
-  height: 95px;
+  width: 72px;
+  height: 72px;
   object-fit: contain;
-  filter: grayscale(40%);
+  filter: saturate(1.1);
 }
 
 .crest-bg-vs {
-  font-size: 26px;
+  font-size: 20px;
   font-weight: 900;
-  color: var(--text-main);
-  opacity: 0.3;
+  color: var(--text-dim);
+  opacity: 0.35;
 }
 
+/* Card Content Layering (Sits above Watermark) */
 .boost-card-top-header {
   position: relative;
   z-index: 2;
@@ -719,6 +726,7 @@ html, body {
   align-items: center;
   gap: 8px;
   flex: 1;
+  min-width: 0;
 }
 
 .team-side.away {
@@ -727,8 +735,8 @@ html, body {
 }
 
 .team-crest-badge {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   object-fit: cover;
   box-shadow: var(--shadow-squircle);
@@ -740,6 +748,9 @@ html, body {
   font-size: 12px;
   font-weight: 800;
   color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .vs-pill-badge {
@@ -748,6 +759,7 @@ html, body {
   color: var(--text-dim);
   background: var(--bg-sunken);
   box-shadow: var(--shadow-sunken);
+  border: 1px solid var(--border-rim);
   padding: 2px 7px;
   border-radius: 999px;
   flex-shrink: 0;
@@ -756,11 +768,11 @@ html, body {
 .boost-market-panel {
   position: relative;
   z-index: 2;
-  background: var(--bg-sunken);
+  background: var(--bg-sunken-field);
   box-shadow: var(--shadow-sunken-field);
   border: 1px solid var(--border-rim);
   border-radius: 10px;
-  padding: 7px 10px;
+  padding: 6px 10px;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -770,7 +782,7 @@ html, body {
   font-size: 9px;
   font-weight: 800;
   color: var(--accent-blue);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
 }
 
 .market-value-text {
@@ -778,6 +790,9 @@ html, body {
   font-weight: 700;
   color: var(--text-main);
   line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tactile-pill-tag {
@@ -795,7 +810,9 @@ html, body {
 .tactile-pill-tag.blue { background: var(--accent-blue-bg); color: var(--accent-blue); }
 .tactile-pill-tag.green { background: var(--accent-green-bg); color: var(--accent-green); }
 
-/* Col 3: Split Stack & Live Duties */
+/* ==========================================================================
+   COL 3: SPLIT STACK & LIVE DUTY ROSTER
+   ========================================================================== */
 .split-stacked-card {
   padding: 14px 16px;
   gap: 12px;
