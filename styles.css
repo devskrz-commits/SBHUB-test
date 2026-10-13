@@ -20,7 +20,7 @@
   --shadow-card: 
     0 24px 48px -12px rgba(20, 42, 75, 0.08),
     0 4px 14px -2px rgba(20, 42, 75, 0.03),
-    inset 0 1px 1px 0 var(--border-light);
+    inset 0 1px 1px var(--border-light);
 
   --shadow-sunken: 
     inset 2px 2px 5px rgba(20, 40, 70, 0.08),
@@ -68,7 +68,7 @@ body.dark-mode {
   --shadow-card: 
     0 24px 48px -12px rgba(0, 0, 0, 0.6),
     0 4px 14px -2px rgba(0, 0, 0, 0.4),
-    inset 0 1px 1px 0 var(--border-light);
+    inset 0 1px 1px var(--border-light);
 
   --shadow-sunken: 
     inset 2px 2px 5px rgba(0, 0, 0, 0.5),
@@ -104,9 +104,11 @@ html, body {
   background-color: var(--bg-canvas);
   color: var(--text-main);
   transition: background-color 0.25s ease, color 0.25s ease;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.25) transparent;
 }
 
-/* Custom Soft Scrollbars */
+/* Custom Webkit Scrollbars */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.25); border-radius: 999px; }
@@ -242,7 +244,7 @@ html, body {
 }
 
 /* ==========================================================================
-   FLOATING TOP TACTILE NAVBAR (NO SIDEBAR - SOLVES HOVER DISMISSALS)
+   FLOATING TOP TACTILE NAVBAR (NO SIDEBAR - GAP BRIDGE FIX)
    ========================================================================== */
 .tactile-navbar {
   height: 64px;
@@ -480,7 +482,7 @@ html, body {
   box-sizing: border-box;
 }
 
-/* TOP STATUS STRIP (JIRA + HANDOVERS) */
+/* Top Status Strip */
 .status-alert-strip {
   display: flex;
   gap: 12px;
@@ -550,7 +552,7 @@ html, body {
 .tactile-btn-subtle.amber { background: var(--accent-amber-bg); color: var(--accent-amber); }
 .tactile-btn-subtle:hover { transform: translateY(-1px); }
 
-/* MAIN BENTO BOX GRID */
+/* Main Bento Box Grid */
 .bento-grid {
   display: grid;
   grid-template-columns: 290px 1fr 330px;
@@ -604,9 +606,7 @@ html, body {
 .card-title { font-size: 13px; font-weight: 800; color: var(--text-main); }
 .card-caption { font-size: 9.5px; font-weight: 600; color: var(--text-dim); }
 
-/* ==========================================================================
-   SUNKEN SEGMENTED TRACK (SOFSTACK SWITCHER LOOK)
-   ========================================================================== */
+/* Sunken Segmented Tab Track */
 .sunken-segment-track {
   display: flex;
   gap: 4px;
@@ -656,7 +656,7 @@ html, body {
   font-size: 10px;
 }
 
-/* COL 1: DIRECTORY DOCK */
+/* Col 1: Operations Dock */
 .dock-links-scroll {
   display: flex;
   flex-direction: column;
@@ -706,7 +706,7 @@ html, body {
 
 .tactile-pill-row i { font-size: 14px; opacity: 0.4; }
 
-/* COL 2: TOP PICKS (STRICT ESPN PRE-MATCH ONLY) */
+/* Col 2: Top Picks */
 .boosts-grid-scroll {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
@@ -801,7 +801,7 @@ html, body {
 
 .tactile-empty-notice i { font-size: 24px; color: var(--accent-blue); }
 
-/* COL 3: DUTIES & GAMES */
+/* Col 3: Duties & Games */
 .duties-scroll-list {
   display: flex;
   flex-direction: column;
