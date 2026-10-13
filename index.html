@@ -68,7 +68,7 @@
       </div>
     </div>
 
-    <!-- CENTER CATEGORIZED NAVIGATION -->
+    <!-- CENTER CATEGORIZED NAVIGATION (ALL 8 CATEGORIES) -->
     <nav class="nav-dock" id="mainNavDock">
       
       <!-- 1. INTERNAL -->
@@ -205,7 +205,7 @@
 
   </header>
 
-  <!-- DASHBOARD 100VH VIEWPORT (3-COLUMN LAYOUT) -->
+  <!-- DASHBOARD 100VH 4-COLUMN VIEWPORT (SPLITS SCREEN PROPORTIONATELY) -->
   <main class="dashboard-viewport">
 
     <!-- ==========================================
@@ -270,29 +270,29 @@
 
     </div>
 
-    <!-- ==========================================
-         COLUMN 2: MARKET BOOSTS & TOP SELECTIONS (FULL HEIGHT)
-         ========================================== -->
-    <div class="layout-col center-col">
+    <!-- =========================================================
+         COLUMN 2 (BOX 1): MARKET BOOSTS & TOP SELECTIONS (COMPACT)
+         ========================================================= -->
+    <div class="layout-col center-left-col">
       <section class="tactile-card full-height">
         <div class="card-header-row">
           <div class="card-title-wrap">
             <div class="squircle-header-icon rose"><i class='bx bxs-flame'></i></div>
             <div>
-              <div class="card-title">Market Boosts &amp; Top Selections</div>
+              <div class="card-title">Market Boosts &amp; Selections</div>
               <div class="card-caption">Pre-Match ESPN Live Lineup</div>
             </div>
           </div>
+        </div>
 
-          <!-- Sunken Segmented Tournament Selector -->
-          <div class="sunken-segment-track scrollable">
-            <button class="segment-tab-btn active" id="btn-boost-eng.1" type="button" onclick="filterTopPicks('eng.1', this)">EPL</button>
-            <button class="segment-tab-btn" id="btn-boost-esp.1" type="button" onclick="filterTopPicks('esp.1', this)">La Liga</button>
-            <button class="segment-tab-btn" id="btn-boost-ger.1" type="button" onclick="filterTopPicks('ger.1', this)">Bundesliga</button>
-            <button class="segment-tab-btn" id="btn-boost-ita.1" type="button" onclick="filterTopPicks('ita.1', this)">Serie A</button>
-            <button class="segment-tab-btn" id="btn-boost-fra.1" type="button" onclick="filterTopPicks('fra.1', this)">Ligue 1</button>
-            <button class="segment-tab-btn" id="btn-boost-uefa.champions" type="button" onclick="filterTopPicks('uefa.champions', this)">UEFA</button>
-          </div>
+        <!-- Sunken Segmented Tournament Selector -->
+        <div class="sunken-segment-track scrollable">
+          <button class="segment-tab-btn active" id="btn-boost-eng.1" type="button" onclick="filterTopPicks('eng.1', this)">EPL</button>
+          <button class="segment-tab-btn" id="btn-boost-esp.1" type="button" onclick="filterTopPicks('esp.1', this)">La Liga</button>
+          <button class="segment-tab-btn" id="btn-boost-ger.1" type="button" onclick="filterTopPicks('ger.1', this)">Bundesliga</button>
+          <button class="segment-tab-btn" id="btn-boost-ita.1" type="button" onclick="filterTopPicks('ita.1', this)">Serie A</button>
+          <button class="segment-tab-btn" id="btn-boost-fra.1" type="button" onclick="filterTopPicks('fra.1', this)">Ligue 1</button>
+          <button class="segment-tab-btn" id="btn-boost-uefa.champions" type="button" onclick="filterTopPicks('uefa.champions', this)">UEFA</button>
         </div>
 
         <!-- COMPACT GRID (LOCKED HEIGHT, NATURAL TOP ALIGNMENT) -->
@@ -305,12 +305,104 @@
       </section>
     </div>
 
+    <!-- =========================================================
+         COLUMN 3 (BOX 2): MATCHDAY RADAR & MONITORING MATRIX
+         ========================================================= -->
+    <div class="layout-col center-right-col">
+      
+      <!-- CARD 3.1: DAILY MATCHDAY RADAR (SPORTS RADAR) -->
+      <section class="tactile-card flex-1">
+        <div class="card-header-row">
+          <div class="card-title-wrap">
+            <div class="squircle-header-icon blue"><i class='bx bx-football'></i></div>
+            <div>
+              <div class="card-title">Matchday Fixture Radar</div>
+              <div class="card-caption">Live Fixture Intelligence</div>
+            </div>
+          </div>
+
+          <!-- Date Navigation -->
+          <div class="sunken-segment-track micro">
+            <button class="segment-tab-btn nav" type="button" onclick="navigateMatchDay(-1)">&larr;</button>
+            <span class="segment-tab-btn label" id="matchDayDisplay">TODAY</span>
+            <button class="segment-tab-btn nav" type="button" onclick="navigateMatchDay(1)">&rarr;</button>
+          </div>
+        </div>
+
+        <div class="games-list-scroll" id="gamesContainer">
+          <div class="tactile-empty-notice">
+            <i class='bx bx-loader-alt bx-spin'></i>
+            <span>Fetching matchday lineup...</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- CARD 3.2: OPERATIONAL MONITORING HUB -->
+      <section class="tactile-card flex-1">
+        <div class="card-header-row">
+          <div class="card-title-wrap">
+            <div class="squircle-header-icon green"><i class='bx bx-line-chart'></i></div>
+            <div>
+              <div class="card-title">Monitoring &amp; Trackers Hub</div>
+              <div class="card-caption">Spreadsheet &amp; CRM Telemetry</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="monitoring-grid-dock">
+          <a class="tactile-monitor-card" href="https://docs.google.com/spreadsheets/d/1qruVq-HZCyM0uDgnYSqFhccXKnMkqJ8z/edit?gid=1305147410#gid=1305147410" target="_blank" rel="noreferrer">
+            <div class="monitor-card-left">
+              <span class="status-indicator green"></span>
+              <span class="monitor-label">Green Tracker</span>
+            </div>
+            <i class='bx bx-export'></i>
+          </a>
+          <a class="tactile-monitor-card" href="https://docs.google.com/spreadsheets/d/1OcaMz_AOUeRsWIVplbnk2XAna62m3IKa/edit?gid=457800468#gid=457800468" target="_blank" rel="noreferrer">
+            <div class="monitor-card-left">
+              <span class="status-indicator red"></span>
+              <span class="monitor-label">Red Tracker</span>
+            </div>
+            <i class='bx bx-export'></i>
+          </a>
+          <a class="tactile-monitor-card" href="https://docs.google.com/spreadsheets/d/1U-Dmc628kHQabzJGoBeEgRus5PiRhgSd/edit?pli=1&amp;gid=1983372695#gid=1983372695" target="_blank" rel="noreferrer">
+            <div class="monitor-card-left">
+              <span class="status-indicator amber"></span>
+              <span class="monitor-label">Orange Tracker</span>
+            </div>
+            <i class='bx bx-export'></i>
+          </a>
+          <a class="tactile-monitor-card" href="https://docs.google.com/spreadsheets/d/11STKO4Xsj0a8iTuUXSCXC-XEE4-7qmF9/edit?pli=1&amp;gid=1701374259#gid=1701374259" target="_blank" rel="noreferrer">
+            <div class="monitor-card-left">
+              <span class="status-indicator blue"></span>
+              <span class="monitor-label">Green CRM</span>
+            </div>
+            <i class='bx bx-export'></i>
+          </a>
+          <a class="tactile-monitor-card" href="https://docs.google.com/spreadsheets/d/1gPks2FdHyOOTiILvn553miz32WeEtOpx/edit?gid=1701374259#gid=1701374259" target="_blank" rel="noreferrer">
+            <div class="monitor-card-left">
+              <span class="status-indicator blue"></span>
+              <span class="monitor-label">Red CRM</span>
+            </div>
+            <i class='bx bx-export'></i>
+          </a>
+          <a class="tactile-monitor-card" href="https://mtsc-its.betradar.com/" target="_blank" rel="noreferrer">
+            <div class="monitor-card-left">
+              <span class="status-indicator purple"></span>
+              <span class="monitor-label">Betradar MTS</span>
+            </div>
+            <i class='bx bx-export'></i>
+          </a>
+        </div>
+      </section>
+
+    </div>
+
     <!-- ==========================================
-         COLUMN 3: HANDOVER / SLA & SHIFT ROSTER
+         COLUMN 4: HANDOVER / SLA & SHIFT ROSTER
          ========================================== -->
     <div class="layout-col right-col">
       
-      <!-- CARD 3.1: SPLIT CARD (SHIFT HANDOVER & SLA ESCALATIONS) -->
+      <!-- CARD 4.1: SPLIT CARD (SHIFT HANDOVER & SLA ESCALATIONS) -->
       <section class="tactile-card split-stacked-card">
         
         <!-- UPPER HALF: SHIFT HANDOVER LOG -->
@@ -343,7 +435,7 @@
 
       </section>
 
-      <!-- CARD 3.2: REAL-TIME SHIFT ALLOCATION -->
+      <!-- CARD 4.2: REAL-TIME SHIFT ALLOCATION -->
       <section class="tactile-card flex-1">
         <div class="card-header-row">
           <div class="card-title-wrap">
