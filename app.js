@@ -1,5 +1,5 @@
 /**
- * Sportsbook Hub - Executive Tactile Dashboard
+ * Sportsbook Hub - Executive Operations Terminal
  * Core Application Engine (app.js)
  */
 
@@ -140,7 +140,7 @@ function setupNavInteraction() {
 }
 
 /* ==========================================================================
-   3. DAY / NIGHT THEME SYSTEM (TACTILE PORCELAIN VS TACTILE OBSIDIAN)
+   3. DAY / NIGHT THEME SYSTEM (PORCELAIN VS OBSIDIAN TACTILE)
    ========================================================================== */
 function toggleTheme() {
   const isDark = document.body.classList.toggle('dark-mode');
@@ -198,7 +198,7 @@ async function fetchWeather() {
 }
 
 /* ==========================================================================
-   6. BRAND DOCK DIRECTORY SWITCHER
+   6. BRAND DIRECTORY TAB SWITCHER
    ========================================================================== */
 const BRAND_LINKS = {
   ibet: [
@@ -293,7 +293,7 @@ function renderDuties(data) {
 
   const dayData = data[activeDayKey];
   if (!dayData) {
-    container.innerHTML = `<div class="tactile-empty-notice"><span>No duty roster entry found.</span></div>`;
+    container.innerHTML = `<div class="tactile-empty-notice"><span>No active schedule recorded.</span></div>`;
     return;
   }
 
@@ -398,6 +398,7 @@ async function fetchTopPicksAndBoosts() {
         const gameState = evt.status?.type?.state;
         const evtDate = new Date(evt.date);
 
+        // Strict pre-kickoff filter: ONLY real upcoming fixtures
         if (gameState !== 'pre' || evtDate <= now) continue;
 
         const comp = evt.competitions?.[0];
@@ -473,30 +474,49 @@ function renderTopPicks() {
     container.innerHTML = `
       <div class="tactile-empty-notice">
         <i class='bx bx-calendar-x'></i>
-        <span>No upcoming scheduled ${leagueName} matches available at this time.</span>
+        <span>No upcoming scheduled ${leagueName} fixtures available at this time.</span>
       </div>
     `;
     return;
   }
 
-  container.innerHTML = filtered.slice(0, 12).map(p => `
+  container.innerHTML = filtered.slice(0, 16).map(p => `
     <div class="tactile-boost-card">
-      <div class="boost-teams-row">
-        <div class="team-badge-wrap">
-          <img src="${p.homeLogo}" alt="${p.homeName}" class="team-logo-small" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
-          <span class="team-abbr">${p.homeName}</span>
+      
+      <!-- Flag vs Flag Background Watermark -->
+      <div class="card-crest-watermark-bg">
+        <img src="${p.homeLogo}" alt="" class="crest-bg">
+        <div class="crest-bg-vs">VS</div>
+        <img src="${p.awayLogo}" alt="" class="crest-bg">
+      </div>
+
+      <!-- Card Top Header -->
+      <div class="boost-card-top-header">
+        <span class="tactile-pill-tag ${p.isHot ? 'rose' : 'blue'}">
+          <i class='bx ${p.isHot ? 'bxs-flame' : 'bxs-star'}'></i> ${p.isHot ? 'HOT BOOST' : 'TOP SELECTION'}
+        </span>
+        <span class="boost-kickoff-time"><i class='bx bx-time-five'></i> ${p.kickOffStr}</span>
+      </div>
+
+      <!-- Teams Display -->
+      <div class="boost-teams-display">
+        <div class="team-side home">
+          <img src="${p.homeLogo}" alt="${p.homeName}" class="team-crest-badge" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+          <span class="team-name-label">${p.homeName}</span>
         </div>
-        <span class="vs-tag">VS</span>
-        <div class="team-badge-wrap">
-          <span class="team-abbr">${p.awayName}</span>
-          <img src="${p.awayLogo}" alt="${p.awayName}" class="team-logo-small" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+        <div class="vs-pill-badge">VS</div>
+        <div class="team-side away">
+          <span class="team-name-label">${p.awayName}</span>
+          <img src="${p.awayLogo}" alt="${p.awayName}" class="team-crest-badge" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
         </div>
       </div>
-      <div class="boost-market-text">${p.market}</div>
-      <div class="boost-card-footer">
-        <span class="tactile-pill-tag ${p.isHot ? 'rose' : 'blue'}">${p.isHot ? 'HOT BOOST' : 'TOP PICK'}</span>
-        <span style="color: var(--text-dim);"><i class='bx bx-time-five'></i> ${p.kickOffStr}</span>
+
+      <!-- Markets Panel -->
+      <div class="boost-market-panel">
+        <div class="market-label-tiny">ENHANCED SELECTION</div>
+        <div class="market-value-text">${p.market}</div>
       </div>
+
     </div>
   `).join('');
 }
@@ -526,10 +546,10 @@ function renderHandovers() {
   if (list.length > 0) {
     const highest = list[0];
     if (mainText) mainText.textContent = `[${highest.brand.toUpperCase()}] ${highest.msg}`;
-    if (badge) badge.textContent = `handover (${list.length})`;
+    if (badge) badge.textContent = `Shift Handover (${list.length})`;
   } else {
     if (mainText) mainText.textContent = "No active urgent handover notes.";
-    if (badge) badge.textContent = "handover";
+    if (badge) badge.textContent = "Shift Handover Log";
   }
 
   if (modalList) {
@@ -549,7 +569,7 @@ function renderHandovers() {
               <span style="color:var(--text-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.msg}</span>
             </div>
             <button type="button" class="tactile-btn-subtle" onclick="deleteHandover(${idx})" style="background:var(--accent-green-bg); color:var(--accent-green);">
-              <i class='bx bx-check'></i> Done
+              <i class='bx bx-check'></i> Complete
             </button>
           </div>
         `;
@@ -604,7 +624,7 @@ function checkJiraSLA() {
       <a href="jira.html" target="_blank" rel="noreferrer" class="jira-ticket-chip">${t.key || 'TICKET'}</a>
     `).join('');
   } else {
-    container.innerHTML = `<span class="alert-subtext">No overdue tickets.</span>`;
+    container.innerHTML = `<span class="alert-subtext">No overdue tickets (&gt;24h).</span>`;
   }
 }
 
