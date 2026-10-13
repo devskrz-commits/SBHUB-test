@@ -504,7 +504,7 @@ function renderTopPicks() {
           <img src="${p.homeLogo}" alt="${p.homeName}" class="team-crest-badge" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
           <span class="team-name-label">${p.homeName}</span>
         </div>
-        <div class="vs-pill-badge">VS</div>
+        <div class="vs-pill-badge">vs</div>
         <div class="team-side away">
           <span class="team-name-label">${p.awayName}</span>
           <img src="${p.awayLogo}" alt="${p.awayName}" class="team-crest-badge" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
@@ -513,7 +513,7 @@ function renderTopPicks() {
 
       <!-- Markets Panel -->
       <div class="boost-market-panel">
-        <div class="market-label-tiny">ENHANCED SELECTION</div>
+        <div class="market-label-tiny">ENHANCED MARKET</div>
         <div class="market-value-text">${p.market}</div>
       </div>
 
@@ -624,7 +624,7 @@ function checkJiraSLA() {
       <a href="jira.html" target="_blank" rel="noreferrer" class="jira-ticket-chip">${t.key || 'TICKET'}</a>
     `).join('');
   } else {
-    container.innerHTML = `<span class="alert-subtext">No overdue tickets (&gt;24h).</span>`;
+    container.innerHTML = `<span class="alert-subtext">No overdue tickets detected.</span>`;
   }
 }
 
