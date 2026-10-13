@@ -67,7 +67,118 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.14); }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent-mint); }
 
 /* ==========================================================================
-   TOP FLOATING NAV (SOLVES HOVER DISMISSAL BUG)
+   AUTHENTICATION OVERLAY & LOGIN CARD
+   ========================================================================== */
+#authOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#authOverlay.unlocked {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 380px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 32px 28px;
+  box-shadow: var(--shadow-matte);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.login-icon { font-size: 34px; color: var(--accent-mint); }
+.login-title { font-size: 20px; font-weight: 800; color: var(--text-main); }
+.login-subtitle { font-size: 11px; color: var(--text-muted); margin-top: -8px; }
+.login-form { display: flex; flex-direction: column; gap: 12px; text-align: left; }
+
+.login-field-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.login-field {
+  width: 100%;
+  background: var(--bg-surface-sub);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--text-main);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.password-wrap .login-field {
+  padding-right: 42px;
+}
+
+.login-field:focus {
+  border-color: var(--accent-mint);
+}
+
+.pass-toggle-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pass-toggle-btn:hover {
+  color: var(--text-main);
+}
+
+.login-error-text {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-rose);
+  min-height: 16px;
+  text-align: center;
+}
+
+.login-btn-submit {
+  background: var(--accent-mint);
+  border: none;
+  color: #0f172a;
+  font-weight: 800;
+  padding: 13px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.login-btn-submit:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   TOP FLOATING NAV (WITH INVISIBLE BRIDGE TO PREVENT DISMISSALS)
    ========================================================================== */
 .top-navbar {
   height: 60px;
@@ -174,14 +285,14 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.14); }
   z-index: 10000;
 }
 
-/* INVISIBLE BRIDGE: Prevents hover from breaking across the gap */
+/* Invisible bridge prevents mouse-leave events across whitespace */
 .mega-dropdown::before {
   content: '';
   position: absolute;
-  top: -12px;
+  top: -14px;
   left: 0;
   right: 0;
-  height: 14px;
+  height: 16px;
   background: transparent;
 }
 
@@ -192,7 +303,6 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.14); }
   gap: 4px;
 }
 
-/* Show on Hover OR when open */
 .nav-item:hover .mega-dropdown,
 .nav-item.open .mega-dropdown {
   opacity: 1;
@@ -284,7 +394,7 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.14); }
   box-sizing: border-box;
 }
 
-/* TOP ALERT STRIP */
+/* Top Alert Strip */
 .status-alert-strip {
   display: flex;
   gap: 14px;
@@ -367,7 +477,7 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.14); }
 }
 .handover-btn-small:hover { opacity: 0.9; }
 
-/* MAIN BENTO GRID */
+/* Main Bento Grid */
 .bento-grid {
   display: grid;
   grid-template-columns: 290px 1fr 320px;
@@ -407,7 +517,7 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.14); }
 }
 .card-title i { font-size: 16px; color: var(--accent-mint); }
 
-/* COL 1: OPERATIONS DOCK */
+/* Col 1: Operations Dock */
 .dock-tabs {
   display: flex;
   gap: 4px;
@@ -482,7 +592,7 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.14); }
 
 .action-pill-row i { font-size: 14px; opacity: 0.4; }
 
-/* COL 2: TOP PICKS (REAL ESPN ONLY) */
+/* Col 2: Top Picks */
 .picks-filter-bar {
   display: flex;
   gap: 6px;
@@ -593,7 +703,7 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.14); }
   width: 100%;
 }
 
-/* COL 3: DUTIES & GAMES */
+/* Col 3: Duties & Games */
 .slot-badge-live {
   font-size: 9.5px;
   font-weight: 800;
@@ -697,65 +807,6 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.14); }
   font-family: 'JetBrains Mono', monospace;
   color: var(--accent-blue);
   font-size: 10px;
-}
-
-/* ==========================================================================
-   MODALS & AUTH
-   ========================================================================== */
-#authOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.95);
-  backdrop-filter: blur(20px);
-  z-index: 999999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#authOverlay.unlocked { display: none; }
-
-.login-box {
-  width: 100%;
-  max-width: 360px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: 24px;
-  padding: 32px;
-  box-shadow: var(--shadow-matte);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.login-icon { font-size: 32px; color: var(--accent-mint); }
-.login-title { font-size: 18px; font-weight: 800; }
-.login-subtitle { font-size: 11px; color: var(--text-muted); margin-top: -8px; }
-.login-form { display: flex; flex-direction: column; gap: 10px; text-align: left; }
-
-.login-field {
-  width: 100%;
-  background: var(--bg-surface-sub);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 12px 14px;
-  font-size: 13px;
-  color: var(--text-main);
-  outline: none;
-}
-
-.login-error-text { font-size: 11px; color: var(--accent-rose); min-height: 14px; text-align: center; }
-
-.login-btn-submit {
-  background: var(--accent-mint);
-  border: none;
-  color: #0f172a;
-  font-weight: 800;
-  padding: 12px;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 13px;
 }
 
 /* Handover Modal */
