@@ -5,26 +5,31 @@
   /* SoftStack / VibeDash Porcelain Light Theme (Default) */
   --bg-canvas: #edf3f9;
   --bg-card: #ffffff;
-  --bg-sunken: #e5ecf5;
-  --bg-sunken-field: #eef3f9;
+  --bg-sunken: #e2eaf4;
+  --bg-sunken-field: #e6eef7;
   --bg-hover: #f5f8fc;
   
   --border-light: rgba(255, 255, 255, 0.95);
-  --border-rim: rgba(210, 222, 236, 0.75);
+  --border-rim: rgba(206, 219, 235, 0.85);
 
   --text-main: #0f172a;
-  --text-muted: #64748b;
-  --text-dim: #94a3b8;
+  --text-muted: #52637a;
+  --text-dim: #8ba0b8;
 
-  /* Tactile Multi-Tier Ambient Shadows with Specular Inset Rim */
+  /* Tactile Multi-Tier Ambient Shadows with Inset Specular Rim */
   --shadow-card: 
     0 20px 42px -10px rgba(18, 38, 77, 0.08),
     0 4px 12px -2px rgba(18, 38, 77, 0.03),
     inset 0 1.5px 1px var(--border-light);
 
+  /* Visibly Pronounced Debossed Sunken Cavity Shadows */
   --shadow-sunken: 
-    inset 2px 2px 6px rgba(18, 38, 77, 0.08),
-    inset -2px -2px 6px rgba(255, 255, 255, 0.95);
+    inset 3px 3px 7px rgba(15, 33, 64, 0.14),
+    inset -2px -2px 6px rgba(255, 255, 255, 1);
+
+  --shadow-sunken-field: 
+    inset 2px 2px 5px rgba(15, 33, 64, 0.12),
+    inset -1px -1px 4px rgba(255, 255, 255, 0.9);
 
   --shadow-btn-primary: 
     0 10px 22px -4px rgba(37, 99, 235, 0.42),
@@ -32,9 +37,9 @@
 
   --shadow-squircle: 
     0 8px 16px -4px rgba(18, 38, 77, 0.1),
-    inset 0 1px 1px rgba(255, 255, 255, 0.75);
+    inset 0 1px 1px rgba(255, 255, 255, 0.8);
 
-  /* Vivid Squircle Accents */
+  /* Vivid Accents */
   --accent-blue: #2563eb;
   --accent-blue-bg: #e0edff;
   --accent-green: #059669;
@@ -54,12 +59,12 @@ body.dark-mode {
   /* Tactile Obsidian Dark Theme */
   --bg-canvas: #0c0f14;
   --bg-card: #151a23;
-  --bg-sunken: #0f131a;
-  --bg-sunken-field: #111620;
+  --bg-sunken: #0c1017;
+  --bg-sunken-field: #0e121a;
   --bg-hover: #1b212c;
 
   --border-light: rgba(255, 255, 255, 0.08);
-  --border-rim: rgba(255, 255, 255, 0.06);
+  --border-rim: rgba(255, 255, 255, 0.07);
 
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
@@ -71,7 +76,11 @@ body.dark-mode {
     inset 0 1px 1px var(--border-light);
 
   --shadow-sunken: 
-    inset 2px 2px 5px rgba(0, 0, 0, 0.5),
+    inset 3px 3px 6px rgba(0, 0, 0, 0.6),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.05);
+
+  --shadow-sunken-field: 
+    inset 2px 2px 5px rgba(0, 0, 0, 0.55),
     inset -1px -1px 3px rgba(255, 255, 255, 0.04);
 
   --shadow-btn-primary: 
@@ -174,6 +183,7 @@ html, body {
   align-items: center;
   background: var(--bg-sunken-field);
   box-shadow: var(--shadow-sunken);
+  border: 1px solid var(--border-rim);
   border-radius: 14px;
   padding: 4px 14px;
   position: relative;
@@ -237,7 +247,7 @@ html, body {
 .tactile-btn-primary.full-width { width: 100%; }
 
 /* ==========================================================================
-   TOP TACTILE NAVBAR (GAP-BRIDGE FOR ACCIDENTAL DISMISSALS)
+   TOP TACTILE NAVBAR
    ========================================================================== */
 .tactile-navbar {
   height: 60px;
@@ -324,7 +334,7 @@ html, body {
   transform: rotate(180deg);
 }
 
-/* Mega Dropdowns with Invisible Hover Bridge */
+/* Mega Dropdowns with Bridge */
 .mega-dropdown {
   position: absolute;
   top: calc(100% + 8px);
@@ -409,6 +419,7 @@ html, body {
   padding: 5px 12px 5px 6px;
   background: var(--bg-sunken);
   box-shadow: var(--shadow-sunken);
+  border: 1px solid var(--border-rim);
   border-radius: 999px;
   font-size: 11.5px;
   font-weight: 700;
@@ -463,33 +474,30 @@ html, body {
 }
 
 /* ==========================================================================
-   100VH 3-COLUMN LAYOUT VIEWPORT (MATCHING USER SKETCH)
+   100VH 3-COLUMN VIEWPORT LAYOUT
    ========================================================================== */
 .dashboard-viewport {
-  height: calc(100vh - 80px);
-  padding: 12px 20px;
+  height: calc(100vh - 78px);
+  padding: 10px 20px 14px 20px;
   display: grid;
-  grid-template-columns: 280px 1fr 340px;
-  gap: 16px;
+  grid-template-columns: 290px minmax(0, 1fr) 340px;
+  gap: 14px;
   box-sizing: border-box;
 }
 
 .layout-col {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   min-height: 0;
   height: 100%;
 }
 
-.layout-col.center-col {
-  height: 100%;
-}
-
+.layout-col.center-col { height: 100%; }
 .flex-1 { flex: 1; min-height: 0; }
 .full-height { height: 100%; }
 
-/* Tactile Card Standard */
+/* Standard Tactile Card */
 .tactile-card {
   background: var(--bg-card);
   border-radius: var(--card-radius);
@@ -548,12 +556,15 @@ html, body {
 
 .card-caption { font-size: 9.5px; font-weight: 600; color: var(--text-dim); }
 
-/* Sunken Segment Track */
+/* ==========================================================================
+   SUNKEN SEGMENT TRACK (PROMINENT SOFT UI DEBOSSED TROUGH)
+   ========================================================================== */
 .sunken-segment-track {
   display: flex;
   gap: 4px;
   background: var(--bg-sunken);
   box-shadow: var(--shadow-sunken);
+  border: 1px solid var(--border-rim);
   padding: 4px;
   border-radius: 999px;
   flex-shrink: 0;
@@ -561,7 +572,7 @@ html, body {
 
 .sunken-segment-track.scrollable {
   overflow-x: auto;
-  max-width: 380px;
+  max-width: 440px;
 }
 
 .segment-tab-btn {
@@ -581,19 +592,11 @@ html, body {
 .segment-tab-btn.active {
   background: var(--bg-card);
   color: var(--accent-blue);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 10px rgba(15, 33, 64, 0.12), inset 0 1px 1px #ffffff;
 }
 
 /* Col 1: Links & Tasks */
-.dock-links-scroll {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  overflow-y: auto;
-  flex: 1;
-  padding-right: 2px;
-}
-
+.dock-links-scroll,
 .quick-tasks-list.scrollable {
   display: flex;
   flex-direction: column;
@@ -627,10 +630,14 @@ html, body {
 
 .tactile-pill-row i { font-size: 14px; opacity: 0.4; }
 
-/* Col 2: Top Picks Grid */
+/* ==========================================================================
+   COL 2: TOP PICKS COMPACT GRID & FLAG-VS-FLAG WATERMARK CARDS
+   ========================================================================== */
 .boosts-grid-scroll {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-auto-rows: max-content; /* PREVENTS VERTICAL STRETCHING */
+  align-content: start;        /* SITS AT TOP NATURALLY */
   gap: 12px;
   overflow-y: auto;
   flex: 1;
@@ -638,55 +645,146 @@ html, body {
 }
 
 .tactile-boost-card {
+  position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border-rim);
   border-radius: var(--sub-radius);
-  box-shadow: 0 4px 12px rgba(18, 38, 77, 0.04);
-  padding: 13px;
+  box-shadow: 0 4px 14px rgba(18, 38, 77, 0.05);
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 10px;
+  overflow: hidden;
   transition: transform 0.15s, box-shadow 0.15s;
+  min-height: 140px;
 }
 
 .tactile-boost-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(18, 38, 77, 0.08);
+  box-shadow: 0 8px 24px rgba(18, 38, 77, 0.09);
 }
 
-.boost-teams-row {
+/* Flag VS Flag Background Watermark */
+.card-crest-watermark-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+  opacity: 0.07;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.crest-bg {
+  width: 95px;
+  height: 95px;
+  object-fit: contain;
+  filter: grayscale(40%);
+}
+
+.crest-bg-vs {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--text-main);
+  opacity: 0.3;
+}
+
+/* Card Content Layering (Sits above Watermark) */
+.boost-card-top-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.boost-kickoff-time {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.boost-teams-display {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  padding: 2px 0;
 }
 
-.team-badge-wrap { display: flex; align-items: center; gap: 6px; }
-.team-logo-small {
+.team-side {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.team-side.away {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.team-crest-badge {
   width: 26px;
   height: 26px;
   border-radius: 50%;
   object-fit: cover;
   box-shadow: var(--shadow-squircle);
+  background: var(--bg-card);
+  flex-shrink: 0;
 }
 
-.team-abbr { font-size: 11.5px; font-weight: 800; color: var(--text-main); }
-.vs-tag { font-size: 9px; font-weight: 800; color: var(--text-dim); }
+.team-name-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.2px;
+}
 
-.boost-market-text {
-  font-size: 11.5px;
+.vs-pill-badge {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--text-dim);
+  background: var(--bg-sunken);
+  box-shadow: var(--shadow-sunken);
+  padding: 2px 7px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.boost-market-panel {
+  position: relative;
+  z-index: 2;
+  background: var(--bg-sunken);
+  box-shadow: var(--shadow-sunken-field);
+  border: 1px solid var(--border-rim);
+  border-radius: 10px;
+  padding: 7px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.market-label-tiny {
+  font-size: 8.5px;
+  font-weight: 800;
+  color: var(--accent-blue);
+  letter-spacing: 0.5px;
+}
+
+.market-value-text {
+  font-size: 11px;
   font-weight: 700;
   color: var(--text-main);
   line-height: 1.35;
-}
-
-.boost-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 9.5px;
-  font-weight: 700;
 }
 
 .tactile-pill-tag {
@@ -704,7 +802,9 @@ html, body {
 .tactile-pill-tag.blue { background: var(--accent-blue-bg); color: var(--accent-blue); }
 .tactile-pill-tag.green { background: var(--accent-green-bg); color: var(--accent-green); }
 
-/* Col 3: Split Card (Handover / Jira) & Duty Roster */
+/* ==========================================================================
+   COL 3: SPLIT STACK & LIVE DUTY ROSTER
+   ========================================================================== */
 .split-stacked-card {
   padding: 14px 16px;
   gap: 12px;
@@ -717,14 +817,18 @@ html, body {
   gap: 8px;
 }
 
+.sunken-box {
+  background: var(--bg-sunken);
+  box-shadow: var(--shadow-sunken);
+  border: 1px solid var(--border-rim);
+  border-radius: 12px;
+}
+
 .handover-text-preview {
   font-size: 11.5px;
   font-weight: 700;
   color: var(--text-main);
-  background: var(--bg-sunken);
-  box-shadow: var(--shadow-sunken);
   padding: 8px 12px;
-  border-radius: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -742,9 +846,159 @@ html, body {
 .jira-ticket-chip {
   background: var(--bg-sunken);
   box-shadow: var(--shadow-sunken);
+  border: 1px solid var(--border-rim);
   color: var(--text-main);
   padding: 4px 8px;
   border-radius: 8px;
   font-size: 10.5px;
   font-weight: 800;
-  text-
+  text-decoration: none;
+}
+
+.tactile-btn-subtle {
+  border: none;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 10.5px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  box-shadow: var(--shadow-squircle);
+  transition: transform 0.15s;
+}
+
+.tactile-btn-subtle.amber { background: var(--accent-amber-bg); color: var(--accent-amber); }
+.tactile-btn-subtle.rose { background: var(--accent-rose-bg); color: var(--accent-rose); }
+.tactile-btn-subtle:hover { transform: translateY(-1px); }
+
+.tactile-inset-divider {
+  height: 2px;
+  background: var(--bg-sunken);
+  box-shadow: var(--shadow-sunken);
+  border-radius: 999px;
+  margin: 2px 0;
+}
+
+.duties-scroll-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 2px;
+}
+
+.duty-user-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-rim);
+  border-radius: var(--sub-radius);
+  box-shadow: 0 2px 6px rgba(18, 38, 77, 0.03);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.duty-user-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.duty-task-row {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.duty-task-row i { color: var(--accent-green); font-size: 13px; }
+
+/* Empty state notice */
+.tactile-empty-notice {
+  text-align: center;
+  padding: 30px 15px;
+  color: var(--text-dim);
+  font-size: 11.5px;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.tactile-empty-notice i { font-size: 24px; color: var(--accent-blue); }
+
+/* ==========================================================================
+   HANDOVER MODAL
+   ========================================================================== */
+.tactile-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(12px);
+  z-index: 100000;
+  align-items: center;
+  justify-content: center;
+}
+
+.tactile-modal-overlay.show { display: flex; }
+
+.tactile-modal-card {
+  width: 100%;
+  max-width: 580px;
+  background: var(--bg-card);
+  border-radius: var(--card-radius);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-rim);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-header-row { display: flex; justify-content: space-between; align-items: center; }
+.handover-input-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.sunken-field {
+  background: var(--bg-sunken-field);
+  box-shadow: var(--shadow-sunken-field);
+  border: 1px solid var(--border-rim);
+}
+
+.tactile-select, .tactile-field {
+  color: var(--text-main);
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  outline: none;
+}
+.tactile-field.short { width: 130px; }
+.tactile-field.full { flex: 1; min-width: 180px; }
+
+.modal-sub-label { font-size: 10px; font-weight: 800; color: var(--accent-amber); letter-spacing: 0.5px; }
+.modal-handovers-scroll { max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+
+.handover-modal-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-rim);
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 11.5px;
+  gap: 8px;
+  box-shadow: 0 2px 6px rgba(18, 38, 77, 0.03);
+}
