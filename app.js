@@ -1,135 +1,636 @@
-const playerStore = {
-  name: "Marcus Huntington",
-  team: "Liberty Deer",
-  wins: 84,
-  losses: 18,
-  winRate: "82.3%",
-  height: "2.06 m",
-  weight: "113 kg",
-  age: "40 years",
-  country: "🇺🇸 USA",
-  gamesStats: [
-    { date: "04 Nov 2025", matchLogo: "https://a.espncdn.com/i/teamlogos/nba/500/bos.png", matchName: "vs Celtics", score: "106-112", result: "Win", pts: 17.7, reb: 5.0, ast: 8.7, fg: 52 },
-    { date: "02 Nov 2025", matchLogo: "https://a.espncdn.com/i/teamlogos/nba/500/lal.png", matchName: "vs Lakers", score: "102-97", result: "Win", pts: 15.9, reb: 5.7, ast: 8.0, fg: 60 },
-    { date: "01 Nov 2025", matchLogo: "https://a.espncdn.com/i/teamlogos/nba/500/gs.png", matchName: "vs Warriors", score: "82-94", result: "Loss", pts: 14.8, reb: 4.2, ast: 9.1, fg: 51 },
-    { date: "27 Oct 2025", matchLogo: "https://a.espncdn.com/i/teamlogos/nba/500/mia.png", matchName: "vs Heat", score: "107-90", result: "Win", pts: 16.5, reb: 3.9, ast: 7.2, fg: 45 }
-  ],
-  upcomingMatches: [
-    {
-      time: "July 22, 03:35 PM",
-      homeTeam: "Liberty Deer",
-      homeLogo: "https://a.espncdn.com/i/teamlogos/nba/500/mil.png",
-      awayTeam: "All Stars",
-      awayLogo: "https://a.espncdn.com/i/teamlogos/nba/500/atl.png",
-      homeScore: 104,
-      awayScore: 112
-    },
-    {
-      time: "July 22, 04:10 PM",
-      homeTeam: "Liberty Deer",
-      homeLogo: "https://a.espncdn.com/i/teamlogos/nba/500/mil.png",
-      awayTeam: "Unity Titans",
-      awayLogo: "https://a.espncdn.com/i/teamlogos/nba/500/bkn.png",
-      homeScore: 109,
-      awayScore: 98
+/**
+ * Sportsbook Hub - Executive Operations Dashboard
+ * Core Application Engine
+ */
+
+const DEFAULT_USER = "sportsbook2026";
+const DEFAULT_PASS = "sb2026";
+
+/* ==========================================================================
+   1. AUTHENTICATION & SESSION MANAGEMENT
+   ========================================================================== */
+function handleLogin(e) {
+  e.preventDefault();
+  const u = document.getElementById('userInput')?.value.trim();
+  const p = document.getElementById('passInput')?.value;
+
+  if ((u === DEFAULT_USER || u === "sportsbookhub") && p === DEFAULT_PASS) {
+    localStorage.setItem('sbhub_auth', 'true');
+    document.getElementById('authOverlay')?.classList.add('unlocked');
+  } else {
+    const errorEl = document.getElementById('loginError');
+    if (errorEl) errorEl.textContent = "ACCESS DENIED: Invalid Security Key";
+  }
+}
+
+function handleLogout() {
+  localStorage.removeItem('sbhub_auth');
+  sessionStorage.removeItem('sbhub_auth');
+  const authEl = document.getElementById('authOverlay');
+  if (authEl) authEl.classList.remove('unlocked');
+  const passEl = document.getElementById('passInput');
+  if (passEl) passEl.value = '';
+}
+
+function checkInitialAuth() {
+  if (localStorage.getItem('sbhub_auth') === 'true' || sessionStorage.getItem('sbhub_auth') === 'true') {
+    document.getElementById('authOverlay')?.classList.add('unlocked');
+  }
+}
+
+/* ==========================================================================
+   2. TOP NAV MENU LOCK & CLICK HANDLING
+   ========================================================================== */
+function setupNavInteraction() {
+  const navDock = document.getElementById('mainNavDock');
+  if (!navDock) return;
+
+  // Toggle on click, so user can lock open and select with ease
+  navDock.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const parent = btn.closest('.nav-item');
+      const wasOpen = parent?.classList.contains('open');
+
+      // Close all other nav items
+      navDock.querySelectorAll('.nav-item').forEach(item => item.classList.remove('open'));
+
+      if (!wasOpen && parent) {
+        parent.classList.add('open');
+      }
+    });
+  });
+
+  // Close menus when clicking anywhere outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav-item')) {
+      navDock.querySelectorAll('.nav-item').forEach(item => item.classList.remove('open'));
     }
+  });
+
+  // Escape key closes menus
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      navDock.querySelectorAll('.nav-item').forEach(item => item.classList.remove('open'));
+      closeHandoverModal();
+    }
+  });
+}
+
+/* ==========================================================================
+   3. DAY / NIGHT THEME SWITCHER
+   ========================================================================== */
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-mode');
+  const icon = document.getElementById('themeIcon');
+  if (isLight) {
+    if (icon) icon.className = 'bx bx-moon';
+    localStorage.setItem('sbhub_theme_mode', 'light');
+  } else {
+    if (icon) icon.className = 'bx bx-sun';
+    localStorage.setItem('sbhub_theme_mode', 'dark');
+  }
+}
+
+function restoreSavedTheme() {
+  if (localStorage.getItem('sbhub_theme_mode') === 'light') {
+    document.body.classList.add('light-mode');
+    const icon = document.getElementById('themeIcon');
+    if (icon) icon.className = 'bx bx-moon';
+  }
+}
+
+/* ==========================================================================
+   4. LIVE WORLD CLOCKS (GMT+8)
+   ========================================================================== */
+function updateClocks() {
+  const now = new Date();
+  const gmt8 = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Singapore',
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+  }).format(now);
+  const clockEl = document.getElementById('clockGmt8');
+  if (clockEl) clockEl.textContent = gmt8;
+}
+
+/* ==========================================================================
+   5. REAL-TIME MANILA WEATHER (OPEN-METEO)
+   ========================================================================== */
+async function fetchWeather() {
+  try {
+    const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current_weather=true');
+    if (!res.ok) throw new Error('Weather request failed');
+    const data = await res.json();
+    if (data?.current_weather) {
+      const tempEl = document.getElementById('weatherTemp');
+      if (tempEl) tempEl.textContent = `${Math.round(data.current_weather.temperature)}°C`;
+    }
+  } catch (e) {
+    const tempEl = document.getElementById('weatherTemp');
+    if (tempEl) tempEl.textContent = '31°C';
+  }
+}
+
+/* ==========================================================================
+   6. BRAND DOCK DIRECTORY SWITCHER
+   ========================================================================== */
+const BRAND_LINKS = {
+  ibet: [
+    { name: "IBET ADMIN", url: "https://mga-betbook.center/ibet/bets" },
+    { name: "IBET BETSSON", url: "https://b2b.betssonbusiness.com/" },
+    { name: "BET CONSTRUCT", url: "https://backoffice.betconstruct.com/" }
+  ],
+  edge: [
+    { name: "KT SBX", url: "https://p2ibet.sbx.bet/bets" },
+    { name: "KT PROJECTS", url: "https://kickertech.atlassian.net/jira/projects" },
+    { name: "EDGE ADMIN", url: "https://admin.edgegaming.io/admin/qbet/homepage" },
+    { name: "SERVICE DESK", url: "https://kickertech.atlassian.net/servicedesk/customer/user/login?destination=portals" }
+  ],
+  pubs: [
+    { name: "GO GAMING", url: "https://gg-backoffice-eu.gogaming.cc/en-US/member/list" }
   ]
 };
 
-function renderDashboard(data) {
-  if (!data) return;
+function switchBrandTab(brandKey, el) {
+  if (el) {
+    document.querySelectorAll('.dock-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+  const container = document.getElementById('brandLinksContainer');
+  if (!container) return;
+  container.innerHTML = '';
 
-  const nameEl = document.getElementById("playerName");
-  if (nameEl) nameEl.innerHTML = (data.name || "Marcus Huntington").replace(" ", "<br>");
-
-  const teamEl = document.getElementById("playerTeam");
-  if (teamEl) teamEl.textContent = data.team || "Liberty Deer";
-
-  const winsEl = document.getElementById("statWins");
-  if (winsEl) winsEl.textContent = data.wins ?? 84;
-
-  const lossesEl = document.getElementById("statLosses");
-  if (lossesEl) lossesEl.textContent = data.losses ?? 18;
-
-  const winRateEl = document.getElementById("statWinRate");
-  if (winRateEl) winRateEl.textContent = data.winRate ?? "82.3%";
-
-  renderTable(data.gamesStats);
-  renderMatches(data.upcomingMatches);
+  (BRAND_LINKS[brandKey] || []).forEach(item => {
+    const a = document.createElement('a');
+    a.className = 'action-pill-row';
+    a.href = item.url;
+    a.target = '_blank';
+    a.rel = 'noreferrer';
+    a.innerHTML = `<span>${item.name}</span><i class='bx bx-right-arrow-alt'></i>`;
+    container.appendChild(a);
+  });
 }
 
-function renderTable(list) {
-  const tbody = document.getElementById("gamesTableBody");
-  if (!tbody || !Array.isArray(list)) return;
+/* ==========================================================================
+   7. FIREBASE LIVE DUTY ROSTER
+   ========================================================================== */
+let rosterDb = null;
+try {
+  const firebaseConfig = {
+    apiKey: "AIzaSyCaEclzLI284lWCFk-vXbLSXa_bEZsXbOg",
+    authDomain: "test-daily-task--sb.firebaseapp.com",
+    databaseURL: "https://test-daily-task--sb-default-rtdb.firebaseio.com",
+    projectId: "test-daily-task--sb"
+  };
+  if (typeof firebase !== 'undefined') {
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    rosterDb = firebase.database();
+  }
+} catch (e) {
+  console.warn("Firebase Init Offline:", e);
+}
 
-  tbody.innerHTML = list.map(g => {
-    const isWin = g.result.toLowerCase() === "win";
-    return `
-      <tr>
-        <td>${g.date}</td>
-        <td>
-          <div class="match-cell-flex">
-            <img src="${g.matchLogo}" class="match-crest-icon" alt="crest">
-            <span>${g.matchName}</span>
-          </div>
-        </td>
-        <td>${g.score}</td>
-        <td class="${isWin ? 'text-win' : 'text-loss'}">${g.result}</td>
-        <td>${g.pts}</td>
-        <td>${g.reb}</td>
-        <td>${g.ast}</td>
-        <td>${g.fg}</td>
-      </tr>
+function getCurrentSlotInfo() {
+  const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
+  const h = now.getHours();
+  if (h >= 6 && h < 9)   return { id: "slot_6_9", label: "7:00 - 9:00" };
+  if (h >= 9 && h < 12)  return { id: "slot_9_12", label: "9:00 - 12:00" };
+  if (h >= 12 && h < 15) return { id: "slot_12_15", label: "12:00 - 15:00" };
+  if (h >= 15 && h < 18) return { id: "slot_15_18", label: "15:00 - 18:00" };
+  if (h >= 18 && h < 21) return { id: "slot_18_21", label: "18:00 - 21:00" };
+  return { id: "slot_21_0", label: "21:00 - 00:00" };
+}
+
+function listenToDutyRoster() {
+  if (!rosterDb) return;
+  rosterDb.ref('roster_data').on('value', snap => {
+    renderDuties(snap.val());
+  });
+}
+
+function renderDuties(data) {
+  const container = document.getElementById('dutyListContainer');
+  if (!data || !container) return;
+
+  const slot = getCurrentSlotInfo();
+  const slotBadge = document.getElementById('currentSlotTimeTag');
+  if (slotBadge) slotBadge.textContent = slot.label;
+
+  const nowManila = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
+  const todayIso = `${nowManila.getFullYear()}-${String(nowManila.getMonth()+1).padStart(2,'0')}-${String(nowManila.getDate()).padStart(2,'0')}`;
+
+  let activeDayKey = Object.keys(data).find(k => k === todayIso || data[k]?.isoDate === todayIso);
+  if (!activeDayKey) {
+    const keys = Object.keys(data).filter(k => k !== 'archives').sort().reverse();
+    activeDayKey = keys[0];
+  }
+
+  const dayData = data[activeDayKey];
+  if (!dayData) {
+    container.innerHTML = `<div class="empty-state-notice">No duty roster entry found.</div>`;
+    return;
+  }
+
+  const members = [{ id:'ann', name:'ANN' }, { id:'dave', name:'DAVE' }, { id:'ken', name:'KEN' }, { id:'kriztel', name:'KRIZTEL' }];
+  let html = '';
+  let activeCount = 0;
+
+  members.forEach(m => {
+    const mGrid = dayData.grid ? dayData.grid[m.id] : null;
+    const shiftId = mGrid?.shift || 'shift-7-16';
+    const isRest = ['shift-rd','shift-vl','shift-sl'].includes(shiftId);
+    if (!isRest) activeCount++;
+
+    let rawTasks = mGrid?.slots ? mGrid.slots[slot.id] || [] : [];
+    const taskText = rawTasks.length ? (typeof rawTasks[0] === 'string' ? rawTasks[0] : rawTasks[0]?.text || '') : 'Active duty';
+
+    html += `
+      <div class="duty-user-card">
+        <div class="duty-user-top">
+          <span>${m.name}</span>
+          <span class="duty-shift-pill">${isRest ? 'OFF' : shiftId.replace('shift-','')}</span>
+        </div>
+        <div class="duty-task-row">
+          <i class='bx bx-check-circle' style="color: ${isRest ? 'var(--text-dim)' : 'var(--accent-mint)'}"></i>
+          <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${isRest ? 'Rest Day' : taskText}</span>
+        </div>
+      </div>
     `;
-  }).join('');
+  });
+
+  container.innerHTML = html;
+  const traderDisplay = document.getElementById('activeTraderDisplay');
+  if (traderDisplay) traderDisplay.textContent = `${activeCount} Working`;
 }
 
-function renderMatches(list) {
-  const container = document.getElementById("sidebarMatchCards");
-  if (!container || !Array.isArray(list)) return;
+/* ==========================================================================
+   8. REAL TOP PICKS / HOT BOOSTS (STRICT ESPN PRE-MATCH ONLY - NO MOCKS)
+   ========================================================================== */
+const PRIORITY_LEAGUES = [
+  { key: "eng.1", code: "eng.1", name: "Premier League" },
+  { key: "esp.1", code: "esp.1", name: "La Liga" },
+  { key: "ger.1", code: "ger.1", name: "Bundesliga" },
+  { key: "ita.1", code: "ita.1", name: "Serie A" },
+  { key: "fra.1", code: "fra.1", name: "Ligue 1" },
+  { key: "uefa.champions", code: "uefa.champions", name: "UEFA Champions League" }
+];
 
-  container.innerHTML = list.map(m => `
-    <div class="match-card-item">
-      <div class="card-time-header">${m.time}</div>
-      <div class="card-teams-row">
-        <div class="team-unit">
-          <img src="${m.homeLogo}" alt="${m.homeTeam}">
-          <span>${m.homeTeam}</span>
-          <div class="badge-round-res badge-w">W</div>
-        </div>
+let cachedPicks = [];
+let activeBoostFilter = 'eng.1';
 
-        <div class="score-center-block">
-          <span>${m.homeScore}</span>
-          <span>-</span>
-          <span>${m.awayScore}</span>
-        </div>
+/**
+ * Returns dynamic dates for the next 5 days formatted as YYYYMMDD
+ */
+function getUpcomingQueryDates() {
+  const dates = [];
+  const now = new Date();
+  for (let i = 0; i < 5; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() + i);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    dates.push(`${y}${m}${day}`);
+  }
+  return dates;
+}
 
-        <div class="team-unit">
-          <img src="${m.awayLogo}" alt="${m.awayTeam}">
-          <span>${m.awayTeam}</span>
-          <div class="badge-round-res badge-l">L</div>
+function generateScriptedMarket(homeName, awayName, index) {
+  const templates = [
+    `${homeName} to Win + Over 2.5 Goals`,
+    `${homeName} vs ${awayName} - Both Teams to Score`,
+    `${homeName} to Win + Have 2+ Goals`,
+    `${awayName} to Win or Draw + Over 1.5 Goals`,
+    `${homeName} vs ${awayName} - Both Teams to Score + Over 2.5 Goals`,
+    `${homeName} to Win First Half & Over 1.5 Goals`
+  ];
+  return templates[index % templates.length];
+}
+
+async function fetchTopPicksAndBoosts() {
+  const container = document.getElementById('topPicksContainer');
+  if (!container) return;
+
+  try {
+    const now = new Date();
+    const targetDates = getUpcomingQueryDates();
+    const seenMatchKeys = new Set();
+    const fetchPromises = [];
+
+    for (const league of PRIORITY_LEAGUES) {
+      for (const dateStr of targetDates) {
+        fetchPromises.push(
+          fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard?dates=${dateStr}&limit=100`)
+            .then(res => res.ok ? res.json() : null)
+            .then(data => ({ league, data }))
+            .catch(() => null)
+        );
+      }
+    }
+
+    const results = await Promise.all(fetchPromises);
+    const realPreMatchPicks = [];
+
+    for (const item of results) {
+      if (!item?.data?.events) continue;
+      const { league, data } = item;
+
+      for (const evt of data.events) {
+        const gameState = evt.status?.type?.state;
+        const evtDate = new Date(evt.date);
+
+        // Strict pre-kickoff filter: ONLY upcoming matches, NO live or finished games
+        if (gameState !== 'pre' || evtDate <= now) continue;
+
+        const comp = evt.competitions?.[0];
+        if (!comp) continue;
+
+        const home = comp.competitors?.find(c => c.homeAway === 'home');
+        const away = comp.competitors?.find(c => c.homeAway === 'away');
+
+        if (home && away) {
+          const homeName = home.team?.shortDisplayName || home.team?.displayName || "Home";
+          const awayName = away.team?.shortDisplayName || away.team?.displayName || "Away";
+
+          const matchKey = evt.id || `${homeName}-${awayName}-${evt.date}`;
+          if (seenMatchKeys.has(matchKey)) continue;
+          seenMatchKeys.add(matchKey);
+
+          const homeLogo = home.team?.logo || home.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
+          const awayLogo = away.team?.logo || away.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
+
+          const kickOffStr = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Manila',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }).format(evtDate).toUpperCase();
+
+          realPreMatchPicks.push({
+            leagueKey: league.key,
+            homeName,
+            awayName,
+            homeLogo,
+            awayLogo,
+            kickOffTimestamp: evtDate.getTime(),
+            kickOffStr,
+            market: generateScriptedMarket(homeName, awayName, realPreMatchPicks.length),
+            isHot: realPreMatchPicks.length % 2 === 0
+          });
+        }
+      }
+    }
+
+    // Sort chronologically by kickoff timestamp
+    realPreMatchPicks.sort((a, b) => a.kickOffTimestamp - b.kickOffTimestamp);
+    cachedPicks = realPreMatchPicks;
+    renderTopPicks();
+
+  } catch (err) {
+    console.error("Top Picks Fetch Error:", err);
+    renderTopPicks();
+  }
+}
+
+function filterTopPicks(leagueKey, el) {
+  activeBoostFilter = leagueKey;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderTopPicks();
+}
+
+function renderTopPicks() {
+  const container = document.getElementById('topPicksContainer');
+  if (!container) return;
+
+  const now = Date.now();
+  // Filter active pre-match games for the selected league
+  const filtered = cachedPicks.filter(p => p.leagueKey === activeBoostFilter && p.kickOffTimestamp > now);
+
+  if (filtered.length === 0) {
+    const lg = PRIORITY_LEAGUES.find(l => l.key === activeBoostFilter);
+    const leagueName = lg ? lg.name : activeBoostFilter.toUpperCase();
+    container.innerHTML = `
+      <div class="empty-state-notice">
+        <i class='bx bx-calendar-x' style="font-size: 26px; color: var(--text-dim);"></i>
+        <span>No upcoming scheduled ${leagueName} matches available at this time.</span>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.slice(0, 12).map(p => `
+    <div class="matte-boost-card">
+      <div class="boost-top-teams">
+        <div class="team-badge-wrap">
+          <img src="${p.homeLogo}" alt="${p.homeName}" class="team-logo-small" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+          <span class="team-abbr">${p.homeName}</span>
         </div>
+        <span class="vs-tag">VS</span>
+        <div class="team-badge-wrap">
+          <span class="team-abbr">${p.awayName}</span>
+          <img src="${p.awayLogo}" alt="${p.awayName}" class="team-logo-small" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+        </div>
+      </div>
+      <div class="boost-market-text">${p.market}</div>
+      <div class="boost-bottom-row">
+        <span class="${p.isHot ? 'tag-hot' : 'tag-pick'}">${p.isHot ? 'HOT BOOST' : 'TOP PICK'}</span>
+        <span style="color: var(--text-dim);"><i class='bx bx-time-five'></i> ${p.kickOffStr}</span>
       </div>
     </div>
   `).join('');
 }
 
-function initSearch() {
-  const input = document.getElementById("globalSearchInput");
-  if (!input) return;
+/* ==========================================================================
+   9. TOP GAMES DAILY MATCHDAY
+   ========================================================================== */
+let selectedGameOffset = 0;
 
-  input.addEventListener("input", (e) => {
-    const query = e.target.value.toLowerCase().trim();
-    const filtered = playerStore.gamesStats.filter(g =>
-      g.matchName.toLowerCase().includes(query) ||
-      g.result.toLowerCase().includes(query) ||
-      g.date.toLowerCase().includes(query)
-    );
-    renderTable(filtered);
-  });
+async function fetchMatchDayGames() {
+  const container = document.getElementById('gamesContainer');
+  if (!container) return;
+
+  const targetDate = new Date();
+  targetDate.setDate(targetDate.getDate() + selectedGameOffset);
+
+  const year = targetDate.getFullYear();
+  const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+  const day = String(targetDate.getDate()).padStart(2, '0');
+  const queryStr = `${year}${month}${day}`;
+
+  const labelEl = document.getElementById('matchDayDisplay');
+  if (labelEl) {
+    labelEl.textContent = selectedGameOffset === 0 ? 'TODAY' : `DAY +${selectedGameOffset}`;
+  }
+
+  try {
+    const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard?dates=${queryStr}`);
+    if (!res.ok) throw new Error('Games fetch failed');
+    const data = await res.json();
+    const events = data?.events || [];
+
+    if (events.length === 0) {
+      container.innerHTML = `<div class="empty-state-notice"><span>No fixtures scheduled for this matchday.</span></div>`;
+      return;
+    }
+
+    container.innerHTML = events.slice(0, 6).map(evt => {
+      const comp = evt.competitions?.[0];
+      const h = comp?.competitors?.find(c => c.homeAway === 'home');
+      const a = comp?.competitors?.find(c => c.homeAway === 'away');
+      return `
+        <div class="game-match-row">
+          <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+            ${h?.team?.shortDisplayName || 'Home'} vs ${a?.team?.shortDisplayName || 'Away'}
+          </span>
+          <span class="game-time-tag">${evt.status?.type?.detail || 'PRE'}</span>
+        </div>
+      `;
+    }).join('');
+
+  } catch (e) {
+    container.innerHTML = `<div class="empty-state-notice"><span>Matchday fixture feed offline.</span></div>`;
+  }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  renderDashboard(playerStore);
-  initSearch();
-});
+function navigateMatchDay(dir) {
+  selectedGameOffset += dir;
+  if (selectedGameOffset < 0) selectedGameOffset = 5;
+  if (selectedGameOffset > 5) selectedGameOffset = 0;
+  fetchMatchDayGames();
+}
+
+/* ==========================================================================
+   10. URGENT HANDOVER & JIRA SLA ENGINE
+   ========================================================================== */
+const HANDOVER_KEY = 'sbhub_urgent_handovers';
+const handoverChannel = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel('handover_sync_channel') : null;
+
+function getHandovers() {
+  return JSON.parse(localStorage.getItem(HANDOVER_KEY) || '[]');
+}
+
+function saveHandovers(list) {
+  localStorage.setItem(HANDOVER_KEY, JSON.stringify(list));
+  if (handoverChannel) handoverChannel.postMessage('sync');
+  renderHandovers();
+}
+
+function renderHandovers() {
+  const list = getHandovers();
+  const mainText = document.getElementById('handoverMainText');
+  const modalList = document.getElementById('handoverModalItems');
+  const badge = document.getElementById('handoverAlertBadge');
+
+  if (list.length > 0) {
+    const highest = list[0];
+    if (mainText) mainText.textContent = `[${highest.brand.toUpperCase()}] ${highest.msg}`;
+    if (badge) badge.textContent = `HANDOVERS (${list.length})`;
+  } else {
+    if (mainText) mainText.textContent = "No active urgent handover notes.";
+    if (badge) badge.textContent = "HANDOVERS";
+  }
+
+  if (modalList) {
+    if (list.length === 0) {
+      modalList.innerHTML = `<div class="empty-state-notice">No active handovers. Post one above!</div>`;
+    } else {
+      modalList.innerHTML = list.map((item, idx) => {
+        let tagClass = 'normal';
+        if (item.priority === 'URGENT/CRITICAL') tagClass = 'urgent';
+        else if (item.priority === 'Need Attention') tagClass = 'attention';
+
+        return `
+          <div class="handover-modal-row">
+            <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:0;">
+              <span class="priority-tag ${tagClass}">${item.priority || 'NOTE'}</span>
+              <span style="font-weight:800; color:var(--text-main);">[${item.brand.toUpperCase()}]</span>
+              <span style="color:var(--text-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.msg}</span>
+            </div>
+            <button type="button" class="handover-btn-small" onclick="deleteHandover(${idx})" style="background:var(--accent-mint);">Done</button>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+}
+
+function openHandoverModal() {
+  document.getElementById('handoverModal')?.classList.add('show');
+  renderHandovers();
+}
+
+function closeHandoverModal() {
+  document.getElementById('handoverModal')?.classList.remove('show');
+}
+
+function addHandover(e) {
+  e.preventDefault();
+  const p = document.getElementById('handoverPriority')?.value || 'URGENT/CRITICAL';
+  const b = document.getElementById('handoverBrand')?.value.trim();
+  const m = document.getElementById('handoverMsg')?.value.trim();
+
+  if (!b || !m) return;
+
+  const list = getHandovers();
+  list.unshift({ priority: p, brand: b, msg: m, time: new Date().toISOString() });
+  saveHandovers(list);
+
+  document.getElementById('handoverBrand').value = '';
+  document.getElementById('handoverMsg').value = '';
+}
+
+function deleteHandover(idx) {
+  const list = getHandovers();
+  if (idx >= 0 && idx < list.length) {
+    list.splice(idx, 1);
+    saveHandovers(list);
+  }
+}
+
+if (handoverChannel) handoverChannel.onmessage = renderHandovers;
+window.addEventListener('storage', renderHandovers);
+
+// Check Jira SLA Mock
+function checkJiraSLA() {
+  const tickets = JSON.parse(localStorage.getItem('jira_tracked_tickets') || '[]');
+  const container = document.getElementById('jiraPillsContainer');
+  if (!container) return;
+
+  if (tickets.length > 0) {
+    container.innerHTML = tickets.slice(0, 3).map(t => `
+      <a href="jira.html" target="_blank" rel="noreferrer" class="jira-ticket-chip">${t.key || 'TICKET'}</a>
+    `).join('');
+  } else {
+    container.innerHTML = `<span class="no-alert-subtext">No overdue tickets detected.</span>`;
+  }
+}
+
+/* ==========================================================================
+   INITIALIZATION
+   ========================================================================== */
+function initDashboard() {
+  checkInitialAuth();
+  restoreSavedTheme();
+  setupNavInteraction();
+  switchBrandTab('ibet');
+
+  // Clocks & Weather
+  updateClocks();
+  setInterval(updateClocks, 1000);
+  fetchWeather();
+  setInterval(fetchWeather, 15 * 60 * 1000);
+
+  // Data Listeners & Fetchers
+  listenToDutyRoster();
+  fetchTopPicksAndBoosts();
+  setInterval(fetchTopPicksAndBoosts, 3 * 60 * 1000); // 3-minute poll
+
+  fetchMatchDayGames();
+  renderHandovers();
+  checkJiraSLA();
+}
+
+document.addEventListener('DOMContentLoaded', initDashboard);
