@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sportsbook Hub - Executive Tactile Dashboard</title>
+  <title>Sportsbook Hub - Executive Operations Terminal</title>
 
   <!-- Google Fonts & Boxicons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,25 +30,25 @@
         <i class='bx bxs-shield-quarter'></i>
       </div>
       <div class="login-title">Sportsbook Hub</div>
-      <div class="login-subtitle">Tactile Operations Terminal</div>
+      <div class="login-subtitle">Executive Operations Terminal</div>
       
       <form id="loginForm" class="login-form" onsubmit="handleLogin(event); return false;">
         <div class="input-sunken-track">
           <i class='bx bx-user input-icon'></i>
-          <input type="text" id="userInput" class="tactile-input" value="sportsbook2026" required placeholder="Username" autocomplete="username">
+          <input type="text" id="userInput" class="tactile-input" value="sportsbook2026" required placeholder="Operator Identifier" autocomplete="username">
         </div>
 
         <div class="input-sunken-track password-track">
           <i class='bx bx-key input-icon'></i>
           <input type="password" id="passInput" class="tactile-input" placeholder="Security Key (sb2026)" required autocomplete="current-password" onkeydown="if(event.key==='Enter'){handleLogin(event);}">
-          <button type="button" class="pass-toggle-btn" id="togglePassBtn" onclick="togglePasswordVisibility()" title="Toggle visibility">
+          <button type="button" class="pass-toggle-btn" id="togglePassBtn" onclick="togglePasswordVisibility()" title="Toggle key visibility">
             <i class='bx bx-show' id="togglePassIcon"></i>
           </button>
         </div>
 
         <div id="loginError" class="login-error-text"></div>
         <button type="button" id="loginSubmitBtn" onclick="handleLogin(event)" class="tactile-btn-primary full-width">
-          ACCESS DASHBOARD <i class='bx bx-right-arrow-alt'></i>
+          ACCESS TERMINAL <i class='bx bx-right-arrow-alt'></i>
         </button>
       </form>
     </div>
@@ -64,21 +64,21 @@
       </div>
       <div class="brand-text">
         <span class="brand-title">Sportsbook Hub</span>
-        <span class="brand-sub">TACTILE CORE</span>
+        <span class="brand-sub">OPERATIONS DESK</span>
       </div>
     </div>
 
-    <!-- CENTER CATEGORIZED NAVIGATION (ALL 8 CATEGORIES & 40+ LINKS) -->
+    <!-- CENTER CATEGORIZED NAVIGATION -->
     <nav class="nav-dock" id="mainNavDock">
       
       <!-- 1. INTERNAL -->
       <div class="nav-item">
         <button class="nav-btn" type="button"><i class='bx bx-home-alt'></i> Internal <i class='bx bx-chevron-down chevron'></i></button>
         <div class="mega-dropdown">
-          <a class="drop-link" href="duties.html" target="_blank" rel="noreferrer">Daily Duty <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="rota.html" target="_blank" rel="noreferrer">Rota <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="duties.html" target="_blank" rel="noreferrer">Daily Duty Roster <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="rota.html" target="_blank" rel="noreferrer">Shift Rota Schedule <i class='bx bx-right-arrow-alt'></i></a>
           <a class="drop-link" href="https://reliancedigi-my.sharepoint.com/:x:/p/ann/IQCWP022FAMHSY-z3-eV0c9XAWFWLrVAPb9xSCUut_VuZ9U?rtime=BxZTEFXS3kg" target="_blank" rel="noreferrer">Daily Big Winners <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="handover.html" target="_blank" rel="noreferrer">Handover Log <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="handover.html" target="_blank" rel="noreferrer">Handover Archives <i class='bx bx-right-arrow-alt'></i></a>
         </div>
       </div>
 
@@ -86,13 +86,13 @@
       <div class="nav-item">
         <button class="nav-btn" type="button"><i class='bx bx-check-square'></i> Tasks <i class='bx bx-chevron-down chevron'></i></button>
         <div class="mega-dropdown">
-          <a class="drop-link" href="boostschedule.html" target="_blank" rel="noreferrer">Top Picks Schedule <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="boostschedule.html" target="_blank" rel="noreferrer">Top Picks Master Schedule <i class='bx bx-right-arrow-alt'></i></a>
           <a class="drop-link" href="https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit?gid=1450723096#gid=1450723096" target="_blank" rel="noreferrer">Edge Boost (MIG) <i class='bx bx-right-arrow-alt'></i></a>
           <a class="drop-link" href="https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit?gid=784209986#gid=784209986" target="_blank" rel="noreferrer">Ibet Boost (MIG) <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank" rel="noreferrer">KT Sports Check <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank" rel="noreferrer">KT Sports Verification <i class='bx bx-right-arrow-alt'></i></a>
           <a class="drop-link" href="https://polymarket.com/breaking" target="_blank" rel="noreferrer">Prediction Offer Check <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="edge_boosts.html" target="_blank" rel="noreferrer">Edge Boost Sys <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="ibet_boosts.html" target="_blank" rel="noreferrer">Ibet Boost Sys <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="edge_boosts.html" target="_blank" rel="noreferrer">Edge Boost System <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="ibet_boosts.html" target="_blank" rel="noreferrer">Ibet Boost System <i class='bx bx-right-arrow-alt'></i></a>
         </div>
       </div>
 
@@ -100,12 +100,12 @@
       <div class="nav-item">
         <button class="nav-btn" type="button"><i class='bx bx-pulse'></i> Monitoring <i class='bx bx-chevron-down chevron'></i></button>
         <div class="mega-dropdown">
-          <a class="drop-link" href="https://docs.google.com/spreadsheets/d/1qruVq-HZCyM0uDgnYSqFhccXKnMkqJ8z/edit?gid=1305147410#gid=1305147410" target="_blank" rel="noreferrer">Green Tracker <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://docs.google.com/spreadsheets/d/1OcaMz_AOUeRsWIVplbnk2XAna62m3IKa/edit?gid=457800468#gid=457800468" target="_blank" rel="noreferrer">Red Tracker <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://docs.google.com/spreadsheets/d/1U-Dmc628kHQabzJGoBeEgRus5PiRhgSd/edit?pli=1&amp;gid=1983372695#gid=1983372695" target="_blank" rel="noreferrer">Orange Tracker <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="#7a">7A Tracker <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://docs.google.com/spreadsheets/d/11STKO4Xsj0a8iTuUXSCXC-XEE4-7qmF9/edit?pli=1&amp;gid=1701374259#gid=1701374259" target="_blank" rel="noreferrer">Green CRM <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://docs.google.com/spreadsheets/d/1gPks2FdHyOOTiILvn553miz32WeEtOpx/edit?gid=1701374259#gid=1701374259" target="_blank" rel="noreferrer">Red CRM <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://docs.google.com/spreadsheets/d/1qruVq-HZCyM0uDgnYSqFhccXKnMkqJ8z/edit?gid=1305147410#gid=1305147410" target="_blank" rel="noreferrer">Green Operational Tracker <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://docs.google.com/spreadsheets/d/1OcaMz_AOUeRsWIVplbnk2XAna62m3IKa/edit?gid=457800468#gid=457800468" target="_blank" rel="noreferrer">Red Operational Tracker <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://docs.google.com/spreadsheets/d/1U-Dmc628kHQabzJGoBeEgRus5PiRhgSd/edit?pli=1&amp;gid=1983372695#gid=1983372695" target="_blank" rel="noreferrer">Orange Operational Tracker <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="#7a">7A Monitoring Matrix <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://docs.google.com/spreadsheets/d/11STKO4Xsj0a8iTuUXSCXC-XEE4-7qmF9/edit?pli=1&amp;gid=1701374259#gid=1701374259" target="_blank" rel="noreferrer">Green CRM Portal <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://docs.google.com/spreadsheets/d/1gPks2FdHyOOTiILvn553miz32WeEtOpx/edit?gid=1701374259#gid=1701374259" target="_blank" rel="noreferrer">Red CRM Portal <i class='bx bx-right-arrow-alt'></i></a>
         </div>
       </div>
 
@@ -113,11 +113,11 @@
       <div class="nav-item">
         <button class="nav-btn" type="button"><i class='bx bx-briefcase-alt-2'></i> Back Office <i class='bx bx-chevron-down chevron'></i></button>
         <div class="mega-dropdown">
-          <a class="drop-link" href="https://betbook.center/qbet/bets" target="_blank" rel="noreferrer">Qbet / 55 / 30 Bets <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://mga-betbook.center/ibet/bets" target="_blank" rel="noreferrer">IBET Bets Center <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://eu-b7k.center/pubs8/bets" target="_blank" rel="noreferrer">PUBS Bets Center <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://mtsc-its.betradar.com/" target="_blank" rel="noreferrer">Betradar MTS <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://portal.betradar.com/" target="_blank" rel="noreferrer">Betradar CTRL Portal <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://betbook.center/qbet/bets" target="_blank" rel="noreferrer">Qbet / 55 / 30 Bets Desk <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://mga-betbook.center/ibet/bets" target="_blank" rel="noreferrer">IBET Trading Portal <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://eu-b7k.center/pubs8/bets" target="_blank" rel="noreferrer">PUBS Settlement Center <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://mtsc-its.betradar.com/" target="_blank" rel="noreferrer">Betradar MTS Terminal <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://portal.betradar.com/" target="_blank" rel="noreferrer">Betradar CTRL Management <i class='bx bx-right-arrow-alt'></i></a>
         </div>
       </div>
 
@@ -125,10 +125,10 @@
       <div class="nav-item">
         <button class="nav-btn" type="button"><i class='bx bx-desktop'></i> Multi-Monitor <i class='bx bx-chevron-down chevron'></i></button>
         <div class="mega-dropdown">
-          <a class="drop-link" href="https://betbook.center/monitor?providerIds=prediction_markets" target="_blank" rel="noreferrer">Edge Prediction Ticker <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://eu-b7k.center/monitor?providerIds=prediction_markets" target="_blank" rel="noreferrer">Pubs Prediction Ticker <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://betbook.center/monitor" target="_blank" rel="noreferrer">Qbet / 55 / 30 Rejected <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://eu-b7k.center/monitor" target="_blank" rel="noreferrer">Pubs Rejected <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://betbook.center/monitor?providerIds=prediction_markets" target="_blank" rel="noreferrer">Edge Prediction Market Ticker <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://eu-b7k.center/monitor?providerIds=prediction_markets" target="_blank" rel="noreferrer">Pubs Prediction Market Ticker <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://betbook.center/monitor" target="_blank" rel="noreferrer">Qbet / 55 / 30 Rejected Feed <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://eu-b7k.center/monitor" target="_blank" rel="noreferrer">Pubs Rejected Feed <i class='bx bx-right-arrow-alt'></i></a>
         </div>
       </div>
 
@@ -136,13 +136,13 @@
       <div class="nav-item">
         <button class="nav-btn" type="button"><i class='bx bx-grid-alt'></i> Brands <i class='bx bx-chevron-down chevron'></i></button>
         <div class="mega-dropdown">
-          <a class="drop-link" href="https://www.7abet.com/en-UN" target="_blank" rel="noreferrer">7A Bet <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://www.qbet.com/en-UN" target="_blank" rel="noreferrer">Qbet <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://www.55bet.com/en-UN" target="_blank" rel="noreferrer">55Bet <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://www.30bet.com/en-UN" target="_blank" rel="noreferrer">30Bet <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://www.gqbet.vip/en-UN/" target="_blank" rel="noreferrer">GQBet <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://www.bvbet.com/en-UN" target="_blank" rel="noreferrer">BVBet <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://www.ibet.com/en-UN/sportsbook/price-boost/football" target="_blank" rel="noreferrer">IBET <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://www.7abet.com/en-UN" target="_blank" rel="noreferrer">7A Bet Sportsbook <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://www.qbet.com/en-UN" target="_blank" rel="noreferrer">Qbet International <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://www.55bet.com/en-UN" target="_blank" rel="noreferrer">55Bet Sportsbook <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://www.30bet.com/en-UN" target="_blank" rel="noreferrer">30Bet Sportsbook <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://www.gqbet.vip/en-UN/" target="_blank" rel="noreferrer">GQBet VIP Portal <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://www.bvbet.com/en-UN" target="_blank" rel="noreferrer">BVBet Sportsbook <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://www.ibet.com/en-UN/sportsbook/price-boost/football" target="_blank" rel="noreferrer">IBET Live Boost Portal <i class='bx bx-right-arrow-alt'></i></a>
         </div>
       </div>
 
@@ -150,18 +150,18 @@
       <div class="nav-item">
         <button class="nav-btn" type="button"><i class='bx bx-data'></i> Price Ref <i class='bx bx-chevron-down chevron'></i></button>
         <div class="mega-dropdown double-column">
-          <a class="drop-link" href="https://www.flashscore.com/" target="_blank" rel="noreferrer">Flashscore <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://betsapi.com/" target="_blank" rel="noreferrer">BetsAPI <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://www.oddsportal.com/football/" target="_blank" rel="noreferrer">Oddsportal <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://www.oddschecker.com/" target="_blank" rel="noreferrer">Oddschecker <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://www.betfair.com/exchange/plus/" target="_blank" rel="noreferrer">Betfair <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://www.bet365.com/" target="_blank" rel="noreferrer">Bet365 <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://www.pinnacle.com/" target="_blank" rel="noreferrer">Pinnacle <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://gg.bet/" target="_blank" rel="noreferrer">GGBet <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://www.unibet.com.au/" target="_blank" rel="noreferrer">Unibet <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://www.sofascore.com/" target="_blank" rel="noreferrer">Sofascore <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://www.marathonbet.com/" target="_blank" rel="noreferrer">Marathonbet <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://fonbet.com/" target="_blank" rel="noreferrer">Fonbet <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://www.flashscore.com/" target="_blank" rel="noreferrer">Flashscore Global <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://betsapi.com/" target="_blank" rel="noreferrer">BetsAPI Events <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://www.oddsportal.com/football/" target="_blank" rel="noreferrer">Oddsportal Football <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://www.oddschecker.com/" target="_blank" rel="noreferrer">Oddschecker Market <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://www.betfair.com/exchange/plus/" target="_blank" rel="noreferrer">Betfair Exchange Plus <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://www.bet365.com/" target="_blank" rel="noreferrer">Bet365 Sportsbook <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://www.pinnacle.com/" target="_blank" rel="noreferrer">Pinnacle Benchmarks <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://gg.bet/" target="_blank" rel="noreferrer">GGBet Esports <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://www.unibet.com.au/" target="_blank" rel="noreferrer">Unibet AU Feed <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://www.sofascore.com/" target="_blank" rel="noreferrer">Sofascore Live <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://www.marathonbet.com/" target="_blank" rel="noreferrer">Marathonbet Feed <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://fonbet.com/" target="_blank" rel="noreferrer">Fonbet Odds Desk <i class='bx bx-right-arrow-alt'></i></a>
         </div>
       </div>
 
@@ -169,10 +169,10 @@
       <div class="nav-item">
         <button class="nav-btn" type="button"><i class='bx bx-wrench'></i> Procedures <i class='bx bx-chevron-down chevron'></i></button>
         <div class="mega-dropdown">
-          <a class="drop-link" href="https://ibet.atlassian.net/wiki/spaces/Sportsbook/overview" target="_blank" rel="noreferrer">Confluence <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="workspace.html" target="_blank" rel="noreferrer">Workspace <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="https://claude.ai" target="_blank" rel="noreferrer">Claude AI <i class='bx bx-right-arrow-alt'></i></a>
-          <a class="drop-link" href="Edge_Gaming_Client_Risk_Segmentation_Tool_July_2026_Dashboard.html" target="_blank" rel="noreferrer">Risk Segmentation Tool <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://ibet.atlassian.net/wiki/spaces/Sportsbook/overview" target="_blank" rel="noreferrer">Confluence Wiki <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="workspace.html" target="_blank" rel="noreferrer">Trading Workspace <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="https://claude.ai" target="_blank" rel="noreferrer">Claude AI Operational Workspace <i class='bx bx-right-arrow-alt'></i></a>
+          <a class="drop-link" href="Edge_Gaming_Client_Risk_Segmentation_Tool_July_2026_Dashboard.html" target="_blank" rel="noreferrer">Risk Segmentation Suite <i class='bx bx-right-arrow-alt'></i></a>
         </div>
       </div>
 
@@ -180,7 +180,7 @@
 
     <!-- RIGHT STATUS & CONTROLS -->
     <div class="header-actions">
-      <!-- Weather -->
+      <!-- Manila Weather -->
       <div class="tactile-status-pill" id="weatherWidget" title="Metro Manila Live Weather">
         <div class="squircle-micro-icon amber"><i class='bx bx-sun' id="weatherIcon"></i></div>
         <span id="weatherTemp">--°C</span>
@@ -197,7 +197,7 @@
         <i class='bx bx-sun' id="themeIcon"></i>
       </button>
 
-      <!-- Lock / Logout -->
+      <!-- Lock Session -->
       <button class="tactile-icon-btn danger" type="button" onclick="handleLogout()" title="Lock Session">
         <i class='bx bx-lock-alt'></i>
       </button>
@@ -205,22 +205,22 @@
 
   </header>
 
-  <!-- DASHBOARD 100VH VIEWPORT (3-COLUMN LAYOUT MATCHING SKETCH) -->
+  <!-- DASHBOARD 100VH VIEWPORT (PRECISE 3-COLUMN LAYOUT) -->
   <main class="dashboard-viewport">
 
     <!-- ==========================================
-         COLUMN 1: OPERATIONS DOCK & DAILY TASK DOCK
+         COLUMN 1: OPERATIONS DIRECTORY & TASK SUITE
          ========================================== -->
     <div class="layout-col left-col">
       
-      <!-- CARD 1.1: OPERATIONS DOCK -->
+      <!-- CARD 1.1: OPERATIONS DIRECTORY -->
       <section class="tactile-card flex-1">
         <div class="card-header-row">
           <div class="card-title-wrap">
             <div class="squircle-header-icon blue"><i class='bx bx-pin'></i></div>
             <div>
-              <div class="card-title">operations dock</div>
-              <div class="card-caption">Direct Management Links</div>
+              <div class="card-title">Operations Directory</div>
+              <div class="card-caption">Trading &amp; Administration Access</div>
             </div>
           </div>
         </div>
@@ -237,14 +237,14 @@
         </div>
       </section>
 
-      <!-- CARD 1.2: DAILY TASK DOCK -->
+      <!-- CARD 1.2: OPERATIONAL TASK SUITE -->
       <section class="tactile-card flex-1">
         <div class="card-header-row">
           <div class="card-title-wrap">
             <div class="squircle-header-icon amber"><i class='bx bx-list-check'></i></div>
             <div>
-              <div class="card-title">daily task dock</div>
-              <div class="card-caption">Operational Routine Items</div>
+              <div class="card-title">Operational Task Suite</div>
+              <div class="card-caption">Daily Protocol &amp; Checklists</div>
             </div>
           </div>
         </div>
@@ -271,7 +271,7 @@
     </div>
 
     <!-- ==========================================
-         COLUMN 2: TOP PICKS / HOT BOOSTS (CENTER FULL HEIGHT)
+         COLUMN 2: MARKET BOOSTS & TOP SELECTIONS (FULL HEIGHT)
          ========================================== -->
     <div class="layout-col center-col">
       <section class="tactile-card full-height">
@@ -279,12 +279,12 @@
           <div class="card-title-wrap">
             <div class="squircle-header-icon rose"><i class='bx bxs-flame'></i></div>
             <div>
-              <div class="card-title">top picks /hot boosts</div>
+              <div class="card-title">Market Boosts &amp; Top Selections</div>
               <div class="card-caption">Pre-Match ESPN Live Lineup</div>
             </div>
           </div>
 
-          <!-- Sunken Segmented Tournament Filter -->
+          <!-- Sunken Segmented Tournament Selector -->
           <div class="sunken-segment-track scrollable">
             <button class="segment-tab-btn active" id="btn-boost-eng.1" type="button" onclick="filterTopPicks('eng.1', this)">EPL</button>
             <button class="segment-tab-btn" id="btn-boost-esp.1" type="button" onclick="filterTopPicks('esp.1', this)">La Liga</button>
@@ -295,61 +295,62 @@
           </div>
         </div>
 
+        <!-- COMPACT GRID (NO VERTICAL STRETCH) -->
         <div class="boosts-grid-scroll" id="topPicksContainer">
           <div class="tactile-empty-notice">
             <i class='bx bx-loader-alt bx-spin'></i>
-            <span>Loading pre-match fixtures...</span>
+            <span>Synchronizing live pre-match fixtures...</span>
           </div>
         </div>
       </section>
     </div>
 
     <!-- ==========================================
-         COLUMN 3: HANDOVER / OVERDUE JIRA & TIME - SLOT DUTIES
+         COLUMN 3: HANDOVER / SLA & SHIFT ROSTER
          ========================================== -->
     <div class="layout-col right-col">
       
-      <!-- CARD 3.1: SPLIT CARD (HANDOVER ON TOP, OVERDUE JIRA BELOW) -->
+      <!-- CARD 3.1: SPLIT CARD (SHIFT HANDOVER & SLA ESCALATIONS) -->
       <section class="tactile-card split-stacked-card">
         
-        <!-- UPPER HALF: HANDOVER -->
+        <!-- UPPER HALF: SHIFT HANDOVER LOG -->
         <div class="split-card-section">
           <div class="card-header-row">
             <div class="card-title-wrap">
               <div class="squircle-header-icon amber micro"><i class='bx bx-alarm-exclamation'></i></div>
-              <div class="card-title" id="handoverAlertBadge">handover</div>
+              <div class="card-title" id="handoverAlertBadge">Shift Handover Log</div>
             </div>
             <button class="tactile-btn-subtle amber" type="button" onclick="openHandoverModal()">Manage</button>
           </div>
-          <div class="handover-text-preview" id="handoverMainText">No active urgent handover notes.</div>
+          <div class="handover-text-preview sunken-box" id="handoverMainText">No active urgent handover notes.</div>
         </div>
 
         <div class="tactile-inset-divider"></div>
 
-        <!-- LOWER HALF: OVERDUE JIRA -->
+        <!-- LOWER HALF: SLA ESCALATIONS (JIRA >24H) -->
         <div class="split-card-section">
           <div class="card-header-row">
             <div class="card-title-wrap">
               <div class="squircle-header-icon rose micro"><i class='bx bx-error-circle'></i></div>
-              <div class="card-title">overdue jira</div>
+              <div class="card-title">SLA Escalations (Jira &gt;24h)</div>
             </div>
             <a href="jira.html" target="_blank" rel="noreferrer" class="tactile-btn-subtle rose">Tracker &rarr;</a>
           </div>
           <div class="jira-pills-row" id="jiraPillsContainer">
-            <span class="alert-subtext">No overdue tickets (&gt;24h).</span>
+            <span class="alert-subtext">No overdue tickets detected.</span>
           </div>
         </div>
 
       </section>
 
-      <!-- CARD 3.2: TIME - SLOT DUTIES -->
+      <!-- CARD 3.2: REAL-TIME SHIFT ALLOCATION -->
       <section class="tactile-card flex-1">
         <div class="card-header-row">
           <div class="card-title-wrap">
             <div class="squircle-header-icon green"><i class='bx bx-time'></i></div>
             <div>
-              <div class="card-title">time - slot duties</div>
-              <div class="card-caption">Firebase Active Schedule</div>
+              <div class="card-title">Real-Time Shift Allocation</div>
+              <div class="card-caption">Live Firebase Duty Matrix</div>
             </div>
           </div>
           <span class="tactile-pill-tag green" id="currentSlotTimeTag">LIVE</span>
@@ -358,7 +359,7 @@
         <div class="duties-scroll-list" id="dutyListContainer">
           <div class="tactile-empty-notice">
             <i class='bx bx-loader-alt bx-spin'></i>
-            <span>Syncing roster...</span>
+            <span>Connecting to live roster...</span>
           </div>
         </div>
       </section>
@@ -374,27 +375,27 @@
         <div class="card-title-wrap">
           <div class="squircle-header-icon amber"><i class='bx bx-alarm-exclamation'></i></div>
           <div>
-            <div class="card-title">Manage Urgent Handovers</div>
-            <div class="card-caption">Shared Shift Handover Notes</div>
+            <div class="card-title">Manage Shift Handovers</div>
+            <div class="card-caption">Active Escalations &amp; Protocol Handoff</div>
           </div>
         </div>
         <button type="button" class="tactile-icon-btn small" onclick="closeHandoverModal()"><i class='bx bx-x'></i></button>
       </div>
 
       <form onsubmit="addHandover(event)" class="handover-input-group">
-        <select id="handoverPriority" class="tactile-select" required>
+        <select id="handoverPriority" class="tactile-select sunken-field" required>
           <option value="URGENT/CRITICAL" selected>🚨 URGENT</option>
           <option value="Need Attention">⚠️ ATTENTION</option>
           <option value="Normal">ℹ️ NORMAL</option>
         </select>
-        <input type="text" id="handoverBrand" class="tactile-field short" placeholder="Brand/System" required>
-        <input type="text" id="handoverMsg" class="tactile-field full" placeholder="Note details..." required>
+        <input type="text" id="handoverBrand" class="tactile-field sunken-field short" placeholder="Brand/Target" required>
+        <input type="text" id="handoverMsg" class="tactile-field sunken-field full" placeholder="Handover details &amp; instructions..." required>
         <button type="submit" class="tactile-btn-primary">Post Note</button>
       </form>
 
-      <div class="modal-sub-label">ACTIVE HANDOVERS (Click check when completed)</div>
+      <div class="modal-sub-label">ACTIVE HANDOVER QUEUE</div>
       <div class="modal-handovers-scroll" id="handoverModalItems">
-        <!-- Rendered dynamically -->
+        <!-- Rendered dynamically via JS -->
       </div>
     </div>
   </div>
