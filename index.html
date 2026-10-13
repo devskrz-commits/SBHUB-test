@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sportsbook Hub - Executive Operations Dashboard</title>
+  <title>Sportsbook Hub - Tactile Operations Terminal</title>
 
   <!-- Google Fonts & Boxicons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
-  <!-- Stylesheet -->
+  <!-- External Stylesheet -->
   <link rel="stylesheet" href="./styles.css">
 
   <!-- Application Logic -->
@@ -25,38 +25,46 @@
 
   <!-- AUTHENTICATION OVERLAY -->
   <div id="authOverlay">
-    <div class="login-box">
-      <div class="login-icon"><i class='bx bxs-shield-quarter'></i></div>
+    <div class="tactile-login-card">
+      <div class="login-squircle-icon">
+        <i class='bx bxs-shield-quarter'></i>
+      </div>
       <div class="login-title">Sportsbook Hub</div>
-      <div class="login-subtitle">Executive Operations Portal</div>
+      <div class="login-subtitle">Tactile Operations Terminal</div>
       
       <form id="loginForm" class="login-form" onsubmit="handleLogin(event); return false;">
-        <div class="login-field-wrap">
-          <input type="text" id="userInput" class="login-field" value="sportsbook2026" required placeholder="Username" autocomplete="username">
+        <div class="input-sunken-track">
+          <i class='bx bx-user input-icon'></i>
+          <input type="text" id="userInput" class="tactile-input" value="sportsbook2026" required placeholder="Username" autocomplete="username">
         </div>
 
-        <div class="login-field-wrap password-wrap">
-          <input type="password" id="passInput" class="login-field" placeholder="Security Key (sb2026)" required autocomplete="current-password" onkeydown="if(event.key==='Enter'){handleLogin(event);}">
-          <button type="button" class="pass-toggle-btn" id="togglePassBtn" onclick="togglePasswordVisibility()" title="Toggle key visibility">
+        <div class="input-sunken-track password-track">
+          <i class='bx bx-key input-icon'></i>
+          <input type="password" id="passInput" class="tactile-input" placeholder="Security Key (sb2026)" required autocomplete="current-password" onkeydown="if(event.key==='Enter'){handleLogin(event);}">
+          <button type="button" class="pass-toggle-btn" id="togglePassBtn" onclick="togglePasswordVisibility()" title="Toggle visibility">
             <i class='bx bx-show' id="togglePassIcon"></i>
           </button>
         </div>
 
         <div id="loginError" class="login-error-text"></div>
-        <button type="button" id="loginSubmitBtn" onclick="handleLogin(event)" class="login-btn-submit">UNLOCK DASHBOARD</button>
+        <button type="button" id="loginSubmitBtn" onclick="handleLogin(event)" class="tactile-btn-primary full-width">
+          ACCESS DASHBOARD <i class='bx bx-right-arrow-alt'></i>
+        </button>
       </form>
     </div>
   </div>
 
-  <!-- TOP NAVIGATION BAR (NO SIDEBAR - PRESERVES ALL 40+ LINKS) -->
-  <header class="top-navbar">
+  <!-- FLOATING TOP TACTILE DOCK (NO SIDEBAR - PRESERVES ALL 40+ LINKS) -->
+  <header class="tactile-navbar">
     
-    <!-- BRAND LOGO -->
+    <!-- BRAND / LOGO -->
     <div class="brand-section">
-      <div class="brand-badge">SB</div>
+      <div class="brand-tactile-badge">
+        <i class='bx bxs-layer'></i>
+      </div>
       <div class="brand-text">
-        <span class="brand-title">SPORTSBOOK HUB</span>
-        <span class="brand-sub">OPERATIONAL CORE</span>
+        <span class="brand-title">Sportsbook Hub</span>
+        <span class="brand-sub">Tactile Operations</span>
       </div>
     </div>
 
@@ -76,7 +84,7 @@
 
       <!-- 2. DAILY TASKS -->
       <div class="nav-item">
-        <button class="nav-btn" type="button"><i class='bx bx-task'></i> Tasks <i class='bx bx-chevron-down chevron'></i></button>
+        <button class="nav-btn" type="button"><i class='bx bx-check-square'></i> Tasks <i class='bx bx-chevron-down chevron'></i></button>
         <div class="mega-dropdown">
           <a class="drop-link" href="boostschedule.html" target="_blank" rel="noreferrer">Top Picks Schedule <i class='bx bx-right-arrow-alt'></i></a>
           <a class="drop-link" href="https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit?gid=1450723096#gid=1450723096" target="_blank" rel="noreferrer">Edge Boost (MIG) <i class='bx bx-right-arrow-alt'></i></a>
@@ -90,7 +98,7 @@
 
       <!-- 3. DAILY MONITORING -->
       <div class="nav-item">
-        <button class="nav-btn" type="button"><i class='bx bx-line-chart'></i> Monitoring <i class='bx bx-chevron-down chevron'></i></button>
+        <button class="nav-btn" type="button"><i class='bx bx-pulse'></i> Monitoring <i class='bx bx-chevron-down chevron'></i></button>
         <div class="mega-dropdown">
           <a class="drop-link" href="https://docs.google.com/spreadsheets/d/1qruVq-HZCyM0uDgnYSqFhccXKnMkqJ8z/edit?gid=1305147410#gid=1305147410" target="_blank" rel="noreferrer">Green Tracker <i class='bx bx-right-arrow-alt'></i></a>
           <a class="drop-link" href="https://docs.google.com/spreadsheets/d/1OcaMz_AOUeRsWIVplbnk2XAna62m3IKa/edit?gid=457800468#gid=457800468" target="_blank" rel="noreferrer">Red Tracker <i class='bx bx-right-arrow-alt'></i></a>
@@ -126,7 +134,7 @@
 
       <!-- 6. OWN BRANDS -->
       <div class="nav-item">
-        <button class="nav-btn" type="button"><i class='bx bx-layer'></i> Brands <i class='bx bx-chevron-down chevron'></i></button>
+        <button class="nav-btn" type="button"><i class='bx bx-grid-alt'></i> Brands <i class='bx bx-chevron-down chevron'></i></button>
         <div class="mega-dropdown">
           <a class="drop-link" href="https://www.7abet.com/en-UN" target="_blank" rel="noreferrer">7A Bet <i class='bx bx-right-arrow-alt'></i></a>
           <a class="drop-link" href="https://www.qbet.com/en-UN" target="_blank" rel="noreferrer">Qbet <i class='bx bx-right-arrow-alt'></i></a>
@@ -172,30 +180,31 @@
 
     <!-- RIGHT STATUS & CONTROLS -->
     <div class="header-actions">
-      <!-- Manila Weather -->
-      <div class="weather-pill" id="weatherWidget" title="Metro Manila Live Weather">
-        <i class='bx bx-sun' id="weatherIcon"></i>
+      <!-- Manila Weather Pill -->
+      <div class="tactile-status-pill" id="weatherWidget" title="Metro Manila Live Weather">
+        <div class="squircle-micro-icon amber"><i class='bx bx-sun' id="weatherIcon"></i></div>
         <span id="weatherTemp">--°C</span>
       </div>
 
-      <!-- World Clocks -->
-      <div class="clock-pill" title="Manila GMT+8 Time">
-        <span>GMT+8 <b id="clockGmt8">00:00:00</b></span>
+      <!-- World Clocks Pill -->
+      <div class="tactile-status-pill" title="Manila GMT+8 Time">
+        <div class="squircle-micro-icon blue"><i class='bx bx-time-five'></i></div>
+        <span class="mono-num" id="clockGmt8">00:00:00</span>
       </div>
 
-      <!-- Active Trader Count -->
-      <div class="trader-pill" title="Traders Currently Active on Shift">
-        <i class='bx bx-user-check'></i>
+      <!-- Active Trader Pill -->
+      <div class="tactile-status-pill" title="Active On-Duty Traders">
+        <div class="squircle-micro-icon green"><i class='bx bx-user-check'></i></div>
         <span id="activeTraderDisplay">0 Working</span>
       </div>
 
       <!-- Day / Night Toggle -->
-      <button class="theme-toggle-btn" type="button" onclick="toggleTheme()" title="Toggle Day / Night Mode">
+      <button class="tactile-icon-btn" type="button" onclick="toggleTheme()" title="Toggle Day / Night Mode">
         <i class='bx bx-sun' id="themeIcon"></i>
       </button>
 
       <!-- Logout / Lock -->
-      <button class="lock-btn" type="button" onclick="handleLogout()" title="Lock Session">
+      <button class="tactile-icon-btn danger" type="button" onclick="handleLogout()" title="Lock Session">
         <i class='bx bx-lock-alt'></i>
       </button>
     </div>
@@ -205,29 +214,29 @@
   <!-- DASHBOARD 100VH VIEWPORT -->
   <main class="dashboard-viewport">
 
-    <!-- TOP ALERT STRIP -->
+    <!-- TOP ALERT STRIP (JIRA + HANDOVERS) -->
     <div class="status-alert-strip">
       
       <!-- JIRA SLA ALERT -->
-      <div class="jira-alert-box" id="jiraAlertBanner">
-        <div class="jira-left">
-          <i class='bx bx-error-circle'></i>
-          <span>PENDING JIRA (&gt;24H)</span>
+      <div class="tactile-alert-card rose" id="jiraAlertBanner">
+        <div class="alert-left">
+          <div class="squircle-micro-icon rose"><i class='bx bx-error-circle'></i></div>
+          <span class="alert-title">OVERDUE JIRA (&gt;24H)</span>
         </div>
-        <div class="jira-pills" id="jiraPillsContainer">
-          <span class="no-alert-subtext">No overdue tickets detected.</span>
+        <div class="jira-pills-row" id="jiraPillsContainer">
+          <span class="alert-subtext">No overdue tickets.</span>
         </div>
-        <a href="jira.html" target="_blank" rel="noreferrer" class="jira-open-btn">View Tracker &rarr;</a>
+        <a href="jira.html" target="_blank" rel="noreferrer" class="tactile-btn-subtle rose">View Tracker &rarr;</a>
       </div>
 
       <!-- URGENT HANDOVER ALERT -->
-      <div class="handover-alert-box" id="urgentHandoverBanner">
-        <div class="handover-left">
-          <i class='bx bx-alarm-exclamation'></i>
-          <span id="handoverAlertBadge">HANDOVERS</span>
+      <div class="tactile-alert-card amber" id="urgentHandoverBanner">
+        <div class="alert-left">
+          <div class="squircle-micro-icon amber"><i class='bx bx-alarm-exclamation'></i></div>
+          <span class="alert-title" id="handoverAlertBadge">HANDOVERS</span>
         </div>
         <div class="handover-text-preview" id="handoverMainText">No active urgent handover notes.</div>
-        <button class="handover-btn-small" type="button" onclick="openHandoverModal()">Manage Notes</button>
+        <button class="tactile-btn-subtle amber" type="button" onclick="openHandoverModal()">Manage</button>
       </div>
 
     </div>
@@ -236,93 +245,121 @@
     <div class="bento-grid">
 
       <!-- COL 1: DIRECTORY & TASKS -->
-      <section class="matte-card">
+      <section class="tactile-card">
         <div class="card-header-row">
-          <div class="card-title"><i class='bx bx-pin'></i> Operations Dock</div>
+          <div class="card-title-wrap">
+            <div class="squircle-header-icon blue"><i class='bx bx-pin'></i></div>
+            <div>
+              <div class="card-title">Operations Dock</div>
+              <div class="card-caption">Direct Management Links</div>
+            </div>
+          </div>
         </div>
 
-        <div class="dock-tabs">
-          <div class="dock-tab active" onclick="switchBrandTab('ibet', this)">IBET</div>
-          <div class="dock-tab" onclick="switchBrandTab('edge', this)">EDGE</div>
-          <div class="dock-tab" onclick="switchBrandTab('pubs', this)">PUBS</div>
+        <!-- Sunken Segmented Tab Switcher (SoftStack Style) -->
+        <div class="sunken-segment-track">
+          <button class="segment-tab-btn active" type="button" onclick="switchBrandTab('ibet', this)">IBET</button>
+          <button class="segment-tab-btn" type="button" onclick="switchBrandTab('edge', this)">EDGE</button>
+          <button class="segment-tab-btn" type="button" onclick="switchBrandTab('pubs', this)">PUBS</button>
         </div>
 
-        <div class="dock-links-list" id="brandLinksContainer">
+        <div class="dock-links-scroll" id="brandLinksContainer">
           <!-- Populated via JS -->
         </div>
 
-        <div class="section-divider-label">Daily Task Dock</div>
+        <div class="section-label-chip">Daily Task Dock</div>
         <div class="quick-tasks-list">
-          <a class="action-pill-row" href="boostschedule.html" target="_blank" rel="noreferrer">
+          <a class="tactile-pill-row" href="boostschedule.html" target="_blank" rel="noreferrer">
             <span>Top Picks Schedule</span><i class='bx bx-right-arrow-alt'></i>
           </a>
-          <a class="action-pill-row" href="https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit?gid=1450723096#gid=1450723096" target="_blank" rel="noreferrer">
+          <a class="tactile-pill-row" href="https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit?gid=1450723096#gid=1450723096" target="_blank" rel="noreferrer">
             <span>Edge Boost (MIG)</span><i class='bx bx-right-arrow-alt'></i>
           </a>
-          <a class="action-pill-row" href="https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit?gid=784209986#gid=784209986" target="_blank" rel="noreferrer">
+          <a class="tactile-pill-row" href="https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit?gid=784209986#gid=784209986" target="_blank" rel="noreferrer">
             <span>Ibet Boost (MIG)</span><i class='bx bx-right-arrow-alt'></i>
           </a>
-          <a class="action-pill-row" href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank" rel="noreferrer">
+          <a class="tactile-pill-row" href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank" rel="noreferrer">
             <span>KT Sports Check</span><i class='bx bx-right-arrow-alt'></i>
           </a>
-          <a class="action-pill-row" href="https://polymarket.com/breaking" target="_blank" rel="noreferrer">
+          <a class="tactile-pill-row" href="https://polymarket.com/breaking" target="_blank" rel="noreferrer">
             <span>Prediction Offer Check</span><i class='bx bx-right-arrow-alt'></i>
           </a>
         </div>
       </section>
 
-      <!-- COL 2: TOP PICKS / HOT BOOSTS (REAL ESPN ONLY) -->
-      <section class="matte-card">
+      <!-- COL 2: TOP PICKS / HOT BOOSTS (STRICT ESPN PRE-MATCH ONLY) -->
+      <section class="tactile-card">
         <div class="card-header-row">
-          <div class="card-title"><i class='bx bxs-flame' style="color: var(--accent-rose);"></i> Top Picks / Hot Boosts</div>
-          <div class="picks-filter-bar">
-            <button class="filter-chip active" id="btn-boost-eng.1" onclick="filterTopPicks('eng.1', this)">EPL</button>
-            <button class="filter-chip" id="btn-boost-esp.1" onclick="filterTopPicks('esp.1', this)">La Liga</button>
-            <button class="filter-chip" id="btn-boost-ger.1" onclick="filterTopPicks('ger.1', this)">Bundesliga</button>
-            <button class="filter-chip" id="btn-boost-ita.1" onclick="filterTopPicks('ita.1', this)">Serie A</button>
-            <button class="filter-chip" id="btn-boost-fra.1" onclick="filterTopPicks('fra.1', this)">Ligue 1</button>
-            <button class="filter-chip" id="btn-boost-uefa.champions" onclick="filterTopPicks('uefa.champions', this)">UEFA</button>
+          <div class="card-title-wrap">
+            <div class="squircle-header-icon rose"><i class='bx bxs-flame'></i></div>
+            <div>
+              <div class="card-title">Top Picks / Hot Boosts</div>
+              <div class="card-caption">Pre-Match ESPN Live Lineup</div>
+            </div>
+          </div>
+
+          <!-- Sunken Segmented League Filter -->
+          <div class="sunken-segment-track scrollable">
+            <button class="segment-tab-btn active" id="btn-boost-eng.1" type="button" onclick="filterTopPicks('eng.1', this)">EPL</button>
+            <button class="segment-tab-btn" id="btn-boost-esp.1" type="button" onclick="filterTopPicks('esp.1', this)">La Liga</button>
+            <button class="segment-tab-btn" id="btn-boost-ger.1" type="button" onclick="filterTopPicks('ger.1', this)">Bundesliga</button>
+            <button class="segment-tab-btn" id="btn-boost-ita.1" type="button" onclick="filterTopPicks('ita.1', this)">Serie A</button>
+            <button class="segment-tab-btn" id="btn-boost-fra.1" type="button" onclick="filterTopPicks('fra.1', this)">Ligue 1</button>
+            <button class="segment-tab-btn" id="btn-boost-uefa.champions" type="button" onclick="filterTopPicks('uefa.champions', this)">UEFA</button>
           </div>
         </div>
 
         <div class="boosts-grid-scroll" id="topPicksContainer">
-          <div class="empty-state-notice">
-            <i class='bx bx-loader-alt bx-spin' style="font-size: 20px; color: var(--accent-blue);"></i>
+          <div class="tactile-empty-notice">
+            <i class='bx bx-loader-alt bx-spin'></i>
             <span>Loading pre-match fixtures...</span>
           </div>
         </div>
       </section>
 
       <!-- COL 3: DUTIES & DAILY MATCHDAY -->
-      <section class="matte-card">
+      <section class="tactile-card">
         <!-- Live Duty Roster Section -->
         <div class="card-header-row">
-          <div class="card-title"><i class='bx bx-time-five'></i> Time-Slot Duties</div>
-          <span class="slot-badge-live" id="currentSlotTimeTag">LIVE</span>
+          <div class="card-title-wrap">
+            <div class="squircle-header-icon green"><i class='bx bx-time'></i></div>
+            <div>
+              <div class="card-title">Time-Slot Duties</div>
+              <div class="card-caption">Firebase Active Schedule</div>
+            </div>
+          </div>
+          <span class="tactile-pill-tag green" id="currentSlotTimeTag">LIVE</span>
         </div>
 
         <div class="duties-scroll-list" id="dutyListContainer">
-          <div class="empty-state-notice">
-            <i class='bx bx-loader-alt bx-spin' style="font-size: 18px; color: var(--accent-blue);"></i>
-            <span>Syncing roster schedule...</span>
+          <div class="tactile-empty-notice">
+            <i class='bx bx-loader-alt bx-spin'></i>
+            <span>Syncing roster...</span>
           </div>
         </div>
 
-        <div class="card-inner-divider"></div>
+        <div class="tactile-inset-divider"></div>
 
         <!-- Daily Matchday Section -->
         <div class="card-header-row">
-          <div class="card-title"><i class='bx bx-football'></i> Top Games Matchday</div>
-          <div class="matchday-controls">
-            <button class="matchday-nav-btn" type="button" onclick="navigateMatchDay(-1)">&larr;</button>
-            <span id="matchDayDisplay">TODAY</span>
-            <button class="matchday-nav-btn" type="button" onclick="navigateMatchDay(1)">&rarr;</button>
+          <div class="card-title-wrap">
+            <div class="squircle-header-icon blue"><i class='bx bx-football'></i></div>
+            <div>
+              <div class="card-title">Matchday Schedule</div>
+              <div class="card-caption">Daily Fixture Ticker</div>
+            </div>
+          </div>
+          
+          <div class="sunken-segment-track micro">
+            <button class="segment-tab-btn nav" type="button" onclick="navigateMatchDay(-1)">&larr;</button>
+            <span class="segment-tab-btn label" id="matchDayDisplay">TODAY</span>
+            <button class="segment-tab-btn nav" type="button" onclick="navigateMatchDay(1)">&rarr;</button>
           </div>
         </div>
 
-        <div class="games-list-horizontal" id="gamesContainer">
-          <div class="empty-state-notice">
-            <i class='bx bx-loader-alt bx-spin' style="font-size: 18px; color: var(--accent-blue);"></i>
+        <div class="games-list-scroll" id="gamesContainer">
+          <div class="tactile-empty-notice">
+            <i class='bx bx-loader-alt bx-spin'></i>
             <span>Fetching fixtures...</span>
           </div>
         </div>
@@ -333,27 +370,33 @@
   </main>
 
   <!-- URGENT HANDOVER MODAL -->
-  <div id="handoverModal" class="handover-modal">
-    <div class="handover-modal-body">
-      <div class="handover-modal-header">
-        <span class="handover-modal-title"><i class='bx bx-alarm-exclamation'></i> Manage Urgent Handovers</span>
-        <i class='bx bx-x modal-close-btn' onclick="closeHandoverModal()"></i>
+  <div id="handoverModal" class="tactile-modal-overlay">
+    <div class="tactile-modal-card">
+      <div class="modal-header-row">
+        <div class="card-title-wrap">
+          <div class="squircle-header-icon amber"><i class='bx bx-alarm-exclamation'></i></div>
+          <div>
+            <div class="card-title">Manage Urgent Handovers</div>
+            <div class="card-caption">Shared Shift Handover Notes</div>
+          </div>
+        </div>
+        <button type="button" class="tactile-icon-btn small" onclick="closeHandoverModal()"><i class='bx bx-x'></i></button>
       </div>
 
-      <form onsubmit="addHandover(event)" class="handover-form">
-        <select id="handoverPriority" class="handover-select" required>
+      <form onsubmit="addHandover(event)" class="handover-input-group">
+        <select id="handoverPriority" class="tactile-select" required>
           <option value="URGENT/CRITICAL" selected>🚨 URGENT</option>
           <option value="Need Attention">⚠️ ATTENTION</option>
           <option value="Normal">ℹ️ NORMAL</option>
         </select>
-        <input type="text" id="handoverBrand" class="handover-input short" placeholder="Brand/System (e.g. IBET)" required>
-        <input type="text" id="handoverMsg" class="handover-input full" placeholder="Handover note / issue details..." required>
-        <button type="submit" class="handover-submit-btn">Post Note</button>
+        <input type="text" id="handoverBrand" class="tactile-field short" placeholder="Brand/System" required>
+        <input type="text" id="handoverMsg" class="tactile-field full" placeholder="Note details..." required>
+        <button type="submit" class="tactile-btn-primary">Post Note</button>
       </form>
 
-      <div class="handover-list-title">ACTIVE HANDOVERS (Click done when completed)</div>
-      <div class="handover-modal-scroll-list" id="handoverModalItems">
-        <!-- Rendered dynamically via JS -->
+      <div class="modal-sub-label">ACTIVE HANDOVERS (Click check when completed)</div>
+      <div class="modal-handovers-scroll" id="handoverModalItems">
+        <!-- Rendered dynamically -->
       </div>
     </div>
   </div>
