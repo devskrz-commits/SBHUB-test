@@ -27,15 +27,28 @@ try {
 let selectedGameDayOffset = 0;
 
 /* --- HORIZONTAL TOP NAVIGATION CONTROLLERS --- */
-function toggleTopDropdown(btnElement) {
-  const group = btnElement.closest('.top-nav-dropdown-group');
+function toggleTopDropdown(event, btnElement) {
+  if (event) {
+    event.stopPropagation();
+  }
+  
+  const targetBtn = btnElement || (event ? event.currentTarget : null);
+  if (!targetBtn) return;
+
+  const group = targetBtn.closest('.top-nav-dropdown-group');
   if (!group) return;
 
-  const isActive = group.classList.contains('active');
-  // Close all other open top navigation dropdowns
-  document.querySelectorAll('.top-nav-dropdown-group').forEach(g => g.classList.remove('active'));
+  const isAlreadyActive = group.classList.contains('active');
 
-  if (!isActive) {
+  // Close all other top navigation dropdowns
+  document.querySelectorAll('.top-nav-dropdown-group').forEach(g => {
+    if (g !== group) g.classList.remove('active');
+  });
+
+  // Toggle active state
+  if (isAlreadyActive) {
+    group.classList.remove('active');
+  } else {
     group.classList.add('active');
   }
 }
@@ -1033,7 +1046,7 @@ if (document.readyState === 'loading') {
 
 /* --- GLOBAL CLICK DISMISS HANDLER --- */
 window.addEventListener('click', function(e) {
-  // Dismiss top nav bar dropdown menus if clicking outside
+  // Dismiss top nav bar dropdown menus if clicking outside any nav group
   if (!e.target.closest('.top-nav-dropdown-group')) {
     document.querySelectorAll('.top-nav-dropdown-group').forEach(g => g.classList.remove('active'));
   }
