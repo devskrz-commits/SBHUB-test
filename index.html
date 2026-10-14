@@ -14,7 +14,7 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="./styles.css?v=8.8.0">
+  <link rel="stylesheet" href="./styles.css?v=8.9.0">
 
   <!-- External Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -22,7 +22,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   
   <!-- App JS -->
-  <script src="./app.js?v=8.4.0" defer></script>
+  <script src="./app.js?v=8.5.0" defer></script>
 </head>
 <body id="pageBody">
 
@@ -122,8 +122,8 @@
 
         <!-- INTERNAL -->
         <div class="top-nav-dropdown-group">
-          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(this)">
-            <div class="icon-badge icon-internal"><i class="bx bx-home-alt"></i></div>
+          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <div class="nav-icon-wrapper"><i class="bx bx-home-alt"></i></div>
             <span>INTERNAL</span>
             <i class="bx bx-chevron-down nav-arrow"></i>
           </button>
@@ -137,8 +137,8 @@
 
         <!-- DAILY TASKS -->
         <div class="top-nav-dropdown-group">
-          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(this)">
-            <div class="icon-badge icon-tasks"><i class="bx bx-task"></i></div>
+          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <div class="nav-icon-wrapper"><i class="bx bx-task"></i></div>
             <span>DAILY TASKS</span>
             <i class="bx bx-chevron-down nav-arrow"></i>
           </button>
@@ -155,8 +155,8 @@
 
         <!-- DAILY MONITORING -->
         <div class="top-nav-dropdown-group">
-          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(this)">
-            <div class="icon-badge icon-monitor"><i class="bx bx-line-chart"></i></div>
+          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <div class="nav-icon-wrapper"><i class="bx bx-line-chart"></i></div>
             <span>MONITORING</span>
             <i class="bx bx-chevron-down nav-arrow"></i>
           </button>
@@ -172,8 +172,8 @@
 
         <!-- BACK OFFICE -->
         <div class="top-nav-dropdown-group">
-          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(this)">
-            <div class="icon-badge icon-back"><i class="bx bx-briefcase-alt-2"></i></div>
+          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <div class="nav-icon-wrapper"><i class="bx bx-briefcase-alt-2"></i></div>
             <span>BACK OFFICE</span>
             <i class="bx bx-chevron-down nav-arrow"></i>
           </button>
@@ -186,8 +186,8 @@
 
         <!-- MULTI MONITOR -->
         <div class="top-nav-dropdown-group">
-          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(this)">
-            <div class="icon-badge icon-multi"><i class="bx bx-desktop"></i></div>
+          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <div class="nav-icon-wrapper"><i class="bx bx-desktop"></i></div>
             <span>MULTI-MONITOR</span>
             <i class="bx bx-chevron-down nav-arrow"></i>
           </button>
@@ -201,8 +201,8 @@
 
         <!-- BETRADAR -->
         <div class="top-nav-dropdown-group">
-          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(this)">
-            <div class="icon-badge icon-radar"><i class="bx bx-radar"></i></div>
+          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <div class="nav-icon-wrapper"><i class="bx bx-radar"></i></div>
             <span>BETRADAR</span>
             <i class="bx bx-chevron-down nav-arrow"></i>
           </button>
@@ -214,8 +214,8 @@
 
         <!-- OWN BRANDS -->
         <div class="top-nav-dropdown-group">
-          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(this)">
-            <div class="icon-badge icon-brands"><i class="bx bx-layer"></i></div>
+          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <div class="nav-icon-wrapper"><i class="bx bx-layer"></i></div>
             <span>BRANDS</span>
             <i class="bx bx-chevron-down nav-arrow"></i>
           </button>
@@ -232,8 +232,8 @@
 
         <!-- PRICE REFERENCES -->
         <div class="top-nav-dropdown-group">
-          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(this)">
-            <div class="icon-badge icon-price"><i class="bx bx-data"></i></div>
+          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <div class="nav-icon-wrapper"><i class="bx bx-data"></i></div>
             <span>PRICES</span>
             <i class="bx bx-chevron-down nav-arrow"></i>
           </button>
@@ -255,8 +255,8 @@
 
         <!-- PROCEDURES -->
         <div class="top-nav-dropdown-group">
-          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(this)">
-            <div class="icon-badge icon-proc"><i class="bx bx-file"></i></div>
+          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <div class="nav-icon-wrapper"><i class="bx bx-file"></i></div>
             <span>PROCEDURES</span>
             <i class="bx bx-chevron-down nav-arrow"></i>
           </button>
@@ -268,8 +268,8 @@
 
         <!-- QUICK LAUNCH -->
         <div class="top-nav-dropdown-group">
-          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(this)">
-            <div class="icon-badge icon-claude"><i class="bx bx-rocket"></i></div>
+          <button type="button" class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <div class="nav-icon-wrapper"><i class="bx bx-rocket"></i></div>
             <span>QUICK LAUNCH</span>
             <i class="bx bx-chevron-down nav-arrow"></i>
           </button>
@@ -573,73 +573,8 @@
     </div>
   </div>
 
-  <!-- REAL-TIME JIRA, URGENT HANDOVER &amp; TOP-NAV CONTROLLERS -->
+  <!-- REAL-TIME JIRA & URGENT HANDOVER CONTROLLERS -->
   <script>
-    /* --- TOP MENU INTERACTIONS &amp; FILTERS --- */
-    function toggleTopDropdown(btnElement) {
-      var group = btnElement.closest('.top-nav-dropdown-group');
-      if (!group) return;
-      var isActive = group.classList.contains('active');
-      document.querySelectorAll('.top-nav-dropdown-group').forEach(function(g) {
-        g.classList.remove('active');
-      });
-      if (!isActive) {
-        group.classList.add('active');
-      }
-    }
-
-    function toggleMobileTopMenu(forceState) {
-      var menu = document.getElementById('topNavMenu');
-      var overlay = document.getElementById('sidebarOverlay');
-      if (!menu) return;
-      var isActive = (forceState !== undefined) ? forceState : !menu.classList.contains('mobile-show');
-      if (isActive) {
-        menu.classList.add('mobile-show');
-        if (overlay) overlay.classList.add('active');
-      } else {
-        menu.classList.remove('mobile-show');
-        if (overlay) overlay.classList.remove('active');
-      }
-    }
-
-    function filterTopNav(query) {
-      var term = (query || '').toLowerCase().trim();
-      var groups = document.querySelectorAll('.top-nav-dropdown-group');
-      groups.forEach(function(group) {
-        var btn = group.querySelector('.top-nav-btn');
-        var links = group.querySelectorAll('.top-dropdown-link');
-        var hasMatch = false;
-        if (!term) {
-          group.style.display = '';
-          links.forEach(function(l) { l.style.display = ''; });
-          group.classList.remove('active');
-          return;
-        }
-        if (btn && btn.textContent.toLowerCase().indexOf(term) !== -1) {
-          hasMatch = true;
-        }
-        links.forEach(function(link) {
-          var match = link.textContent.toLowerCase().indexOf(term) !== -1;
-          link.style.display = match ? 'flex' : 'none';
-          if (match) hasMatch = true;
-        });
-        group.style.display = hasMatch ? 'inline-block' : 'none';
-        if (hasMatch) {
-          group.classList.add('active');
-        } else {
-          group.classList.remove('active');
-        }
-      });
-    }
-
-    window.addEventListener('click', function(e) {
-      if (!e.target.closest('.top-nav-dropdown-group')) {
-        document.querySelectorAll('.top-nav-dropdown-group').forEach(function(g) {
-          g.classList.remove('active');
-        });
-      }
-    });
-
     /* --- JIRA SLA REAL-TIME ALERT --- */
     (function() {
       var JIRA_KEY = 'jira_tracked_tickets';
