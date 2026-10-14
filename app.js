@@ -1036,6 +1036,15 @@ function initDashboardApp() {
   calculateActiveTraders();
   fetchManilaWeather();
   setInterval(fetchManilaWeather, 15 * 60 * 1000);
+
+  // FIX: Clear any active menus when hovering a new menu to prevent overlap
+  document.querySelectorAll('.top-nav-dropdown-group').forEach(group => {
+    group.addEventListener('mouseenter', () => {
+      document.querySelectorAll('.top-nav-dropdown-group').forEach(g => {
+        if (g !== group) g.classList.remove('active');
+      });
+    });
+  });
 }
 
 if (document.readyState === 'loading') {
