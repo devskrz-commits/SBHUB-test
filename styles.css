@@ -565,7 +565,7 @@ body {
   padding: 8px 12px;
   background: rgba(255, 255, 255, 0.035);
   border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 9px;
+  border-radius: 99px;
   font-size: 11px;
   font-weight: 600;
   color: #cbd5e1;
@@ -1341,7 +1341,7 @@ body {
 .handover-delete-btn:hover { background: rgba(16, 185, 129, 0.35); }
 
 /* ==========================================================================
-   LIGHT THEME SUPPORT (CLEAN & STRIPPED BANNER)
+   LIGHT THEME SUPPORT (HIGH-CONTRAST LIGHT GRAY BUTTONS)
    ========================================================================== */
 body.light-theme { color: #0f172a !important; }
 
@@ -1464,10 +1464,51 @@ body.light-theme .glass-card:not(.top-banner-card) {
   backdrop-filter: none !important;
 }
 
+/* LIGHT THEME: CATEGORY / TOURNAMENT BUTTONS & TAB PILLS */
+body.light-theme .boost-filter-btn {
+  background: #e2e8f0 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+body.light-theme .boost-filter-btn:hover {
+  background: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+body.light-theme .boost-filter-btn.active {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  border-color: #f87171 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.35) !important;
+}
+
+body.light-theme .tab-pill {
+  background: #e2e8f0 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+body.light-theme .tab-pill.active {
+  background: #0284c7 !important;
+  border-color: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+body.light-theme .matchday-selector {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
 body.light-theme .action-row,
 body.light-theme .boost-card,
 body.light-theme .duty-card,
-body.light-theme .top-game-card { background: #f8fafc !important; border-color: #e2e8f0 !important; color: #0f172a !important; }
+body.light-theme .top-game-card { 
+  background: #f8fafc !important; 
+  border-color: #e2e8f0 !important; 
+  color: #0f172a !important; 
+}
 
 body.light-theme .top-game-title,
 body.light-theme .boost-match-title,
