@@ -702,11 +702,10 @@ body {
   background-image: 
     linear-gradient(180deg, rgba(10, 14, 26, 0.88) 0%, rgba(8, 11, 20, 0.96) 100%), 
     radial-gradient(circle at top right, rgba(56, 189, 248, 0.15), transparent 50%) !important;
-  background-size: cover, cover !important;
-  background-position: center, center !important;
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.6) !important;
   z-index: 50;
   position: relative;
+  transition: all 0.3s ease;
 }
 
 .banner-top-row {
@@ -1311,7 +1310,7 @@ body {
 .handover-delete-btn { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; padding: 3px 8px; border-radius: 5px; font-size: 9.5px; font-weight: 700; cursor: pointer; }
 
 /* ==========================================================================
-   LIGHT THEME SUPPORT (ENHANCED VISIBILITY)
+   LIGHT THEME SUPPORT (ENHANCED VISIBILITY & BANNER BLENDING)
    ========================================================================== */
 body.light-theme { color: #0f172a !important; }
 
@@ -1349,6 +1348,63 @@ body.light-theme .top-admin-container .admin-top-pill { background: #ffffff !imp
 body.light-theme .top-admin-container .user-title { color: #0f172a !important; }
 body.light-theme .top-admin-container .logout-action-btn { background: rgba(239, 68, 68, 0.15) !important; border-color: #f87171 !important; color: #991b1b !important; }
 body.light-theme .top-admin-container .logout-action-btn:hover { background: #dc2626 !important; color: #ffffff !important; }
+
+/* LIGHT THEME: TOP BANNER CARD BLENDING */
+body.light-theme .top-banner-card {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  background-image: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(241, 245, 249, 0.95) 100%),
+    radial-gradient(circle at top right, rgba(56, 189, 248, 0.1), transparent 60%) !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06) !important;
+}
+
+/* LIGHT THEME: WEATHER WIDGET IN BANNER */
+body.light-theme .weather-banner-widget {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+body.light-theme .weather-banner-header { border-bottom-color: #e2e8f0 !important; }
+body.light-theme .weather-banner-title { color: #0284c7 !important; }
+body.light-theme .weather-banner-temp { color: #0f172a !important; }
+body.light-theme .weather-banner-cond { color: #475569 !important; }
+body.light-theme .weather-location-tag { color: #0f172a !important; }
+body.light-theme .weather-banner-details { color: #64748b !important; }
+
+/* LIGHT THEME: WORLD CLOCKS IN BANNER */
+body.light-theme .clock-badge {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+body.light-theme .clock-label { color: #64748b !important; opacity: 1 !important; }
+body.light-theme .clock-time { color: #0284c7 !important; }
+
+/* LIGHT THEME: BANNER BUTTONS & DROPDOWNS */
+body.light-theme .banner-controls-group .dropdown-btn {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+body.light-theme .banner-bottom-row {
+  border-top-color: #e2e8f0 !important;
+}
+
+/* LIGHT THEME: URGENT HANDOVER BANNER BLEND */
+body.light-theme .urgent-handover-banner {
+  background: rgba(254, 240, 138, 0.45) !important;
+  border-color: #eab308 !important;
+}
+body.light-theme .handover-alert-badge { color: #854d0e !important; }
+body.light-theme .handover-alert-badge i { color: #ca8a04 !important; }
+body.light-theme .handover-manage-btn {
+  background: #ffffff !important;
+  border-color: #eab308 !important;
+  color: #854d0e !important;
+}
 
 /* ACTIVE TRADER PILL IN LIGHT MODE */
 body.light-theme .metric-pill {
