@@ -1341,7 +1341,7 @@ body {
 .handover-delete-btn:hover { background: rgba(16, 185, 129, 0.35); }
 
 /* ==========================================================================
-   LIGHT THEME SUPPORT (ENHANCED VISIBILITY & BANNER BLENDING)
+   LIGHT THEME SUPPORT (CLEAN & STRIPPED BANNER)
    ========================================================================== */
 body.light-theme { color: #0f172a !important; }
 
@@ -1380,23 +1380,21 @@ body.light-theme .top-admin-container .user-title { color: #0f172a !important; }
 body.light-theme .top-admin-container .logout-action-btn { background: rgba(239, 68, 68, 0.15) !important; border-color: #f87171 !important; color: #991b1b !important; }
 body.light-theme .top-admin-container .logout-action-btn:hover { background: #dc2626 !important; color: #ffffff !important; }
 
-/* LIGHT THEME: TOP BANNER CARD BLENDING */
+/* LIGHT THEME: BANNER WALLPAPER STRIPPED & PURE LIGHT FINISH */
 body.light-theme .top-banner-card {
-  background-color: rgba(255, 255, 255, 0.94) !important;
-  background-image: 
-    linear-gradient(135deg, rgba(255, 255, 255, 0.99) 0%, rgba(241, 245, 249, 0.96) 100%),
-    radial-gradient(circle at top right, rgba(56, 189, 248, 0.12), transparent 60%) !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
   border: 1px solid #cbd5e1 !important;
-  box-shadow: 0 6px 22px rgba(15, 23, 42, 0.07) !important;
+  box-shadow: 0 6px 22px rgba(15, 23, 42, 0.06) !important;
 }
 
 /* LIGHT THEME: WEATHER WIDGET IN BANNER */
 body.light-theme .weather-banner-widget {
-  background: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: none !important;
 }
-body.light-theme .weather-banner-header { border-bottom-color: #e2e8f0 !important; }
+body.light-theme .weather-banner-header { border-bottom-color: #cbd5e1 !important; }
 body.light-theme .weather-banner-title { color: #0284c7 !important; }
 body.light-theme .weather-banner-temp { color: #0f172a !important; }
 body.light-theme .weather-banner-cond { color: #475569 !important; }
@@ -1405,19 +1403,19 @@ body.light-theme .weather-banner-details { color: #64748b !important; }
 
 /* LIGHT THEME: WORLD CLOCKS IN BANNER */
 body.light-theme .clock-badge {
-  background: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: none !important;
 }
 body.light-theme .clock-label { color: #64748b !important; opacity: 1 !important; }
 body.light-theme .clock-time { color: #0284c7 !important; }
 
 /* LIGHT THEME: BANNER BUTTONS & DROPDOWNS */
 body.light-theme .banner-controls-group .dropdown-btn {
-  background: #ffffff !important;
-  border-color: #cbd5e1 !important;
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
   color: #0f172a !important;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: none !important;
 }
 
 body.light-theme .banner-bottom-row {
@@ -1426,23 +1424,23 @@ body.light-theme .banner-bottom-row {
 
 /* LIGHT THEME: URGENT HANDOVER BANNER BLEND */
 body.light-theme .urgent-handover-banner {
-  background: rgba(254, 240, 138, 0.5) !important;
-  border-color: #eab308 !important;
+  background: #fefce8 !important;
+  border-color: #fde047 !important;
 }
 body.light-theme .handover-alert-badge { color: #854d0e !important; }
 body.light-theme .handover-alert-badge i { color: #ca8a04 !important; }
 body.light-theme .handover-manage-btn {
   background: #ffffff !important;
-  border-color: #eab308 !important;
+  border-color: #fef08a !important;
   color: #854d0e !important;
 }
 
 /* ACTIVE TRADER PILL IN LIGHT MODE */
 body.light-theme .metric-pill {
-  background: #ffffff !important;
-  border-color: #cbd5e1 !important;
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
   color: #0f172a !important;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+  box-shadow: none !important;
 }
 body.light-theme .metric-pill i { color: #0284c7 !important; }
 body.light-theme .metric-pill div div:first-child { color: #64748b !important; }
@@ -1451,7 +1449,7 @@ body.light-theme .metric-pill div div:last-child { color: #0f172a !important; }
 /* HANDOVER PILL & TEXT CONTRAST IN LIGHT MODE */
 body.light-theme .handover-pill-item {
   background: #ffffff !important;
-  border-color: #eab308 !important;
+  border-color: #fde047 !important;
   color: #0f172a !important;
 }
 body.light-theme .handover-pill-msg {
