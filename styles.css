@@ -1097,34 +1097,36 @@ body {
   padding-right: 3px;
 }
 
-/* TOP PICKS / HOT BOOSTS */
+/* TOP PICKS / HOT BOOSTS FILTER BAR */
 .top-picks-filter-bar {
   display: flex;
-  gap: 5px;
+  gap: 6px;
   overflow-x: auto;
-  padding-bottom: 3px;
-  scrollbar-width: none;
+  padding: 4px 2px;
+  scrollbar-width: thin;
 }
-.top-picks-filter-bar::-webkit-scrollbar { display: none; }
 
 .boost-filter-btn {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 999px;
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 9.5px;
+  color: #ffffff;
+  font-size: 10px;
   font-weight: 800;
-  padding: 4px 10px;
+  padding: 5px 12px;
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .boost-filter-btn.active {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  border-color: #f87171;
-  color: #ffffff;
-  box-shadow: 0 0 12px rgba(239, 68, 68, 0.45);
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  border-color: #f87171 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.45) !important;
 }
 
 .top-picks-list { display: flex; flex-direction: column; gap: 9px; }
@@ -1341,7 +1343,7 @@ body {
 .handover-delete-btn:hover { background: rgba(16, 185, 129, 0.35); }
 
 /* ==========================================================================
-   LIGHT THEME SUPPORT (HIGH-CONTRAST LIGHT GRAY BUTTONS)
+   LIGHT THEME SUPPORT (FORCED HIGH-CONTRAST LEAGUE BUTTONS)
    ========================================================================== */
 body.light-theme { color: #0f172a !important; }
 
@@ -1464,15 +1466,16 @@ body.light-theme .glass-card:not(.top-banner-card) {
   backdrop-filter: none !important;
 }
 
-/* LIGHT THEME: CATEGORY / TOURNAMENT BUTTONS & TAB PILLS */
+/* LIGHT THEME: FORCED LEAGUE FILTER BUTTON STYLING */
 body.light-theme .boost-filter-btn {
-  background: #e2e8f0 !important;
+  background-color: #e2e8f0 !important;
   border: 1px solid #cbd5e1 !important;
-  color: #334155 !important;
+  color: #1e293b !important;
+  font-weight: 800 !important;
 }
 
 body.light-theme .boost-filter-btn:hover {
-  background: #cbd5e1 !important;
+  background-color: #cbd5e1 !important;
   color: #0f172a !important;
 }
 
@@ -1480,7 +1483,7 @@ body.light-theme .boost-filter-btn.active {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
   border-color: #f87171 !important;
   color: #ffffff !important;
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.35) !important;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.4) !important;
 }
 
 body.light-theme .tab-pill {
