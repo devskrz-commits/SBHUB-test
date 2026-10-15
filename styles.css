@@ -976,6 +976,7 @@ body {
   gap: 6px;
   font-size: 10px;
   font-weight: 700;
+  color: #ffffff;
 }
 
 .dropdown-container { position: relative; display: inline-block; }
@@ -1197,7 +1198,7 @@ body {
   background: rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 6px 10px;
-  border-radius: 9px;
+  border-radius: 999px;
   font-size: 9.5px;
   font-weight: 700;
   color: #ffffff;
@@ -1311,14 +1312,21 @@ body {
 .handover-delete-btn { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; padding: 3px 8px; border-radius: 5px; font-size: 9.5px; font-weight: 700; cursor: pointer; }
 
 /* ==========================================================================
-   LIGHT THEME SUPPORT & UPPER NAVIGATION VISIBILITY
+   LIGHT THEME SUPPORT (ENHANCED VISIBILITY)
    ========================================================================== */
 body.light-theme { color: #0f172a !important; }
-body.light-theme .top-nav-bar { background: rgba(255, 255, 255, 0.95) !important; border-color: #94a3b8 !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important; }
+
+/* TOP NAVIGATION BAR */
+body.light-theme .top-nav-bar {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
 body.light-theme .top-brand-title { color: #0f172a !important; }
 body.light-theme .top-brand-title .brand-icon { color: #0284c7 !important; filter: none !important; }
 body.light-theme .top-nav-btn { color: #334155 !important; }
 body.light-theme .nav-icon-wrapper { background: #e2e8f0 !important; border-color: #cbd5e1 !important; color: #0284c7 !important; }
+
 body.light-theme .top-nav-btn:hover,
 body.light-theme .top-nav-dropdown-group:hover .top-nav-btn,
 body.light-theme .top-nav-dropdown-group.active .top-nav-btn {
@@ -1327,21 +1335,44 @@ body.light-theme .top-nav-dropdown-group.active .top-nav-btn {
   color: #0284c7 !important;
 }
 body.light-theme .top-nav-btn .nav-arrow { opacity: 0.8 !important; color: #334155 !important; }
-body.light-theme .top-dropdown-menu { background: #ffffff !important; border-color: #94a3b8 !important; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15) !important; }
+
+body.light-theme .top-dropdown-menu { background: #ffffff !important; border-color: #cbd5e1 !important; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15) !important; }
 body.light-theme .top-dropdown-link { background: #f8fafc !important; border-color: #e2e8f0 !important; color: #0f172a !important; }
 body.light-theme .top-dropdown-link:hover { background: #e0f2fe !important; color: #0284c7 !important; border-color: #38bdf8 !important; }
 body.light-theme .top-dropdown-link i { color: #0284c7 !important; }
 
-body.light-theme .top-search-box { background: #f1f5f9 !important; border-color: #94a3b8 !important; }
+body.light-theme .top-search-box { background: #f1f5f9 !important; border-color: #cbd5e1 !important; }
 body.light-theme .top-search-box input { color: #0f172a !important; }
-body.light-theme .top-search-box input::placeholder { color: #475569 !important; }
+body.light-theme .top-search-box input::placeholder { color: #64748b !important; }
 body.light-theme .top-search-box i { color: #334155 !important; }
 
-body.light-theme .top-admin-container .admin-top-pill { background: #ffffff !important; border-color: #94a3b8 !important; }
+body.light-theme .top-admin-container .admin-top-pill { background: #ffffff !important; border-color: #cbd5e1 !important; }
 body.light-theme .top-admin-container .user-title { color: #0f172a !important; }
-body.light-theme .top-admin-container .logout-action-btn { background: rgba(239, 68, 68, 0.2) !important; border-color: #f87171 !important; color: #991b1b !important; }
+body.light-theme .top-admin-container .logout-action-btn { background: rgba(239, 68, 68, 0.15) !important; border-color: #f87171 !important; color: #991b1b !important; }
 body.light-theme .top-admin-container .logout-action-btn:hover { background: #dc2626 !important; color: #ffffff !important; }
 
+/* FIX 1: ACTIVE TRADER PILL IN LIGHT MODE */
+body.light-theme .metric-pill {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+body.light-theme .metric-pill i { color: #0284c7 !important; }
+body.light-theme .metric-pill div div:first-child { color: #64748b !important; }
+body.light-theme .metric-pill div div:last-child { color: #0f172a !important; }
+
+/* FIX 2: HANDOVER PILL & TEXT CONTRAST IN LIGHT MODE */
+body.light-theme .handover-pill-item {
+  background: #ffffff !important;
+  border-color: #eab308 !important;
+  color: #0f172a !important;
+}
+body.light-theme .handover-pill-msg {
+  color: #854d0e !important;
+}
+
+/* CARDS & CONTAINERS */
 body.light-theme .glass-card:not(.top-banner-card) {
   background: #ffffff !important;
   border: 1px solid #cbd5e1 !important;
