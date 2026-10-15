@@ -9,12 +9,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500;700;800&amp;display=swap" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=8.10.0">
+  <link rel="stylesheet" href="./styles.css?v=8.11.0">
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <script src="./app.js?v=8.6.0" defer></script>
+  <script src="./app.js?v=8.7.0" defer></script>
 </head>
 <body id="pageBody">
 
@@ -358,7 +358,6 @@
               </div>
             </div>
 
-            <!-- THEME DROPDOWN WITH 2-3 TONE GRADIENTS -->
             <div class="dropdown-container">
               <button class="dropdown-btn" type="button" onclick="toggleDropdown('themeMenu')">
                 <i class="bx bx-palette"></i> Theme <i class="bx bx-chevron-down"></i>
@@ -496,22 +495,4 @@
         <i class="bx bx-x handover-modal-close" onclick="closeHandoverModal()"></i>
       </div>
       
-      <form onsubmit="addUrgentHandover(event)" class="handover-modal-form">
-        <div class="handover-form-group">
-          <select id="handoverPriorityInput" class="handover-field select-priority" required>
-            <option value="URGENT/CRITICAL" selected>🚨 URGENT / CRITICAL</option>
-            <option value="Need Attention">⚠️ Need Attention</option>
-            <option value="Normal">ℹ️ Normal</option>
-          </select>
-          <input type="text" id="handoverBrandInput" placeholder="Brand/Topic (e.g. IBET, QBET, MTS)" required class="handover-field short">
-          <input type="text" id="handoverMsgInput" placeholder="Handover Note / Issue Details..." required class="handover-field flex-1">
-          <button type="submit" class="handover-post-btn"><i class="bx bx-plus"></i> Post Note</button>
-        </div>
-      </form>
-
-      <div class="handover-modal-subtitle">ACTIVE HANDOVERS (Click <i class="bx bx-check"></i> when completed to delete)</div>
-      <div class="handover-items-list" id="handoverModalList"></div>
-    </div>
-  </div>
-</body>
-</html>
+      <form onsubmit="addUrgentHandover(event)"
