@@ -1,6 +1,6 @@
 :root {
   --glass-bg: rgba(255, 255, 255, 0.14);
-  --glass-card-bg: rgba(13, 20, 36, 0.72);
+  --glass-card-bg: rgba(13, 20, 36, 0.78);
   --glass-border: rgba(255, 255, 255, 0.22);
   --glass-highlight: inset 0 1px 2px rgba(255, 255, 255, 0.45), inset 0 -1px 2px rgba(0, 0, 0, 0.25);
   --glass-shadow: 0 18px 50px rgba(0, 0, 0, 0.65);
@@ -25,10 +25,14 @@ html, body {
   overflow: hidden;
 }
 
+/* FOOTBALL IMAGE BACKGROUND SETUP */
 body {
-  background: #070b14;
+  background-color: #070b14;
+  background-image: 
+    linear-gradient(180deg, rgba(7, 11, 20, 0.85) 0%, rgba(7, 11, 20, 0.88) 100%),
+    url('sasint-children-1822688_1920.jpg');
   background-size: cover;
-  background-position: center;
+  background-position: center center;
   background-attachment: fixed;
   background-repeat: no-repeat;
   color: #f8fafc;
@@ -1343,13 +1347,18 @@ body {
 .handover-delete-btn:hover { background: rgba(16, 185, 129, 0.35); }
 
 /* ==========================================================================
-   LIGHT THEME SUPPORT (FORCED HIGH-CONTRAST LEAGUE BUTTONS)
+   LIGHT THEME SUPPORT
    ========================================================================== */
-body.light-theme { color: #0f172a !important; }
+body.light-theme { 
+  color: #0f172a !important; 
+  background-image: 
+    linear-gradient(180deg, rgba(241, 245, 249, 0.82) 0%, rgba(241, 245, 249, 0.88) 100%),
+    url('sasint-children-1822688_1920.jpg') !important;
+}
 
 /* TOP NAVIGATION BAR */
 body.light-theme .top-nav-bar {
-  background: #ffffff !important;
+  background: rgba(255, 255, 255, 0.92) !important;
   border-color: #cbd5e1 !important;
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.08) !important;
 }
@@ -1382,9 +1391,9 @@ body.light-theme .top-admin-container .user-title { color: #0f172a !important; }
 body.light-theme .top-admin-container .logout-action-btn { background: rgba(239, 68, 68, 0.15) !important; border-color: #f87171 !important; color: #991b1b !important; }
 body.light-theme .top-admin-container .logout-action-btn:hover { background: #dc2626 !important; color: #ffffff !important; }
 
-/* LIGHT THEME: BANNER WALLPAPER STRIPPED & PURE LIGHT FINISH */
+/* LIGHT THEME: BANNER FINISH */
 body.light-theme .top-banner-card {
-  background-color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.94) !important;
   background-image: none !important;
   border: 1px solid #cbd5e1 !important;
   box-shadow: 0 6px 22px rgba(15, 23, 42, 0.06) !important;
@@ -1460,13 +1469,14 @@ body.light-theme .handover-pill-msg {
 
 /* CARDS & CONTAINERS */
 body.light-theme .glass-card:not(.top-banner-card) {
-  background: #ffffff !important;
+  background: rgba(255, 255, 255, 0.92) !important;
   border: 1px solid #cbd5e1 !important;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07) !important;
-  backdrop-filter: none !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
 }
 
-/* LIGHT THEME: FORCED LEAGUE FILTER BUTTON STYLING */
+/* LIGHT THEME: LEAGUE FILTER BUTTON STYLING */
 body.light-theme .boost-filter-btn {
   background-color: #e2e8f0 !important;
   border: 1px solid #cbd5e1 !important;
