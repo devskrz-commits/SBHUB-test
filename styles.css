@@ -69,7 +69,7 @@ body {
 }
 
 /* ==========================================================================
-   TRADING TERMINAL AUTHENTICATION OVERLAY & FIXED TICKER
+   TRADING TERMINAL AUTHENTICATION & LIVE TREND GRAPH HEADER
    ========================================================================== */
 #authOverlay {
   position: fixed;
@@ -83,7 +83,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0;
+  padding: 20px;
   overflow: hidden;
   transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease;
 }
@@ -105,61 +105,113 @@ body {
   pointer-events: none;
 }
 
-/* LIVE TRADING TICKER AT TOP (FIXED SINGLE HORIZONTAL LINE) */
-.login-ticker-wrap {
+/* PROFESSIONAL LIVE THROUGHPUT TREND HEADER */
+.gateway-trend-header {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 38px;
-  background: rgba(10, 16, 30, 0.95);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  overflow: hidden;
+  top: 18px;
+  left: 30px;
+  right: 30px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   z-index: 20;
 }
 
-.login-ticker {
+.trend-header-left {
   display: flex;
   align-items: center;
-  gap: 36px;
-  white-space: nowrap;
-  flex-wrap: nowrap;
-  animation: tickerScroll 25s linear infinite;
-  will-change: transform;
+  gap: 12px;
 }
 
-.login-ticker:hover { animation-play-state: paused; }
-
-@keyframes tickerScroll {
-  0% { transform: translateX(100vw); }
-  100% { transform: translateX(-100%); }
+.trend-icon {
+  font-size: 20px;
+  color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.ticker-item {
-  display: inline-flex;
+.trend-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.8px;
+}
+
+.trend-sub {
+  display: block;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+}
+
+.trend-stats-pill {
+  display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11.5px;
+  background: rgba(10, 16, 30, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 11px;
   font-weight: 700;
+  color: var(--accent-cyan);
   font-family: 'JetBrains Mono', monospace;
-  white-space: nowrap;
-  flex-shrink: 0;
 }
 
-.ticker-symbol { color: #94a3b8; letter-spacing: 0.5px; }
-.ticker-val.up { color: #4ade80; }
-.ticker-val.down { color: #f87171; }
-.ticker-val.cyan { color: #38bdf8; }
+.stat-dot {
+  width: 8px;
+  height: 8px;
+  background: #4ade80;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #4ade80;
+  animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* SVG TREND GRAPH CONTAINER AT BOTTOM/BACKGROUND OF GATEWAY */
+.gateway-trend-graph-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 110px;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.85;
+}
+
+.gateway-trend-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.trend-line-path {
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.7));
+  animation: drawPath 3s ease-in-out infinite alternate;
+}
+
+@keyframes drawPath {
+  0% { transform: translateY(2px); }
+  100% { transform: translateY(-3px); }
+}
 
 .login-container {
   width: 100%;
   max-width: 430px;
   position: relative;
   z-index: 10;
-  margin-top: 40px;
+  margin-top: 20px;
   display: flex;
   justify-content: center;
 }
