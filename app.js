@@ -31,7 +31,6 @@ function handleLogout() {
     document.getElementById('passwordInput').value = '';
 }
 
-// Check session on load
 if (localStorage.getItem('sbhub_auth') === 'true') {
     if (document.getElementById('authOverlay')) {
         document.getElementById('authOverlay').classList.add('unlocked');
