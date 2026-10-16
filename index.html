@@ -1,410 +1,406 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sportsbook Hub - Secured Dashboard</title>
-  
-  <!-- Fonts & Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="./styles.css?v=12.0.0">
-
-  <!-- External Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  
-  <!-- App JS -->
-  <script src="./app.js?v=8.4.1" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sportsbook Hub Growth Dashboard</title>
+    
+    <!-- External Dependencies -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body id="pageBody">
+<body>
 
-  <canvas id="bgCanvas"></canvas>
-
-  <!-- FRONT SECURITY LOGIN OVERLAY MODAL -->
-  <div id="authOverlay">
-    <div class="login-container">
-      <div class="sitting-robot-stage" id="sittingRobotStage">
-        <div class="robot-body-wrapper" id="robotBodyWrapper">
-          <div class="robot-antenna"></div>
-          <div class="robot-head" id="robotHead">
-            <div class="robot-visor">
-              <div class="robot-eye" id="leftEye"></div>
-              <div class="robot-eye" id="rightEye"></div>
+    <div class="dashboard-wrapper">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="logo-area">
+                <div class="logo-ref-text">SPORTSBOOK HUB</div>
+                <div class="logo-main"><i data-lucide="waves"></i> Growth</div>
             </div>
-          </div>
-          <div class="robot-torso"></div>
-          <div class="robot-leg left"></div>
-          <div class="robot-leg right"></div>
-          <div class="robot-hand left"></div>
-          <div class="robot-hand right"></div>
+
+            <!-- Search Bar -->
+            <div class="sidebar-search">
+                <i data-lucide="search" size="16" color="var(--text-muted)"></i>
+                <input type="text" id="sidebarSearchInput" placeholder="Search links (e.g. ROTA)" onkeyup="filterSidebar()">
+            </div>
+
+            <div class="menu-group" id="sidebarMenuContainer">
+                
+                <div class="menu-item-wrapper">
+                    <a class="menu-item active" href="#"><div class="menu-item-left"><i data-lucide="layout-dashboard" size="18"></i> <span class="label-ref">Dashboard</span></div></a>
+                </div>
+                
+                <!-- INTERNAL -->
+                <div class="menu-item-wrapper">
+                    <div class="menu-item" onclick="toggleMenu('sub-internal')">
+                        <div class="menu-item-left"><i data-lucide="calendar" size="18"></i> <span class="label-ref">INTERNAL</span></div>
+                        <i data-lucide="chevron-down" size="16"></i>
+                    </div>
+                    <div class="sub-menu" id="sub-internal">
+                        <a href="#" class="sub-link">Daily Duty</a>
+                        <a href="#" class="sub-link">Rota</a>
+                        <a href="#" class="sub-link">Daily Big Winners</a>
+                        <a href="#" class="sub-link">Handover</a>
+                    </div>
+                </div>
+
+                <!-- DAILY TASKS -->
+                <div class="menu-item-wrapper">
+                    <div class="menu-item" onclick="toggleMenu('sub-tasks')">
+                        <div class="menu-item-left"><i data-lucide="check-square" size="18"></i> <span class="label-ref">DAILY TASKS</span></div>
+                        <i data-lucide="chevron-down" size="16"></i>
+                    </div>
+                    <div class="sub-menu" id="sub-tasks">
+                        <a href="#" class="sub-link">Top Picks (Schedule)</a>
+                        <a href="#" class="sub-link">Edge Boost (MIG)</a>
+                        <a href="#" class="sub-link">Ibet Boost (MIG)</a>
+                        <a href="#" class="sub-link">KT Sports Check</a>
+                        <a href="#" class="sub-link">Prediction Offer Check</a>
+                        <a href="#" class="sub-link">Edge Boost Sys</a>
+                        <a href="#" class="sub-link">Ibet Boost Sys</a>
+                    </div>
+                </div>
+
+                <!-- DAILY MONITORING -->
+                <div class="menu-item-wrapper">
+                    <div class="menu-item" onclick="toggleMenu('sub-monitoring')">
+                        <div class="menu-item-left"><i data-lucide="activity" size="18"></i> <span class="label-ref">MONITORING</span></div>
+                        <i data-lucide="chevron-down" size="16"></i>
+                    </div>
+                    <div class="sub-menu" id="sub-monitoring">
+                        <a href="#" class="sub-link">Green Tracker</a>
+                        <a href="#" class="sub-link">Red Tracker</a>
+                        <a href="#" class="sub-link">Orange Tracker</a>
+                        <a href="#" class="sub-link">7A Tracker</a>
+                        <a href="#" class="sub-link">Green CRM</a>
+                        <a href="#" class="sub-link">Red CRM</a>
+                    </div>
+                </div>
+            
+                <div class="menu-title">INTEGRATION</div>
+                
+                <!-- BACK OFFICE -->
+                <div class="menu-item-wrapper">
+                    <div class="menu-item" onclick="toggleMenu('sub-backoffice')">
+                        <div class="menu-item-left"><i data-lucide="slack" size="18"></i> <span class="label-ref">BACK OFFICE</span></div>
+                        <i data-lucide="chevron-down" size="16"></i>
+                    </div>
+                    <div class="sub-menu" id="sub-backoffice">
+                        <a href="#" class="sub-link">QBET/55/30</a>
+                        <a href="#" class="sub-link">IBET</a>
+                        <a href="#" class="sub-link">PUBS</a>
+                    </div>
+                </div>
+
+                <!-- MULTI-MONITOR -->
+                <div class="menu-item-wrapper">
+                    <div class="menu-item" onclick="toggleMenu('sub-multimonitor')">
+                        <div class="menu-item-left"><i data-lucide="monitor" size="18"></i> <span class="label-ref">MULTI-MONITOR</span></div>
+                        <i data-lucide="chevron-down" size="16"></i>
+                    </div>
+                    <div class="sub-menu" id="sub-multimonitor">
+                        <a href="#" class="sub-link">Edge Prediction Ticker</a>
+                        <a href="#" class="sub-link">Pubs Prediction Ticker</a>
+                        <a href="#" class="sub-link">Qbet/55/30 Rejected</a>
+                        <a href="#" class="sub-link">Pubs Rejected</a>
+                    </div>
+                </div>
+
+                <!-- BETRADAR -->
+                <div class="menu-item-wrapper">
+                    <div class="menu-item" onclick="toggleMenu('sub-betradar')">
+                        <div class="menu-item-left"><i data-lucide="target" size="18"></i> <span class="label-ref">BETRADAR</span></div>
+                        <i data-lucide="chevron-down" size="16"></i>
+                    </div>
+                    <div class="sub-menu" id="sub-betradar">
+                        <a href="#" class="sub-link">MTS</a>
+                        <a href="#" class="sub-link">CTRL Portal</a>
+                    </div>
+                </div>
+
+                <!-- OWN BRANDS -->
+                <div class="menu-item-wrapper">
+                    <div class="menu-item" onclick="toggleMenu('sub-ownbrands')">
+                        <div class="menu-item-left"><i data-lucide="plus-circle" size="18"></i> <span class="label-ref">OWN BRANDS</span></div>
+                        <i data-lucide="chevron-down" size="16"></i>
+                    </div>
+                    <div class="sub-menu" id="sub-ownbrands">
+                        <a href="#" class="sub-link">7A</a>
+                        <a href="#" class="sub-link">QBET</a>
+                        <a href="#" class="sub-link">55BET</a>
+                        <a href="#" class="sub-link">30BET</a>
+                        <a href="#" class="sub-link">GQBET</a>
+                        <a href="#" class="sub-link">BVBET</a>
+                        <a href="#" class="sub-link">IBET</a>
+                    </div>
+                </div>
+
+                <!-- PRICE REFERENCES -->
+                <div class="menu-item-wrapper">
+                    <div class="menu-item" onclick="toggleMenu('sub-priceref')">
+                        <div class="menu-item-left"><i data-lucide="database" size="18"></i> <span class="label-ref">PRICE REFERENCES</span></div>
+                        <i data-lucide="chevron-down" size="16"></i>
+                    </div>
+                    <div class="sub-menu" id="sub-priceref">
+                        <a href="#" class="sub-link">Flashscore</a>
+                        <a href="#" class="sub-link">Betsapi</a>
+                        <a href="#" class="sub-link">Oddsportal</a>
+                        <a href="#" class="sub-link">Oddschecker</a>
+                        <a href="#" class="sub-link">Betfair</a>
+                        <a href="#" class="sub-link">Bet365</a>
+                        <a href="#" class="sub-link">Pinnacle</a>
+                        <a href="#" class="sub-link">GGBet</a>
+                        <a href="#" class="sub-link">Unibet</a>
+                        <a href="#" class="sub-link">Sofascore</a>
+                        <a href="#" class="sub-link">Marathonbet</a>
+                        <a href="#" class="sub-link">Fonbet</a>
+                    </div>
+                </div>
+
+                <!-- PROCEDURES -->
+                <div class="menu-item-wrapper">
+                    <div class="menu-item" onclick="toggleMenu('sub-procedures')">
+                        <div class="menu-item-left"><i data-lucide="file-text" size="18"></i> <span class="label-ref">PROCEDURES</span></div>
+                        <i data-lucide="chevron-down" size="16"></i>
+                    </div>
+                    <div class="sub-menu" id="sub-procedures">
+                        <a href="#" class="sub-link">Confluence</a>
+                        <a href="#" class="sub-link">Workspace Guide</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="spacer"></div>
+            <a href="#" class="menu-item" style="color: var(--text-muted);"><div class="menu-item-left"><i data-lucide="settings" size="18"></i> Setting</div></a>
         </div>
-      </div>
 
-      <div class="login-card" id="loginCard">
-        <div class="login-title">Security Gateway</div>
-        <div class="login-subtitle">SPORTSBOOK TRADING PORTAL</div>
-        
-        <form class="login-input-group" onsubmit="handleLogin(event)">
-          <div class="field-wrapper">
-            <label class="login-label" for="usernameInput">Username or email</label>
-            <input type="text" id="usernameInput" class="login-input" value="sportsbook2026" required autocomplete="username">
-          </div>
-
-          <div class="field-wrapper">
-            <div class="field-label-row">
-              <label class="login-label" for="passwordInput">Security Key</label>
-              <a href="#forgot" class="forgot-link">Forgot key?</a>
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- HEADER -->
+            <div class="top-header">
+                <h1>Hi, User!</h1>
+                <div class="header-actions">
+                    <!-- CREATE -->
+                    <button class="btn-create" onclick="openModal('taskModal')"><i data-lucide="plus" size="16"></i> Create</button>
+                    <!-- SEARCH -->
+                    <button class="icon-btn" onclick="openModal('globalSearchModal')" title="Global Search"><i data-lucide="search" size="18"></i></button>
+                    <!-- NOTIFICATION -->
+                    <button class="icon-btn" onclick="openNotifications()" title="Notifications / Upcoming Games"><i data-lucide="bell" size="18"></i></button>
+                    <!-- PROFILE (Opens Theme Config) -->
+                    <div class="user-avatar" onclick="openModal('themeModal')" title="Profile Configuration"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" width="100%"></div>
+                </div>
             </div>
-            <div class="password-field-wrap">
-              <input type="password" id="passwordInput" class="login-input" value="sb2026" placeholder="Enter password" required autocomplete="current-password">
-              <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility()" aria-label="Toggle Password Visibility">
-                <i class="bx bx-show" id="togglePassIcon"></i>
-              </button>
+
+            <!-- TOP GRID -->
+            <div class="grid-top">
+                <!-- Jira & Handover -->
+                <div class="card black-theme">
+                    <div class="card-header-label">
+                        <span>JIRA & HANDOVER DISPLAY</span>
+                        <button class="add-alert-btn" onclick="openModal('alertModal')">+ Add Alert</button>
+                    </div>
+                    <div class="card-title">Pending & Urgent <i data-lucide="share-2" size="18"></i></div>
+                    <div class="widget-content-scroll" id="jiraHandoverContent">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <!-- Top Picks -->
+                <div class="card">
+                    <div class="card-header-label">TOP PICKS / HOT BOOST</div>
+                    <div class="card-title">Upcoming Matches <i data-lucide="pie-chart" size="20"></i></div>
+                    <div class="filter-bar" style="margin-bottom: 0.2rem;">
+                        <button class="filter-btn active" onclick="filterPicks('eng.1', this)">EPL</button>
+                        <button class="filter-btn" onclick="filterPicks('esp.1', this)">LA LIGA</button>
+                        <button class="filter-btn" onclick="filterPicks('ger.1', this)">BUNDESLIGA</button>
+                        <button class="filter-btn" onclick="filterPicks('ita.1', this)">SERIE A</button>
+                        <button class="filter-btn" onclick="filterPicks('uefa.champions', this)">UEFA</button>
+                    </div>
+                    <div class="picks-grid" id="topPicksContainer">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <!-- Top Games -->
+                <div class="card">
+                    <div class="card-header-label">TOP DAILY GAMES</div>
+                    <div class="card-title">Daily Matchday <i data-lucide="arrow-up-right" size="20"></i></div>
+                    <div class="games-navigator">
+                        <i data-lucide="chevron-left" style="cursor: pointer;" onclick="navMatchDay(-1)"></i>
+                        <span id="matchDayDisplay">TODAY</span>
+                        <i data-lucide="chevron-right" style="cursor: pointer;" onclick="navMatchDay(1)"></i>
+                    </div>
+                    <div class="widget-content-scroll" id="gamesContainer">
+                        <div style="text-align:center; padding: 2rem; color: var(--text-muted); font-size: 0.8rem;">Loading timetable...</div>
+                    </div>
+                </div>
             </div>
-          </div>
 
-          <div class="remember-row">
-            <input type="checkbox" id="rememberMe" checked>
-            <label for="rememberMe">Maintain active session</label>
-          </div>
+            <!-- MIDDLE GRID (3 Columns to accommodate new docks) -->
+            <div class="grid-middle">
+                
+                <!-- Col 1: Slot Duties -->
+                <div class="card">
+                    <div class="card-header-label">
+                        <span>SLOT DUTIES</span>
+                        <span>WORKING: <span id="activeTraderCount">0</span></span>
+                    </div>
+                    <div class="card-title">Live Time-Slot <span style="font-size:0.7rem; font-weight:700; background:var(--body-bg); color:var(--text-main); padding:4px 8px; border-radius:12px;" id="slotBadge">--:--</span></div>
+                    <div class="widget-content-scroll" id="liveDutyContent">
+                        <div style="text-align:center; padding: 2rem; color: var(--text-muted); font-size: 0.8rem;">Loading roster...</div>
+                    </div>
+                </div>
 
-          <div class="login-error" id="loginErrorMsg"></div>
+                <!-- Col 2: Brand Directory & Daily Task Docks -->
+                <div style="display: flex; flex-direction: column; gap: 1.2rem;">
+                    
+                    <!-- Brand Directory Dock -->
+                    <div class="card" style="flex: 1;">
+                        <div class="card-header-label">BRAND DIRECTORY DOCK</div>
+                        <div class="filter-bar" id="brand-tabs" style="margin-bottom: 0.5rem; margin-top: 0.3rem;">
+                            <button class="filter-btn active" id="tab-ibet" onclick="switchBrandTab('ibet')">IBET</button>
+                            <button class="filter-btn" id="tab-edge" onclick="switchBrandTab('edge')">EDGE</button>
+                            <button class="filter-btn" id="tab-pubs" onclick="switchBrandTab('pubs')">PUBS</button>
+                        </div>
+                        <div class="widget-content-scroll" id="brandLinksContainer">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
 
-          <button type="submit" class="login-btn">
-            <i class="bx bx-key"></i> ACCESS DASHBOARD
-          </button>
-        </form>
-      </div>
+                    <!-- Daily Task Dock -->
+                    <div class="card" style="flex: 1;">
+                        <div class="card-header-label" style="margin-bottom: 0.6rem;">DAILY TASK DOCK</div>
+                        <div class="widget-content-scroll">
+                            <a href="#" class="dock-link"><span>TOP PICKS (SCHEDULE)</span> <i data-lucide="arrow-right" size="14"></i></a>
+                            <a href="#" class="dock-link"><span>EDGE BOOST (MIG)</span> <i data-lucide="arrow-right" size="14"></i></a>
+                            <a href="#" class="dock-link"><span>IBET BOOST (MIG)</span> <i data-lucide="arrow-right" size="14"></i></a>
+                            <a href="#" class="dock-link"><span>KT SPORTS CHECK</span> <i data-lucide="arrow-right" size="14"></i></a>
+                            <a href="#" class="dock-link"><span>PREDICTION OFFER CHECK</span> <i data-lucide="arrow-right" size="14"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Col 3: Task in process -->
+                <div style="display:flex; flex-direction:column; overflow:hidden;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:0.8rem;">
+                        <h3 style="font-size:1.1rem; font-weight:700; color:var(--text-main);">Task In process (<span id="taskCount">0</span>)</h3>
+                        <div style="font-size:0.75rem; font-weight:600; color:var(--text-muted); cursor:pointer;">Open Archive ></div>
+                    </div>
+                    
+                    <div class="tasks-row" id="taskContainer">
+                        <!-- Dynamic Tasks go here -->
+                        <div class="task-card dashed" onclick="openModal('taskModal')">+ Add a task</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTTOM GRID (4 Columns for 2 Timezones, Weather, Sync) -->
+            <div>
+                <div class="card-title" style="margin-bottom:0.8rem; font-size:1rem; color:var(--text-main);">Live Widgets & Tracking</div>
+                <div class="grid-bottom">
+                    <!-- Manila Time -->
+                    <div class="card black-theme bottom-card">
+                        <div class="card-header-label">MANILA TIME (GMT+8)</div>
+                        <div class="bottom-val" id="live-time-gmt8">--:--:--</div>
+                        <div class="bottom-sub" id="live-date-gmt8">Loading date...</div>
+                        <div class="corner-icon"><i data-lucide="clock" size="16"></i></div>
+                    </div>
+                    <!-- Athens/Europe Time -->
+                    <div class="card black-theme bottom-card">
+                        <div class="card-header-label">EUROPE TIME (GMT+2)</div>
+                        <div class="bottom-val" id="live-time-gmt2">--:--:--</div>
+                        <div class="bottom-sub" id="live-date-gmt2">Loading date...</div>
+                        <div class="corner-icon"><i data-lucide="globe" size="16"></i></div>
+                    </div>
+                    <!-- Weather (Open-Meteo accurate fetch + Firebase sync mock) -->
+                    <div class="card black-theme bottom-card">
+                        <div class="card-header-label">WEATHER (METRO MANILA)</div>
+                        <div class="bottom-val" id="live-temp">--°C</div>
+                        <div class="bottom-sub" id="live-weather-desc">Loading weather...</div>
+                        <div class="corner-icon"><i data-lucide="cloud-rain" size="16"></i></div>
+                    </div>
+                    <!-- Dashboard Sync / Theme Switcher -->
+                    <div class="card black-theme bottom-card" onclick="openModal('themeModal')">
+                        <div class="card-header-label">SYSTEM (CLICK FOR THEME)</div>
+                        <div class="bottom-val" style="font-size: 1.4rem; padding: 0.3rem 0;">Dashboard Sync</div>
+                        <div class="bottom-sub">Status: Online / Connected</div>
+                        <div class="corner-icon">100%</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
-  </div>
 
-  <!-- DASHBOARD APP CONTAINER -->
-  <div id="dashboardApp">
+    <!-- MODALS -->
 
-    <div class="mobile-nav-header">
-      <button type="button" class="mobile-menu-toggle" id="mobileMenuBtn" onclick="toggleMobileSidebar()">
-        <i class="bx bx-menu"></i>
-      </button>
-      <div class="mobile-brand-title">Sportsbook Hub</div>
-      <button type="button" class="mobile-lock-btn" onclick="handleLogout()" title="Lock Session">
-        <i class="bx bx-log-out"></i>
-      </button>
+    <!-- Add Task Modal -->
+    <div class="modal-overlay" id="taskModal">
+        <div class="modal-card">
+            <div class="modal-title">Create New Task <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('taskModal')"></i></div>
+            <form onsubmit="saveTask(event)">
+                <input type="text" id="taskTitle" class="modal-input" placeholder="Task Title (e.g. Meet HR For Project)" required>
+                <input type="text" id="taskTime" class="modal-input" placeholder="Time / Detail (e.g. Tonight, 15:00)" required>
+                <button type="submit" class="modal-btn">Save Task</button>
+            </form>
+        </div>
     </div>
 
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar(false)"></div>
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="mainSidebar">
-      <div class="sidebar-menu-scroll">
-        
-        <div class="sidebar-brand-box">
-          <div class="growth-logo-icon"><i class="bx bx-grid-alt"></i></div>
-          <div style="display:flex; flex-direction:column;">
-            <span style="font-size: 7.5px; font-weight: 800; color: #dc2626; letter-spacing: 0.5px; text-transform: uppercase;">Sportsbook Hub</span>
-            <span class="growth-logo-text">Growth</span>
-          </div>
-          <button type="button" class="mobile-sidebar-close" onclick="toggleMobileSidebar(false)">
-            <i class="bx bx-x"></i>
-          </button>
+    <!-- Add Alert Modal -->
+    <div class="modal-overlay" id="alertModal">
+        <div class="modal-card">
+            <div class="modal-title">Add Alert/Handover <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('alertModal')"></i></div>
+            <form onsubmit="saveAlert(event)">
+                <select id="alertType" class="modal-input" required>
+                    <option value="HANDOVER">Handover</option>
+                    <option value="JIRA">Jira Ticket</option>
+                </select>
+                <input type="text" id="alertBrand" class="modal-input" placeholder="Brand or Ticket Key (e.g. IBET, PROJ-123)" required>
+                <input type="text" id="alertMsg" class="modal-input" placeholder="Message or Details" required>
+                <button type="submit" class="modal-btn">Post Alert</button>
+            </form>
         </div>
-
-        <div class="sidebar-nav-item active-nav">
-          <i class="bx bxs-dashboard" style="font-size: 16px;"></i>
-          <span>Dashboard</span>
-        </div>
-
-        <div class="search-box">
-          <i class="bx bx-search" style="font-size: 14px;"></i>
-          <input type="text" placeholder="Search categories...">
-        </div>
-
-        <!-- INTERNAL -->
-        <div class="sidebar-section-title">INTERNAL</div>
-        <div class="nav-group">
-          <div class="sidebar-nav-item" onclick="toggleMenu('sub-internal', this)">
-            <i class="bx bx-calendar" style="font-size: 15px;"></i>
-            <span style="flex:1;">INTERNAL</span>
-            <i class="bx bx-chevron-down"></i>
-          </div>
-          <div class="sub-menu collapsed" id="sub-internal">
-            <a class="nav-sub-btn" href="duties.html" target="_blank" rel="noreferrer"><span>DAILY DUTY</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="rota.html" target="_blank" rel="noreferrer"><span>ROTA</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://reliancedigi-my.sharepoint.com/:x:/p/ann/IQCWP022FAMHSY-z3-eV0c9XAWFWLrVAPb9xSCUut_VuZ9U?rtime=BxZTEFXS3kg" target="_blank" rel="noreferrer"><span>DAILY BIG WINNERS</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="handover.html" target="_blank" rel="noreferrer"><span>HANDOVER</span><i class="bx bx-right-arrow-alt"></i></a>
-          </div>
-        </div>
-
-        <!-- DAILY TASKS -->
-        <div class="sidebar-section-title">DAILY TASKS</div>
-        <div class="nav-group">
-          <div class="sidebar-nav-item" onclick="toggleMenu('sub-dailytask', this)">
-            <i class="bx bx-task" style="font-size: 15px;"></i>
-            <span style="flex:1;">DAILY TASKS</span>
-            <i class="bx bx-chevron-down"></i>
-          </div>
-          <div class="sub-menu collapsed" id="sub-dailytask">
-            <a class="nav-sub-btn" href="boostschedule.html" target="_blank" rel="noreferrer"><span>TOP PICKS</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit?gid=1450723096#gid=1450723096" target="_blank" rel="noreferrer"><span>EDGE BOOST (MIG)</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit?gid=784209986#gid=784209986" target="_blank" rel="noreferrer"><span>IBET BOOST (MIG)</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank" rel="noreferrer"><span>KT SPORTS CHECK</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://polymarket.com/breaking" target="_blank" rel="noreferrer"><span>PREDICTION OFFER CHECK</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="edge_boosts.html" target="_blank" rel="noreferrer"><span>EDGE BOOST SYS</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="ibet_boosts.html" target="_blank" rel="noreferrer"><span>IBET BOOST SYS</span><i class="bx bx-right-arrow-alt"></i></a>
-          </div>
-        </div>
-
-        <!-- MONITORING -->
-        <div class="sidebar-section-title">MONITORING</div>
-        <div class="nav-group">
-          <div class="sidebar-nav-item" onclick="toggleMenu('sub-dailymonitoring', this)">
-            <i class="bx bx-line-chart" style="font-size: 15px;"></i>
-            <span style="flex:1;">DAILY MONITORING</span>
-            <i class="bx bx-chevron-down"></i>
-          </div>
-          <div class="sub-menu collapsed" id="sub-dailymonitoring">
-            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1qruVq-HZCyM0uDgnYSqFhccXKnMkqJ8z/edit?gid=1305147410#gid=1305147410" target="_blank" rel="noreferrer"><span>GREEN TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1OcaMz_AOUeRsWIVplbnk2XAna62m3IKa/edit?gid=457800468#gid=457800468" target="_blank" rel="noreferrer"><span>RED TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1U-Dmc628kHQabzJGoBeEgRus5PiRhgSd/edit?pli=1&amp;gid=1983372695#gid=1983372695" target="_blank" rel="noreferrer"><span>ORANGE TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="#7a"><span>7A TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/11STKO4Xsj0a8iTuUXSCXC-XEE4-7qmF9/edit?pli=1&amp;gid=1701374259#gid=1701374259" target="_blank" rel="noreferrer"><span>GREEN CRM</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1gPks2FdHyOOTiILvn553miz32WeEtOpx/edit?gid=1701374259#gid=1701374259" target="_blank" rel="noreferrer"><span>RED CRM</span><i class="bx bx-right-arrow-alt"></i></a>
-          </div>
-        </div>
-
-        <!-- INTEGRATION -->
-        <div class="sidebar-section-title">INTEGRATION</div>
-        <div class="nav-group">
-          <div class="sidebar-nav-item" onclick="toggleMenu('sub-backoffice', this)">
-            <i class="bx bxl-slack" style="font-size: 15px;"></i>
-            <span style="flex:1;">BACK OFFICE</span>
-            <i class="bx bx-chevron-down"></i>
-          </div>
-          <div class="sub-menu collapsed" id="sub-backoffice">
-            <a class="nav-sub-btn" href="https://betbook.center/qbet/bets" target="_blank" rel="noreferrer"><span>QBET/55/30</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://mga-betbook.center/ibet/bets" target="_blank" rel="noreferrer"><span>IBET</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://eu-b7k.center/pubs8/bets" target="_blank" rel="noreferrer"><span>PUBS</span><i class="bx bx-right-arrow-alt"></i></a>
-          </div>
-        </div>
-
-        <div class="nav-group" style="margin-top: 4px;">
-          <div class="sidebar-nav-item" onclick="toggleMenu('sub-multimonitor', this)">
-            <i class="bx bxl-discord-alt" style="font-size: 15px;"></i>
-            <span style="flex:1;">MULTI MONITOR</span>
-            <i class="bx bx-chevron-down"></i>
-          </div>
-          <div class="sub-menu collapsed" id="sub-multimonitor">
-            <a class="nav-sub-btn" href="https://betbook.center/monitor?providerIds=prediction_markets" target="_blank" rel="noreferrer"><span>EDGE PREDICTION TICKER</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://eu-b7k.center/monitor?providerIds=prediction_markets" target="_blank" rel="noreferrer"><span>PUBS PREDICTION TICKER</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://betbook.center/monitor" target="_blank" rel="noreferrer"><span>QBET/55/30 REJECTED</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://eu-b7k.center/monitor" target="_blank" rel="noreferrer"><span>PUBS REJECTED</span><i class="bx bx-right-arrow-alt"></i></a>
-          </div>
-        </div>
-
-        <!-- TEAMS -->
-        <div class="sidebar-section-title">TEAMS</div>
-        <div class="nav-group">
-          <div class="sidebar-nav-item" onclick="toggleMenu('sub-betradar', this)">
-            <i class="bx bx-radar" style="font-size: 15px;"></i>
-            <span style="flex:1;">BETRADAR</span>
-            <i class="bx bx-chevron-down"></i>
-          </div>
-          <div class="sub-menu collapsed" id="sub-betradar">
-            <a class="nav-sub-btn" href="https://mtsc-its.betradar.com/" target="_blank" rel="noreferrer"><span>MTS</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://portal.betradar.com/" target="_blank" rel="noreferrer"><span>CTRL PORTAL</span><i class="bx bx-right-arrow-alt"></i></a>
-          </div>
-        </div>
-
-        <a class="sidebar-nav-item" href="workspace.html" style="margin-top: 10px;">
-          <i class="bx bx-cog" style="font-size: 15px;"></i> <span>Setting</span>
-        </a>
-
-      </div>
-
-      <div class="sidebar-admin-footer">
-        <div class="admin-top-pill">
-          <div class="avatar-circle">AD</div>
-          <span class="user-title">Admin Operator</span>
-          <button class="logout-action-btn" type="button" onclick="handleLogout()" title="Lock Session">
-            Lock
-          </button>
-        </div>
-      </div>
-    </aside>
-
-    <!-- MAIN WORKSPACE -->
-    <main class="main-workspace">
-      
-      <header class="growth-top-header">
-        <div class="growth-greeting">
-          <h1>Hi, User!</h1>
-          <p>Welcome back to Trading & Risk Operations</p>
-        </div>
-        <div class="growth-top-actions">
-          <button type="button" class="growth-create-btn" onclick="openHandoverModal()">
-            <i class="bx bx-plus"></i> Create
-          </button>
-          <div class="growth-icon-circle-btn" title="Search"><i class="bx bx-search"></i></div>
-          <div class="growth-icon-circle-btn" title="Notifications"><i class="bx bx-bell"></i></div>
-          <div class="growth-avatar-profile">AD</div>
-        </div>
-      </header>
-
-      <!-- GROWTH DASHBOARD ASYMMETRIC GRID -->
-      <div class="growth-dashboard-grid">
-        
-        <div class="growth-black-card">
-          <div class="black-card-header">
-            <span>JIRA & HANDOVER DISPLAY</span>
-            <div class="card-action-icons"><i class="bx bx-share-alt"></i><i class="bx bx-dots-vertical-rounded"></i></div>
-          </div>
-          <div class="black-card-title">Over all information</div>
-          <div class="black-card-stats-row">
-            <div class="stat-group"><span class="stat-number">43</span><span class="stat-label">Task done for all time</span></div>
-            <div class="stat-divider"></div>
-            <div class="stat-group"><span class="stat-number">2</span><span class="stat-label">Project's are stopped</span></div>
-          </div>
-          <div class="black-card-progress-bar"><div class="progress-fill"></div></div>
-          <div class="black-card-tiles-row">
-            <div class="tile-box"><i class="bx bx-radio-circle-marked" style="font-size: 18px;"></i><span class="tile-num">32</span><span class="tile-label">Project's</span></div>
-            <div class="tile-box"><i class="bx bx-time-five" style="font-size: 18px;"></i><span class="tile-num">2</span><span class="tile-label">in progress</span></div>
-            <div class="tile-box"><i class="bx bx-check-shield" style="font-size: 18px;"></i><span class="tile-num">25</span><span class="tile-label">Complete</span></div>
-          </div>
-        </div>
-
-        <div class="growth-white-card">
-          <div class="white-card-header">
-            <span class="white-card-title-main">TOP PICKS / HOT BOOST</span>
-            <div class="chart-legend"><span><span class="dot work"></span> Work</span><span><span class="dot med"></span> Meditation</span></div>
-            <i class="bx bx-doughnut-chart" style="font-size: 18px; color: #64748b;"></i>
-          </div>
-          <div class="chart-subtitle">Weekly process</div>
-          <div class="chart-container-wrap"><canvas id="weeklyChartCanvas"></canvas></div>
-          <div class="chart-days-footer"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
-        </div>
-
-        <div class="growth-white-card">
-          <div class="white-card-header"><span class="white-card-title-main">TOP DAILY GAMES</span><i class="bx bx-export" style="font-size: 18px; color: #64748b; cursor:pointer;"></i></div>
-          <div class="donut-card-title-row"><span class="donut-main-title">Month Progress</span><span class="donut-sub-note">30% completed to last month*</span></div>
-          <div class="donut-body-layout">
-            <div class="donut-legend-side">
-              <span class="overview-heading">OVERVIEW</span>
-              <div class="donut-legend-item"><span class="dot work"></span> Work</div>
-              <div class="donut-legend-item"><span class="dot med"></span> Meditation</div>
-              <div class="donut-legend-item"><span class="dot proj"></span> Project's</div>
-            </div>
-            <div class="donut-chart-wrapper"><div class="donut-circle-badge">120%</div></div>
-          </div>
-          <div class="donut-footer-row">
-            <button class="icon-btn-circle" type="button"><i class="bx bx-share-alt"></i></button>
-            <button class="download-report-btn" type="button">Download Report</button>
-          </div>
-        </div>
-
-        <div class="growth-white-card">
-          <div class="white-card-header"><span class="white-card-title-main">SLOT DUTIES</span><div class="goal-pill-badge">1/4 <i class="bx bx-pencil" style="margin-left: 4px;"></i></div></div>
-          <div class="chart-subtitle">Month Goal's</div>
-          <div class="task-checklist">
-            <div class="check-item"><i class="bx bxs-check-circle" style="color: #0f172a;"></i> <span>1h Meditation</span></div>
-            <div class="check-item"><i class="bx bxs-check-circle" style="color: #0f172a;"></i> <span>10m Running</span></div>
-            <div class="check-item"><i class="bx bxs-check-circle" style="color: #0f172a;"></i> <span>30m Workout</span></div>
-            <div class="check-item"><i class="bx bxs-check-circle" style="color: #0f172a;"></i> <span>30m Pooja & read book</span></div>
-          </div>
-        </div>
-
-        <div class="growth-white-card">
-          <div class="white-card-header"><span class="white-card-title-main">Task In process (2)</span><span style="font-size: 9px; font-weight: 800; color: #dc2626;">NUMBER OF TRADERS WORKING</span></div>
-          <div class="traders-tiles-row">
-            <div class="trader-mini-card">
-              <div class="trader-card-top"><i class="bx bx-group" style="font-size: 20px; color: #0f172a;"></i><i class="bx bx-dots-horizontal-rounded" style="color: #64748b;"></i></div>
-              <div class="trader-card-title">Meet HR For Project</div>
-              <div class="trader-card-footer"><span>Tonight</span><div class="trader-dark-dot"></div></div>
-            </div>
-            <div class="trader-mini-card">
-              <div class="trader-card-top"><i class="bx bx-user-pin" style="font-size: 20px; color: #0f172a;"></i><i class="bx bx-dots-horizontal-rounded" style="color: #64748b;"></i></div>
-              <div class="trader-card-title">Boss Appointment</div>
-              <div class="trader-card-footer"><span>Next Morning</span><div class="trader-dark-dot"></div></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="growth-dashed-card">
-          <div class="dashed-content"><i class="bx bx-plus" style="font-size: 22px;"></i><span>+ Add a task</span></div>
-        </div>
-
-      </div>
-
-      <div class="growth-bottom-row-grid">
-        <div class="growth-black-card-small">
-          <div class="black-small-header"><span class="section-tag-red">CLAUDE SHORTCUT</span><span class="badge-percent">95%</span></div>
-          <div class="black-small-title">New Schedule</div>
-          <div class="black-small-desc"><span style="color:#38bdf8;">In Progress</span><br>Done: Create a new and unique design for my youtube family.</div>
-        </div>
-        <div class="growth-black-card-small">
-          <div class="black-small-header"><span class="section-tag-red">WIDGETS</span><span class="badge-percent">100%</span></div>
-          <div class="black-small-title">Anime UI design</div>
-          <div class="black-small-desc"><span style="color:#4ade80;">Completed</span></div>
-        </div>
-        <div class="growth-black-card-small">
-          <div class="black-small-header"><span class="section-tag-red">THEMES</span><span class="badge-percent">100%</span></div>
-          <div class="black-small-title">Creative UI design</div>
-          <div class="black-small-desc"><span style="color:#4ade80;">Completed</span></div>
-        </div>
-      </div>
-
-    </main>
-  </div>
-
-  <!-- HANDOVER MODAL -->
-  <div id="handoverModal" class="handover-modal-overlay">
-    <div class="handover-modal-card">
-      <div class="handover-modal-header">
-        <span class="handover-modal-title"><i class="bx bx-alarm-exclamation" style="color: #eab308;"></i> Manage Handovers</span>
-        <i class="bx bx-x" style="font-size:24px; cursor:pointer;" onclick="closeHandoverModal()"></i>
-      </div>
-      <form onsubmit="addUrgentHandover(event)" class="handover-modal-form">
-        <div class="handover-form-group">
-          <select id="handoverPriorityInput" class="handover-field" required>
-            <option value="URGENT/CRITICAL" selected>🚨 URGENT</option>
-            <option value="Normal">ℹ️ Normal</option>
-          </select>
-          <input type="text" id="handoverBrandInput" placeholder="Brand..." required class="handover-field short">
-          <input type="text" id="handoverMsgInput" placeholder="Details..." required class="handover-field flex-1">
-          <button type="submit" class="handover-post-btn"><i class="bx bx-plus"></i> Post</button>
-        </div>
-      </form>
-      <div class="handover-items-list" id="handoverModalList"></div>
     </div>
-  </div>
 
-  <!-- INIT SCRIPT -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      if (localStorage.getItem('sbhub_authenticated') === 'true') {
-        document.getElementById('authOverlay').classList.add('unlocked');
-        document.getElementById('dashboardApp').classList.add('unlocked');
-      }
+    <!-- Theme Selection Modal (Triggered by Avatar) -->
+    <div class="modal-overlay" id="themeModal">
+        <div class="modal-card">
+            <div class="modal-title">Configuration & Theme <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('themeModal')"></i></div>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 1rem;">Select a dashboard appearance:</p>
+            <button class="theme-btn" onclick="applyTheme('light')">Light Clean Theme (Default)</button>
+            <button class="theme-btn" onclick="applyTheme('dark')">Dark Obsidian Theme</button>
+            <button class="theme-btn" style="background:#e0f2fe; color:#0c0c0c;" onclick="applyTheme('blue')">Sky Blue Daylight</button>
+        </div>
+    </div>
 
-      var ctx = document.getElementById('weeklyChartCanvas');
-      if (ctx) {
-        new Chart(ctx.getContext('2d'), {
-          type: 'line',
-          data: {
-            labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-            datasets: [
-              { label: 'Work', data: [30, 65, 40, 85, 45, 90, 50], borderColor: '#0f172a', backgroundColor: 'rgba(15,23,42,0.05)', borderWidth: 2, fill: true, tension: 0.3 },
-              { label: 'Meditation', data: [20, 45, 70, 50, 80, 40, 75], borderColor: '#64748b', borderWidth: 2, borderDash: [4,4], fill: false, tension: 0.3 }
-            ]
-          },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
-        });
-      }
-    });
-  </script>
+    <!-- Global Search Modal (Triggered by Search Icon) -->
+    <div class="modal-overlay" id="globalSearchModal">
+        <div class="modal-card">
+            <div class="modal-title">Global Search <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('globalSearchModal')"></i></div>
+            <input type="text" id="globalSearchInput" class="modal-input" placeholder="Search any link, tool, or category..." onkeyup="performGlobalSearch()">
+            <div id="globalSearchResults" style="display:flex; flex-direction:column; gap:8px; max-height:300px; overflow-y:auto; padding-right: 5px;">
+                <div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Type to search...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Modal (Triggered by Bell Icon) -->
+    <div class="modal-overlay" id="notificationsModal">
+        <div class="modal-card" style="width: 500px;">
+            <div class="modal-title">Upcoming Top Games <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('notificationsModal')"></i></div>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 1rem;">Master list of monitored upcoming fixtures.</p>
+            <div id="notificationsList" style="display:flex; flex-direction:column; gap:8px; max-height:400px; overflow-y:auto; padding-right: 5px;">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Link to your JavaScript file -->
+    <script src="app.js" defer></script>
 </body>
 </html>
