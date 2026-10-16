@@ -12,7 +12,7 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="./styles.css?v=9.0.0">
+  <link rel="stylesheet" href="./styles.css?v=9.1.0">
 
   <!-- External Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -99,6 +99,7 @@
 
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar(false)"></div>
 
+    <!-- FULL RESTORED SIDEBAR NAVIGATION -->
     <aside class="sidebar" id="mainSidebar">
       <div class="sidebar-menu-scroll">
         <div class="sidebar-header">
@@ -110,7 +111,7 @@
 
         <div class="search-box">
           <i class="bx bx-search" style="font-size: 14px;"></i>
-          <input type="text" placeholder="Search categories & links...">
+          <input type="text" placeholder="Search categories &amp; links...">
         </div>
 
         <!-- INTERNAL -->
@@ -125,6 +126,7 @@
           <div class="sub-menu collapsed" id="sub-internal">
             <a class="nav-sub-btn" href="duties.html" target="_blank" rel="noreferrer"><span>DAILY DUTY</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="nav-sub-btn" href="rota.html" target="_blank" rel="noreferrer"><span>ROTA</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://reliancedigi-my.sharepoint.com/:x:/p/ann/IQCWP022FAMHSY-z3-eV0c9XAWFWLrVAPb9xSCUut_VuZ9U?rtime=BxZTEFXS3kg" target="_blank" rel="noreferrer"><span>DAILY BIG WINNERS</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="nav-sub-btn" href="handover.html" target="_blank" rel="noreferrer"><span>HANDOVER</span><i class="bx bx-right-arrow-alt"></i></a>
           </div>
         </div>
@@ -140,12 +142,143 @@
           </div>
           <div class="sub-menu collapsed" id="sub-dailytask">
             <a class="nav-sub-btn" href="boostschedule.html" target="_blank" rel="noreferrer"><span>TOP PICKS</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit?gid=1450723096#gid=1450723096" target="_blank" rel="noreferrer"><span>EDGE BOOST (MIG)</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit?gid=784209986#gid=784209986" target="_blank" rel="noreferrer"><span>IBET BOOST (MIG)</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank" rel="noreferrer"><span>KT SPORTS CHECK</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://polymarket.com/breaking" target="_blank" rel="noreferrer"><span>PREDICTION OFFER CHECK</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="nav-sub-btn" href="edge_boosts.html" target="_blank" rel="noreferrer"><span>EDGE BOOST SYS</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="nav-sub-btn" href="ibet_boosts.html" target="_blank" rel="noreferrer"><span>IBET BOOST SYS</span><i class="bx bx-right-arrow-alt"></i></a>
           </div>
         </div>
 
-        <!-- QUICK LAUNCH -->
+        <!-- DAILY MONITORING -->
+        <div class="nav-group">
+          <div class="nav-main-btn" onclick="toggleMenu('sub-dailymonitoring', this)">
+            <div class="nav-main-left">
+              <div class="icon-badge icon-monitor"><i class="bx bx-line-chart"></i></div>
+              <span>DAILY MONITORING</span>
+            </div>
+            <i class="bx bx-chevron-down toggle-icon"></i>
+          </div>
+          <div class="sub-menu collapsed" id="sub-dailymonitoring">
+            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1qruVq-HZCyM0uDgnYSqFhccXKnMkqJ8z/edit?gid=1305147410#gid=1305147410" target="_blank" rel="noreferrer"><span>GREEN TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1OcaMz_AOUeRsWIVplbnk2XAna62m3IKa/edit?gid=457800468#gid=457800468" target="_blank" rel="noreferrer"><span>RED TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1U-Dmc628kHQabzJGoBeEgRus5PiRhgSd/edit?pli=1&amp;gid=1983372695#gid=1983372695" target="_blank" rel="noreferrer"><span>ORANGE TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="#7a"><span>7A TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/11STKO4Xsj0a8iTuUXSCXC-XEE4-7qmF9/edit?pli=1&amp;gid=1701374259#gid=1701374259" target="_blank" rel="noreferrer"><span>GREEN CRM</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1gPks2FdHyOOTiILvn553miz32WeEtOpx/edit?gid=1701374259#gid=1701374259" target="_blank" rel="noreferrer"><span>RED CRM</span><i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+        </div>
+
+        <!-- BACK OFFICE -->
+        <div class="nav-group">
+          <div class="nav-main-btn" onclick="toggleMenu('sub-backoffice', this)">
+            <div class="nav-main-left">
+              <div class="icon-badge icon-back"><i class="bx bx-briefcase-alt-2"></i></div>
+              <span>BACK OFFICE</span>
+            </div>
+            <i class="bx bx-chevron-down toggle-icon"></i>
+          </div>
+          <div class="sub-menu collapsed" id="sub-backoffice">
+            <a class="nav-sub-btn" href="https://betbook.center/qbet/bets" target="_blank" rel="noreferrer"><span>QBET/55/30</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://mga-betbook.center/ibet/bets" target="_blank" rel="noreferrer"><span>IBET</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://eu-b7k.center/pubs8/bets" target="_blank" rel="noreferrer"><span>PUBS</span><i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+        </div>
+
+        <!-- MULTI MONITOR -->
+        <div class="nav-group">
+          <div class="nav-main-btn" onclick="toggleMenu('sub-multimonitor', this)">
+            <div class="nav-main-left">
+              <div class="icon-badge icon-multi"><i class="bx bx-desktop"></i></div>
+              <span>MULTI-MONITOR</span>
+            </div>
+            <i class="bx bx-chevron-down toggle-icon"></i>
+          </div>
+          <div class="sub-menu collapsed" id="sub-multimonitor">
+            <a class="nav-sub-btn" href="https://betbook.center/monitor?providerIds=prediction_markets" target="_blank" rel="noreferrer"><span>EDGE PREDICTION TICKER</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://eu-b7k.center/monitor?providerIds=prediction_markets" target="_blank" rel="noreferrer"><span>PUBS PREDICTION TICKER</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://betbook.center/monitor" target="_blank" rel="noreferrer"><span>QBET/55/30 REJECTED</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://eu-b7k.center/monitor" target="_blank" rel="noreferrer"><span>PUBS REJECTED</span><i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+        </div>
+
+        <!-- BETRADAR -->
+        <div class="nav-group">
+          <div class="nav-main-btn" onclick="toggleMenu('sub-betradar', this)">
+            <div class="nav-main-left">
+              <div class="icon-badge icon-radar"><i class="bx bx-radar"></i></div>
+              <span>BETRADAR</span>
+            </div>
+            <i class="bx bx-chevron-down toggle-icon"></i>
+          </div>
+          <div class="sub-menu collapsed" id="sub-betradar">
+            <a class="nav-sub-btn" href="https://mtsc-its.betradar.com/" target="_blank" rel="noreferrer"><span>MTS</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://portal.betradar.com/" target="_blank" rel="noreferrer"><span>CTRL PORTAL</span><i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+        </div>
+
+        <!-- OWN BRANDS -->
+        <div class="nav-group">
+          <div class="nav-main-btn" onclick="toggleMenu('sub-ownbrands', this)">
+            <div class="nav-main-left">
+              <div class="icon-badge icon-brands"><i class="bx bx-layer"></i></div>
+              <span>OWN BRANDS</span>
+            </div>
+            <i class="bx bx-chevron-down toggle-icon"></i>
+          </div>
+          <div class="sub-menu collapsed" id="sub-ownbrands">
+            <a class="nav-sub-btn" href="https://www.7abet.com/en-UN" target="_blank" rel="noreferrer"><span>7A</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.qbet.com/en-UN" target="_blank" rel="noreferrer"><span>QBET</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.55bet.com/en-UN" target="_blank" rel="noreferrer"><span>55BET</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.30bet.com/en-UN" target="_blank" rel="noreferrer"><span>30BET</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.gqbet.vip/en-UN/" target="_blank" rel="noreferrer"><span>GQBET</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.bvbet.com/en-UN" target="_blank" rel="noreferrer"><span>BVBET</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.ibet.com/en-UN/sportsbook/price-boost/football" target="_blank" rel="noreferrer"><span>IBET</span><i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+        </div>
+
+        <!-- PRICE REFERENCES -->
+        <div class="nav-group">
+          <div class="nav-main-btn" onclick="toggleMenu('sub-priceref', this)">
+            <div class="nav-main-left">
+              <div class="icon-badge icon-price"><i class="bx bx-data"></i></div>
+              <span>PRICE REFERENCES</span>
+            </div>
+            <i class="bx bx-chevron-down toggle-icon"></i>
+          </div>
+          <div class="sub-menu collapsed" id="sub-priceref">
+            <a class="nav-sub-btn" href="https://www.flashscore.com/" target="_blank" rel="noreferrer"><span>FLASHSCORE</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://betsapi.com/" target="_blank" rel="noreferrer"><span>BETSAPI</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.oddsportal.com/football/" target="_blank" rel="noreferrer"><span>ODDSPORTAL</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.oddschecker.com/" target="_blank" rel="noreferrer"><span>ODDSCHECKER</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.betfair.com/exchange/plus/" target="_blank" rel="noreferrer"><span>BETFAIR</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.bet365.com/" target="_blank" rel="noreferrer"><span>BET365</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.pinnacle.com/" target="_blank" rel="noreferrer"><span>PINNACLE</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://gg.bet/" target="_blank" rel="noreferrer"><span>GGBET</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.unibet.com.au/" target="_blank" rel="noreferrer"><span>UNIBET</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.sofascore.com/" target="_blank" rel="noreferrer"><span>SOFASCORE</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://www.marathonbet.com/" target="_blank" rel="noreferrer"><span>MARATHONBET</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://fonbet.com/" target="_blank" rel="noreferrer"><span>FONBET</span><i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+        </div>
+
+        <!-- PROCEDURES -->
+        <div class="nav-group">
+          <div class="nav-main-btn" onclick="toggleMenu('sub-procedures', this)">
+            <div class="nav-main-left">
+              <div class="icon-badge icon-proc"><i class="bx bx-file"></i></div>
+              <span>PROCEDURES</span>
+            </div>
+            <i class="bx bx-chevron-down toggle-icon"></i>
+          </div>
+          <div class="sub-menu collapsed" id="sub-procedures">
+            <a class="nav-sub-btn" href="https://ibet.atlassian.net/wiki/spaces/Sportsbook/overview" target="_blank" rel="noreferrer"><span>CONFLUENCE</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="workspace.html" target="_blank" rel="noreferrer"><span>WORKSPACE</span><i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+        </div>
+
+        <!-- QUICK LAUNCH DOCK -->
         <div class="sidebar-quick-dock">
           <div class="quick-dock-title"><i class="bx bx-rocket"></i> QUICK LAUNCH</div>
           <div class="quick-dock-buttons">
@@ -156,8 +289,16 @@
               </div>
               <i class="bx bx-export" style="font-size: 13px; opacity: 0.7;"></i>
             </a>
+            <a href="Edge_Gaming_Client_Risk_Segmentation_Tool_July_2026_Dashboard.html" target="_blank" rel="noreferrer" class="quick-launch-btn">
+              <div class="btn-left">
+                <div class="icon-badge icon-risk"><i class="bx bx-shield-quarter"></i></div>
+                <span>Risk Seg. Tool</span>
+              </div>
+              <i class="bx bx-export" style="font-size: 13px; opacity: 0.7;"></i>
+            </a>
           </div>
         </div>
+
       </div>
 
       <div class="sidebar-admin-footer">
@@ -171,6 +312,7 @@
       </div>
     </aside>
 
+    <!-- MAIN DASHBOARD WORKSPACE -->
     <main class="main-workspace">
       <div class="glass-card top-banner-card">
         <div class="banner-top-row">
