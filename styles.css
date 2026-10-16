@@ -341,7 +341,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1.6fr 1fr;
     gap: 1rem;
-    flex: 1;
+    flex: 1.2;
     min-height: 0;
 }
 
@@ -349,7 +349,7 @@ body {
     display: grid;
     grid-template-columns: 1.1fr 1fr 1fr 1.5fr;
     gap: 1rem;
-    flex: 1;
+    flex: 1.4;
     min-height: 0;
 }
 
@@ -747,7 +747,6 @@ body {
     cursor: pointer;
 }
 
-/* --- MODALS --- */
 .modal-overlay {
     display: none;
     position: fixed;
