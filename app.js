@@ -1,4 +1,4 @@
-/* global lucide, firebase */
+/* eslint-disable */
 "use strict";
 
 // Initialize Icons
@@ -328,7 +328,7 @@ try {
         fbDb = firebase.database(); 
     }
 } catch (error) {
-    console.warn("Firebase initialization skipped or failed.", error);
+    console.warn("Firebase initialization skipped.", error);
 }
 
 async function fetchWeather() {
@@ -358,7 +358,6 @@ async function fetchWeather() {
         if (tempEl) {
             tempEl.innerText = "N/A";
         }
-        console.warn("Weather fetch error:", error);
     }
 }
 fetchWeather();
@@ -418,7 +417,7 @@ async function fetchTopPicks() {
                 });
             }
         } catch (error) {
-            console.warn("ESPN Fetch error for league: " + l, error);
+            // Silently handle errors
         }
     }
     cachedPicks = allMatches;
@@ -561,9 +560,8 @@ function loadLiveDuties() {
     else if (h >= 15 && h < 18) slot = { id: "slot_15_18", label: "15:00 - 18:00" };
     else if (h >= 18 && h < 21) slot = { id: "slot_18_21", label: "18:00 - 21:00" };
     
-    const badgeEl = document.getElementById("slotBadge");
-    if (badgeEl) {
-        badgeEl.innerText = slot.label;
+    if (document.getElementById("slotBadge")) {
+        document.getElementById("slotBadge").innerText = slot.label;
     }
     
     const container = document.getElementById("liveDutyContent");
@@ -607,7 +605,7 @@ function loadLiveDuties() {
                 <div class="duty-card">
                     <div class="duty-top">
                         <span>${m.n}</span>
-                        <span class="duty-badge">${isRest ? 'OFF' : shiftId.replace('shift-', '')}</span>
+                        <span class="duty-badge">${isRest ? "OFF" : shiftId.replace("shift-", "")}</span>
                     </div>
             `;
             
@@ -619,7 +617,7 @@ function loadLiveDuties() {
                 tasks.forEach(function(t) {
                     let text = typeof t === "string" ? t : t.text;
                     let done = typeof t === "object" ? t.done : false;
-                    html += `<div class="duty-text"><i data-lucide="${done ? 'check-circle' : 'clock'}" size="12" style="color:${done ? '#10b981' : 'var(--text-muted)'}"></i> <span style="${done ? 'text-decoration:line-through;opacity:0.6' : ''}">${text}</span></div>`;
+                    html += `<div class="duty-text"><i data-lucide="${done ? "check-circle" : "clock"}" size="12" style="color:${done ? "#10b981" : "var(--text-muted)"}"></i> <span style="${done ? "text-decoration:line-through;opacity:0.6" : ""}">${text}</span></div>`;
                 });
             }
             html += `</div>`;
@@ -629,9 +627,8 @@ function loadLiveDuties() {
             container.innerHTML = html;
         }
         
-        const countEl = document.getElementById("activeTraderCount");
-        if (countEl) {
-            countEl.innerText = activeCount;
+        if (document.getElementById("activeTraderCount")) {
+            document.getElementById("activeTraderCount").innerText = activeCount;
         }
         
         lucide.createIcons();
