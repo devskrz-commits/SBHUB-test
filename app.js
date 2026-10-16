@@ -9,7 +9,7 @@ function toggleMenu(menuId) {
 function openModal(id) { document.getElementById(id).classList.add('active'); }
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-// --- Sidebar Search (Filters names like ROTA) ---
+// --- Sidebar Search ---
 function filterSidebar() {
     const query = document.getElementById('sidebarSearchInput').value.toLowerCase();
     const links = document.querySelectorAll('.sub-link');
@@ -64,7 +64,6 @@ function switchBrandTab(tabName) {
     });
     lucide.createIcons();
 }
-// Initialize Brand Tab
 switchBrandTab('ibet');
 
 // --- Global Search Modal Logic ---
@@ -79,14 +78,12 @@ function performGlobalSearch() {
 
     let resultsHTML = '';
     
-    // Search Sidebar links
     document.querySelectorAll('a.sub-link').forEach(link => {
         if(link.innerText.toLowerCase().includes(query)) {
             resultsHTML += `<a href="${link.href}" class="dock-link" target="_blank" onclick="closeModal('globalSearchModal')"><span>${link.innerText}</span> <i data-lucide="external-link" size="14"></i></a>`;
         }
     });
 
-    // Search Brand Tab Data
     Object.values(brandTabData).flat().forEach(item => {
         if(item.name.toLowerCase().includes(query)) {
             resultsHTML += `<a href="${item.url}" class="dock-link" target="_blank" onclick="closeModal('globalSearchModal')"><span>${item.name}</span> <i data-lucide="external-link" size="14"></i></a>`;
@@ -147,7 +144,7 @@ function deleteTask(index) {
     localStorage.setItem('sbhub_tasks', JSON.stringify(tasks));
     loadTasks();
 }
-loadTasks(); // Init
+loadTasks();
 
 // --- Jira & Handover Management ---
 function loadAlerts() {
@@ -197,27 +194,23 @@ function deleteAlert(index) {
     localStorage.setItem('sbhub_alerts', JSON.stringify(alerts));
     loadAlerts();
 }
-loadAlerts(); // Init
+loadAlerts();
 
 // --- Live Clocks & Weather ---
 function updateClocks() {
     const now = new Date();
-    // GMT+8
     document.getElementById('live-time-gmt8').innerText = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour12: false });
     document.getElementById('live-date-gmt8').innerText = now.toLocaleDateString('en-US', { timeZone: 'Asia/Manila', weekday: 'short', month: 'short', day: 'numeric' });
-    // GMT+2
     document.getElementById('live-time-gmt2').innerText = now.toLocaleTimeString('en-US', { timeZone: 'Europe/Athens', hour12: false });
     document.getElementById('live-date-gmt2').innerText = now.toLocaleDateString('en-US', { timeZone: 'Europe/Athens', weekday: 'short', month: 'short', day: 'numeric' });
 }
 setInterval(updateClocks, 1000); updateClocks();
 
-// Fetch Weather & optionally log to Firebase
 let fbDb = null;
-try { firebase.initializeApp({databaseURL: "https://test-daily-task--sb-default-rtdb.firebaseio.com", projectId: "test-daily-task--sb"}); fbDb = firebase.database(); } catch(e){}
+try { firebase.initializeApp({databaseURL: "https://test-daily-task--sb-default-rtdb.firebaseio.com", projectId: "test-daily-task--sb"}); fbDb = firebase.database(); } catch(e){ console.warn(e); }
 
 async function fetchWeather() {
     try {
-        // Highly accurate Open-Meteo for Manila coordinates
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current_weather=true&wind_speed_10m');
         const data = await res.json();
         const temp = Math.round(data.current_weather.temperature);
@@ -226,10 +219,10 @@ async function fetchWeather() {
         document.getElementById('live-temp').innerText = `${temp}°C`;
         document.getElementById('live-weather-desc').innerText = `Wind: ${wind} km/h | Manila Local`;
 
-        // Firebase sync
         if(fbDb) fbDb.ref('system_status/weather').set({ temp, wind, lastUpdated: new Date().toISOString() });
     } catch (err) {
         document.getElementById('live-temp').innerText = 'N/A';
+        console.warn("Weather error:", err);
     }
 }
 fetchWeather(); setInterval(fetchWeather, 15 * 60 * 1000);
@@ -250,7 +243,7 @@ function applyTheme(theme) {
 const savedTheme = localStorage.getItem('sbhub_theme_pref');
 if(savedTheme) applyTheme(savedTheme);
 
-// --- Top Picks (Live ESPN API logic mapped to display up to 5) ---
+// --- Top Picks ---
 let cachedPicks = [];
 let currentLeague = 'eng.1';
 
@@ -265,7 +258,6 @@ async function fetchTopPicks() {
             const data = await res.json();
             if(data.events) {
                 data.events.forEach((e, i) => {
-                    // Only get pre-match
                     if(e.status.type.state !== 'pre') return;
                     const comp = e.competitions[0];
                     const home = comp.competitors.find(c=>c.homeAway==='home').team;
@@ -280,7 +272,7 @@ async function fetchTopPicks() {
                     });
                 });
             }
-        } catch(err) {}
+        } catch(err) { console.warn(err); }
     }
     cachedPicks = allMatches;
     renderPicks();
@@ -295,7 +287,6 @@ function filterPicks(league, btn) {
 
 function renderPicks() {
     const container = document.getElementById('topPicksContainer');
-    // Display up to 5 games as requested
     const matches = cachedPicks.filter(m => m.league === currentLeague).slice(0, 5);
     
     if(matches.length === 0) {
@@ -324,7 +315,7 @@ function renderPicks() {
 }
 fetchTopPicks();
 
-// --- Notifications (Top Games Feed) ---
+// --- Notifications ---
 function openNotifications() {
     const list = document.getElementById('notificationsList');
     openModal('notificationsModal');
@@ -370,7 +361,6 @@ function renderGamesList() {
     target.setDate(target.getDate() + dayOffset);
     display.innerText = `${dayOffset === 0 ? 'TODAY' : 'DAY '+ (dayOffset+1)} (${target.toLocaleDateString('en-US',{month:'short',day:'numeric'})})`;
 
-    // Simulate games list using cached picks
     let games = cachedPicks.slice(0, 5); 
     if(games.length === 0) {
          container.innerHTML = `<div style="text-align:center; padding: 2rem; color: var(--text-muted); font-size: 0.8rem;">No fixtures available for this date.</div>`;
