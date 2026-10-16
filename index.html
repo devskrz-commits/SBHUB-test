@@ -12,7 +12,7 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="./styles.css?v=9.7.0">
+  <link rel="stylesheet" href="./styles.css?v=9.8.0">
 
   <!-- External Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -99,7 +99,7 @@
 
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar(false)"></div>
 
-    <!-- RESTORED ORIGINAL SIDEBAR WITH ORIGINAL DATA LABELS -->
+    <!-- SIDEBAR WITH ORIGINAL ICON BADGES & FULL BUTTON LIST -->
     <aside class="sidebar" id="mainSidebar">
       <div class="sidebar-menu-scroll">
         
@@ -112,7 +112,8 @@
         </div>
 
         <div class="sidebar-nav-item active-nav">
-          <i class="bx bxs-dashboard"></i> <span>Dashboard</span>
+          <div class="icon-badge icon-internal"><i class="bx bx-home-alt"></i></div>
+          <span>Dashboard</span>
         </div>
 
         <div class="search-box">
@@ -125,7 +126,7 @@
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-internal', this)">
             <div class="nav-main-left">
-              <i class="bx bx-home-alt"></i>
+              <div class="icon-badge icon-internal"><i class="bx bx-home-alt"></i></div>
               <span>INTERNAL</span>
             </div>
             <i class="bx bx-chevron-down toggle-icon"></i>
@@ -143,7 +144,7 @@
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-dailytask', this)">
             <div class="nav-main-left">
-              <i class="bx bx-task"></i>
+              <div class="icon-badge icon-tasks"><i class="bx bx-task"></i></div>
               <span>DAILY TASKS</span>
             </div>
             <i class="bx bx-chevron-down toggle-icon"></i>
@@ -159,12 +160,12 @@
           </div>
         </div>
 
-        <!-- 3. DAILY MONITORING -->
+        <!-- 3. MONITORING -->
         <div class="sidebar-section-title">MONITORING</div>
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-dailymonitoring', this)">
             <div class="nav-main-left">
-              <i class="bx bx-line-chart"></i>
+              <div class="icon-badge icon-monitor"><i class="bx bx-line-chart"></i></div>
               <span>DAILY MONITORING</span>
             </div>
             <i class="bx bx-chevron-down toggle-icon"></i>
@@ -184,7 +185,7 @@
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-backoffice', this)">
             <div class="nav-main-left">
-              <i class="bx bx-briefcase-alt-2"></i>
+              <div class="icon-badge icon-back"><i class="bx bx-briefcase-alt-2"></i></div>
               <span>BACK OFFICE</span>
             </div>
             <i class="bx bx-chevron-down toggle-icon"></i>
@@ -200,7 +201,7 @@
         <div class="nav-group" style="margin-top: 4px;">
           <div class="nav-main-btn" onclick="toggleMenu('sub-multimonitor', this)">
             <div class="nav-main-left">
-              <i class="bx bx-desktop"></i>
+              <div class="icon-badge icon-multi"><i class="bx bx-desktop"></i></div>
               <span>MULTI-MONITOR</span>
             </div>
             <i class="bx bx-chevron-down toggle-icon"></i>
@@ -217,7 +218,7 @@
         <div class="nav-group" style="margin-top: 4px;">
           <div class="nav-main-btn" onclick="toggleMenu('sub-betradar', this)">
             <div class="nav-main-left">
-              <i class="bx bx-radar"></i>
+              <div class="icon-badge icon-radar"><i class="bx bx-radar"></i></div>
               <span>BETRADAR</span>
             </div>
             <i class="bx bx-chevron-down toggle-icon"></i>
@@ -228,12 +229,12 @@
           </div>
         </div>
 
-        <!-- 7. OWN BRANDS -->
+        <!-- 7. BRANDS -->
         <div class="sidebar-section-title">BRANDS</div>
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-ownbrands', this)">
             <div class="nav-main-left">
-              <i class="bx bx-layer"></i>
+              <div class="icon-badge icon-brands"><i class="bx bx-layer"></i></div>
               <span>OWN BRANDS</span>
             </div>
             <i class="bx bx-chevron-down toggle-icon"></i>
@@ -253,7 +254,7 @@
         <div class="nav-group" style="margin-top: 4px;">
           <div class="nav-main-btn" onclick="toggleMenu('sub-priceref', this)">
             <div class="nav-main-left">
-              <i class="bx bx-data"></i>
+              <div class="icon-badge icon-price"><i class="bx bx-data"></i></div>
               <span>PRICE REFERENCES</span>
             </div>
             <i class="bx bx-chevron-down toggle-icon"></i>
@@ -278,7 +279,7 @@
         <div class="nav-group" style="margin-top: 4px;">
           <div class="nav-main-btn" onclick="toggleMenu('sub-procedures', this)">
             <div class="nav-main-left">
-              <i class="bx bx-file"></i>
+              <div class="icon-badge icon-proc"><i class="bx bx-file"></i></div>
               <span>PROCEDURES</span>
             </div>
             <i class="bx bx-chevron-down toggle-icon"></i>
@@ -291,12 +292,22 @@
 
         <!-- QUICK LAUNCH TOOLS -->
         <div class="sidebar-section-title">QUICK LAUNCH</div>
-        <a class="sidebar-nav-item" href="https://claude.ai" target="_blank" rel="noreferrer">
-          <i class="bx bx-bot"></i> <span>Claude AI Assistant</span>
-        </a>
-        <a class="sidebar-nav-item" href="Edge_Gaming_Client_Risk_Segmentation_Tool_July_2026_Dashboard.html" target="_blank" rel="noreferrer">
-          <i class="bx bx-shield-quarter"></i> <span>Risk Segmentation Tool</span>
-        </a>
+        <div class="sidebar-quick-dock" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 10px; margin-top: 4px; display: flex; flex-direction: column; gap: 6px;">
+          <a href="https://claude.ai" target="_blank" rel="noreferrer" class="quick-launch-btn" style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 6px 10px; border-radius: 10px; border: 1px solid #e2e8f0; text-decoration: none; color: #0f172a; font-size: 11px; font-weight: 700;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div class="icon-badge icon-claude" style="width: 22px; height: 22px; border-radius: 6px; background: #0f172a; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px;"><i class="bx bx-bot"></i></div>
+              <span>Claude AI Assistant</span>
+            </div>
+            <i class="bx bx-export" style="font-size: 12px; opacity: 0.6;"></i>
+          </a>
+          <a href="Edge_Gaming_Client_Risk_Segmentation_Tool_July_2026_Dashboard.html" target="_blank" rel="noreferrer" class="quick-launch-btn" style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 6px 10px; border-radius: 10px; border: 1px solid #e2e8f0; text-decoration: none; color: #0f172a; font-size: 11px; font-weight: 700;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div class="icon-badge icon-risk" style="width: 22px; height: 22px; border-radius: 6px; background: #334155; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px;"><i class="bx bx-shield-quarter"></i></div>
+              <span>Risk Seg. Tool</span>
+            </div>
+            <i class="bx bx-export" style="font-size: 12px; opacity: 0.6;"></i>
+          </a>
+        </div>
 
       </div>
 
