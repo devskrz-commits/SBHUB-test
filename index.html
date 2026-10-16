@@ -98,27 +98,52 @@
 
   <!-- MAIN DASHBOARD APPLICATION -->
   <div id="dashboardApp">
-    <!-- EXECUTIVE TOP NAVIGATION BAR WITH EXACT ORIGINAL MENUS -->
+    <!-- EXECUTIVE TOP NAVIGATION BAR WITH EXACT MENUS FROM REFERENCE -->
     <header class="top-nav-bar">
       <div class="nav-brand-group">
         <button class="mobile-menu-toggle" onclick="toggleMobileTopMenu()"><i class="fa-solid fa-bars"></i></button>
         <div class="top-brand-title">
-          <i class="fa-solid fa-chart-line brand-icon"></i>
-          <span>EDGE OPS</span>
+          <span>SPORTSBOOK HUB</span>
         </div>
       </div>
 
       <div class="top-search-box">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" placeholder="Search markets, bets, users..." oninput="filterTopNav(this.value)">
+        <input type="text" placeholder="Search categories & links..." oninput="filterTopNav(this.value)">
       </div>
 
       <nav class="top-nav-items" id="topNavMenu">
-        <!-- MONITORING -->
+        <!-- 1. INTERNAL -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-house"></i></span>
+            INTERNAL
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="#" class="top-dropdown-link"><span>Internal Portal</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>Company Resources</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+
+        <!-- 2. DAILY TASKS -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-calendar-check"></i></span>
+            DAILY TASKS
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="#" class="top-dropdown-link"><span>Daily Duty Schedule</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>Shift Checklist & Audits</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+
+        <!-- 3. DAILY MONITORING -->
         <div class="top-nav-dropdown-group">
           <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
             <span class="nav-icon-wrapper"><i class="fa-solid fa-chart-line"></i></span>
-            MONITORING
+            DAILY MONITORING
             <i class="fa-solid fa-chevron-down nav-arrow"></i>
           </button>
           <div class="top-dropdown-menu">
@@ -131,7 +156,7 @@
           </div>
         </div>
 
-        <!-- BACK OFFICE -->
+        <!-- 4. BACK OFFICE -->
         <div class="top-nav-dropdown-group">
           <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
             <span class="nav-icon-wrapper"><i class="fa-solid fa-briefcase"></i></span>
@@ -140,19 +165,87 @@
           </button>
           <div class="top-dropdown-menu">
             <a href="#" class="top-dropdown-link"><span>Bonus Exclusions List</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>AM / PM Shift Summary</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>SoftSwiss Logs</span> <i class="fa-solid fa-arrow-right"></i></a>
           </div>
         </div>
 
-        <!-- HANDOVER REPORTS -->
+        <!-- 5. MULTI-MONITOR -->
         <div class="top-nav-dropdown-group">
           <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
-            <span class="nav-icon-wrapper"><i class="fa-solid fa-file-lines"></i></span>
-            HANDOVER REPORTS
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-desktop"></i></span>
+            MULTI-MONITOR
             <i class="fa-solid fa-chevron-down nav-arrow"></i>
           </button>
           <div class="top-dropdown-menu">
-            <a href="#" class="top-dropdown-link"><span>AM / PM Shift Summary</span> <i class="fa-solid fa-arrow-right"></i></a>
-            <a href="#" class="top-dropdown-link"><span>SoftSwiss Logs</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>Display Feeds</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>Screen Layouts</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+
+        <!-- 6. BETRADAR -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-bullseye"></i></span>
+            BETRADAR
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="#" class="top-dropdown-link"><span>Live Odds Stream</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>Match Center</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+
+        <!-- 7. OWN BRANDS -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-layer-group"></i></span>
+            OWN BRANDS
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="#" class="top-dropdown-link"><span>iBet Operations</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>Edge Gaming</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>PuBs Brand</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+
+        <!-- 8. PRICE REFERENCES -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-coins"></i></span>
+            PRICE REFERENCES
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="#" class="top-dropdown-link"><span>Currency Index (PHP/EUR)</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>Market Benchmarks</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+
+        <!-- 9. PROCEDURES -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-file-lines"></i></span>
+            PROCEDURES
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="#" class="top-dropdown-link"><span>Standard Operating Procedures</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>Risk Escalation Protocol</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+
+        <!-- 10. QUICK LAUNCH -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-rocket"></i></span>
+            QUICK LAUNCH
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="https://claude.ai" target="_blank" class="top-dropdown-link"><span>Claude AI</span> <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            <a href="#" class="top-dropdown-link"><span>Risk Seg. Tool</span> <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
           </div>
         </div>
       </nav>
