@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sportsbook Hub Growth Dashboard</title>
     
     <!-- External Dependencies -->
@@ -11,7 +11,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     
     <!-- External CSS -->
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -26,7 +26,7 @@
             <!-- Search Bar -->
             <div class="sidebar-search">
                 <i data-lucide="search" size="16" style="color: var(--text-muted);"></i>
-                <input type="text" id="sidebarSearchInput" placeholder="Search links (e.g. ROTA)" onkeyup="filterSidebar()" />
+                <input type="text" id="sidebarSearchInput" placeholder="Search links (e.g. ROTA)" onkeyup="filterSidebar()">
             </div>
 
             <div class="menu-group" id="sidebarMenuContainer">
@@ -193,7 +193,7 @@
                     <button class="icon-btn" onclick="openModal('globalSearchModal')" title="Global Search"><i data-lucide="search" size="18"></i></button>
                     <button class="icon-btn" onclick="openNotifications()" title="Notifications / Upcoming Games"><i data-lucide="bell" size="18"></i></button>
                     <div class="user-avatar" onclick="openModal('themeModal')" title="Profile Configuration">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" width="100%" />
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" style="width:100%; height:100%;">
                     </div>
                 </div>
             </div>
@@ -203,10 +203,10 @@
                 <!-- Jira & Handover -->
                 <div class="card black-theme">
                     <div class="card-header-label">
-                        <span>JIRA & HANDOVER DISPLAY</span>
+                        <span>JIRA &amp; HANDOVER DISPLAY</span>
                         <button class="add-alert-btn" onclick="openModal('alertModal')">+ Add Alert</button>
                     </div>
-                    <div class="card-title">Pending & Urgent <i data-lucide="share-2" size="18"></i></div>
+                    <div class="card-title">Pending &amp; Urgent <i data-lucide="share-2" size="18"></i></div>
                     <div class="widget-content-scroll" id="jiraHandoverContent">
                         <!-- Filled by JS -->
                     </div>
@@ -301,9 +301,9 @@
                 </div>
             </div>
 
-            <!-- BOTTOM GRID -->
+            <!-- BOTTOM GRID (4 Columns for 2 Timezones, Weather, Sync) -->
             <div>
-                <div class="card-title" style="margin-bottom:0.8rem; font-size:1rem; color:var(--text-main);">Live Widgets & Tracking</div>
+                <div class="card-title" style="margin-bottom:0.8rem; font-size:1rem; color:var(--text-main);">Live Widgets &amp; Tracking</div>
                 <div class="grid-bottom">
                     <!-- Manila Time -->
                     <div class="card black-theme bottom-card">
@@ -322,7 +322,7 @@
                     <!-- Weather -->
                     <div class="card black-theme bottom-card">
                         <div class="card-header-label">WEATHER (METRO MANILA)</div>
-                        <div class="bottom-val" id="live-temp">--°C</div>
+                        <div class="bottom-val" id="live-temp">--&deg;C</div>
                         <div class="bottom-sub" id="live-weather-desc">Loading weather...</div>
                         <div class="corner-icon"><i data-lucide="cloud-rain" size="16"></i></div>
                     </div>
@@ -345,8 +345,8 @@
         <div class="modal-card">
             <div class="modal-title">Create New Task <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('taskModal')"></i></div>
             <form onsubmit="saveTask(event)">
-                <input type="text" id="taskTitle" class="modal-input" placeholder="Task Title (e.g. Meet HR For Project)" required />
-                <input type="text" id="taskTime" class="modal-input" placeholder="Time / Detail (e.g. Tonight, 15:00)" required />
+                <input type="text" id="taskTitle" class="modal-input" placeholder="Task Title (e.g. Meet HR For Project)" required>
+                <input type="text" id="taskTime" class="modal-input" placeholder="Time / Detail (e.g. Tonight, 15:00)" required>
                 <button type="submit" class="modal-btn">Save Task</button>
             </form>
         </div>
@@ -361,8 +361,8 @@
                     <option value="HANDOVER">Handover</option>
                     <option value="JIRA">Jira Ticket</option>
                 </select>
-                <input type="text" id="alertBrand" class="modal-input" placeholder="Brand or Ticket Key (e.g. IBET, PROJ-123)" required />
-                <input type="text" id="alertMsg" class="modal-input" placeholder="Message or Details" required />
+                <input type="text" id="alertBrand" class="modal-input" placeholder="Brand or Ticket Key (e.g. IBET, PROJ-123)" required>
+                <input type="text" id="alertMsg" class="modal-input" placeholder="Message or Details" required>
                 <button type="submit" class="modal-btn">Post Alert</button>
             </form>
         </div>
@@ -371,7 +371,7 @@
     <!-- Theme Selection Modal -->
     <div class="modal-overlay" id="themeModal">
         <div class="modal-card">
-            <div class="modal-title">Configuration & Theme <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('themeModal')"></i></div>
+            <div class="modal-title">Configuration &amp; Theme <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('themeModal')"></i></div>
             <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 1rem;">Select a dashboard appearance:</p>
             <button class="theme-btn" onclick="applyTheme('light')">Light Clean Theme (Default)</button>
             <button class="theme-btn" onclick="applyTheme('dark')">Dark Obsidian Theme</button>
@@ -383,7 +383,7 @@
     <div class="modal-overlay" id="globalSearchModal">
         <div class="modal-card">
             <div class="modal-title">Global Search <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('globalSearchModal')"></i></div>
-            <input type="text" id="globalSearchInput" class="modal-input" placeholder="Search any link, tool, or category..." onkeyup="performGlobalSearch()" />
+            <input type="text" id="globalSearchInput" class="modal-input" placeholder="Search any link, tool, or category..." onkeyup="performGlobalSearch()">
             <div id="globalSearchResults" style="display:flex; flex-direction:column; gap:8px; max-height:300px; overflow-y:auto; padding-right: 5px;">
                 <div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Type to search...</div>
             </div>
@@ -402,6 +402,6 @@
     </div>
 
     <!-- External JS -->
-    <script src="./app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
