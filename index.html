@@ -14,45 +14,32 @@
 
   <!-- TRADING TERMINAL AUTHENTICATION & SECURITY GATEWAY -->
   <div id="authOverlay">
-    <!-- PROFESSIONAL LIVE THROUGHPUT TREND HEADER -->
+    <!-- CLEAN TRADING GATEWAY HEADER BAR (NO TEXT STACKING) -->
     <div class="gateway-trend-header">
       <div class="trend-header-left">
         <div class="trend-icon"><i class="fa-solid fa-chart-line"></i></div>
         <div>
-          <span class="trend-title">GLOBAL TRADING FEED & VOLATILITY GATEWAY</span>
-          <span class="trend-sub">Real-Time Algorithmic Throughput & Index Analytics</span>
+          <span class="trend-title">GLOBAL TRADING GATEWAY</span>
+          <span class="trend-sub">Real-Time Risk Operations & Index Analytics</span>
         </div>
       </div>
       <div class="trend-stats-pill">
         <span class="stat-dot"></span>
-        <span>SYS LATENCY: 14MS &bull; FEED: SECURE</span>
+        <span>LATENCY: 14MS &bull; FEED: SECURE</span>
       </div>
     </div>
 
-    <!-- TRADING TICKER TAPE -->
-    <div class="login-ticker-wrap">
-      <div class="login-ticker">
-        <div class="ticker-item"><span class="ticker-symbol">EUR/USD</span> <span class="ticker-val up">1.0845 ▲ +0.34%</span></div>
-        <div class="ticker-item"><span class="ticker-symbol">BTC/USD</span> <span class="ticker-val up">67,420.00 ▲ +2.15%</span></div>
-        <div class="ticker-item"><span class="ticker-symbol">S&P 500</span> <span class="ticker-val down">5,235.10 ▼ -0.12%</span></div>
-        <div class="ticker-item"><span class="ticker-symbol">NASDAQ</span> <span class="ticker-val up">18,410.50 ▲ +0.88%</span></div>
-        <div class="ticker-item"><span class="ticker-symbol">GBP/USD</span> <span class="ticker-val up">1.2650 ▲ +0.18%</span></div>
-        <div class="ticker-item"><span class="ticker-symbol">GOLD (XAU)</span> <span class="ticker-val up">2,380.40 ▲ +1.05%</span></div>
-        <div class="ticker-item"><span class="ticker-symbol">CRUDE OIL</span> <span class="ticker-val down">82.50 ▼ -0.45%</span></div>
-      </div>
-    </div>
-
-    <!-- BACKGROUND TRADING GRAPH SVG ILLUSTRATION -->
+    <!-- BACKGROUND TRADING GRAPH WAVE (CLEAN VECTOR BACKGROUND) -->
     <div class="gateway-trend-graph-container">
       <svg class="gateway-trend-svg" viewBox="0 0 1440 280" preserveAspectRatio="none">
         <defs>
           <linearGradient id="trendGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35"/>
+            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.25"/>
             <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.0"/>
           </linearGradient>
         </defs>
         <path class="trend-area-path" d="M0,220 C200,180 350,90 550,130 C750,170 950,50 1200,80 C1350,100 1400,40 1440,20 L1440,280 L0,280 Z" fill="url(#trendGradient)"></path>
-        <path class="trend-line-path" d="M0,220 C200,180 350,90 550,130 C750,170 950,50 1200,80 C1350,100 1400,40 1440,20" fill="none" stroke="#38bdf8" stroke-width="3"></path>
+        <path class="trend-line-path" d="M0,220 C200,180 350,90 550,130 C750,170 950,50 1200,80 C1350,100 1400,40 1440,20" fill="none" stroke="#38bdf8" stroke-width="2.5"></path>
       </svg>
     </div>
 
@@ -92,7 +79,7 @@
             </div>
             <div class="password-field-wrap">
               <input type="password" id="passwordInput" class="login-input" placeholder="Enter password" value="sb2026" required>
-              <button class="password-toggle-btn" type="button" onclick="togglePasswordVisibility()"><i class="bx bx-show" id="togglePassIcon"></i></button>
+              <button class="password-toggle-btn" type="button" onclick="togglePasswordVisibility()"><i class="fa-solid fa-eye" id="togglePassIcon"></i></button>
             </div>
           </div>
 
@@ -129,7 +116,6 @@
       </div>
 
       <nav class="top-nav-items" id="topNavMenu">
-        <!-- MONITORING DROPDOWN -->
         <div class="top-nav-dropdown-group">
           <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
             <span class="nav-icon-wrapper"><i class="fa-solid fa-chart-line"></i></span>
@@ -146,7 +132,6 @@
           </div>
         </div>
 
-        <!-- BACK OFFICE DROPDOWN -->
         <div class="top-nav-dropdown-group">
           <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
             <span class="nav-icon-wrapper"><i class="fa-solid fa-briefcase"></i></span>
@@ -160,7 +145,6 @@
           </div>
         </div>
 
-        <!-- HANDOVER REPORTS DROPDOWN -->
         <div class="top-nav-dropdown-group">
           <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
             <span class="nav-icon-wrapper"><i class="fa-solid fa-file-lines"></i></span>
@@ -174,7 +158,6 @@
           </div>
         </div>
 
-        <!-- CONFIGURATION DROPDOWN -->
         <div class="top-nav-dropdown-group">
           <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
             <span class="nav-icon-wrapper"><i class="fa-solid fa-gear"></i></span>
@@ -201,15 +184,13 @@
 
     <!-- MAIN WORKSPACE -->
     <main class="main-workspace">
-      <!-- COMPACT HERO BANNER -->
       <section class="glass-card top-banner-card">
         <div class="banner-top-row">
           <div class="banner-top-left-group">
-            <!-- WEATHER WIDGET -->
             <div class="weather-banner-widget">
               <div class="weather-banner-header">
                 <span class="weather-banner-title">METRICS / WEATHER</span>
-                <div class="weather-banner-actions"><i class="bx bx-sun" id="weatherIcon"></i></div>
+                <div class="weather-banner-actions"><i class="fa-solid fa-sun" id="weatherIcon"></i></div>
               </div>
               <div class="weather-banner-body">
                 <div class="weather-banner-main">
@@ -226,7 +207,6 @@
               </div>
             </div>
 
-            <!-- URGENT HANDOVER BANNER -->
             <div class="urgent-handover-banner">
               <div class="handover-header-row">
                 <div class="handover-alert-badge">
@@ -245,7 +225,6 @@
           </div>
         </div>
 
-        <!-- BANNER ROW 2 -->
         <div class="banner-bottom-row">
           <div class="world-clocks">
             <div class="clock-badge">
@@ -271,7 +250,6 @@
               </div>
             </div>
 
-            <!-- THEME DROPDOWN -->
             <div class="dropdown-container">
               <button class="dropdown-btn" onclick="toggleDropdown('themeMenu')">
                 <i class="fa-solid fa-palette"></i> Display Mode <i class="fa-solid fa-chevron-down" style="font-size:9px;"></i>
@@ -292,15 +270,12 @@
         </div>
       </section>
 
-      <!-- 4-COLUMN MASTER DASHBOARD GRID -->
       <div class="dashboard-grid">
-        <!-- COLUMN 1: TOP PICKS / BOOSTS -->
         <div class="glass-card widget-column-card">
           <div class="card-header">
             <span>🔥 TOP PICKS / BOOSTS</span>
             <span class="actions"><i class="fa-solid fa-bolt"></i> Live</span>
           </div>
-          <!-- LEAGUE FILTER BAR -->
           <div class="top-picks-filter-bar" id="topPicksFilterBar">
             <button class="boost-filter-btn active" id="btn-boost-eng.1" onclick="filterTopPicks('eng.1', this)">EPL</button>
             <button class="boost-filter-btn" id="btn-boost-esp.1" onclick="filterTopPicks('esp.1', this)">La Liga</button>
@@ -308,12 +283,9 @@
             <button class="boost-filter-btn" id="btn-boost-ita.1" onclick="filterTopPicks('ita.1', this)">Serie A</button>
             <button class="boost-filter-btn" id="btn-boost-uefa.champions" onclick="filterTopPicks('uefa.champions', this)">UCL</button>
           </div>
-          <div class="widget-scrollable-content top-picks-list" id="topPicksContainer">
-            <!-- Dynamically populated top picks -->
-          </div>
+          <div class="widget-scrollable-content top-picks-list" id="topPicksContainer"></div>
         </div>
 
-        <!-- COLUMN 2: BRAND DIRECTORY & LIVE ROSTER -->
         <div class="widget-dual-column">
           <div class="glass-card widget-half-card">
             <div class="card-header">
@@ -324,9 +296,7 @@
                 <span class="tab-pill" id="tab-pubs" onclick="switchBrandTab('pubs')">PuBs</span>
               </div>
             </div>
-            <div class="widget-scrollable-content" style="display:flex; flex-direction:column; gap:7px;" id="brandLinksContainer">
-              <!-- Dynamically populated brand links -->
-            </div>
+            <div class="widget-scrollable-content" style="display:flex; flex-direction:column; gap:7px;" id="brandLinksContainer"></div>
           </div>
 
           <div class="glass-card widget-half-card">
@@ -334,13 +304,10 @@
               <span>LIVE SHIFT ROSTER</span>
               <span class="actions"><i class="fa-solid fa-list-check"></i> GMT+8</span>
             </div>
-            <div class="widget-scrollable-content" style="display:flex; flex-direction:column; gap:8px;" id="liveDutyContent">
-              <!-- Dynamically populated duty roster -->
-            </div>
+            <div class="widget-scrollable-content" style="display:flex; flex-direction:column; gap:8px;" id="liveDutyContent"></div>
           </div>
         </div>
 
-        <!-- COLUMN 3: TOP MATCHES & FIXTURES -->
         <div class="glass-card widget-column-card">
           <div class="card-header">
             <span>⚽ TOP MATCHES</span>
@@ -350,12 +317,9 @@
             <span style="cursor:pointer; color:var(--accent-cyan);" onclick="navigateMatchDay(-1)"><i class="fa-solid fa-chevron-left"></i> Prev Day</span>
             <span style="cursor:pointer; color:var(--accent-cyan);" onclick="navigateMatchDay(1)">Next Day <i class="fa-solid fa-chevron-right"></i></span>
           </div>
-          <div class="widget-scrollable-content" style="display:flex; flex-direction:column; gap:9px;" id="gamesContainer">
-            <!-- Dynamically populated live games -->
-          </div>
+          <div class="widget-scrollable-content" style="display:flex; flex-direction:column; gap:9px;" id="gamesContainer"></div>
         </div>
 
-        <!-- COLUMN 4: SYSTEM LOGS & METRICS -->
         <div class="glass-card widget-column-card">
           <div class="card-header">
             <span>⚙️ SYSTEM METRICS</span>
