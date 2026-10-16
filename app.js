@@ -12,6 +12,7 @@ function handleLogin(e) {
     if ((user === DEFAULT_USER || user === "sportsbookhub") && pass === DEFAULT_PASS) {
         localStorage.setItem('sbhub_auth', 'true');
         document.getElementById('authOverlay').classList.add('unlocked');
+        document.getElementById('dashboardWrapper').classList.add('unlocked');
         document.getElementById('loginErrorMsg').innerText = '';
     } else {
         document.getElementById('loginErrorMsg').innerText = 'Invalid credentials';
@@ -26,11 +27,18 @@ function handleLogin(e) {
 function handleLogout() {
     localStorage.removeItem('sbhub_auth');
     document.getElementById('authOverlay').classList.remove('unlocked');
+    document.getElementById('dashboardWrapper').classList.remove('unlocked');
     document.getElementById('passwordInput').value = '';
 }
 
+// Check session on load
 if (localStorage.getItem('sbhub_auth') === 'true') {
-    document.getElementById('authOverlay').classList.add('unlocked');
+    if (document.getElementById('authOverlay')) {
+        document.getElementById('authOverlay').classList.add('unlocked');
+    }
+    if (document.getElementById('dashboardWrapper')) {
+        document.getElementById('dashboardWrapper').classList.add('unlocked');
+    }
 }
 
 // --- UI Interactions ---
