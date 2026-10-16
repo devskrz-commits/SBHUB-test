@@ -261,7 +261,7 @@
                 </div>
             </div>
 
-            <!-- MIDDLE GRID (3 Columns: Duties | Docks | Task in Process) -->
+            <!-- MIDDLE GRID (4 Columns Structure) -->
             <div class="grid-middle">
                 
                 <!-- Col 1: Slot Duties -->
@@ -276,48 +276,44 @@
                     </div>
                 </div>
 
-                <!-- Col 2: Brand Directory & Daily Task Docks (Stacked) -->
-                <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    
-                    <!-- Brand Directory Dock -->
-                    <div class="card" style="flex: 1; min-height: 0;">
-                        <div class="card-header-label">BRAND DIRECTORY DOCK</div>
-                        <div class="filter-bar" id="brand-tabs" style="margin-bottom: 0.5rem; margin-top: 0.3rem;">
-                            <button class="filter-btn active" id="tab-ibet" onclick="switchBrandTab('ibet')">IBET</button>
-                            <button class="filter-btn" id="tab-edge" onclick="switchBrandTab('edge')">EDGE</button>
-                            <button class="filter-btn" id="tab-pubs" onclick="switchBrandTab('pubs')">PUBS</button>
-                        </div>
-                        <div class="widget-content-scroll" id="brandLinksContainer">
-                            <!-- Populated by JS -->
-                        </div>
+                <!-- Col 2: Brand Directory Dock -->
+                <div class="card">
+                    <div class="card-header-label">BRAND DIRECTORY DOCK</div>
+                    <div class="filter-bar" id="brand-tabs" style="margin-bottom: 0.5rem; margin-top: 0.3rem;">
+                        <button class="filter-btn active" id="tab-ibet" onclick="switchBrandTab('ibet')">IBET</button>
+                        <button class="filter-btn" id="tab-edge" onclick="switchBrandTab('edge')">EDGE</button>
+                        <button class="filter-btn" id="tab-pubs" onclick="switchBrandTab('pubs')">PUBS</button>
                     </div>
-
-                    <!-- Daily Task Dock -->
-                    <div class="card" style="flex: 1; min-height: 0;">
-                        <div class="card-header-label" style="margin-bottom: 0.6rem;">DAILY TASK DOCK</div>
-                        <div class="widget-content-scroll">
-                            <a href="boostschedule.html" target="_blank" rel="noreferrer" class="dock-link"><span>TOP PICKS (SCHEDULE)</span> <i data-lucide="arrow-right" size="14"></i></a>
-                            <a href="https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit?gid=1450723096#gid=1450723096" target="_blank" rel="noreferrer" class="dock-link"><span>EDGE BOOST (MIG)</span> <i data-lucide="arrow-right" size="14"></i></a>
-                            <a href="https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit?gid=784209986#gid=784209986" target="_blank" rel="noreferrer" class="dock-link"><span>IBET BOOST (MIG)</span> <i data-lucide="arrow-right" size="14"></i></a>
-                            <a href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank" rel="noreferrer" class="dock-link"><span>KT SPORTS CHECK</span> <i data-lucide="arrow-right" size="14"></i></a>
-                            <a href="https://polymarket.com/breaking" target="_blank" rel="noreferrer" class="dock-link"><span>PREDICTION OFFER CHECK</span> <i data-lucide="arrow-right" size="14"></i></a>
-                        </div>
+                    <div class="widget-content-scroll" id="brandLinksContainer">
+                        <!-- Populated by JS -->
                     </div>
                 </div>
 
-                <!-- Col 3: Task in process -->
+                <!-- Col 3: Daily Task Dock -->
+                <div class="card">
+                    <div class="card-header-label" style="margin-bottom: 0.6rem;">DAILY TASK DOCK</div>
+                    <div class="widget-content-scroll">
+                        <a href="boostschedule.html" target="_blank" rel="noreferrer" class="dock-link"><span>TOP PICKS (SCHEDULE)</span> <i data-lucide="arrow-right" size="14"></i></a>
+                        <a href="https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit?gid=1450723096#gid=1450723096" target="_blank" rel="noreferrer" class="dock-link"><span>EDGE BOOST (MIG)</span> <i data-lucide="arrow-right" size="14"></i></a>
+                        <a href="https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit?gid=784209986#gid=784209986" target="_blank" rel="noreferrer" class="dock-link"><span>IBET BOOST (MIG)</span> <i data-lucide="arrow-right" size="14"></i></a>
+                        <a href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank" rel="noreferrer" class="dock-link"><span>KT SPORTS CHECK</span> <i data-lucide="arrow-right" size="14"></i></a>
+                        <a href="https://polymarket.com/breaking" target="_blank" rel="noreferrer" class="dock-link"><span>PREDICTION OFFER CHECK</span> <i data-lucide="arrow-right" size="14"></i></a>
+                    </div>
+                </div>
+
+                <!-- Col 4: Task in process -->
                 <div style="display:flex; flex-direction:column; overflow:hidden;">
                     <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:0.8rem;">
                         <h3 style="font-size:1.1rem; font-weight:700; color:var(--text-main);">Task In process (<span id="taskCount">0</span>)</h3>
                         <div style="font-size:0.75rem; font-weight:600; color:var(--text-muted); cursor:pointer;">Open Archive &gt;</div>
                     </div>
                     
-                    <!-- Changed to vertical stacking layout for tasks to avoid overlapping -->
                     <div class="tasks-row" id="taskContainer">
                         <!-- Dynamic Tasks go here -->
                         <div class="task-card dashed" onclick="openModal('taskModal')">+ Add a task</div>
                     </div>
                 </div>
+
             </div>
 
             <!-- BOTTOM GRID -->
@@ -421,5 +417,7 @@
         </div>
     </div>
 
+    <!-- External JS -->
+    <script src="./app.js"></script>
 </body>
 </html>
