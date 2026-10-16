@@ -6,7 +6,7 @@
   <title>Sportsbook Operations Hub</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body id="pageBody">
   <!-- BACKGROUND ANIMATION CANVAS -->
@@ -28,19 +28,6 @@
       </div>
     </div>
 
-    <div class="gateway-trend-graph-container">
-      <svg class="gateway-trend-svg" viewBox="0 0 1440 280" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="trendGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.25"/>
-            <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.0"/>
-          </linearGradient>
-        </defs>
-        <path class="trend-area-path" d="M0,220 C200,180 350,90 550,130 C750,170 950,50 1200,80 C1350,100 1400,40 1440,20 L1440,280 L0,280 Z" fill="url(#trendGradient)"></path>
-        <path class="trend-line-path" d="M0,220 C200,180 350,90 550,130 C750,170 950,50 1200,80 C1350,100 1400,40 1440,20" fill="none" stroke="#38bdf8" stroke-width="2.5"></path>
-      </svg>
-    </div>
-
     <div class="login-container">
       <div class="login-card" id="loginCard">
         <div class="sitting-robot-stage" id="sittingRobotStage">
@@ -56,13 +43,11 @@
               <div class="robot-leg left"></div>
               <div class="robot-leg right"></div>
             </div>
-            <div class="robot-hand left"></div>
-            <div class="robot-hand right"></div>
           </div>
         </div>
 
         <h1 class="login-title">Security Gateway</h1>
-        <p class="login-subtitle">TRADING PORTAL & RISK OPERATIONS</p>
+        <p class="login-subtitle">SPORTSBOOK TRADING PORTAL</p>
 
         <form class="login-input-group" onsubmit="handleLogin(event)">
           <div class="field-wrapper">
@@ -96,20 +81,21 @@
     </div>
   </div>
 
-  <!-- MAIN DASHBOARD APPLICATION -->
+  <!-- MAIN DASHBOARD FROSTED CONTAINER -->
   <div id="dashboardApp">
     <!-- EXECUTIVE TOP NAVIGATION BAR -->
     <header class="top-nav-bar">
       <div class="nav-brand-group">
         <button class="mobile-menu-toggle" onclick="toggleMobileTopMenu()"><i class="fa-solid fa-bars"></i></button>
         <div class="top-brand-title">
-          <span>SPORTSBOOK HUB</span>
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Hi, Operator!</span>
         </div>
       </div>
 
       <div class="top-search-box">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" placeholder="Search categories & links..." oninput="filterTopNav(this.value)">
+        <input type="text" placeholder="Search markets, tools..." oninput="filterTopNav(this.value)">
       </div>
 
       <nav class="top-nav-items" id="topNavMenu">
@@ -277,8 +263,8 @@
         <div class="admin-top-pill">
           <div class="avatar-circle">AD</div>
           <span class="user-title">Operator</span>
-          <button class="logout-action-btn" onclick="handleLogout()"><i class="fa-solid fa-power-off"></i> Exit</button>
         </div>
+        <button class="logout-action-btn" onclick="handleLogout()"><i class="fa-solid fa-power-off"></i> Exit</button>
       </div>
     </header>
 
@@ -343,7 +329,7 @@
 
           <div class="banner-controls-group">
             <div class="metric-pill">
-              <i class="fa-solid fa-users-viewfinder" style="color:var(--accent-cyan);"></i>
+              <i class="fa-solid fa-users-viewfinder"></i>
               <div>
                 <div style="font-size:8px; opacity:0.7;">ACTIVE TRADERS</div>
                 <div style="font-size:11px;" id="activeTraderCount">4 Working</div>
@@ -355,15 +341,9 @@
                 <i class="fa-solid fa-palette"></i> Display Mode <i class="fa-solid fa-chevron-down" style="font-size:9px;"></i>
               </button>
               <div class="dropdown-menu" id="themeMenu">
-                <div class="dropdown-section-title">TRADING DASHBOARD WALLPAPERS</div>
-                <div class="menu-option" onclick="setGradient('3d-chrome-swirl')">3D Chrome Swirl <span class="color-dot" style="background:#38bdf8;"></span></div>
-                <div class="menu-option" onclick="setGradient('cyan-liquid-glass')">Cyan Liquid Glass <span class="color-dot" style="background:#00f2fe;"></span></div>
-                <div class="menu-option" onclick="setGradient('deep-liquid-chrome')">Deep Liquid Chrome <span class="color-dot" style="background:#4f46e5;"></span></div>
-                <div class="menu-option" onclick="setGradient('neon-line-ribbon')">Neon Line Ribbon <span class="color-dot" style="background:#ec4899;"></span></div>
-                <div class="menu-option" onclick="setGradient('neural-wireframe')">Neural Wireframe <span class="color-dot" style="background:#10b981;"></span></div>
-                <div class="dropdown-section-title" style="margin-top:8px;">CLEAN SOLID THEMES</div>
-                <div class="menu-option" onclick="setGradient('plain-slate')">Dark Slate <span class="color-dot" style="background:#0f172a;"></span></div>
-                <div class="menu-option" onclick="setGradient('plain-daylight')">Light Daylight <span class="color-dot" style="background:#f8fafc;"></span></div>
+                <div class="dropdown-section-title">THEMES</div>
+                <div class="menu-option" onclick="setGradient('plain-daylight')">Frosted White <span class="color-dot" style="background:#ffffff;"></span></div>
+                <div class="menu-option" onclick="setGradient('plain-slate')">Dark Slate <span class="color-dot" style="background:#000000;"></span></div>
               </div>
             </div>
           </div>
@@ -414,29 +394,29 @@
             <span class="actions" id="matchDayDisplay">TODAY</span>
           </div>
           <div class="matchday-selector">
-            <span style="cursor:pointer; color:var(--accent-cyan);" onclick="navigateMatchDay(-1)"><i class="fa-solid fa-chevron-left"></i> Prev Day</span>
-            <span style="cursor:pointer; color:var(--accent-cyan);" onclick="navigateMatchDay(1)">Next Day <i class="fa-solid fa-chevron-right"></i></span>
+            <span style="cursor:pointer;" onclick="navigateMatchDay(-1)"><i class="fa-solid fa-chevron-left"></i> Prev Day</span>
+            <span style="cursor:pointer;" onclick="navigateMatchDay(1)">Next Day <i class="fa-solid fa-chevron-right"></i></span>
           </div>
           <div class="widget-scrollable-content" style="display:flex; flex-direction:column; gap:9px;" id="gamesContainer"></div>
         </div>
 
-        <div class="glass-card widget-column-card">
+        <div class="glass-card widget-column-card dark-theme-card">
           <div class="card-header">
             <span>⚙️ SYSTEM METRICS</span>
-            <span class="actions"><i class="fa-solid fa-server"></i> Stable</span>
+            <span class="actions" style="color:#ffffff;"><i class="fa-solid fa-server"></i> Stable</span>
           </div>
           <div class="widget-scrollable-content" style="display:flex; flex-direction:column; gap:9px;">
-            <div class="duty-card">
-              <div class="duty-top"><span>API Gateway</span> <span style="color:#4ade80;">99.9%</span></div>
-              <div class="duty-desc">Latency: 14ms (Trading Feed Active)</div>
+            <div class="duty-card" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.15);">
+              <div class="duty-top" style="color:#ffffff;"><span>API Gateway</span> <span style="color:#4ade80;">99.9%</span></div>
+              <div class="duty-desc" style="color:#a1a1aa;">Latency: 14ms (Trading Feed Active)</div>
             </div>
-            <div class="duty-card">
-              <div class="duty-top"><span>Tracking Engine</span> <span style="color:#4ade80;">Active</span></div>
-              <div class="duty-desc">Monitoring Green & Red CRM client limits.</div>
+            <div class="duty-card" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.15);">
+              <div class="duty-top" style="color:#ffffff;"><span>Tracking Engine</span> <span style="color:#4ade80;">Active</span></div>
+              <div class="duty-desc" style="color:#a1a1aa;">Monitoring Green & Red CRM client limits.</div>
             </div>
-            <div class="duty-card">
-              <div class="duty-top"><span>Currency Rate</span> <span style="color:var(--accent-cyan);">PHP / EUR</span></div>
-              <div class="duty-desc">1 EUR = 62.45 PHP (Live Sync)</div>
+            <div class="duty-card" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.15);">
+              <div class="duty-top" style="color:#ffffff;"><span>Currency Rate</span> <span style="color:#38bdf8;">PHP / EUR</span></div>
+              <div class="duty-desc" style="color:#a1a1aa;">1 EUR = 62.45 PHP (Live Sync)</div>
             </div>
           </div>
         </div>
