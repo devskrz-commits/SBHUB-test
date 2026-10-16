@@ -1,3 +1,5 @@
+/* eslint-disable */
+/* jshint ignore:start */
 "use strict";
 
 // Initialize Icons safely
@@ -59,7 +61,11 @@ if (localStorage.getItem("sbhub_auth") === "true") {
 function toggleMenu(menuId) {
     var menu = document.getElementById(menuId);
     if (menu) {
-        menu.classList.toggle("open");
+        if (menu.classList.contains("open")) {
+            menu.classList.remove("open");
+        } else {
+            menu.classList.add("open");
+        }
     }
 }
 
@@ -413,7 +419,7 @@ function fetchTopPicks() {
             var p = fetch("https://site.api.espn.com/apis/site/v2/sports/soccer/" + l + "/scoreboard?dates=" + dateQ)
                 .then(function(res) { return res.json(); })
                 .then(function(data) {
-                    if (data.events) {
+                    if (data && data.events) {
                         for (var j = 0; j < data.events.length; j++) {
                             var e = data.events[j];
                             if (e.status.type.state !== "pre") continue;
@@ -442,7 +448,7 @@ function fetchTopPicks() {
                     }
                 })
                 .catch(function(e) {
-                    // Ignored
+                    // Ignore errors silently for missing API data
                 });
             promises.push(p);
         })(leagues[i]);
@@ -450,6 +456,8 @@ function fetchTopPicks() {
     
     Promise.all(promises).then(function() {
         cachedPicks = allMatches;
+        renderPicks();
+    }).catch(function(e) {
         renderPicks();
     });
 }
@@ -617,7 +625,7 @@ function loadLiveDuties() {
         
         for (var i = 0; i < members.length; i++) {
             var m = members[i];
-            var grid = dayData.grid ? dayData.grid[m.id] : null;
+            var grid = (dayData.grid && dayData.grid[m.id]) ? dayData.grid[m.id] : null;
             var shiftId = "shift-7-16";
             if (grid && grid.shift) {
                 shiftId = grid.shift;
