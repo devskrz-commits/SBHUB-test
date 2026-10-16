@@ -261,7 +261,7 @@
                 </div>
             </div>
 
-            <!-- MIDDLE GRID -->
+            <!-- MIDDLE GRID (3 Columns) -->
             <div class="grid-middle">
                 
                 <!-- Col 1: Slot Duties -->
@@ -306,7 +306,7 @@
                 </div>
 
                 <!-- Col 3: Task in process -->
-                <div style="display:flex; flex-direction:column; overflow:hidden; margin-top: 0.5rem;">
+                <div style="display:flex; flex-direction:column; overflow:hidden;">
                     <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:0.8rem;">
                         <h3 style="font-size:1.1rem; font-weight:700; color:var(--text-main);">Task In process (<span id="taskCount">0</span>)</h3>
                         <div style="font-size:0.75rem; font-weight:600; color:var(--text-muted); cursor:pointer;">Open Archive &gt;</div>
@@ -319,8 +319,9 @@
                 </div>
             </div>
 
-            <!-- BOTTOM GRID (4 Columns for 2 Timezones, Weather, Sync) -->
+            <!-- BOTTOM GRID -->
             <div>
+                <div class="card-title" style="margin-bottom:0.8rem; font-size:1rem; color:var(--text-main);">Live Widgets &amp; Tracking</div>
                 <div class="grid-bottom">
                     <!-- Manila Time -->
                     <div class="card black-theme bottom-card">
@@ -336,14 +337,14 @@
                         <div class="bottom-sub" id="live-date-gmt2">Loading date...</div>
                         <div class="corner-icon"><i data-lucide="globe" size="16"></i></div>
                     </div>
-                    <!-- Weather (Open-Meteo accurate fetch + Firebase sync mock) -->
+                    <!-- Weather -->
                     <div class="card black-theme bottom-card">
                         <div class="card-header-label">WEATHER (METRO MANILA)</div>
                         <div class="bottom-val" id="live-temp">--&deg;C</div>
                         <div class="bottom-sub" id="live-weather-desc">Loading weather...</div>
                         <div class="corner-icon"><i data-lucide="cloud-rain" size="16"></i></div>
                     </div>
-                    <!-- Dashboard Sync / Theme Switcher -->
+                    <!-- Dashboard Sync -->
                     <div class="card black-theme bottom-card" onclick="openModal('themeModal')">
                         <div class="card-header-label">SYSTEM (CLICK FOR THEME)</div>
                         <div class="bottom-val" style="font-size: 1.4rem; padding: 0.3rem 0;">Dashboard Sync</div>
@@ -357,6 +358,7 @@
     </div>
 
     <!-- MODALS -->
+    
     <!-- Add Task Modal -->
     <div class="modal-overlay" id="taskModal">
         <div class="modal-card">
