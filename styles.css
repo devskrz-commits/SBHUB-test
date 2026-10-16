@@ -1,18 +1,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 :root {
-    /* Glassmorphism Variables */
-    --main-bg: rgba(245, 246, 248, 0.65);
-    --white-bg: rgba(255, 255, 255, 0.7);
-    --black-bg: rgba(12, 12, 12, 0.9);
+    /* Monochrome Glassmorphism Theme */
+    --main-bg: rgba(235, 235, 235, 0.55);
+    --white-bg: rgba(255, 255, 255, 0.65);
+    --black-bg: rgba(15, 15, 15, 0.95);
     --text-main: #111111;
     --text-muted: #555555;
     --sidebar-width: 260px;
-    --accent: #000000; /* Switched to monochrome accent to match reference */
-    --glass-border: rgba(255, 255, 255, 0.5);
+    --accent: #000000;
+    --glass-border: rgba(255, 255, 255, 0.6);
     
-    /* Monochrome Abstract Fluid Background */
-    --body-bg: url("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop");
+    /* Grayscale Fluid Abstract Background */
+    --body-bg: url("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop&sat=-100");
 }
 
 [data-theme="dark"] {
@@ -23,7 +23,7 @@
     --text-muted: #aaaaaa;
     --glass-border: rgba(255, 255, 255, 0.1);
     --accent: #ffffff;
-    --body-bg: url("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop");
+    --body-bg: url("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop&sat=-100");
 }
 
 * {
@@ -38,6 +38,7 @@ body {
     background: var(--body-bg);
     background-size: cover;
     background-position: center;
+    background-attachment: fixed;
     width: 100vw;
     height: 100vh;
     overflow: hidden;
@@ -129,7 +130,7 @@ body {
 
 .sidebar {
     width: var(--sidebar-width);
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.4);
     padding: 1.5rem 1.2rem;
     display: flex;
     flex-direction: column;
@@ -272,7 +273,7 @@ body {
     min-height: 20px;
 }
 
-/* STRICT FLEX LAYOUT - Prevents overlaps completely */
+/* STRICT FLEX LAYOUT */
 .main-content {
     flex-grow: 1;
     padding: 1.2rem 1.6rem;
@@ -354,14 +355,14 @@ body {
     display: grid;
     grid-template-columns: 1fr 1.6fr 1fr;
     gap: 1rem;
-    flex: 0 0 240px; /* Fixed height ratio so it doesn't push bottom down */
+    flex: 0 0 240px;
 }
 
 .grid-middle {
     display: grid;
-    grid-template-columns: 1fr 1.1fr 1.1fr 1.3fr; /* Restructured to 4 Full Columns */
+    grid-template-columns: 1fr 1.1fr 1.1fr 1.3fr; 
     gap: 1rem;
-    flex: 1; /* Takes remaining space dynamically */
+    flex: 1; 
     min-height: 0;
 }
 
@@ -369,7 +370,7 @@ body {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
-    flex: 0 0 auto; /* Fixed to bottom tightly */
+    flex: 0 0 auto; 
 }
 
 /* Glass Cards */
@@ -408,12 +409,12 @@ body {
     flex-shrink: 0;
 }
 
-/* Dark Theme Overrides inside Black Cards (Fixes invisible JS text) */
+/* Dark Theme Overrides inside Black Cards */
 .card.black-theme {
     background: var(--black-bg);
     color: #ffffff;
     border: none;
-    --text-main: #ffffff; /* Forces JS injected components to white */
+    --text-main: #ffffff; 
     --text-muted: #aaaaaa;
 }
 
@@ -768,7 +769,10 @@ body {
 .modal-overlay {
     display: none;
     position: fixed;
-    top: 0; right: 0; bottom: 0; left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     background: rgba(0, 0, 0, 0.6);
     z-index: 999;
     align-items: center;
