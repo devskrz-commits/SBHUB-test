@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-    /* Default Light-Grey Theme */
     --main-bg: #f5f6f8;
     --white-bg: #ffffff;
     --black-bg: #0c0c0c;
@@ -13,7 +12,6 @@
     --body-bg: #e2e4e9;
 }
 
-/* Dark Theme Variables */
 [data-theme="dark"] {
     --main-bg: #1a1a1a;
     --white-bg: #242424;
@@ -24,7 +22,13 @@
     --body-bg: #0c0c0c;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Inter', sans-serif; 
+    transition: background-color 0.3s, color 0.3s; 
+}
 
 body {
     background: var(--body-bg);
@@ -50,7 +54,6 @@ body {
     border: 1px solid var(--glass-border);
 }
 
-/* --- SIDEBAR --- */
 .sidebar {
     width: var(--sidebar-width);
     background: var(--white-bg);
@@ -101,7 +104,6 @@ body {
 
 .spacer { flex-grow: 1; min-height: 20px; }
 
-/* --- MAIN CONTENT --- */
 .main-content {
     flex-grow: 1; padding: 1.5rem 2rem; overflow-y: auto;
     display: flex; flex-direction: column; gap: 1.2rem;
@@ -117,7 +119,6 @@ body {
 .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: #ccc; overflow: hidden; border: 2px solid var(--white-bg); cursor: pointer; transition: transform 0.2s; }
 .user-avatar:hover { transform: scale(1.05); border-color: var(--accent); }
 
-/* --- GRIDS --- */
 .grid-top { display: grid; grid-template-columns: 1fr 1.6fr 1fr; gap: 1.2rem; min-height: 280px; }
 .grid-middle { display: grid; grid-template-columns: 1fr 1fr 1.6fr; gap: 1.2rem; }
 .grid-bottom { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
@@ -132,7 +133,6 @@ body {
 
 .widget-content-scroll { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; }
 
-/* Jira/Handover Items */
 .add-alert-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 2px 8px; border-radius: 8px; font-size: 0.65rem; cursor: pointer; font-weight: 700; }
 .alert-item { background: rgba(255,255,255,0.1); border-left: 3px solid #facc15; padding: 0.6rem 24px 0.6rem 0.6rem; border-radius: 8px; font-size: 0.8rem; margin-bottom: 0.5rem; position: relative; }
 .alert-item.jira { border-left-color: #ef4444; }
@@ -140,7 +140,6 @@ body {
 .delete-alert { position: absolute; right: 5px; top: 8px; cursor: pointer; opacity: 0.5; }
 .delete-alert:hover { opacity: 1; color: #ef4444; }
 
-/* Top Picks & Dock Tabs */
 .filter-bar { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem; margin-bottom: 0.5rem; flex-shrink: 0; }
 .filter-btn { background: rgba(150,150,150,0.1); border: none; padding: 5px 12px; border-radius: 12px; font-size: 0.7rem; font-weight: 700; cursor: pointer; color: var(--text-main); }
 .filter-btn.active { background: var(--black-bg); color: #fff; }
@@ -154,29 +153,24 @@ body {
 .match-badge { font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px; background: #ef4444; color: white; display: inline-block; margin-top: 4px;}
 .match-badge.blue { background: var(--accent); }
 
-/* Top Games */
 .games-navigator { display: flex; justify-content: space-between; align-items: center; background: rgba(150,150,150,0.1); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.8rem; color: var(--text-main); flex-shrink: 0; }
 .game-row { display: flex; align-items: center; gap: 10px; padding: 0.6rem; border-bottom: 1px solid rgba(150,150,150,0.1); }
 .game-title { font-size: 0.8rem; font-weight: 700; color: var(--text-main); }
 .game-sub { font-size: 0.65rem; color: var(--text-muted); }
 
-/* Duties */
 .duty-card { background: rgba(150,150,150,0.05); border: 1px solid var(--glass-border); border-radius: 10px; padding: 0.8rem; margin-bottom: 0.5rem; flex-shrink: 0; }
 .duty-top { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-main); }
 .duty-badge { background: rgba(150,150,150,0.2); font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; }
 .duty-text { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
 
-/* Directory/Task Links */
 .dock-link { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 1rem; border-radius: 10px; background: rgba(150,150,150,0.05); border: 1px solid var(--glass-border); color: var(--text-main); font-weight: 600; font-size: 0.75rem; text-decoration: none; transition: all 0.2s; flex-shrink: 0; }
 .dock-link:hover { background: rgba(150,150,150,0.1); border-color: var(--text-muted); transform: translateX(2px); }
 
-/* Bottom Widgets */
 .bottom-card { padding: 1.2rem; position: relative; cursor: pointer; display: flex; flex-direction: column; justify-content: center; }
 .bottom-val { font-size: 1.6rem; font-weight: 700; margin: 0.2rem 0; line-height: 1.1; }
 .bottom-sub { font-size: 0.75rem; color: #aaa; }
 .corner-icon { position: absolute; top: 1.2rem; right: 1.2rem; width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; }
 
-/* Tasks Layout */
 .tasks-row { display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 5px; flex-grow: 1; }
 .task-card { background: var(--white-bg); border-radius: 16px; padding: 1rem; min-width: 160px; height: 130px; display: flex; flex-direction: column; justify-content: space-between; position: relative; border: 1px solid var(--glass-border); box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
 .task-card.dashed { background: transparent; border: 2px dashed #ccc; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; font-weight: 600; font-size: 0.85rem; }
@@ -193,6 +187,5 @@ body {
 .modal-input { width: 100%; padding: 0.8rem; margin-bottom: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); background: var(--main-bg); color: var(--text-main); font-size: 0.9rem; outline: none;}
 .modal-btn { width: 100%; background: var(--black-bg); color: white; padding: 0.8rem; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
 
-/* Theme Option Buttons */
 .theme-btn { width: 100%; padding: 0.8rem; margin-bottom: 0.5rem; border-radius: 8px; border: 1px solid var(--glass-border); background: var(--main-bg); color: var(--text-main); font-weight: 600; cursor: pointer; text-align: left; }
 .theme-btn:hover { border-color: var(--accent); }
