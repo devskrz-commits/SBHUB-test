@@ -1,5 +1,38 @@
 lucide.createIcons();
 
+// --- Auth / Secure Login ---
+const DEFAULT_USER = "sportsbook2026";
+const DEFAULT_PASS = "sb2026";
+
+function handleLogin(e) {
+    e.preventDefault();
+    const user = document.getElementById('usernameInput').value.trim();
+    const pass = document.getElementById('passwordInput').value;
+    
+    if ((user === DEFAULT_USER || user === "sportsbookhub") && pass === DEFAULT_PASS) {
+        localStorage.setItem('sbhub_auth', 'true');
+        document.getElementById('authOverlay').classList.add('unlocked');
+        document.getElementById('loginErrorMsg').innerText = '';
+    } else {
+        document.getElementById('loginErrorMsg').innerText = 'Invalid credentials';
+        const card = document.querySelector('.login-card');
+        card.classList.add('shake');
+        setTimeout(function() {
+            card.classList.remove('shake');
+        }, 400);
+    }
+}
+
+function handleLogout() {
+    localStorage.removeItem('sbhub_auth');
+    document.getElementById('authOverlay').classList.remove('unlocked');
+    document.getElementById('passwordInput').value = '';
+}
+
+if (localStorage.getItem('sbhub_auth') === 'true') {
+    document.getElementById('authOverlay').classList.add('unlocked');
+}
+
 // --- UI Interactions ---
 function toggleMenu(menuId) {
     const menu = document.getElementById(menuId);
