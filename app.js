@@ -8,21 +8,30 @@ if (typeof window.lucide !== "undefined") {
 }
 
 // --- Auth / Secure Login ---
-var DEFAULT_USER = "sportsbook2026";
+var DEFAULT_USER = "@sportsbook";
 var DEFAULT_PASS = "sb2026";
 
 function handleLogin(e) {
     e.preventDefault();
     var userEl = document.getElementById("usernameInput");
     var passEl = document.getElementById("passwordInput");
+    var rememberEl = document.getElementById("rememberMe");
     
     if (!userEl || !passEl) return;
     
     var user = userEl.value.trim();
     var pass = passEl.value;
     
-    if ((user === DEFAULT_USER || user === "sportsbookhub") && pass === DEFAULT_PASS) {
-        localStorage.setItem("sbhub_auth", "true");
+    if (user === DEFAULT_USER && pass === DEFAULT_PASS) {
+        // Check remember me status
+        var remember = rememberEl ? rememberEl.checked : false;
+        
+        if (remember) {
+            localStorage.setItem("sbhub_auth", "true");
+        } else {
+            sessionStorage.setItem("sbhub_auth", "true");
+        }
+
         document.getElementById("authOverlay").classList.add("unlocked");
         document.getElementById("dashboardWrapper").classList.add("unlocked");
         document.getElementById("loginErrorMsg").innerText = "";
@@ -40,17 +49,21 @@ function handleLogin(e) {
 
 function handleLogout() {
     localStorage.removeItem("sbhub_auth");
+    sessionStorage.removeItem("sbhub_auth");
+    
     var authOverlay = document.getElementById("authOverlay");
     var dashboardWrapper = document.getElementById("dashboardWrapper");
     var passwordInput = document.getElementById("passwordInput");
+    var usernameInput = document.getElementById("usernameInput");
     
     if (authOverlay) { authOverlay.classList.remove("unlocked"); }
     if (dashboardWrapper) { dashboardWrapper.classList.remove("unlocked"); }
     if (passwordInput) { passwordInput.value = ""; }
+    if (usernameInput) { usernameInput.value = ""; }
 }
 
 // Check session on load
-if (localStorage.getItem("sbhub_auth") === "true") {
+if (localStorage.getItem("sbhub_auth") === "true" || sessionStorage.getItem("sbhub_auth") === "true") {
     var authOverlay = document.getElementById("authOverlay");
     var dashboardWrapper = document.getElementById("dashboardWrapper");
     if (authOverlay) { authOverlay.classList.add("unlocked"); }
@@ -448,7 +461,7 @@ function fetchTopPicks() {
                     }
                 })
                 .catch(function(e) {
-                    // Ignore errors silently for missing API data
+                    // Ignored
                 });
             promises.push(p);
         })(leagues[i]);
