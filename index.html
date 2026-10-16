@@ -23,9 +23,15 @@
                 <div class="logo-main" style="justify-content:center;"><i data-lucide="waves"></i> Growth</div>
             </div>
             <form onsubmit="handleLogin(event)" style="display:flex; flex-direction:column; gap:0.5rem;">
-                <input type="text" id="usernameInput" class="modal-input" placeholder="Username (sportsbook2026)" required />
-                <input type="password" id="passwordInput" class="modal-input" placeholder="Password (sb2026)" required />
-                <button type="submit" class="modal-btn" style="margin-top:0.5rem;">Secure Login</button>
+                <input type="text" id="usernameInput" class="modal-input" placeholder="Username" required />
+                <input type="password" id="passwordInput" class="modal-input" placeholder="Password" required />
+                
+                <div style="display:flex; align-items:center; gap:0.5rem; padding-left: 0.2rem; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-main); font-weight: 500;">
+                    <input type="checkbox" id="rememberMe" style="cursor: pointer;" />
+                    <label for="rememberMe" style="cursor: pointer;">Remember me</label>
+                </div>
+
+                <button type="submit" class="modal-btn">Secure Login</button>
                 <div id="loginErrorMsg" style="color:#ef4444; font-size:0.8rem; text-align:center; min-height:1rem; margin-top:0.5rem;"></div>
             </form>
         </div>
