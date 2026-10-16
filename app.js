@@ -309,9 +309,9 @@ function renderPicks() {
         html += `
             <div class="match-card ${isTop ? 'top-pick' : ''}">
                 <div class="flags-row">
-                    <img src="${m.homeLogo}" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+                    <img src="${m.homeLogo}" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'" />
                     <span style="font-size:0.7rem; color:var(--text-muted); font-weight:800;">VS</span>
-                    <img src="${m.awayLogo}" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+                    <img src="${m.awayLogo}" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'" />
                 </div>
                 <div class="match-name">${m.homeName} vs ${m.awayName}</div>
                 <div class="match-badge ${isTop ? 'blue' : ''}">${m.badge}</div>
@@ -339,9 +339,9 @@ function openNotifications() {
         html += `
             <div style="background: rgba(150,150,150,0.05); border: 1px solid var(--glass-border); border-radius: 12px; padding: 0.8rem; display: flex; align-items: center; justify-content: space-between;">
                 <div style="display:flex; align-items:center; gap: 10px;">
-                    <img src="${m.homeLogo}" style="width:24px;height:24px;border-radius:50%; background:white;" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+                    <img src="${m.homeLogo}" style="width:24px;height:24px;border-radius:50%; background:white;" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'" />
                     <span style="font-weight:700; font-size:0.8rem; color:var(--text-main);">${m.homeName} vs ${m.awayName}</span>
-                    <img src="${m.awayLogo}" style="width:24px;height:24px;border-radius:50%; background:white;" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+                    <img src="${m.awayLogo}" style="width:24px;height:24px;border-radius:50%; background:white;" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'" />
                 </div>
                 <div style="text-align:right;">
                     <div style="font-size:0.6rem; font-weight:800; background:var(--accent); color:white; padding:2px 6px; border-radius:4px; display:inline-block;">${m.league.toUpperCase().replace('.1','')}</div>
@@ -381,8 +381,8 @@ function renderGamesList() {
     games.forEach(g => {
         html += `
             <div class="game-row">
-                <img src="${g.homeLogo}" style="width:24px;height:24px;border-radius:50%; background:white;" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
-                <img src="${g.awayLogo}" style="width:24px;height:24px;border-radius:50%;margin-left:-8px; background:white;" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+                <img src="${g.homeLogo}" style="width:24px;height:24px;border-radius:50%; background:white;" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'" />
+                <img src="${g.awayLogo}" style="width:24px;height:24px;border-radius:50%;margin-left:-8px; background:white;" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'" />
                 <div style="flex-grow:1; margin-left:8px;">
                     <div class="game-title">${g.homeName} <span style="color:var(--text-muted);font-weight:400;font-size:0.7rem;">vs</span> ${g.awayName}</div>
                     <div class="game-sub">${g.time}</div>
