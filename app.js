@@ -1,605 +1,429 @@
-const DEFAULT_USER = "sportsbook2026";
-const DEFAULT_PASS = "sb2026";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sportsbook Operations Hub</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body id="pageBody">
+  <!-- BACKGROUND ANIMATION CANVAS -->
+  <canvas id="bgCanvas"></canvas>
 
-const isMobileDevice = () => window.innerWidth <= 768;
-
-let rosterDb = null;
-try {
-  if (typeof firebase !== 'undefined') {
-    const rosterFirebaseConfig = {
-      apiKey: "AIzaSyCaEclzLI284lWCFk-vXbLSXa_bEZsXbOg",
-      authDomain: "test-daily-task--sb.firebaseapp.com",
-      databaseURL: "https://test-daily-task--sb-default-rtdb.firebaseio.com",
-      projectId: "test-daily-task--sb",
-      storageBucket: "test-daily-task--sb.firebasestorage.app",
-      messagingSenderId: "928476661919",
-      appId: "1:928476661919:web:c6d531190824c6ed7c7aaa"
-    };
-    if (!firebase.apps.length) firebase.initializeApp(rosterFirebaseConfig);
-    rosterDb = firebase.database();
-  }
-} catch (e) {
-  console.warn("Firebase offline or blocked.", e);
-}
-
-let selectedGameDayOffset = 0;
-
-function toggleTopDropdown(event, btnElement) {
-  if (event) event.stopPropagation();
-  const targetBtn = btnElement || (event ? event.currentTarget : null);
-  if (!targetBtn) return;
-
-  const group = targetBtn.closest('.top-nav-dropdown-group');
-  if (!group) return;
-
-  const isAlreadyActive = group.classList.contains('active');
-  document.querySelectorAll('.top-nav-dropdown-group').forEach(g => {
-    if (g !== group) g.classList.remove('active');
-  });
-
-  if (isAlreadyActive) {
-    group.classList.remove('active');
-  } else {
-    group.classList.add('active');
-  }
-}
-
-function toggleMobileTopMenu(forceState) {
-  const menu = document.getElementById('topNavMenu');
-  if (!menu) return;
-  const isActive = forceState !== undefined ? forceState : !menu.classList.contains('mobile-show');
-  if (isActive) {
-    menu.classList.add('mobile-show');
-    document.body.style.overflow = 'hidden';
-  } else {
-    menu.classList.remove('mobile-show');
-    document.body.style.overflow = '';
-  }
-}
-
-function filterTopNav(query) {
-  const term = (query || '').toLowerCase().trim();
-  const groups = document.querySelectorAll('.top-nav-dropdown-group');
-
-  groups.forEach(group => {
-    const btn = group.querySelector('.top-nav-btn');
-    const links = group.querySelectorAll('.top-dropdown-link');
-    let hasMatch = false;
-
-    if (!term) {
-      group.style.display = '';
-      links.forEach(l => l.style.display = '');
-      group.classList.remove('active');
-      return;
-    }
-
-    if (btn && btn.textContent.toLowerCase().includes(term)) hasMatch = true;
-
-    links.forEach(link => {
-      const match = link.textContent.toLowerCase().includes(term);
-      link.style.display = match ? 'flex' : 'none';
-      if (match) hasMatch = true;
-    });
-
-    group.style.display = hasMatch ? 'inline-block' : 'none';
-    if (hasMatch) group.classList.add('active');
-    else group.classList.remove('active');
-  });
-}
-
-const brandTabData = {
-  ibet: [
-    { name: "IBET ADMIN", url: "https://mga-betbook.center/ibet/bets" },
-    { name: "IBET BETSSON", url: "https://b2b.betssonbusiness.com/" },
-    { name: "BET CONSTRUCT", url: "https://backoffice.betconstruct.com/" }
-  ],
-  edge: [
-    { name: "KT SBX", url: "https://p2ibet.sbx.bet/bets" },
-    { name: "KT PROJECTS", url: "https://kickertech.atlassian.net/jira/projects" },
-    { name: "EDGE ADMIN", url: "https://admin.edgegaming.io/admin/qbet/homepage" },
-    { name: "SERVICE DESK", url: "https://kickertech.atlassian.net/servicedesk/customer/user/login?destination=portals" }
-  ],
-  pubs: [
-    { name: "GO GAMING", url: "https://gg-backoffice-eu.gogaming.cc/en-US/member/list" }
-  ]
-};
-
-function switchBrandTab(tabName) {
-  document.querySelectorAll('.tab-pill').forEach(pill => pill.classList.remove('active'));
-  const activePill = document.getElementById(`tab-${tabName}`);
-  if (activePill) activePill.classList.add('active');
-
-  const container = document.getElementById('brandLinksContainer');
-  if (!container) return;
-  container.innerHTML = '';
-
-  const items = brandTabData[tabName] || [];
-  items.forEach(item => {
-    const a = document.createElement('a');
-    a.className = 'action-row';
-    a.href = item.url;
-    if (item.url !== '#') a.target = '_blank';
-    a.rel = 'noreferrer';
-    a.innerHTML = `<span>${item.name}</span><i class='bx bx-right-arrow-alt'></i>`;
-    container.appendChild(a);
-  });
-}
-
-function generateScriptedMarket(homeName, awayName, index) {
-  const templates = [
-    `${homeName} to Win + Over 2.5 Goals`,
-    `${homeName} vs ${awayName} - Both Teams to Score`,
-    `${homeName} to Win + Have 2+ Goals`,
-    `${awayName} to Win or Draw + Over 1.5 Goals`,
-    `${homeName} vs ${awayName} - Both Teams to Score + Over 2.5 Goals`,
-    `${homeName} to Win First Half & Over 1.5 Goals`
-  ];
-  return templates[index % templates.length];
-}
-
-const PRIORITY_LEAGUES = [
-  { rank: 1, key: "uefa.champions", name: "UEFA Champions League", code: "uefa.champions" },
-  { rank: 2, key: "eng.1",          name: "Premier League",         code: "eng.1" },
-  { rank: 3, key: "esp.1",          name: "La Liga",                code: "esp.1" },
-  { rank: 4, key: "ger.1",          name: "Bundesliga",             code: "ger.1" },
-  { rank: 5, key: "ita.1",          name: "Serie A",                code: "ita.1" }
-];
-
-let cachedTopPicks = [];
-let currentFilterKey = 'eng.1';
-
-function getLeagueDisplayName(key) {
-  const lg = PRIORITY_LEAGUES.find(l => l.key === key);
-  return lg ? lg.name : key.toUpperCase();
-}
-
-function loadCachedTopPicks() {
-  try {
-    const stored = localStorage.getItem('sbhub_toppicks_cache');
-    if (stored) {
-      cachedTopPicks = JSON.parse(stored);
-      renderFilteredTopPicks();
-    }
-  } catch (e) {
-    console.warn("Could not parse top picks cache:", e);
-  }
-}
-
-async function fetchTopPicksAndBoosts() {
-  const container = document.getElementById('topPicksContainer');
-  if (!container) return;
-
-  try {
-    const now = new Date();
-    const seenMatchKeys = new Set();
-    const targetDates = ["20261010", "20261011", "20261012", "20261014", "20261015", "20261016"];
-
-    const fetchPromises = [];
-    for (const league of PRIORITY_LEAGUES) {
-      for (const dateStr of targetDates) {
-        fetchPromises.push(
-          fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard?dates=${dateStr}&limit=100`)
-            .then(res => res.ok ? res.json() : null)
-            .then(data => ({ league, data }))
-            .catch(() => null)
-        );
-      }
-    }
-
-    const results = await Promise.all(fetchPromises);
-    let apiPicks = [];
-
-    for (const resItem of results) {
-      if (!resItem || !resItem.data || !resItem.data.events) continue;
-      const { league, data } = resItem;
-
-      for (const evt of data.events) {
-        const gameState = evt.status?.type?.state;
-        const evtDate = new Date(evt.date);
-        if (gameState !== 'pre' || evtDate <= now) continue;
-
-        const comp = evt.competitions?.[0];
-        if (!comp) continue;
-
-        const homeTeam = comp.competitors?.find(c => c.homeAway === 'home');
-        const awayTeam = comp.competitors?.find(c => c.homeAway === 'away');
-
-        if (homeTeam && awayTeam) {
-          const homeName = homeTeam.team?.shortDisplayName || homeTeam.team?.displayName || "Home";
-          const awayName = awayTeam.team?.shortDisplayName || awayTeam.team?.displayName || "Away";
-
-          const matchKey = evt.id || `${homeName}-${awayName}-${evt.date}`;
-          if (seenMatchKeys.has(matchKey)) continue;
-          seenMatchKeys.add(matchKey);
-
-          const homeLogo = homeTeam.team?.logo || homeTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
-          const awayLogo = awayTeam.team?.logo || awayTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
-
-          const kickOffStr = new Intl.DateTimeFormat('en-GB', {
-            timeZone: 'Asia/Manila',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-          }).format(evtDate).toUpperCase();
-
-          const scriptedMarket = generateScriptedMarket(homeName, awayName, apiPicks.length);
-
-          apiPicks.push({
-            leagueKey: league.key,
-            leagueRank: league.rank,
-            kickOffTimestamp: evtDate.getTime(),
-            homeName,
-            awayName,
-            homeLogo,
-            awayLogo,
-            leagueName: data.leagues?.[0]?.name || league.name,
-            market: scriptedMarket,
-            badge: (apiPicks.length % 2 === 0) ? "TOP PICK" : "HOT",
-            kickOff: kickOffStr
-          });
-        }
-      }
-    }
-
-    apiPicks.sort((a, b) => {
-      if (a.leagueRank !== b.leagueRank) return a.leagueRank - b.leagueRank;
-      return a.kickOffTimestamp - b.kickOffTimestamp;
-    });
-
-    if (apiPicks.length > 0) {
-      cachedTopPicks = apiPicks;
-      localStorage.setItem('sbhub_toppicks_cache', JSON.stringify(apiPicks));
-    }
-    renderFilteredTopPicks();
-  } catch (e) {
-    console.error("Fetch Top Picks Error:", e);
-    renderFilteredTopPicks();
-  }
-}
-
-function filterTopPicks(leagueKey, btnElement) {
-  currentFilterKey = leagueKey;
-  document.querySelectorAll('.boost-filter-btn').forEach(btn => btn.classList.remove('active'));
-  if (btnElement) btnElement.classList.add('active');
-  renderFilteredTopPicks();
-}
-
-function renderFilteredTopPicks() {
-  const container = document.getElementById('topPicksContainer');
-  if (!container) return;
-
-  const now = new Date();
-  let activePicks = cachedTopPicks.filter(pick => pick.kickOffTimestamp > now.getTime());
-  let displayPicks = activePicks.filter(pick => pick.leagueKey === currentFilterKey);
-
-  if (displayPicks.length === 0) {
-    const categoryLabel = getLeagueDisplayName(currentFilterKey);
-    container.innerHTML = `<div style="text-align:center; padding:20px; width:100%; font-size:11px; font-weight:600; color:rgba(255,255,255,0.65);">No upcoming scheduled ${categoryLabel} matches available at this time.</div>`;
-    return;
-  }
-
-  displayPicks = displayPicks.slice(0, 12);
-  let cardsHtml = "";
-  displayPicks.forEach(pick => {
-    const isTopPick = pick.badge === "TOP PICK";
-    cardsHtml += `
-      <div class="boost-card ${isTopPick ? 'highlight-border' : ''}">
-        <div class="flags-row">
-          <img src="${pick.homeLogo}" alt="${pick.homeName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
-          <span class="vs-text">VS</span>
-          <img src="${pick.awayLogo}" alt="${pick.awayName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
-        </div>
-        <div class="boost-match-info">
-          <div class="boost-match-title">${pick.homeName} <span class="vs-light">vs</span> ${pick.awayName}</div>
-          <div class="boost-league-sub">${pick.leagueName}</div>
-        </div>
-        <div><span class="boost-badge ${isTopPick ? 'top-pick' : 'hot'}">${pick.badge}</span></div>
-        <div class="boost-market-desc">${pick.market}</div>
-        <div class="boost-card-bottom">
-          <div class="boost-kickoff-pill"><i class='bx bx-time-five'></i> ${pick.kickOff}</div>
+  <!-- TRADING TERMINAL AUTHENTICATION & SECURITY GATEWAY -->
+  <div id="authOverlay">
+    <div class="gateway-trend-header">
+      <div class="trend-header-left">
+        <div class="trend-icon"><i class="fa-solid fa-chart-line"></i></div>
+        <div>
+          <span class="trend-title">GLOBAL TRADING GATEWAY</span>
+          <span class="trend-sub">Real-Time Risk Operations & Index Analytics</span>
         </div>
       </div>
-    `;
-  });
-  container.innerHTML = cardsHtml;
-}
+      <div class="trend-stats-pill">
+        <span class="stat-dot"></span>
+        <span>LATENCY: 14MS &bull; FEED: SECURE</span>
+      </div>
+    </div>
 
-/* --- CANVAS PARTICLES --- */
-const canvas = document.getElementById('bgCanvas');
-const ctx = canvas ? canvas.getContext('2d') : null;
-let width = 0, height = 0, particles = [];
+    <div class="login-container">
+      <div class="login-card" id="loginCard">
+        <div class="sitting-robot-stage" id="sittingRobotStage">
+          <div class="robot-body-wrapper" id="robotBodyWrapper">
+            <div class="robot-head" id="robotHead">
+              <div class="robot-antenna"></div>
+              <div class="robot-visor">
+                <div class="robot-eye left" id="leftEye"></div>
+                <div class="robot-eye right" id="rightEye"></div>
+              </div>
+            </div>
+            <div class="robot-torso">
+              <div class="robot-leg left"></div>
+              <div class="robot-leg right"></div>
+            </div>
+          </div>
+        </div>
 
-function resizeCanvas() {
-  if (!canvas) return;
-  width = canvas.width = window.innerWidth;
-  height = canvas.height = window.innerHeight;
-  initParticles();
-}
+        <h1 class="login-title">Security Gateway</h1>
+        <p class="login-subtitle">SPORTSBOOK TRADING PORTAL</p>
 
-window.addEventListener('resize', () => {
-  resizeCanvas();
-  if (!isMobileDevice()) toggleMobileTopMenu(false);
-});
+        <form class="login-input-group" onsubmit="handleLogin(event)">
+          <div class="field-wrapper">
+            <label class="login-label">Username or Email</label>
+            <input type="text" id="usernameInput" class="login-input" value="sportsbook2026" placeholder="Operator ID" required>
+          </div>
 
-class Particle {
-  constructor() { this.reset(); }
-  reset() {
-    this.x = Math.random() * width;
-    this.y = Math.random() * height;
-    this.radius = Math.random() * (isMobileDevice() ? 1.5 : 2) + 1;
-    this.vx = (Math.random() - 0.5) * (isMobileDevice() ? 0.4 : 0.8);
-    this.vy = (Math.random() - 0.5) * (isMobileDevice() ? 0.4 : 0.8);
-    this.alpha = Math.random() * 0.4 + 0.1;
-  }
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
-    if (this.x < 0 || this.x > width) this.vx *= -1;
-    if (this.y < 0 || this.y > height) this.vy *= -1;
-  }
-  draw() {
-    if (!ctx) return;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(56, 189, 248, ${this.alpha})`;
-    ctx.fill();
-  }
-}
+          <div class="field-wrapper">
+            <div class="field-label-row">
+              <label class="login-label">Security Key</label>
+              <a href="#" class="forgot-link">Forgot key?</a>
+            </div>
+            <div class="password-field-wrap">
+              <input type="password" id="passwordInput" class="login-input" placeholder="Enter password" value="sb2026" required>
+              <button class="password-toggle-btn" type="button" onclick="togglePasswordVisibility()"><i class="fa-solid fa-eye" id="togglePassIcon"></i></button>
+            </div>
+          </div>
 
-function initParticles() {
-  if (!canvas) return;
-  particles = [];
-  const count = isMobileDevice() ? 15 : 45;
-  for (let i = 0; i < count; i++) particles.push(new Particle());
-}
-resizeCanvas();
+          <div class="remember-row">
+            <input type="checkbox" id="rememberMe" checked>
+            <label for="rememberMe">Maintain active session</label>
+          </div>
 
-function animateCanvas() {
-  if (!canvas || !ctx) return;
-  ctx.clearRect(0, 0, width, height);
-  particles.forEach(p => { p.update(); p.draw(); });
-  requestAnimationFrame(animateCanvas);
-}
-if (canvas) animateCanvas();
+          <button class="login-btn" type="submit">
+            <i class="fa-solid fa-key"></i> ACCESS DASHBOARD
+          </button>
 
-/* --- ROBOT TRACKING --- */
-document.addEventListener('mousemove', (e) => {
-  if (isMobileDevice()) return;
-  const robotStage = document.getElementById('sittingRobotStage');
-  const authOverlay = document.getElementById('authOverlay');
-  if (!robotStage || (authOverlay && authOverlay.classList.contains('unlocked'))) return;
+          <div class="login-error" id="loginErrorMsg"></div>
+        </form>
+      </div>
+    </div>
+  </div>
 
-  const leftEye = document.getElementById('leftEye');
-  const rightEye = document.getElementById('rightEye');
-  const robotHead = document.getElementById('robotHead');
-  const robotBodyWrapper = document.getElementById('robotBodyWrapper');
+  <!-- MAIN DASHBOARD FROSTED CONTAINER -->
+  <div id="dashboardApp">
+    <!-- EXECUTIVE TOP NAVIGATION BAR -->
+    <header class="top-nav-bar">
+      <div class="nav-brand-group">
+        <button class="mobile-menu-toggle" onclick="toggleMobileTopMenu()"><i class="fa-solid fa-bars"></i></button>
+        <div class="top-brand-title">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Hi, Operator!</span>
+        </div>
+      </div>
 
-  const rect = robotStage.getBoundingClientRect();
-  const centerX = rect.left + rect.width / 2;
-  const centerY = rect.top + rect.height / 2;
-  const deltaX = e.clientX - centerX;
-  const deltaY = e.clientY - centerY;
-  const angle = Math.atan2(deltaY, deltaX);
+      <div class="top-search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Search markets, tools..." oninput="filterTopNav(this.value)">
+      </div>
 
-  const eyeDist = Math.min(5, Math.hypot(deltaX, deltaY) / 35);
-  const eyeX = Math.cos(angle) * eyeDist;
-  const eyeY = Math.sin(angle) * eyeDist;
+      <nav class="top-nav-items" id="topNavMenu">
+        <!-- 1. INTERNAL -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-house"></i></span>
+            INTERNAL
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="#" class="top-dropdown-link"><span>DAILY DUTY</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>ROTA</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>DAILY BIG WINNERS</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>HANDOVER</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
 
-  if (leftEye && rightEye) {
-    leftEye.style.transform = `translate(${eyeX}px, ${eyeY}px)`;
-    rightEye.style.transform = `translate(${eyeX}px, ${eyeY}px)`;
-  }
+        <!-- 2. DAILY TASKS -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-calendar-check"></i></span>
+            DAILY TASKS
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="#" class="top-dropdown-link"><span>TOP PICKS</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>EDGE BOOST (MIG)</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>IBET BOOST (MIG)</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>KT SPORTS CHECK</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>PREDICTION OFFER CHECK</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>EDGE BOOST SYS</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>IBET BOOST SYS</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
 
-  const rotateY = Math.max(-25, Math.min(25, deltaX / 20));
-  const rotateX = Math.max(-15, Math.min(15, -deltaY / 25));
+        <!-- 3. DAILY MONITORING -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-chart-line"></i></span>
+            DAILY MONITORING
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="#" class="top-dropdown-link"><span>GREEN TRACKER</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>RED TRACKER</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>ORANGE TRACKER</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>7A TRACKER</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>GREEN CRM</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>RED CRM</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
 
-  if (robotHead) robotHead.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-  if (robotBodyWrapper) robotBodyWrapper.style.transform = `rotateY(${rotateY * 0.3}deg)`;
-});
+        <!-- 4. BACK OFFICE -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-briefcase"></i></span>
+            BACK OFFICE
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="#" class="top-dropdown-link"><span>QBET/55/30</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>IBET</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>PUBS</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
 
-/* --- WORLD CLOCKS --- */
-function updateWorldClocks() {
-  const now = new Date();
-  const fmt = (zone) => new Intl.DateTimeFormat('en-GB', { timeZone: zone, hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(now);
-  
-  const gmt8 = document.getElementById('clock-gmt8');
-  if (gmt8) gmt8.textContent = fmt('Asia/Singapore');
-  const cet = document.getElementById('clock-cet');
-  if (cet) cet.textContent = fmt('Europe/Berlin');
-  const gmt2 = document.getElementById('clock-gmt2');
-  if (gmt2) gmt2.textContent = fmt('Europe/Athens');
-}
-setInterval(updateWorldClocks, 1000);
-updateWorldClocks();
+        <!-- 5. MULTI-MONITOR -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-desktop"></i></span>
+            MULTI-MONITOR
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="#" class="top-dropdown-link"><span>EDGE PREDICTION TICKER</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>PUBS PREDICTION TICKER</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>QBET/55/30 REJECTED</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>PUBS REJECTED</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
 
-/* --- WEATHER --- */
-async function fetchManilaWeather() {
-  const tempEl = document.getElementById('weatherTemp');
-  const condEl = document.getElementById('weatherCond');
-  const humEl = document.getElementById('weatherHumidity');
-  const windEl = document.getElementById('weatherWind');
+        <!-- 6. BETRADAR -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-bullseye"></i></span>
+            BETRADAR
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="#" class="top-dropdown-link"><span>MTS</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>CTRL PORTAL</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
 
-  if (!tempEl) return;
-  try {
-    const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current_weather=true&current=temperature_2m,relative_humidity_2m,wind_speed_10m&timezone=Asia%2FManila');
-    if (!res.ok) throw new Error();
-    const data = await res.json();
-    const temp = Math.round(data.current?.temperature_2m ?? 32);
-    const hum = data.current?.relative_humidity_2m ?? 56;
-    const wind = Math.round(data.current?.wind_speed_10m ?? 7);
+        <!-- 7. OWN BRANDS -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-layer-group"></i></span>
+            OWN BRANDS
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="#" class="top-dropdown-link"><span>7A</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>QBET</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>55BET</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>30BET</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>GQBET</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>BVBET</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>IBET</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
 
-    tempEl.textContent = `${temp}°C`;
-    if (condEl) condEl.textContent = 'PARTLY CLOUDY';
-    if (humEl) humEl.textContent = `Humidity: ${hum}%`;
-    if (windEl) windEl.textContent = `Wind: ${wind} km/h`;
-  } catch (e) {
-    tempEl.textContent = '32°C';
-  }
-}
+        <!-- 8. PRICE REFERENCES -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-coins"></i></span>
+            PRICE REFERENCES
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="#" class="top-dropdown-link"><span>FLASHSCORE</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>BETSAPI</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>ODDSPORTAL</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>ODDSCHECKER</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>BETFAIR</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>BET365</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>PINNACLE</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>GGBET</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>UNIBET</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>SOFASCORE</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>MARATHONBET</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>FONBET</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
 
-/* --- AUTHENTICATION --- */
-function togglePasswordVisibility() {
-  const passInput = document.getElementById('passwordInput');
-  const icon = document.getElementById('togglePassIcon');
-  if (!passInput || !icon) return;
-  if (passInput.type === 'password') {
-    passInput.type = 'text';
-    icon.className = 'bx bx-hide';
-  } else {
-    passInput.type = 'password';
-    icon.className = 'bx bx-show';
-  }
-}
+        <!-- 9. PROCEDURES -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-file-lines"></i></span>
+            PROCEDURES
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="#" class="top-dropdown-link"><span>CONFLUENCE</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>WORKSPACE</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
 
-function handleLogin(event) {
-  event.preventDefault();
-  const userVal = document.getElementById('usernameInput')?.value.trim() || '';
-  const passVal = document.getElementById('passwordInput')?.value || '';
-  const isRemember = document.getElementById('rememberMe')?.checked || false;
-  const errorMsg = document.getElementById('loginErrorMsg');
-  const card = document.getElementById('loginCard');
+        <!-- 10. QUICK LAUNCH -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-rocket"></i></span>
+            QUICK LAUNCH
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="https://claude.ai" target="_blank" class="top-dropdown-link"><span>Claude AI</span> <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            <a href="#" class="top-dropdown-link"><span>Risk Seg. Tool</span> <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+          </div>
+        </div>
+      </nav>
 
-  if ((userVal === DEFAULT_USER || userVal === "sportsbookhub") && passVal === DEFAULT_PASS) {
-    if (isRemember) localStorage.setItem('sbhub_auth', 'true');
-    else sessionStorage.setItem('sbhub_auth', 'true');
-    unlockDashboard();
-  } else {
-    if (errorMsg) errorMsg.textContent = "ACCESS DENIED: Invalid Security Key";
-    if (card) {
-      card.classList.add('shake');
-      setTimeout(() => card.classList.remove('shake'), 500);
-    }
-  }
-}
+      <div class="top-admin-container">
+        <div class="admin-top-pill">
+          <div class="avatar-circle">AD</div>
+          <span class="user-title">Operator</span>
+        </div>
+        <button class="logout-action-btn" onclick="handleLogout()"><i class="fa-solid fa-power-off"></i> Exit</button>
+      </div>
+    </header>
 
-function unlockDashboard() {
-  document.getElementById('authOverlay')?.classList.add('unlocked');
-  document.getElementById('dashboardApp')?.classList.add('unlocked');
-}
+    <!-- MAIN WORKSPACE -->
+    <main class="main-workspace">
+      <section class="glass-card top-banner-card">
+        <div class="banner-top-row">
+          <div class="banner-top-left-group">
+            <div class="weather-banner-widget">
+              <div class="weather-banner-header">
+                <span class="weather-banner-title">METRICS / WEATHER</span>
+                <div class="weather-banner-actions"><i class="fa-solid fa-sun" id="weatherIcon"></i></div>
+              </div>
+              <div class="weather-banner-body">
+                <div class="weather-banner-main">
+                  <span class="weather-banner-temp" id="weatherTemp">32°C</span>
+                  <div class="weather-banner-cond">
+                    <div class="weather-location-tag">Manila, PH</div>
+                    <div id="weatherCond">PARTLY CLOUDY</div>
+                  </div>
+                </div>
+                <div class="weather-banner-details">
+                  <span id="weatherHumidity">Humidity: 56%</span>
+                  <span id="weatherWind">Wind: 7 km/h</span>
+                </div>
+              </div>
+            </div>
 
-function handleLogout() {
-  localStorage.removeItem('sbhub_auth');
-  sessionStorage.removeItem('sbhub_auth');
-  document.getElementById('authOverlay')?.classList.remove('unlocked');
-  document.getElementById('dashboardApp')?.classList.remove('unlocked');
-}
+            <div class="urgent-handover-banner">
+              <div class="handover-header-row">
+                <div class="handover-alert-badge">
+                  <i class="fa-solid fa-triangle-exclamation"></i> Shift Alerts
+                  <span class="handover-count-pill">1</span>
+                </div>
+              </div>
+              <div class="handover-pills-container">
+                <div class="handover-pill-item">
+                  <span class="handover-pill-brand">Green Client</span>
+                  <span class="priority-tag urgent">Urgent</span>
+                  <span class="handover-pill-msg">Tracking Limit Adjustment Required</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-function toggleDropdown(menuId) {
-  document.getElementById(menuId)?.classList.toggle('show');
-}
+        <div class="banner-bottom-row">
+          <div class="world-clocks">
+            <div class="clock-badge">
+              <span class="clock-label">MANILA (GMT+8)</span>
+              <span class="clock-time" id="clock-gmt8">00:00:00</span>
+            </div>
+            <div class="clock-badge">
+              <span class="clock-label">CET</span>
+              <span class="clock-time" id="clock-cet">00:00:00</span>
+            </div>
+            <div class="clock-badge">
+              <span class="clock-label">GMT+2</span>
+              <span class="clock-time" id="clock-gmt2">00:00:00</span>
+            </div>
+          </div>
 
-function setGradient(theme) {
-  const body = document.getElementById('pageBody');
-  if (!body) return;
-  if (theme === 'plain-daylight') body.classList.add('light-theme');
-  else body.classList.remove('light-theme');
+          <div class="banner-controls-group">
+            <div class="metric-pill">
+              <i class="fa-solid fa-users-viewfinder"></i>
+              <div>
+                <div style="font-size:8px; opacity:0.7;">ACTIVE TRADERS</div>
+                <div style="font-size:11px;" id="activeTraderCount">4 Working</div>
+              </div>
+            </div>
 
-  const wallpapers = {
-    '3d-chrome-swirl': 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2560&auto=format&fit=crop',
-    'cyan-liquid-glass': 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2560&auto=format&fit=crop',
-    'deep-liquid-chrome': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=2560&auto=format&fit=crop',
-    'neon-line-ribbon': 'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=2560&auto=format&fit=crop',
-    'neural-wireframe': 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2560&auto=format&fit=crop'
-  };
+            <div class="dropdown-container">
+              <button class="dropdown-btn" onclick="toggleDropdown('themeMenu')">
+                <i class="fa-solid fa-palette"></i> Display Mode <i class="fa-solid fa-chevron-down" style="font-size:9px;"></i>
+              </button>
+              <div class="dropdown-menu" id="themeMenu">
+                <div class="dropdown-section-title">THEMES</div>
+                <div class="menu-option" onclick="setGradient('plain-daylight')">Frosted White <span class="color-dot" style="background:#ffffff;"></span></div>
+                <div class="menu-option" onclick="setGradient('plain-slate')">Dark Slate <span class="color-dot" style="background:#000000;"></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-  if (wallpapers[theme]) {
-    body.style.background = `url("${wallpapers[theme]}")`;
-  } else if (theme === 'plain-slate') {
-    body.style.background = '#0f172a';
-  } else if (theme === 'plain-daylight') {
-    body.style.background = '#f8fafc';
-  }
-  body.style.backgroundSize = 'cover';
-  body.style.backgroundPosition = 'center';
-  body.style.backgroundAttachment = 'fixed';
-  document.getElementById('themeMenu')?.classList.remove('show');
-  localStorage.setItem('sbhub_theme', theme);
-}
+      <div class="dashboard-grid">
+        <div class="glass-card widget-column-card">
+          <div class="card-header">
+            <span>🔥 TOP PICKS / BOOSTS</span>
+            <span class="actions"><i class="fa-solid fa-bolt"></i> Live</span>
+          </div>
+          <div class="top-picks-filter-bar" id="topPicksFilterBar">
+            <button class="boost-filter-btn active" id="btn-boost-eng.1" onclick="filterTopPicks('eng.1', this)">EPL</button>
+            <button class="boost-filter-btn" id="btn-boost-esp.1" onclick="filterTopPicks('esp.1', this)">La Liga</button>
+            <button class="boost-filter-btn" id="btn-boost-ger.1" onclick="filterTopPicks('ger.1', this)">Bundesliga</button>
+            <button class="boost-filter-btn" id="btn-boost-ita.1" onclick="filterTopPicks('ita.1', this)">Serie A</button>
+            <button class="boost-filter-btn" id="btn-boost-uefa.champions" onclick="filterTopPicks('uefa.champions', this)">UCL</button>
+          </div>
+          <div class="widget-scrollable-content top-picks-list" id="topPicksContainer"></div>
+        </div>
 
-function getGMT8IsoDate() {
-  const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-}
+        <div class="widget-dual-column">
+          <div class="glass-card widget-half-card">
+            <div class="card-header">
+              <span>OPERATIONAL BRANDS</span>
+              <div class="tab-pills">
+                <span class="tab-pill active" id="tab-ibet" onclick="switchBrandTab('ibet')">iBet</span>
+                <span class="tab-pill" id="tab-edge" onclick="switchBrandTab('edge')">Edge</span>
+                <span class="tab-pill" id="tab-pubs" onclick="switchBrandTab('pubs')">PuBs</span>
+              </div>
+            </div>
+            <div class="widget-scrollable-content" style="display:flex; flex-direction:column; gap:7px;" id="brandLinksContainer"></div>
+          </div>
 
-function getCurrentSlotInfo() {
-  const hours = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" })).getHours();
-  if (hours >= 6 && hours < 9)    return { slotId: "slot_6_9", label: "7:00 - 9:00" };
-  if (hours >= 9 && hours < 12)  return { slotId: "slot_9_12", label: "9:00 - 12:00" };
-  if (hours >= 12 && hours < 15) return { slotId: "slot_12_15", label: "12:00 - 15:00" };
-  if (hours >= 15 && hours < 18) return { slotId: "slot_15_18", label: "15:00 - 18:00" };
-  if (hours >= 18 && hours < 21) return { slotId: "slot_18_21", label: "18:00 - 21:00" };
-  return { slotId: "slot_21_0", label: "21:00 - 00:00" };
-}
+          <div class="glass-card widget-half-card">
+            <div class="card-header">
+              <span>LIVE SHIFT ROSTER</span>
+              <span class="actions"><i class="fa-solid fa-list-check"></i> GMT+8</span>
+            </div>
+            <div class="widget-scrollable-content" style="display:flex; flex-direction:column; gap:8px;" id="liveDutyContent"></div>
+          </div>
+        </div>
 
-function listenToLiveDutyRoster() {
-  if (!rosterDb) return;
-  rosterDb.ref('roster_data').on('value', (snapshot) => {
-    renderLiveDutyWidget(snapshot.val());
-  });
-}
+        <div class="glass-card widget-column-card">
+          <div class="card-header">
+            <span>⚽ TOP MATCHES</span>
+            <span class="actions" id="matchDayDisplay">TODAY</span>
+          </div>
+          <div class="matchday-selector">
+            <span style="cursor:pointer;" onclick="navigateMatchDay(-1)"><i class="fa-solid fa-chevron-left"></i> Prev Day</span>
+            <span style="cursor:pointer;" onclick="navigateMatchDay(1)">Next Day <i class="fa-solid fa-chevron-right"></i></span>
+          </div>
+          <div class="widget-scrollable-content" style="display:flex; flex-direction:column; gap:9px;" id="gamesContainer"></div>
+        </div>
 
-function renderLiveDutyWidget(rosterData) {
-  const container = document.getElementById("liveDutyContent");
-  if (!container) return;
-  if (!rosterData) {
-    container.innerHTML = `<div style="text-align:center; padding:15px; font-size:10px; color:rgba(255,255,255,0.7);">No roster data available.</div>`;
-    return;
-  }
+        <div class="glass-card widget-column-card dark-theme-card">
+          <div class="card-header">
+            <span>⚙️ SYSTEM METRICS</span>
+            <span class="actions" style="color:#ffffff;"><i class="fa-solid fa-server"></i> Stable</span>
+          </div>
+          <div class="widget-scrollable-content" style="display:flex; flex-direction:column; gap:9px;">
+            <div class="duty-card" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.15);">
+              <div class="duty-top" style="color:#ffffff;"><span>API Gateway</span> <span style="color:#4ade80;">99.9%</span></div>
+              <div class="duty-desc" style="color:#a1a1aa;">Latency: 14ms (Trading Feed Active)</div>
+            </div>
+            <div class="duty-card" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.15);">
+              <div class="duty-top" style="color:#ffffff;"><span>Tracking Engine</span> <span style="color:#4ade80;">Active</span></div>
+              <div class="duty-desc" style="color:#a1a1aa;">Monitoring Green & Red CRM client limits.</div>
+            </div>
+            <div class="duty-card" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.15);">
+              <div class="duty-top" style="color:#ffffff;"><span>Currency Rate</span> <span style="color:#38bdf8;">PHP / EUR</span></div>
+              <div class="duty-desc" style="color:#a1a1aa;">1 EUR = 62.45 PHP (Live Sync)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 
-  const todayIso = getGMT8IsoDate();
-  const { label: slotLabel } = getCurrentSlotInfo();
-  let activeDayKey = Object.keys(rosterData).find(key => {
-    if (key === 'archives') return false;
-    const entry = rosterData[key];
-    return entry?.isoDate === todayIso || entry?.date === todayIso || key === todayIso;
-  }) || Object.keys(rosterData).filter(k => k !== 'archives')[0];
-
-  if (!activeDayKey || !rosterData[activeDayKey]) return;
-  const dayData = rosterData[activeDayKey];
-  const teamMembers = [{ id: 'ann', name: 'ANN' }, { id: 'dave', name: 'DAVE' }, { id: 'ken', name: 'KEN' }, { id: 'kriztel', name: 'KRIZTEL' }];
-
-  let html = `<div style="font-size:10px; font-weight:700; opacity:0.9; margin-bottom:6px; display:flex; justify-content:space-between;"><span>📅 ${dayData.isoDate || todayIso}</span><span class="badge-time">⏰ ${slotLabel}</span></div>`;
-
-  teamMembers.forEach(m => {
-    const mGrid = dayData.grid ? dayData.grid[m.id] : null;
-    const shiftId = mGrid?.shift || 'shift-7-16';
-    const isRest = (shiftId === 'shift-rd' || shiftId === 'shift-vl' || shiftId === 'shift-sl');
-    html += `<div class="duty-card"><div class="duty-top"><span>${m.name}</span><span class="badge-time">${isRest ? 'REST DAY' : shiftId.replace('shift-', '')}</span></div><div class="duty-desc">${isRest ? 'Rest day.' : 'Active shift monitoring.'}</div></div>`;
-  });
-  container.innerHTML = html;
-}
-
-function initDashboardApp() {
-  const savedTheme = localStorage.getItem('sbhub_theme');
-  setGradient(savedTheme || '3d-chrome-swirl');
-
-  if (localStorage.getItem('sbhub_auth') === 'true' || sessionStorage.getItem('sbhub_auth') === 'true') {
-    unlockDashboard();
-  }
-
-  switchBrandTab('ibet');
-  loadCachedTopPicks();
-  fetchTopPicksAndBoosts();
-  setInterval(fetchTopPicksAndBoosts, 2 * 60 * 1000);
-
-  listenToLiveDutyRoster();
-  fetchManilaWeather();
-  setInterval(fetchManilaWeather, 15 * 60 * 1000);
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initDashboardApp);
-} else {
-  initDashboardApp();
-}
-
-window.addEventListener('click', function(e) {
-  if (!e.target.closest('.top-nav-dropdown-group')) {
-    document.querySelectorAll('.top-nav-dropdown-group').forEach(g => g.classList.remove('active'));
-  }
-  if (!e.target.closest('.dropdown-container')) {
-    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
-  }
-});
+  <script src="app.js"></script>
+</body>
+</html>
