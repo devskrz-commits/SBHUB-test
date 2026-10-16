@@ -25,12 +25,9 @@ html, body {
   overflow: hidden;
 }
 
-/* FOOTBALL IMAGE BACKGROUND SETUP */
 body {
   background-color: #070b14;
-  background-image: 
-    linear-gradient(180deg, rgba(7, 11, 20, 0.85) 0%, rgba(7, 11, 20, 0.88) 100%),
-    url('sasint-children-1822688_1920.jpg');
+  background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2560&auto=format&fit=crop');
   background-size: cover;
   background-position: center center;
   background-attachment: fixed;
@@ -44,7 +41,7 @@ body {
   position: relative;
 }
 
-/* CUSTOM ULTRA-THIN SCROLLBARS FOR INTERNAL CARDS */
+/* CUSTOM SCROLLBARS */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -105,6 +102,51 @@ body {
   pointer-events: none;
 }
 
+/* LIVE TRADING TICKER TAPE AT TOP OF LOGIN */
+.login-ticker-wrap {
+  position: absolute;
+  top: 75px;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  background: rgba(4, 8, 18, 0.75);
+  border-top: 1px solid rgba(56, 189, 248, 0.2);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+  padding: 8px 0;
+  z-index: 25;
+  backdrop-filter: blur(10px);
+}
+
+.login-ticker {
+  display: flex;
+  gap: 30px;
+  white-space: nowrap;
+  animation: tickerScroll 25s linear infinite;
+  width: max-content;
+}
+
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+}
+
+.ticker-symbol {
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.ticker-val.up { color: #4ade80; font-weight: 700; }
+.ticker-val.down { color: #f87171; font-weight: 700; }
+.ticker-val.cyan { color: var(--accent-cyan); font-weight: 700; }
+
 /* PROFESSIONAL LIVE THROUGHPUT TREND HEADER */
 .gateway-trend-header {
   position: absolute;
@@ -124,7 +166,7 @@ body {
 }
 
 .trend-icon {
-  font-size: 20px;
+  font-size: 18px;
   color: var(--accent-cyan);
   background: rgba(56, 189, 248, 0.12);
   border: 1px solid rgba(56, 189, 248, 0.35);
@@ -185,7 +227,7 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 110px;
+  height: 150px;
   pointer-events: none;
   z-index: 2;
   opacity: 0.85;
@@ -197,13 +239,13 @@ body {
 }
 
 .trend-line-path {
-  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.7));
-  animation: drawPath 3s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.8));
+  animation: drawPath 4s ease-in-out infinite alternate;
 }
 
 @keyframes drawPath {
-  0% { transform: translateY(2px); }
-  100% { transform: translateY(-3px); }
+  0% { transform: translateY(3px); }
+  100% { transform: translateY(-4px); }
 }
 
 .login-container {
@@ -211,7 +253,7 @@ body {
   max-width: 430px;
   position: relative;
   z-index: 10;
-  margin-top: 20px;
+  margin-top: 30px;
   display: flex;
   justify-content: center;
 }
@@ -987,24 +1029,6 @@ body {
   text-overflow: ellipsis;
 }
 
-.handover-manage-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: rgba(254, 240, 138, 0.28);
-  border: 1px solid rgba(250, 204, 21, 0.65);
-  color: #fef08a;
-  padding: 3px 9px;
-  border-radius: 6px;
-  font-size: 9.5px;
-  font-weight: 800;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.18s ease;
-}
-
-.handover-manage-btn:hover { background: rgba(254, 240, 138, 0.45); }
-
 .banner-bottom-row {
   display: flex;
   justify-content: space-between;
@@ -1332,74 +1356,12 @@ body {
 .top-game-title { font-size: 11.5px; font-weight: 800; color: #ffffff; }
 .top-game-league { font-size: 9.5px; color: #94a3b8; font-weight: 600; }
 
-.handover-modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(2, 6, 23, 0.88);
-  backdrop-filter: blur(14px);
-  z-index: 9999999;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.handover-modal-overlay.show { display: flex !important; }
-
-.handover-modal-card {
-  width: 100%;
-  max-width: 600px;
-  background: #0f172a;
-  border: 1.5px solid #eab308;
-  border-radius: 20px;
-  padding: 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  color: #ffffff;
-  box-shadow: 0 25px 70px rgba(0,0,0,0.8);
-}
-.handover-modal-header { display: flex; justify-content: space-between; align-items: center; }
-.handover-modal-title { font-size: 14.5px; font-weight: 800; display: flex; align-items: center; gap: 7px; }
-.handover-modal-close { font-size: 22px; cursor: pointer; color: #94a3b8; transition: color 0.2s ease; }
-.handover-modal-close:hover { color: #ffffff; }
-
-.handover-modal-form { display: flex; flex-direction: column; gap: 9px; background: rgba(0, 0, 0, 0.35); padding: 12px; border-radius: 12px; }
-.handover-form-group { display: flex; gap: 7px; flex-wrap: wrap; }
-.handover-field { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 8px 11px; font-size: 11.5px; color: #ffffff; outline: none; transition: border-color 0.2s ease; }
-.handover-field:focus { border-color: #eab308; }
-.handover-field.short { width: 130px; }
-.handover-field.flex-1 { flex: 1; min-width: 170px; }
-
-.handover-post-btn {
-  background: linear-gradient(135deg, #eab308, #ca8a04);
-  border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-size: 11.5px;
-  font-weight: 800;
-  color: #0f172a;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
-.handover-post-btn:hover { transform: translateY(-1px); }
-
-.handover-modal-subtitle { font-size: 10px; font-weight: 800; color: #eab308; letter-spacing: 0.4px; }
-.handover-items-list { display: flex; flex-direction: column; gap: 7px; max-height: 220px; overflow-y: auto; }
-.handover-manage-row { display: flex; align-items: center; justify-content: space-between; background: #1e293b; padding: 9px 12px; border-radius: 9px; gap: 9px; }
-.handover-manage-left { display: flex; align-items: center; gap: 7px; flex: 1; overflow: hidden; }
-.handover-manage-brand { background: #ca8a04; color: #ffffff; font-weight: 800; font-size: 9.5px; padding: 1.5px 6px; border-radius: 4px; }
-.handover-manage-text { font-size: 11px; color: #cbd5e1; font-weight: 500; }
-.handover-delete-btn { background: rgba(16, 185, 129, 0.22); border: 1px solid #10b981; color: #34d399; padding: 3px 9px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; transition: background 0.2s ease; }
-.handover-delete-btn:hover { background: rgba(16, 185, 129, 0.35); }
-
 /* ==========================================================================
    LIGHT THEME SUPPORT
    ========================================================================== */
 body.light-theme { 
   color: #0f172a !important; 
-  background-image: 
-    linear-gradient(180deg, rgba(241, 245, 249, 0.82) 0%, rgba(241, 245, 249, 0.88) 100%),
-    url('sasint-children-1822688_1920.jpg') !important;
+  background-image: linear-gradient(180deg, rgba(241, 245, 249, 0.82) 0%, rgba(241, 245, 249, 0.88) 100%), url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2560&auto=format&fit=crop') !important;
 }
 
 body.light-theme .top-nav-bar {
@@ -1478,11 +1440,6 @@ body.light-theme .urgent-handover-banner {
 }
 body.light-theme .handover-alert-badge { color: #854d0e !important; }
 body.light-theme .handover-alert-badge i { color: #ca8a04 !important; }
-body.light-theme .handover-manage-btn {
-  background: #ffffff !important;
-  border-color: #fef08a !important;
-  color: #854d0e !important;
-}
 
 body.light-theme .metric-pill {
   background: #f8fafc !important;
