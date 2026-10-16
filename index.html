@@ -14,7 +14,6 @@
 
   <!-- TRADING TERMINAL AUTHENTICATION & SECURITY GATEWAY -->
   <div id="authOverlay">
-    <!-- CLEAN TRADING GATEWAY HEADER BAR -->
     <div class="gateway-trend-header">
       <div class="trend-header-left">
         <div class="trend-icon"><i class="fa-solid fa-chart-line"></i></div>
@@ -29,7 +28,6 @@
       </div>
     </div>
 
-    <!-- BACKGROUND TRADING GRAPH WAVE -->
     <div class="gateway-trend-graph-container">
       <svg class="gateway-trend-svg" viewBox="0 0 1440 280" preserveAspectRatio="none">
         <defs>
@@ -100,7 +98,7 @@
 
   <!-- MAIN DASHBOARD APPLICATION -->
   <div id="dashboardApp">
-    <!-- EXECUTIVE TOP NAVIGATION BAR -->
+    <!-- EXECUTIVE TOP NAVIGATION BAR WITH EXACT ORIGINAL MENUS -->
     <header class="top-nav-bar">
       <div class="nav-brand-group">
         <button class="mobile-menu-toggle" onclick="toggleMobileTopMenu()"><i class="fa-solid fa-bars"></i></button>
@@ -116,22 +114,7 @@
       </div>
 
       <nav class="top-nav-items" id="topNavMenu">
-        <!-- DAILY TASK DROPDOWN -->
-        <div class="top-nav-dropdown-group">
-          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
-            <span class="nav-icon-wrapper"><i class="fa-solid fa-calendar-check"></i></span>
-            DAILY TASK
-            <i class="fa-solid fa-chevron-down nav-arrow"></i>
-          </button>
-          <div class="top-dropdown-menu">
-            <a href="#" class="top-dropdown-link"><span>Daily Duty Schedule</span> <i class="fa-solid fa-arrow-right"></i></a>
-            <a href="#" class="top-dropdown-link"><span>Roster Task Assignments</span> <i class="fa-solid fa-arrow-right"></i></a>
-            <a href="#" class="top-dropdown-link"><span>Shift Checklist & Audits</span> <i class="fa-solid fa-arrow-right"></i></a>
-            <a href="#" class="top-dropdown-link"><span>Pending Risk Reviews</span> <i class="fa-solid fa-arrow-right"></i></a>
-          </div>
-        </div>
-
-        <!-- MONITORING DROPDOWN -->
+        <!-- MONITORING -->
         <div class="top-nav-dropdown-group">
           <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
             <span class="nav-icon-wrapper"><i class="fa-solid fa-chart-line"></i></span>
@@ -148,7 +131,7 @@
           </div>
         </div>
 
-        <!-- BACK OFFICE DROPDOWN -->
+        <!-- BACK OFFICE -->
         <div class="top-nav-dropdown-group">
           <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
             <span class="nav-icon-wrapper"><i class="fa-solid fa-briefcase"></i></span>
@@ -157,12 +140,10 @@
           </button>
           <div class="top-dropdown-menu">
             <a href="#" class="top-dropdown-link"><span>Bonus Exclusions List</span> <i class="fa-solid fa-arrow-right"></i></a>
-            <a href="#" class="top-dropdown-link"><span>Boost Campaigns</span> <i class="fa-solid fa-arrow-right"></i></a>
-            <a href="#" class="top-dropdown-link"><span>Wagering Requirements</span> <i class="fa-solid fa-arrow-right"></i></a>
           </div>
         </div>
 
-        <!-- HANDOVER REPORTS DROPDOWN -->
+        <!-- HANDOVER REPORTS -->
         <div class="top-nav-dropdown-group">
           <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
             <span class="nav-icon-wrapper"><i class="fa-solid fa-file-lines"></i></span>
@@ -172,22 +153,6 @@
           <div class="top-dropdown-menu">
             <a href="#" class="top-dropdown-link"><span>AM / PM Shift Summary</span> <i class="fa-solid fa-arrow-right"></i></a>
             <a href="#" class="top-dropdown-link"><span>SoftSwiss Logs</span> <i class="fa-solid fa-arrow-right"></i></a>
-            <a href="#" class="top-dropdown-link"><span>Shift Handover Archive</span> <i class="fa-solid fa-arrow-right"></i></a>
-          </div>
-        </div>
-
-        <!-- CONFIGURATION DROPDOWN -->
-        <div class="top-nav-dropdown-group">
-          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
-            <span class="nav-icon-wrapper"><i class="fa-solid fa-gear"></i></span>
-            CONFIGURATION
-            <i class="fa-solid fa-chevron-down nav-arrow"></i>
-          </button>
-          <div class="top-dropdown-menu">
-            <a href="#" class="top-dropdown-link"><span>Currency (PHP / EUR)</span> <i class="fa-solid fa-arrow-right"></i></a>
-            <a href="#" class="top-dropdown-link"><span>Font Size Adjustments</span> <i class="fa-solid fa-arrow-right"></i></a>
-            <a href="#" class="top-dropdown-link"><span>Auto-Save Data Structures</span> <i class="fa-solid fa-arrow-right"></i></a>
-            <a href="#" class="top-dropdown-link"><span>Interface Customization</span> <i class="fa-solid fa-arrow-right"></i></a>
           </div>
         </div>
       </nav>
