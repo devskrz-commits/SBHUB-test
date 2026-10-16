@@ -12,7 +12,7 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="./styles.css?v=9.8.0">
+  <link rel="stylesheet" href="./styles.css?v=9.9.0">
 
   <!-- External Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -99,13 +99,16 @@
 
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar(false)"></div>
 
-    <!-- SIDEBAR WITH ORIGINAL ICON BADGES & FULL BUTTON LIST -->
+    <!-- SIDEBAR WITH MAPPED RED-LABEL CATEGORIES -->
     <aside class="sidebar" id="mainSidebar">
       <div class="sidebar-menu-scroll">
         
         <div class="sidebar-brand-box">
           <div class="growth-logo-icon"><i class="bx bx-grid-alt"></i></div>
-          <span class="growth-logo-text">Sportsbook</span>
+          <div style="display:flex; flex-direction:column;">
+            <span style="font-size: 8.5px; font-weight: 800; color: #dc2626; letter-spacing: 0.5px; text-transform: uppercase;">Sportsbook Hub</span>
+            <span class="growth-logo-text">Growth</span>
+          </div>
           <button type="button" class="mobile-sidebar-close" onclick="toggleMobileSidebar(false)">
             <i class="bx bx-x"></i>
           </button>
@@ -122,11 +125,11 @@
         </div>
 
         <!-- 1. INTERNAL -->
-        <div class="sidebar-section-title">INTERNAL</div>
+        <div class="sidebar-section-title">SECTION</div>
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-internal', this)">
             <div class="nav-main-left">
-              <div class="icon-badge icon-internal"><i class="bx bx-home-alt"></i></div>
+              <div class="icon-badge icon-internal"><i class="bx bx-calendar"></i></div>
               <span>INTERNAL</span>
             </div>
             <i class="bx bx-chevron-down toggle-icon"></i>
@@ -140,8 +143,7 @@
         </div>
 
         <!-- 2. DAILY TASKS -->
-        <div class="sidebar-section-title">DAILY TASKS</div>
-        <div class="nav-group">
+        <div class="nav-group" style="margin-top: 4px;">
           <div class="nav-main-btn" onclick="toggleMenu('sub-dailytask', this)">
             <div class="nav-main-left">
               <div class="icon-badge icon-tasks"><i class="bx bx-task"></i></div>
@@ -160,9 +162,8 @@
           </div>
         </div>
 
-        <!-- 3. MONITORING -->
-        <div class="sidebar-section-title">MONITORING</div>
-        <div class="nav-group">
+        <!-- 3. DAILY MONITORING -->
+        <div class="nav-group" style="margin-top: 4px;">
           <div class="nav-main-btn" onclick="toggleMenu('sub-dailymonitoring', this)">
             <div class="nav-main-left">
               <div class="icon-badge icon-monitor"><i class="bx bx-line-chart"></i></div>
@@ -180,8 +181,23 @@
           </div>
         </div>
 
-        <!-- 4. BACK OFFICE -->
-        <div class="sidebar-section-title">BACK OFFICE</div>
+        <!-- 4. PROCEDURES -->
+        <div class="nav-group" style="margin-top: 4px;">
+          <div class="nav-main-btn" onclick="toggleMenu('sub-procedures', this)">
+            <div class="nav-main-left">
+              <div class="icon-badge icon-proc"><i class="bx bx-file"></i></div>
+              <span>PROCEDURES</span>
+            </div>
+            <i class="bx bx-chevron-down toggle-icon"></i>
+          </div>
+          <div class="sub-menu collapsed" id="sub-procedures">
+            <a class="nav-sub-btn" href="https://ibet.atlassian.net/wiki/spaces/Sportsbook/overview" target="_blank" rel="noreferrer"><span>CONFLUENCE</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="workspace.html" target="_blank" rel="noreferrer"><span>WORKSPACE</span><i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+        </div>
+
+        <!-- INTEGRATION SECTION -->
+        <div class="sidebar-section-title">INTEGRATION</div>
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-backoffice', this)">
             <div class="nav-main-left">
@@ -197,7 +213,6 @@
           </div>
         </div>
 
-        <!-- 5. MULTI-MONITOR -->
         <div class="nav-group" style="margin-top: 4px;">
           <div class="nav-main-btn" onclick="toggleMenu('sub-multimonitor', this)">
             <div class="nav-main-left">
@@ -214,24 +229,7 @@
           </div>
         </div>
 
-        <!-- 6. BETRADAR -->
         <div class="nav-group" style="margin-top: 4px;">
-          <div class="nav-main-btn" onclick="toggleMenu('sub-betradar', this)">
-            <div class="nav-main-left">
-              <div class="icon-badge icon-radar"><i class="bx bx-radar"></i></div>
-              <span>BETRADAR</span>
-            </div>
-            <i class="bx bx-chevron-down toggle-icon"></i>
-          </div>
-          <div class="sub-menu collapsed" id="sub-betradar">
-            <a class="nav-sub-btn" href="https://mtsc-its.betradar.com/" target="_blank" rel="noreferrer"><span>MTS</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://portal.betradar.com/" target="_blank" rel="noreferrer"><span>CTRL PORTAL</span><i class="bx bx-right-arrow-alt"></i></a>
-          </div>
-        </div>
-
-        <!-- 7. BRANDS -->
-        <div class="sidebar-section-title">BRANDS</div>
-        <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-ownbrands', this)">
             <div class="nav-main-left">
               <div class="icon-badge icon-brands"><i class="bx bx-layer"></i></div>
@@ -250,7 +248,22 @@
           </div>
         </div>
 
-        <!-- 8. PRICE REFERENCES -->
+        <!-- TEAMS / BETRADAR SECTION -->
+        <div class="sidebar-section-title">TEAMS</div>
+        <div class="nav-group">
+          <div class="nav-main-btn" onclick="toggleMenu('sub-betradar', this)">
+            <div class="nav-main-left">
+              <div class="icon-badge icon-radar"><i class="bx bx-radar"></i></div>
+              <span>BETRADAR</span>
+            </div>
+            <i class="bx bx-chevron-down toggle-icon"></i>
+          </div>
+          <div class="sub-menu collapsed" id="sub-betradar">
+            <a class="nav-sub-btn" href="https://mtsc-its.betradar.com/" target="_blank" rel="noreferrer"><span>MTS</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://portal.betradar.com/" target="_blank" rel="noreferrer"><span>CTRL PORTAL</span><i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+        </div>
+
         <div class="nav-group" style="margin-top: 4px;">
           <div class="nav-main-btn" onclick="toggleMenu('sub-priceref', this)">
             <div class="nav-main-left">
@@ -273,40 +286,6 @@
             <a class="nav-sub-btn" href="https://www.marathonbet.com/" target="_blank" rel="noreferrer"><span>MARATHONBET</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="nav-sub-btn" href="https://fonbet.com/" target="_blank" rel="noreferrer"><span>FONBET</span><i class="bx bx-right-arrow-alt"></i></a>
           </div>
-        </div>
-
-        <!-- 9. PROCEDURES -->
-        <div class="nav-group" style="margin-top: 4px;">
-          <div class="nav-main-btn" onclick="toggleMenu('sub-procedures', this)">
-            <div class="nav-main-left">
-              <div class="icon-badge icon-proc"><i class="bx bx-file"></i></div>
-              <span>PROCEDURES</span>
-            </div>
-            <i class="bx bx-chevron-down toggle-icon"></i>
-          </div>
-          <div class="sub-menu collapsed" id="sub-procedures">
-            <a class="nav-sub-btn" href="https://ibet.atlassian.net/wiki/spaces/Sportsbook/overview" target="_blank" rel="noreferrer"><span>CONFLUENCE</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="workspace.html" target="_blank" rel="noreferrer"><span>WORKSPACE</span><i class="bx bx-right-arrow-alt"></i></a>
-          </div>
-        </div>
-
-        <!-- QUICK LAUNCH TOOLS -->
-        <div class="sidebar-section-title">QUICK LAUNCH</div>
-        <div class="sidebar-quick-dock" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 10px; margin-top: 4px; display: flex; flex-direction: column; gap: 6px;">
-          <a href="https://claude.ai" target="_blank" rel="noreferrer" class="quick-launch-btn" style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 6px 10px; border-radius: 10px; border: 1px solid #e2e8f0; text-decoration: none; color: #0f172a; font-size: 11px; font-weight: 700;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <div class="icon-badge icon-claude" style="width: 22px; height: 22px; border-radius: 6px; background: #0f172a; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px;"><i class="bx bx-bot"></i></div>
-              <span>Claude AI Assistant</span>
-            </div>
-            <i class="bx bx-export" style="font-size: 12px; opacity: 0.6;"></i>
-          </a>
-          <a href="Edge_Gaming_Client_Risk_Segmentation_Tool_July_2026_Dashboard.html" target="_blank" rel="noreferrer" class="quick-launch-btn" style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 6px 10px; border-radius: 10px; border: 1px solid #e2e8f0; text-decoration: none; color: #0f172a; font-size: 11px; font-weight: 700;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <div class="icon-badge icon-risk" style="width: 22px; height: 22px; border-radius: 6px; background: #334155; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px;"><i class="bx bx-shield-quarter"></i></div>
-              <span>Risk Seg. Tool</span>
-            </div>
-            <i class="bx bx-export" style="font-size: 12px; opacity: 0.6;"></i>
-          </a>
         </div>
 
       </div>
