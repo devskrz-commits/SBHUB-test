@@ -1,3 +1,7 @@
+/* global lucide, firebase */
+"use strict";
+
+// Initialize Icons
 lucide.createIcons();
 
 // --- Auth / Secure Login ---
@@ -6,82 +10,90 @@ const DEFAULT_PASS = "sb2026";
 
 function handleLogin(e) {
     e.preventDefault();
-    const user = document.getElementById('usernameInput').value.trim();
-    const pass = document.getElementById('passwordInput').value;
+    const user = document.getElementById("usernameInput").value.trim();
+    const pass = document.getElementById("passwordInput").value;
     
     if ((user === DEFAULT_USER || user === "sportsbookhub") && pass === DEFAULT_PASS) {
-        localStorage.setItem('sbhub_auth', 'true');
-        document.getElementById('authOverlay').classList.add('unlocked');
-        document.getElementById('dashboardWrapper').classList.add('unlocked');
-        document.getElementById('loginErrorMsg').innerText = '';
+        localStorage.setItem("sbhub_auth", "true");
+        document.getElementById("authOverlay").classList.add("unlocked");
+        document.getElementById("dashboardWrapper").classList.add("unlocked");
+        document.getElementById("loginErrorMsg").innerText = "";
     } else {
-        document.getElementById('loginErrorMsg').innerText = 'Invalid credentials';
-        const card = document.querySelector('.login-card');
-        card.classList.add('shake');
-        setTimeout(function() {
-            card.classList.remove('shake');
-        }, 400);
+        document.getElementById("loginErrorMsg").innerText = "Invalid credentials";
+        const card = document.querySelector(".login-card");
+        if (card) {
+            card.classList.add("shake");
+            setTimeout(function() {
+                card.classList.remove("shake");
+            }, 400);
+        }
     }
 }
 
 function handleLogout() {
-    localStorage.removeItem('sbhub_auth');
-    document.getElementById('authOverlay').classList.remove('unlocked');
-    document.getElementById('dashboardWrapper').classList.remove('unlocked');
-    document.getElementById('passwordInput').value = '';
+    localStorage.removeItem("sbhub_auth");
+    const authOverlay = document.getElementById("authOverlay");
+    const dashboardWrapper = document.getElementById("dashboardWrapper");
+    const passwordInput = document.getElementById("passwordInput");
+    
+    if (authOverlay) authOverlay.classList.remove("unlocked");
+    if (dashboardWrapper) dashboardWrapper.classList.remove("unlocked");
+    if (passwordInput) passwordInput.value = "";
 }
 
-if (localStorage.getItem('sbhub_auth') === 'true') {
-    if (document.getElementById('authOverlay')) {
-        document.getElementById('authOverlay').classList.add('unlocked');
-    }
-    if (document.getElementById('dashboardWrapper')) {
-        document.getElementById('dashboardWrapper').classList.add('unlocked');
-    }
+// Check session on load
+if (localStorage.getItem("sbhub_auth") === "true") {
+    const authOverlay = document.getElementById("authOverlay");
+    const dashboardWrapper = document.getElementById("dashboardWrapper");
+    if (authOverlay) authOverlay.classList.add("unlocked");
+    if (dashboardWrapper) dashboardWrapper.classList.add("unlocked");
 }
 
 // --- UI Interactions ---
 function toggleMenu(menuId) {
     const menu = document.getElementById(menuId);
     if (menu) {
-        menu.classList.toggle('open');
+        menu.classList.toggle("open");
     }
 }
 
 function openModal(id) { 
     const modal = document.getElementById(id);
     if (modal) {
-        modal.classList.add('active'); 
+        modal.classList.add("active"); 
     }
 }
 
 function closeModal(id) { 
     const modal = document.getElementById(id);
     if (modal) {
-        modal.classList.remove('active'); 
+        modal.classList.remove("active"); 
     }
 }
 
 // --- Sidebar Search ---
 function filterSidebar() {
-    const query = document.getElementById('sidebarSearchInput').value.toLowerCase();
-    const links = document.querySelectorAll('.sub-link');
+    const searchInput = document.getElementById("sidebarSearchInput");
+    if (!searchInput) return;
+    
+    const query = searchInput.value.toLowerCase();
+    const links = document.querySelectorAll(".sub-link");
     
     links.forEach(function(link) {
         const text = link.innerText.toLowerCase();
-        const parentMenu = link.closest('.sub-menu');
+        const parentMenu = link.closest(".sub-menu");
         
         if (text.includes(query)) {
-            link.style.display = 'block';
-            if (query.length > 0) {
-                parentMenu.classList.add('open');
-                link.classList.add('highlight');
+            link.style.display = "block";
+            if (query.length > 0 && parentMenu) {
+                parentMenu.classList.add("open");
+                link.classList.add("highlight");
             } else {
-                link.classList.remove('highlight');
+                link.classList.remove("highlight");
             }
         } else {
-            link.style.display = 'none';
-            link.classList.remove('highlight');
+            link.style.display = "none";
+            link.classList.remove("highlight");
         }
     });
 }
@@ -105,54 +117,57 @@ const brandTabData = {
 };
 
 function switchBrandTab(tabName) {
-    document.querySelectorAll('#brand-tabs .filter-btn').forEach(function(btn) {
-        btn.classList.remove('active');
+    document.querySelectorAll("#brand-tabs .filter-btn").forEach(function(btn) {
+        btn.classList.remove("active");
     });
     
-    const activeTab = document.getElementById('tab-' + tabName);
+    const activeTab = document.getElementById("tab-" + tabName);
     if (activeTab) {
-        activeTab.classList.add('active');
+        activeTab.classList.add("active");
     }
     
-    const container = document.getElementById('brandLinksContainer');
+    const container = document.getElementById("brandLinksContainer");
     if (container) {
-        container.innerHTML = '';
+        let linksHTML = "";
         const items = brandTabData[tabName] || [];
         items.forEach(function(item) {
-            container.innerHTML += `<a href="${item.url}" target="_blank" class="dock-link"><span>${item.name}</span> <i data-lucide="arrow-right" size="14"></i></a>`;
+            linksHTML += `<a href="${item.url}" target="_blank" rel="noreferrer" class="dock-link"><span>${item.name}</span> <i data-lucide="arrow-right" size="14"></i></a>`;
         });
+        container.innerHTML = linksHTML;
         lucide.createIcons();
     }
 }
-switchBrandTab('ibet');
+switchBrandTab("ibet");
 
 // --- Global Search Modal Logic ---
 function performGlobalSearch() {
-    const query = document.getElementById('globalSearchInput').value.toLowerCase();
-    const resultsContainer = document.getElementById('globalSearchResults');
+    const searchInput = document.getElementById("globalSearchInput");
+    const resultsContainer = document.getElementById("globalSearchResults");
+    if (!searchInput || !resultsContainer) return;
     
+    const query = searchInput.value.toLowerCase();
     if (query.length === 0) {
         resultsContainer.innerHTML = '<div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Type to search...</div>';
         return;
     }
 
-    let resultsHTML = '';
+    let resultsHTML = "";
     
-    document.querySelectorAll('a.sub-link').forEach(function(link) {
+    document.querySelectorAll("a.sub-link").forEach(function(link) {
         if (link.innerText.toLowerCase().includes(query)) {
-            resultsHTML += `<a href="${link.href}" class="dock-link" target="_blank" onclick="closeModal('globalSearchModal')"><span>${link.innerText}</span> <i data-lucide="external-link" size="14"></i></a>`;
+            resultsHTML += `<a href="${link.href}" class="dock-link" target="_blank" rel="noreferrer" onclick="closeModal('globalSearchModal')"><span>${link.innerText}</span> <i data-lucide="external-link" size="14"></i></a>`;
         }
     });
 
     Object.values(brandTabData).forEach(function(brandArray) {
         brandArray.forEach(function(item) {
             if (item.name.toLowerCase().includes(query)) {
-                resultsHTML += `<a href="${item.url}" class="dock-link" target="_blank" onclick="closeModal('globalSearchModal')"><span>${item.name}</span> <i data-lucide="external-link" size="14"></i></a>`;
+                resultsHTML += `<a href="${item.url}" class="dock-link" target="_blank" rel="noreferrer" onclick="closeModal('globalSearchModal')"><span>${item.name}</span> <i data-lucide="external-link" size="14"></i></a>`;
             }
         });
     });
 
-    if (resultsHTML === '') {
+    if (resultsHTML === "") {
         resultsHTML = '<div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">No results found.</div>';
     }
 
@@ -162,14 +177,15 @@ function performGlobalSearch() {
 
 // --- Task Management (LocalStorage) ---
 function loadTasks() {
-    const tasks = JSON.parse(localStorage.getItem('sbhub_tasks') || '[]');
-    const container = document.getElementById('taskContainer');
+    const tasks = JSON.parse(localStorage.getItem("sbhub_tasks") || "[]");
+    const container = document.getElementById("taskContainer");
     
-    if (document.getElementById('taskCount')) {
-        document.getElementById('taskCount').innerText = tasks.length;
+    const taskCountEl = document.getElementById("taskCount");
+    if (taskCountEl) {
+        taskCountEl.innerText = tasks.length;
     }
     
-    let html = '';
+    let html = "";
     tasks.forEach(function(t, index) {
         html += `
             <div class="task-card">
@@ -196,48 +212,53 @@ function loadTasks() {
 
 function saveTask(e) {
     e.preventDefault();
-    const title = document.getElementById('taskTitle').value;
-    const time = document.getElementById('taskTime').value;
-    const tasks = JSON.parse(localStorage.getItem('sbhub_tasks') || '[]');
-    tasks.push({ title: title, time: time });
-    localStorage.setItem('sbhub_tasks', JSON.stringify(tasks));
-    document.getElementById('taskTitle').value = '';
-    document.getElementById('taskTime').value = '';
-    closeModal('taskModal');
-    loadTasks();
+    const titleEl = document.getElementById("taskTitle");
+    const timeEl = document.getElementById("taskTime");
+    
+    if (titleEl && timeEl) {
+        const title = titleEl.value;
+        const time = timeEl.value;
+        const tasks = JSON.parse(localStorage.getItem("sbhub_tasks") || "[]");
+        tasks.push({ title: title, time: time });
+        localStorage.setItem("sbhub_tasks", JSON.stringify(tasks));
+        titleEl.value = "";
+        timeEl.value = "";
+        closeModal("taskModal");
+        loadTasks();
+    }
 }
 
 function deleteTask(index) {
-    const tasks = JSON.parse(localStorage.getItem('sbhub_tasks') || '[]');
+    const tasks = JSON.parse(localStorage.getItem("sbhub_tasks") || "[]");
     tasks.splice(index, 1);
-    localStorage.setItem('sbhub_tasks', JSON.stringify(tasks));
+    localStorage.setItem("sbhub_tasks", JSON.stringify(tasks));
     loadTasks();
 }
 loadTasks();
 
 // --- Jira & Handover Management ---
 function loadAlerts() {
-    const alerts = JSON.parse(localStorage.getItem('sbhub_alerts') || '[]');
-    const container = document.getElementById('jiraHandoverContent');
+    const alerts = JSON.parse(localStorage.getItem("sbhub_alerts") || "[]");
+    const container = document.getElementById("jiraHandoverContent");
     
     if (alerts.length === 0) {
         if (container) {
-            container.innerHTML = `<div style="text-align:center; padding:2rem; color:#888; font-size:0.8rem;">No pending alerts.</div>`;
+            container.innerHTML = `<div style="text-align:center; padding:2rem; color:var(--text-muted); font-size:0.8rem;">No pending alerts.</div>`;
         }
         return;
     }
 
-    let html = '';
+    let html = "";
     alerts.forEach(function(a, index) {
-        const isJira = a.type === 'JIRA';
+        const isJira = a.type === "JIRA";
         html += `
-            <div class="alert-item ${isJira ? 'jira' : ''}">
+            <div class="alert-item ${isJira ? "jira" : ""}">
                 <i data-lucide="x" class="delete-alert" size="12" onclick="deleteAlert(${index})"></i>
                 <div style="display:flex; justify-content:space-between; margin-bottom:4px; padding-right:12px;">
                     <span style="font-weight:700;"><span class="alert-brand">${a.brand}</span>${a.type}</span>
-                    <span style="font-size:0.65rem; color:${isJira ? '#ef4444' : '#facc15'};">ACTIVE</span>
+                    <span style="font-size:0.65rem; color:${isJira ? "#ef4444" : "#facc15"};">ACTIVE</span>
                 </div>
-                <div style="color:#dddddd;">${a.msg}</div>
+                <div style="color:var(--text-main); font-weight:500;">${a.msg}</div>
             </div>
         `;
     });
@@ -250,22 +271,28 @@ function loadAlerts() {
 
 function saveAlert(e) {
     e.preventDefault();
-    const type = document.getElementById('alertType').value;
-    const brand = document.getElementById('alertBrand').value;
-    const msg = document.getElementById('alertMsg').value;
-    const alerts = JSON.parse(localStorage.getItem('sbhub_alerts') || '[]');
-    alerts.push({ type: type, brand: brand, msg: msg });
-    localStorage.setItem('sbhub_alerts', JSON.stringify(alerts));
-    document.getElementById('alertBrand').value = '';
-    document.getElementById('alertMsg').value = '';
-    closeModal('alertModal');
-    loadAlerts();
+    const typeEl = document.getElementById("alertType");
+    const brandEl = document.getElementById("alertBrand");
+    const msgEl = document.getElementById("alertMsg");
+    
+    if (typeEl && brandEl && msgEl) {
+        const type = typeEl.value;
+        const brand = brandEl.value;
+        const msg = msgEl.value;
+        const alerts = JSON.parse(localStorage.getItem("sbhub_alerts") || "[]");
+        alerts.push({ type: type, brand: brand, msg: msg });
+        localStorage.setItem("sbhub_alerts", JSON.stringify(alerts));
+        brandEl.value = "";
+        msgEl.value = "";
+        closeModal("alertModal");
+        loadAlerts();
+    }
 }
 
 function deleteAlert(index) {
-    const alerts = JSON.parse(localStorage.getItem('sbhub_alerts') || '[]');
+    const alerts = JSON.parse(localStorage.getItem("sbhub_alerts") || "[]");
     alerts.splice(index, 1);
-    localStorage.setItem('sbhub_alerts', JSON.stringify(alerts));
+    localStorage.setItem("sbhub_alerts", JSON.stringify(alerts));
     loadAlerts();
 }
 loadAlerts();
@@ -274,14 +301,18 @@ loadAlerts();
 function updateClocks() {
     const now = new Date();
     
-    if (document.getElementById('live-time-gmt8')) {
-        document.getElementById('live-time-gmt8').innerText = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour12: false });
-        document.getElementById('live-date-gmt8').innerText = now.toLocaleDateString('en-US', { timeZone: 'Asia/Manila', weekday: 'short', month: 'short', day: 'numeric' });
+    const timeGmt8 = document.getElementById("live-time-gmt8");
+    const dateGmt8 = document.getElementById("live-date-gmt8");
+    if (timeGmt8 && dateGmt8) {
+        timeGmt8.innerText = now.toLocaleTimeString("en-US", { timeZone: "Asia/Manila", hour12: false });
+        dateGmt8.innerText = now.toLocaleDateString("en-US", { timeZone: "Asia/Manila", weekday: "short", month: "short", day: "numeric" });
     }
     
-    if (document.getElementById('live-time-gmt2')) {
-        document.getElementById('live-time-gmt2').innerText = now.toLocaleTimeString('en-US', { timeZone: 'Europe/Athens', hour12: false });
-        document.getElementById('live-date-gmt2').innerText = now.toLocaleDateString('en-US', { timeZone: 'Europe/Athens', weekday: 'short', month: 'short', day: 'numeric' });
+    const timeGmt2 = document.getElementById("live-time-gmt2");
+    const dateGmt2 = document.getElementById("live-date-gmt2");
+    if (timeGmt2 && dateGmt2) {
+        timeGmt2.innerText = now.toLocaleTimeString("en-US", { timeZone: "Europe/Athens", hour12: false });
+        dateGmt2.innerText = now.toLocaleDateString("en-US", { timeZone: "Europe/Athens", weekday: "short", month: "short", day: "numeric" });
     }
 }
 setInterval(updateClocks, 1000);
@@ -289,39 +320,45 @@ updateClocks();
 
 let fbDb = null;
 try { 
-    firebase.initializeApp({
-        databaseURL: "https://test-daily-task--sb-default-rtdb.firebaseio.com", 
-        projectId: "test-daily-task--sb"
-    }); 
-    fbDb = firebase.database(); 
-} catch (e) {
-    console.warn("Firebase initialization skipped or failed.", e);
+    if (typeof firebase !== "undefined") {
+        firebase.initializeApp({
+            databaseURL: "https://test-daily-task--sb-default-rtdb.firebaseio.com", 
+            projectId: "test-daily-task--sb"
+        }); 
+        fbDb = firebase.database(); 
+    }
+} catch (error) {
+    console.warn("Firebase initialization skipped or failed.", error);
 }
 
 async function fetchWeather() {
     try {
-        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current_weather=true&wind_speed_10m');
+        const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current_weather=true&wind_speed_10m");
         const data = await res.json();
         const temp = Math.round(data.current_weather.temperature);
         const wind = Math.round(data.current_weather.windspeed);
         
-        if (document.getElementById('live-temp')) {
-            document.getElementById('live-temp').innerText = `${temp}°C`;
-            document.getElementById('live-weather-desc').innerText = `Wind: ${wind} km/h | Manila Local`;
+        const tempEl = document.getElementById("live-temp");
+        const descEl = document.getElementById("live-weather-desc");
+        
+        if (tempEl && descEl) {
+            tempEl.innerText = temp + "°C";
+            descEl.innerText = "Wind: " + wind + " km/h | Manila Local";
         }
 
         if (fbDb) {
-            fbDb.ref('system_status/weather').set({ 
+            fbDb.ref("system_status/weather").set({ 
                 temp: temp, 
                 wind: wind, 
                 lastUpdated: new Date().toISOString() 
             });
         }
-    } catch (err) {
-        if (document.getElementById('live-temp')) {
-            document.getElementById('live-temp').innerText = 'N/A';
+    } catch (error) {
+        const tempEl = document.getElementById("live-temp");
+        if (tempEl) {
+            tempEl.innerText = "N/A";
         }
-        console.warn("Weather fetch error:", err);
+        console.warn("Weather fetch error:", error);
     }
 }
 fetchWeather();
@@ -329,43 +366,45 @@ setInterval(fetchWeather, 15 * 60 * 1000);
 
 // --- Theme Switcher ---
 function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    if (theme === 'blue') {
-        document.documentElement.style.setProperty('--body-bg', '#bae6fd');
-        document.documentElement.style.setProperty('--main-bg', '#e0f2fe');
+    document.documentElement.setAttribute("data-theme", theme);
+    if (theme === "blue") {
+        document.documentElement.style.setProperty("--body-bg", "#bae6fd");
+        document.documentElement.style.setProperty("--main-bg", "#e0f2fe");
     } else {
-        document.documentElement.style.removeProperty('--body-bg');
-        document.documentElement.style.removeProperty('--main-bg');
+        document.documentElement.style.removeProperty("--body-bg");
+        document.documentElement.style.removeProperty("--main-bg");
     }
-    localStorage.setItem('sbhub_theme_pref', theme);
-    closeModal('themeModal');
+    localStorage.setItem("sbhub_theme_pref", theme);
+    closeModal("themeModal");
 }
-const savedTheme = localStorage.getItem('sbhub_theme_pref');
+const savedTheme = localStorage.getItem("sbhub_theme_pref");
 if (savedTheme) {
     applyTheme(savedTheme);
 }
 
 // --- Top Picks ---
 let cachedPicks = [];
-let currentLeague = 'eng.1';
+let currentLeague = "eng.1";
 
 async function fetchTopPicks() {
-    const leagues = ['eng.1', 'esp.1', 'ger.1', 'ita.1', 'uefa.champions'];
-    const dateQ = new Date().toLocaleString("en-CA", { timeZone: "Asia/Manila" }).split(',')[0].replace(/-/g, '');
+    const leagues = ["eng.1", "esp.1", "ger.1", "ita.1", "uefa.champions"];
+    const dateStr = new Date().toLocaleString("en-CA", { timeZone: "Asia/Manila" }).split(",")[0];
+    const dateQ = dateStr.replace(/-/g, "");
     
     let allMatches = [];
     
-    for (let l of leagues) {
+    for (let i = 0; i < leagues.length; i++) {
+        const l = leagues[i];
         try {
             const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${l}/scoreboard?dates=${dateQ}`);
             const data = await res.json();
             
             if (data.events) {
-                data.events.forEach(function(e, i) {
-                    if (e.status.type.state !== 'pre') return;
+                data.events.forEach(function(e, idx) {
+                    if (e.status.type.state !== "pre") return;
                     const comp = e.competitions[0];
-                    const home = comp.competitors.find(function(c) { return c.homeAway === 'home'; }).team;
-                    const away = comp.competitors.find(function(c) { return c.homeAway === 'away'; }).team;
+                    const home = comp.competitors.find(function(c) { return c.homeAway === "home"; }).team;
+                    const away = comp.competitors.find(function(c) { return c.homeAway === "away"; }).team;
                     
                     allMatches.push({
                         league: l,
@@ -373,13 +412,13 @@ async function fetchTopPicks() {
                         awayName: away.shortDisplayName || away.name,
                         homeLogo: home.logo, 
                         awayLogo: away.logo,
-                        time: new Date(e.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
-                        badge: (i % 2 === 0) ? "TOP PICK" : "HOT"
+                        time: new Date(e.date).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false }),
+                        badge: (idx % 2 === 0) ? "TOP PICK" : "HOT"
                     });
                 });
             }
-        } catch (err) {
-            console.warn("ESPN Fetch error for league: " + l, err);
+        } catch (error) {
+            console.warn("ESPN Fetch error for league: " + l, error);
         }
     }
     cachedPicks = allMatches;
@@ -388,17 +427,17 @@ async function fetchTopPicks() {
 
 function filterPicks(league, btn) {
     currentLeague = league;
-    document.querySelectorAll('.filter-btn').forEach(function(b) {
-        b.classList.remove('active');
+    document.querySelectorAll(".filter-btn").forEach(function(b) {
+        b.classList.remove("active");
     });
     if (btn) {
-        btn.classList.add('active');
+        btn.classList.add("active");
     }
     renderPicks();
 }
 
 function renderPicks() {
-    const container = document.getElementById('topPicksContainer');
+    const container = document.getElementById("topPicksContainer");
     if (!container) return;
     
     const matches = cachedPicks.filter(function(m) { return m.league === currentLeague; }).slice(0, 5);
@@ -408,7 +447,7 @@ function renderPicks() {
         return;
     }
 
-    let html = '';
+    let html = "";
     matches.forEach(function(m) {
         const isTop = m.badge === "TOP PICK";
         html += `
@@ -431,8 +470,8 @@ fetchTopPicks();
 
 // --- Notifications (Top Games Feed) ---
 function openNotifications() {
-    const list = document.getElementById('notificationsList');
-    openModal('notificationsModal');
+    const list = document.getElementById("notificationsList");
+    openModal("notificationsModal");
     
     if (cachedPicks.length === 0) {
         if (list) {
@@ -441,17 +480,17 @@ function openNotifications() {
         return;
     }
 
-    let html = '';
+    let html = "";
     cachedPicks.forEach(function(m) {
         html += `
-            <div style="background: rgba(150,150,150,0.05); border: 1px solid var(--glass-border); border-radius: 12px; padding: 0.8rem; display: flex; align-items: center; justify-content: space-between;">
+            <div style="background: rgba(150,150,150,0.05); border: 1px solid var(--glass-border); border-radius: 12px; padding: 0.8rem; display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
                 <div style="display:flex; align-items:center; gap: 10px;">
                     <img src="${m.homeLogo}" style="width:24px;height:24px;border-radius:50%; background:white;" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'" alt="Home Team" />
                     <span style="font-weight:700; font-size:0.8rem; color:var(--text-main);">${m.homeName} vs ${m.awayName}</span>
                     <img src="${m.awayLogo}" style="width:24px;height:24px;border-radius:50%; background:white;" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'" alt="Away Team" />
                 </div>
                 <div style="text-align:right;">
-                    <div style="font-size:0.6rem; font-weight:800; background:var(--accent); color:white; padding:2px 6px; border-radius:4px; display:inline-block;">${m.league.toUpperCase().replace('.1','')}</div>
+                    <div style="font-size:0.6rem; font-weight:800; background:var(--accent); color:white; padding:2px 6px; border-radius:4px; display:inline-block;">${m.league.toUpperCase().replace(".1", "")}</div>
                     <div style="font-size:0.65rem; color:var(--text-muted); margin-top:4px;"><i data-lucide="clock" size="10"></i> ${m.time}</div>
                 </div>
             </div>
@@ -474,14 +513,14 @@ function navMatchDay(dir) {
 }
 
 function renderGamesList() {
-    const container = document.getElementById('gamesContainer');
-    const display = document.getElementById('matchDayDisplay');
+    const container = document.getElementById("gamesContainer");
+    const display = document.getElementById("matchDayDisplay");
     
     const target = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
     target.setDate(target.getDate() + dayOffset);
     
     if (display) {
-        display.innerText = `${dayOffset === 0 ? 'TODAY' : 'DAY '+ (dayOffset+1)} (${target.toLocaleDateString('en-US',{month:'short',day:'numeric'})})`;
+        display.innerText = `${dayOffset === 0 ? "TODAY" : "DAY " + (dayOffset + 1)} (${target.toLocaleDateString("en-US", { month: "short", day: "numeric" })})`;
     }
 
     let games = cachedPicks.slice(0, 5); 
@@ -492,7 +531,7 @@ function renderGamesList() {
          return;
     }
 
-    let html = '';
+    let html = "";
     games.forEach(function(g) {
         html += `
             <div class="game-row">
@@ -522,8 +561,9 @@ function loadLiveDuties() {
     else if (h >= 15 && h < 18) slot = { id: "slot_15_18", label: "15:00 - 18:00" };
     else if (h >= 18 && h < 21) slot = { id: "slot_18_21", label: "18:00 - 21:00" };
     
-    if (document.getElementById('slotBadge')) {
-        document.getElementById('slotBadge').innerText = slot.label;
+    const badgeEl = document.getElementById("slotBadge");
+    if (badgeEl) {
+        badgeEl.innerText = slot.label;
     }
     
     const container = document.getElementById("liveDutyContent");
@@ -535,27 +575,27 @@ function loadLiveDuties() {
         return; 
     }
 
-    fbDb.ref('roster_data').on('value', function(snapshot) {
+    fbDb.ref("roster_data").on("value", function(snapshot) {
         const data = snapshot.val();
         if (!data) return;
         
-        const todayIso = new Date().toLocaleString("en-CA", { timeZone: "Asia/Manila" }).split(',')[0];
+        const todayIso = new Date().toLocaleString("en-CA", { timeZone: "Asia/Manila" }).split(",")[0];
         let dayData = data[todayIso] || Object.values(data).pop();
-        if (!dayData || dayData === 'archives') return;
+        if (!dayData || dayData === "archives") return;
 
-        let html = ''; 
+        let html = ""; 
         let activeCount = 0;
         const members = [
-            { id: 'ann', n: 'ANN' }, 
-            { id: 'dave', n: 'DAVE' }, 
-            { id: 'ken', n: 'KEN' }, 
-            { id: 'kriztel', n: 'KRIZTEL' }
+            { id: "ann", n: "ANN" }, 
+            { id: "dave", n: "DAVE" }, 
+            { id: "ken", n: "KEN" }, 
+            { id: "kriztel", n: "KRIZTEL" }
         ];
         
         members.forEach(function(m) {
             const grid = dayData.grid ? dayData.grid[m.id] : null;
-            const shiftId = grid?.shift || 'shift-7-16';
-            const isRest = shiftId.includes('rd') || shiftId.includes('vl');
+            const shiftId = grid?.shift || "shift-7-16";
+            const isRest = shiftId.includes("rd") || shiftId.includes("vl");
             
             if (!isRest) {
                 activeCount++;
@@ -577,8 +617,8 @@ function loadLiveDuties() {
                 html += `<div class="duty-text">No specific tasks.</div>`;
             } else {
                 tasks.forEach(function(t) {
-                    let text = typeof t === 'string' ? t : t.text;
-                    let done = typeof t === 'object' ? t.done : false;
+                    let text = typeof t === "string" ? t : t.text;
+                    let done = typeof t === "object" ? t.done : false;
                     html += `<div class="duty-text"><i data-lucide="${done ? 'check-circle' : 'clock'}" size="12" style="color:${done ? '#10b981' : 'var(--text-muted)'}"></i> <span style="${done ? 'text-decoration:line-through;opacity:0.6' : ''}">${text}</span></div>`;
                 });
             }
@@ -589,8 +629,9 @@ function loadLiveDuties() {
             container.innerHTML = html;
         }
         
-        if (document.getElementById('activeTraderCount')) {
-            document.getElementById('activeTraderCount').innerText = activeCount;
+        const countEl = document.getElementById("activeTraderCount");
+        if (countEl) {
+            countEl.innerText = activeCount;
         }
         
         lucide.createIcons();
