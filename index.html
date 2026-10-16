@@ -14,7 +14,7 @@
 
   <!-- TRADING TERMINAL AUTHENTICATION & SECURITY GATEWAY -->
   <div id="authOverlay">
-    <!-- CLEAN TRADING GATEWAY HEADER BAR (NO TEXT STACKING) -->
+    <!-- CLEAN TRADING GATEWAY HEADER BAR -->
     <div class="gateway-trend-header">
       <div class="trend-header-left">
         <div class="trend-icon"><i class="fa-solid fa-chart-line"></i></div>
@@ -29,7 +29,7 @@
       </div>
     </div>
 
-    <!-- BACKGROUND TRADING GRAPH WAVE (CLEAN VECTOR BACKGROUND) -->
+    <!-- BACKGROUND TRADING GRAPH WAVE -->
     <div class="gateway-trend-graph-container">
       <svg class="gateway-trend-svg" viewBox="0 0 1440 280" preserveAspectRatio="none">
         <defs>
@@ -116,6 +116,22 @@
       </div>
 
       <nav class="top-nav-items" id="topNavMenu">
+        <!-- DAILY TASK DROPDOWN -->
+        <div class="top-nav-dropdown-group">
+          <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-calendar-check"></i></span>
+            DAILY TASK
+            <i class="fa-solid fa-chevron-down nav-arrow"></i>
+          </button>
+          <div class="top-dropdown-menu">
+            <a href="#" class="top-dropdown-link"><span>Daily Duty Schedule</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>Roster Task Assignments</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>Shift Checklist & Audits</span> <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="top-dropdown-link"><span>Pending Risk Reviews</span> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+
+        <!-- MONITORING DROPDOWN -->
         <div class="top-nav-dropdown-group">
           <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
             <span class="nav-icon-wrapper"><i class="fa-solid fa-chart-line"></i></span>
@@ -132,6 +148,7 @@
           </div>
         </div>
 
+        <!-- BACK OFFICE DROPDOWN -->
         <div class="top-nav-dropdown-group">
           <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
             <span class="nav-icon-wrapper"><i class="fa-solid fa-briefcase"></i></span>
@@ -145,6 +162,7 @@
           </div>
         </div>
 
+        <!-- HANDOVER REPORTS DROPDOWN -->
         <div class="top-nav-dropdown-group">
           <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
             <span class="nav-icon-wrapper"><i class="fa-solid fa-file-lines"></i></span>
@@ -158,6 +176,7 @@
           </div>
         </div>
 
+        <!-- CONFIGURATION DROPDOWN -->
         <div class="top-nav-dropdown-group">
           <button class="top-nav-btn" onclick="toggleTopDropdown(event, this)">
             <span class="nav-icon-wrapper"><i class="fa-solid fa-gear"></i></span>
