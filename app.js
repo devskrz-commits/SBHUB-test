@@ -85,6 +85,9 @@ function openModal(id) {
     var modal = document.getElementById(id);
     if (modal) {
         modal.classList.add("active"); 
+        if (id === 'expandPicksModal') {
+            renderExpandedPicks();
+        }
     }
 }
 
@@ -514,6 +517,30 @@ function renderPicks() {
         window.lucide.createIcons();
     }
 }
+
+// Render expanded view modal
+function renderExpandedPicks() {
+    var grid = document.getElementById("expandedPicksGrid");
+    if (!grid) return;
+    
+    if (cachedPicks.length === 0) {
+        grid.innerHTML = "<div style=\"grid-column:1/-1; text-align:center; padding:2rem; color:var(--text-muted);\">No games available.</div>";
+        return;
+    }
+
+    var html = "";
+    for (var i = 0; i < cachedPicks.length; i++) {
+        var m = cachedPicks[i];
+        var cleanLeague = m.league.toUpperCase().replace(".1", "");
+        html += "<div class=\"match-card\" style=\"padding:1rem;\">\n                    <div style=\"font-size:0.6rem; font-weight:800; background:var(--black-bg); color:white; padding:2px 6px; border-radius:4px; margin-bottom:6px; display:inline-block;\">" + cleanLeague + "</div>\n                    <div class=\"flags-row\">\n                        <img src=\"" + m.homeLogo + "\" alt=\"Home\" />\n                        <span style=\"font-size:0.65rem; color:var(--text-muted); font-weight:800;\">VS</span>\n                        <img src=\"" + m.awayLogo + "\" alt=\"Away\" />\n                    </div>\n                    <div class=\"match-name\" style=\"font-size:0.8rem;\">" + m.homeName + " vs " + m.awayName + "</div>\n                    <div style=\"font-size:0.7rem; font-weight:700; color:var(--text-muted); margin-top:4px;\">" + m.dateLabel + " @ " + m.time + "</div>\n                </div>";
+    }
+    
+    grid.innerHTML = html;
+    if (typeof window.lucide !== "undefined") {
+        window.lucide.createIcons();
+    }
+}
+
 fetchTopPicks();
 
 // --- Notifications (Top Games Feed) ---
