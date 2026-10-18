@@ -16,12 +16,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=9.0.0">
+  <link rel="stylesheet" href="./styles.css?v=10.0.0">
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <script src="./app.js?v=9.0.0" defer></script>
+  <script src="./app.js?v=10.0.0" defer></script>
 </head>
 <body id="pageBody">
 
@@ -300,65 +300,6 @@
 
     <main class="main-workspace">
 
-      <!-- SLEEK TOP COMMAND BAR -->
-      <div class="command-bar glass-card">
-        <div class="world-clocks">
-          <div class="clock-badge"><span class="clock-label">GMT+8</span><span class="clock-time" id="clock-gmt8">00:00:00</span></div>
-          <div class="clock-badge"><span class="clock-label">CET</span><span class="clock-time" id="clock-cet">00:00:00</span></div>
-          <div class="clock-badge"><span class="clock-label">GMT+2</span><span class="clock-time" id="clock-gmt2">00:00:00</span></div>
-        </div>
-        
-        <div class="weather-mini">
-          <i class="bx bx-cloud" id="weatherIcon" style="font-size: 20px; color: #f59e0b;"></i>
-          <span id="weatherTemp" style="font-weight: 700; font-size: 14px;">--°C</span>
-          <span id="weatherCond" style="font-size: 11px; opacity: 0.7;">LOADING...</span>
-        </div>
-
-        <div class="controls-group">
-          <a href="jira.html" target="_blank" class="command-btn"><i class="bx bx-task"></i> Jira</a>
-          
-          <div class="dropdown-container">
-            <button class="command-btn" type="button" onclick="toggleDropdown('widgetMenu')">
-              <i class="bx bx-slider-alt"></i> Widgets
-            </button>
-            <div class="dropdown-menu" id="widgetMenu">
-              <label class="menu-option"><span>Top Picks / Boosts</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-top-picks', this.checked)"></label>
-              <label class="menu-option"><span>Brand Directory</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-brand-dock', this.checked)"></label>
-              <label class="menu-option"><span>Daily Task Dock</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-task-dock', this.checked)"></label>
-              <label class="menu-option"><span>Time-Slot Duties</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-duties-dock', this.checked)"></label>
-              <label class="menu-option"><span>Top Games Ticker</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-games-dock', this.checked)"></label>
-            </div>
-          </div>
-
-          <div class="dropdown-container">
-            <button class="command-btn" type="button" onclick="toggleDropdown('themeMenu')">
-              <i class="bx bx-palette"></i> Theme
-            </button>
-            <div class="dropdown-menu" id="themeMenu">
-              <div class="dropdown-section-title">PLAIN COLORS</div>
-              <button class="menu-option" type="button" onclick="setGradient('plain-slate')"><span>Dark Slate</span><span class="color-dot" style="background: #0f172a;"></span></button>
-              <button class="menu-option" type="button" onclick="setGradient('plain-navy')"><span>Deep Navy</span><span class="color-dot" style="background: #0b1329;"></span></button>
-              <button class="menu-option" type="button" onclick="setGradient('plain-onyx')"><span>Onyx Black</span><span class="color-dot" style="background: #121212;"></span></button>
-              <button class="menu-option" type="button" onclick="setGradient('plain-daylight')"><span>Pure Daylight</span><span class="color-dot" style="background: #f8fafc;"></span></button>
-              <button class="menu-option" type="button" onclick="setGradient('plain-sky-light')"><span>Sky Daylight</span><span class="color-dot" style="background: #e0f2fe;"></span></button>
-              <button class="menu-option" type="button" onclick="setGradient('plain-warm-light')"><span>Warm Sand Daylight</span><span class="color-dot" style="background: #f5f5f4;"></span></button>
-        
-              <div class="dropdown-section-title">3D &amp; ABSTRACT</div>
-              <button class="menu-option" type="button" onclick="setGradient('3d-chrome-swirl')"><span>Glossy Obsidian</span><span class="color-dot" style="background: radial-gradient(circle, #f97316, #0f172a);"></span></button>
-              <button class="menu-option" type="button" onclick="setGradient('cyan-liquid-glass')"><span>Cyan Liquid</span><span class="color-dot" style="background: radial-gradient(circle, #06b6d4, #083344);"></span></button>
-              <button class="menu-option" type="button" onclick="setGradient('deep-liquid-chrome')"><span>Chrome Blue</span><span class="color-dot" style="background: linear-gradient(135deg, #1e293b, #3b82f6);"></span></button>
-              <button class="menu-option" type="button" onclick="setGradient('neon-line-ribbon')"><span>Magenta Glowing</span><span class="color-dot" style="background: linear-gradient(135deg, #d946ef, #8b5cf6);"></span></button>
-              <button class="menu-option" type="button" onclick="setGradient('neural-wireframe')"><span>Neural Grid</span><span class="color-dot" style="background: linear-gradient(135deg, #f97316, #ef4444);"></span></button>
-              <button class="menu-option" type="button" onclick="setGradient('dark-energy-vortex')"><span>Crimson Vortex</span><span class="color-dot" style="background: radial-gradient(circle, #e11d48, #4c0519);"></span></button>
-            </div>
-          </div>
-          
-          <div class="command-btn" style="background: rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.3); pointer-events: none;">
-            <i class="bx bx-user-check" style="color: #38bdf8;"></i> <span id="activeTraderCount">0 Working</span>
-          </div>
-        </div>
-      </div>
-
       <!-- ALERTS AREA -->
       <div class="alerts-area">
         <div id="jiraAlertBanner" class="jira-static-alert-banner">
@@ -376,9 +317,10 @@
         </div>
       </div>
 
-      <!-- COMPACT 3-COLUMN GRID -->
+      <!-- COMPACT 3-COLUMN MAIN DASHBOARD GRID -->
       <div class="dashboard-grid">
 
+        <!-- COLUMN 1: BRAND DIRECTORY & DAILY TASKS -->
         <div style="display: flex; flex-direction: column; gap: 16px;">
           <div class="glass-card" id="widget-brand-dock">
             <div class="card-header">
@@ -406,6 +348,7 @@
           </div>
         </div>
 
+        <!-- COLUMN 2: TOP PICKS / HOT BOOSTS (ALL LEAGUES INCLUDED) -->
         <div class="glass-card" id="widget-top-picks" style="grid-column: 2 / span 1;">
           <div class="card-header">
             <span style="color: #fca5a5;"><i class="bx bxs-flame"></i> TOP PICKS</span>
@@ -416,14 +359,17 @@
           <div class="top-picks-filter-bar">
             <button class="boost-filter-btn active" id="btn-boost-eng.1" onclick="filterTopPicks('eng.1', this)">EPL</button>
             <button class="boost-filter-btn" id="btn-boost-esp.1" onclick="filterTopPicks('esp.1', this)">LA LIGA</button>
-            <button class="boost-filter-btn" id="btn-boost-uefa.champions" onclick="filterTopPicks('uefa.champions', this)">UEFA</button>
+            <button class="boost-filter-btn" id="btn-boost-ita.1" onclick="filterTopPicks('ita.1', this)">SERIE A</button>
+            <button class="boost-filter-btn" id="btn-boost-fra.1" onclick="filterTopPicks('fra.1', this)">LIGUE 1</button>
             <button class="boost-filter-btn" id="btn-boost-ger.1" onclick="filterTopPicks('ger.1', this)">BUND</button>
+            <button class="boost-filter-btn" id="btn-boost-uefa.champions" onclick="filterTopPicks('uefa.champions', this)">UEFA</button>
           </div>
           <div id="topPicksContainer" class="top-picks-grid-row compact">
             <div style="text-align:center; padding:15px; width:100%;"><i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#38bdf8;"></i></div>
           </div>
         </div>
 
+        <!-- COLUMN 3: TIME-SLOT DUTIES & TOP GAMES -->
         <div style="display: flex; flex-direction: column; gap: 16px;">
           <div class="glass-card" id="widget-duties-dock">
             <div class="card-header">
@@ -463,6 +409,66 @@
       </div>
 
     </main>
+
+    <!-- FIXED BOTTOM COMMAND DOCK (MOVED BELOW AS REQUESTED IN RED BOX AREA) -->
+    <div class="bottom-command-dock glass-card">
+      <div class="dock-section world-clocks">
+        <div class="clock-badge"><span class="clock-label">GMT+8</span><span class="clock-time" id="clock-gmt8">00:00:00</span></div>
+        <div class="clock-badge"><span class="clock-label">CET</span><span class="clock-time" id="clock-cet">00:00:00</span></div>
+        <div class="clock-badge"><span class="clock-label">GMT+2</span><span class="clock-time" id="clock-gmt2">00:00:00</span></div>
+      </div>
+
+      <div class="dock-section weather-mini">
+        <i class="bx bx-cloud" id="weatherIcon" style="font-size: 20px; color: #f59e0b;"></i>
+        <span id="weatherTemp" style="font-weight: 700; font-size: 13px;">--°C</span>
+        <span id="weatherCond" style="font-size: 10px; opacity: 0.7;">LOADING...</span>
+      </div>
+
+      <div class="dock-section controls-group">
+        <a href="jira.html" target="_blank" class="command-btn"><i class="bx bx-task"></i> Jira</a>
+        
+        <div class="dropdown-container">
+          <button class="command-btn" type="button" onclick="toggleDropdown('widgetMenu')">
+            <i class="bx bx-slider-alt"></i> Widgets
+          </button>
+          <div class="dropdown-menu" id="widgetMenu">
+            <label class="menu-option"><span>Top Picks / Boosts</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-top-picks', this.checked)"></label>
+            <label class="menu-option"><span>Brand Directory</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-brand-dock', this.checked)"></label>
+            <label class="menu-option"><span>Daily Task Dock</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-task-dock', this.checked)"></label>
+            <label class="menu-option"><span>Time-Slot Duties</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-duties-dock', this.checked)"></label>
+            <label class="menu-option"><span>Top Games Ticker</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-games-dock', this.checked)"></label>
+          </div>
+        </div>
+
+        <div class="dropdown-container">
+          <button class="command-btn" type="button" onclick="toggleDropdown('themeMenu')">
+            <i class="bx bx-palette"></i> Theme
+          </button>
+          <div class="dropdown-menu" id="themeMenu">
+            <div class="dropdown-section-title">PLAIN COLORS</div>
+            <button class="menu-option" type="button" onclick="setGradient('plain-slate')"><span>Dark Slate</span><span class="color-dot" style="background: #0f172a;"></span></button>
+            <button class="menu-option" type="button" onclick="setGradient('plain-navy')"><span>Deep Navy</span><span class="color-dot" style="background: #0b1329;"></span></button>
+            <button class="menu-option" type="button" onclick="setGradient('plain-onyx')"><span>Onyx Black</span><span class="color-dot" style="background: #121212;"></span></button>
+            <button class="menu-option" type="button" onclick="setGradient('plain-daylight')"><span>Pure Daylight</span><span class="color-dot" style="background: #f8fafc;"></span></button>
+            <button class="menu-option" type="button" onclick="setGradient('plain-sky-light')"><span>Sky Daylight</span><span class="color-dot" style="background: #e0f2fe;"></span></button>
+            <button class="menu-option" type="button" onclick="setGradient('plain-warm-light')"><span>Warm Sand Daylight</span><span class="color-dot" style="background: #f5f5f4;"></span></button>
+      
+            <div class="dropdown-section-title">3D &amp; ABSTRACT</div>
+            <button class="menu-option" type="button" onclick="setGradient('3d-chrome-swirl')"><span>Glossy Obsidian</span><span class="color-dot" style="background: radial-gradient(circle, #f97316, #0f172a);"></span></button>
+            <button class="menu-option" type="button" onclick="setGradient('cyan-liquid-glass')"><span>Cyan Liquid</span><span class="color-dot" style="background: radial-gradient(circle, #06b6d4, #083344);"></span></button>
+            <button class="menu-option" type="button" onclick="setGradient('deep-liquid-chrome')"><span>Chrome Blue</span><span class="color-dot" style="background: linear-gradient(135deg, #1e293b, #3b82f6);"></span></button>
+            <button class="menu-option" type="button" onclick="setGradient('neon-line-ribbon')"><span>Magenta Glowing</span><span class="color-dot" style="background: linear-gradient(135deg, #d946ef, #8b5cf6);"></span></button>
+            <button class="menu-option" type="button" onclick="setGradient('neural-wireframe')"><span>Neural Grid</span><span class="color-dot" style="background: linear-gradient(135deg, #f97316, #ef4444);"></span></button>
+            <button class="menu-option" type="button" onclick="setGradient('dark-energy-vortex')"><span>Crimson Vortex</span><span class="color-dot" style="background: radial-gradient(circle, #e11d48, #4c0519);"></span></button>
+          </div>
+        </div>
+        
+        <div class="command-btn" style="background: rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.3); pointer-events: none;">
+          <i class="bx bx-user-check" style="color: #38bdf8;"></i> <span id="activeTraderCount">0 Working</span>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- HANDOVER MODAL -->
