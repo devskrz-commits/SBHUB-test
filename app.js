@@ -1,6 +1,6 @@
 const DEFAULT_USER = "sportsbook2026";
 const DEFAULT_PASS = "sb2026";
-const isMobileDevice = () => window.innerWidth <= 850;
+const isMobileDevice = () => window.innerWidth <= 950;
 let rosterDb = null;
 
 try {
@@ -203,15 +203,12 @@ function openCreateTaskModal() { document.getElementById('createTaskModal').clas
 function closeCreateTaskModal() { document.getElementById('createTaskModal').classList.remove('show'); }
 function loadReminders() {
   const container = document.getElementById('remindersContainer');
-  const widget = document.getElementById('widget-reminders');
   if(!container) return;
   const list = JSON.parse(localStorage.getItem('sbhub_reminders') || '[]');
   if(list.length === 0){ 
-    container.innerHTML = '<span style="font-size:10px; color:rgba(255,255,255,0.5); padding:4px;">No tasks.</span>'; 
-    if(widget) widget.style.display = 'none';
+    container.innerHTML = '<span style="font-size:10px; color:rgba(255,255,255,0.5); padding:4px;">No reminders.</span>'; 
     return; 
   }
-  if(widget) widget.style.display = 'flex';
   container.innerHTML = list.map((r, i) => `
     <div class="reminder-item" style="border-left-color:${r.color};">
       <span>${r.title}</span>
@@ -290,7 +287,7 @@ function updateNotifications() {
     badge.textContent = soonGames.length;
     badge.style.display = 'block';
     menu.innerHTML = soonGames.map(g => {
-      const timeStr = new Intl.DateTimeFormat('en-GB', { hour:'2-digit', minute:'2-digit' }).format(new Date(g.kickOffTimestamp || g.kickOffTime));
+      const timeStr = new Intl.DateTimeFormat('en-GB', { timeZone: primaryTimezone, hour:'2-digit', minute:'2-digit' }).format(new Date(g.kickOffTimestamp || g.kickOffTime));
       return `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.05); font-size:10px; color:#fff;">
         <strong style="color:#38bdf8;">${timeStr}</strong> - ${g.homeName} vs ${g.awayName}
       </div>`;
@@ -305,6 +302,7 @@ function updatePrimaryTimezone(tz) {
   if(lbl) lbl.textContent = tz.split('/')[1].replace('_',' ').toUpperCase();
   updateWorldClocks();
   fetchTopPicksAndBoosts(); 
+  fetchLiveGames();
 }
 
 function updateWorldClocks() {
@@ -349,7 +347,7 @@ async function fetchLiveGames() {
     if (selectedGameDayOffset === 0) dayTag = `TODAY`;
 
     const labelEl = document.getElementById("matchDayDisplay");
-    if (labelEl) labelEl.textContent = `${dayTag} (${dateLabelStr})`;
+    if (labelEl) labelEl.textContent = `${dayTag}`;
 
     let matches = await fetchLeagueList(TOP_TIER_LEAGUES, targetDateQuery);
 
@@ -571,7 +569,6 @@ function renderLiveDutyWidget(rosterData) {
   document.getElementById('activeTraderCount').textContent = activeCount + ' Working';
 }
 
-/* WEATHER ENGINE */
 async function fetchManilaWeather() {
   try {
     const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current_weather=true&timezone=Asia%2FManila');
