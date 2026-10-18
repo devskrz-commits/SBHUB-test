@@ -541,7 +541,6 @@ function handleLogout() {
   if (authOverlay) authOverlay.classList.remove('unlocked');
 }
 
-/* UPDATED MENU TOGGLE LOGIC FOR AUTO-EXPAND SIDEBAR */
 function toggleMenu(menuId, btnElement) {
   const targetMenu = document.getElementById(menuId);
   if (!targetMenu) return;
@@ -549,7 +548,6 @@ function toggleMenu(menuId, btnElement) {
   const isOpen = targetMenu.classList.contains('open');
   const icon = btnElement ? btnElement.querySelector('.toggle-icon') : null;
   
-  // Close all sub-menus for accordion feel
   document.querySelectorAll('.sub-menu').forEach(menu => {
     menu.classList.remove('open');
   });
