@@ -5,21 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sportsbook Hub - Secured Dashboard</title>
   
+  <!-- PREVENT LOGIN FLASH: Instant Auth Check Before Render -->
+  <script>
+    if (localStorage.getItem('sbhub_auth') === 'true' || sessionStorage.getItem('sbhub_auth') === 'true') {
+      document.documentElement.classList.add('is-authenticated');
+    }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
-  
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  
-  <!-- Path simplified for GitHub Pages -->
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="./styles.css?v=9.0.0">
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  
-  <!-- Path simplified for GitHub Pages -->
-  <script src="app.js" defer></script>
+  <script src="./app.js?v=9.0.0" defer></script>
 </head>
 <body id="pageBody">
 
@@ -298,163 +300,89 @@
 
     <main class="main-workspace">
 
-      <div class="command-bar">
-        <a href="jira.html" target="_blank" class="command-btn"><i class="bx bx-task"></i> Jira Tracker</a>
-        
-        <div class="dropdown-container">
-          <button class="command-btn" type="button" onclick="toggleDropdown('widgetMenu')">
-            <i class="bx bx-slider-alt"></i> Widgets
-          </button>
-          <div class="dropdown-menu" id="widgetMenu">
-            <label class="menu-option">
-              <span>Top Picks / Boosts</span>
-              <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-top-picks', this.checked)">
-            </label>
-            <label class="menu-option">
-              <span>Brand Directory</span>
-              <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-brand-dock', this.checked)">
-            </label>
-            <label class="menu-option">
-              <span>Daily Task Dock</span>
-              <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-task-dock', this.checked)">
-            </label>
-            <label class="menu-option">
-              <span>Time-Slot Duties</span>
-              <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-duties-dock', this.checked)">
-            </label>
-            <label class="menu-option">
-              <span>Top Games Ticker</span>
-              <input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-games-dock', this.checked)">
-            </label>
-          </div>
-        </div>
-
-        <div class="dropdown-container">
-          <button class="command-btn" type="button" onclick="toggleDropdown('themeMenu')">
-            <i class="bx bx-palette"></i> Theme
-          </button>
-          <div class="dropdown-menu" id="themeMenu">
-            <div class="dropdown-section-title">PLAIN COLORS</div>
-            <button class="menu-option" type="button" onclick="setGradient('plain-slate')"><span>Dark Slate</span><span class="color-dot" style="background: #0f172a;"></span></button>
-            <button class="menu-option" type="button" onclick="setGradient('plain-navy')"><span>Deep Navy</span><span class="color-dot" style="background: #0b1329;"></span></button>
-            <button class="menu-option" type="button" onclick="setGradient('plain-onyx')"><span>Onyx Black</span><span class="color-dot" style="background: #121212;"></span></button>
-            <button class="menu-option" type="button" onclick="setGradient('plain-daylight')"><span>Pure Daylight</span><span class="color-dot" style="background: #f8fafc;"></span></button>
-            <button class="menu-option" type="button" onclick="setGradient('plain-sky-light')"><span>Sky Daylight</span><span class="color-dot" style="background: #e0f2fe;"></span></button>
-            <button class="menu-option" type="button" onclick="setGradient('plain-warm-light')"><span>Warm Sand Daylight</span><span class="color-dot" style="background: #f5f5f4;"></span></button>
-      
-            <div class="dropdown-section-title">3D &amp; ABSTRACT</div>
-            <button class="menu-option" type="button" onclick="setGradient('3d-chrome-swirl')"><span>Glossy Obsidian</span><span class="color-dot" style="background: radial-gradient(circle, #f97316, #0f172a);"></span></button>
-            <button class="menu-option" type="button" onclick="setGradient('cyan-liquid-glass')"><span>Cyan Liquid</span><span class="color-dot" style="background: radial-gradient(circle, #06b6d4, #083344);"></span></button>
-            <button class="menu-option" type="button" onclick="setGradient('deep-liquid-chrome')"><span>Chrome Blue</span><span class="color-dot" style="background: linear-gradient(135deg, #1e293b, #3b82f6);"></span></button>
-            <button class="menu-option" type="button" onclick="setGradient('neon-line-ribbon')"><span>Magenta Glowing</span><span class="color-dot" style="background: linear-gradient(135deg, #d946ef, #8b5cf6);"></span></button>
-            <button class="menu-option" type="button" onclick="setGradient('neural-wireframe')"><span>Neural Grid</span><span class="color-dot" style="background: linear-gradient(135deg, #f97316, #ef4444);"></span></button>
-            <button class="menu-option" type="button" onclick="setGradient('dark-energy-vortex')"><span>Crimson Vortex</span><span class="color-dot" style="background: radial-gradient(circle, #e11d48, #4c0519);"></span></button>
-          </div>
+      <!-- SLEEK TOP COMMAND BAR -->
+      <div class="command-bar glass-card">
+        <div class="world-clocks">
+          <div class="clock-badge"><span class="clock-label">GMT+8</span><span class="clock-time" id="clock-gmt8">00:00:00</span></div>
+          <div class="clock-badge"><span class="clock-label">CET</span><span class="clock-time" id="clock-cet">00:00:00</span></div>
+          <div class="clock-badge"><span class="clock-label">GMT+2</span><span class="clock-time" id="clock-gmt2">00:00:00</span></div>
         </div>
         
-        <div class="command-btn" style="background: rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.3); pointer-events: none;">
-          <i class="bx bx-user-check" style="color: #38bdf8;"></i> <span id="activeTraderCount">0 Working</span>
+        <div class="weather-mini">
+          <i class="bx bx-cloud" id="weatherIcon" style="font-size: 20px; color: #f59e0b;"></i>
+          <span id="weatherTemp" style="font-weight: 700; font-size: 14px;">--°C</span>
+          <span id="weatherCond" style="font-size: 11px; opacity: 0.7;">LOADING...</span>
         </div>
-      </div>
 
-      <div class="glass-card top-banner-card">
-        <div class="banner-top-row">
-          <div class="banner-top-left-group">
-            <div id="jiraAlertBanner" class="jira-static-alert-banner">
-              <div class="jira-alert-badge">
-                <i class="bx bx-error-circle"></i> PENDING JIRA (&gt;24H)
-              </div>
-              <div class="jira-ticket-pills-container" id="jiraPillsContainer"></div>
-              <a href="jira.html" target="_blank" class="jira-pill-key-link">View Tracker <i class="bx bx-right-arrow-alt"></i></a>
-            </div>
-
-            <div id="urgentHandoverBanner" class="urgent-handover-banner active">
-              <div class="handover-header-row">
-                <div class="handover-alert-badge" id="handoverAlertBadge">
-                  <i class="bx bx-alarm-exclamation"></i> URGENT HANDOVER
-                </div>
-                <button type="button" class="handover-manage-btn" onclick="openHandoverModal()">
-                  <i class="bx bx-plus"></i> Manage Notes
-                </button>
-              </div>
-              <div class="handover-pills-container" id="handoverPillsContainer"></div>
+        <div class="controls-group">
+          <a href="jira.html" target="_blank" class="command-btn"><i class="bx bx-task"></i> Jira</a>
+          
+          <div class="dropdown-container">
+            <button class="command-btn" type="button" onclick="toggleDropdown('widgetMenu')">
+              <i class="bx bx-slider-alt"></i> Widgets
+            </button>
+            <div class="dropdown-menu" id="widgetMenu">
+              <label class="menu-option"><span>Top Picks / Boosts</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-top-picks', this.checked)"></label>
+              <label class="menu-option"><span>Brand Directory</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-brand-dock', this.checked)"></label>
+              <label class="menu-option"><span>Daily Task Dock</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-task-dock', this.checked)"></label>
+              <label class="menu-option"><span>Time-Slot Duties</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-duties-dock', this.checked)"></label>
+              <label class="menu-option"><span>Top Games Ticker</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-games-dock', this.checked)"></label>
             </div>
           </div>
 
-          <div class="weather-banner-widget">
-            <div class="weather-banner-header">
-              <span class="weather-banner-title">PHILIPPINES WEATHER</span>
-              <div class="weather-banner-actions">
-                <i class="bx bx-refresh" title="Refresh" onclick="fetchManilaWeather()" style="cursor:pointer;"></i>
-              </div>
-            </div>
-            <div class="weather-banner-body">
-              <div class="weather-banner-main">
-                <i class="bx bx-cloud" id="weatherIcon" style="font-size: 28px; color: #f59e0b;"></i>
-                <div>
-                  <div class="weather-banner-temp" id="weatherTemp">--°C</div>
-                  <div class="weather-banner-cond" id="weatherCond">LOADING...</div>
-                </div>
-              </div>
-              <div class="weather-banner-details">
-                <div class="weather-location-tag"><i class="bx bx-map-pin" style="color: #ef4444;"></i> Metro Manila</div>
-                <div id="weatherHumidity">Humidity: --%</div>
-                <div id="weatherWind">Wind: -- km/h</div>
-              </div>
+          <div class="dropdown-container">
+            <button class="command-btn" type="button" onclick="toggleDropdown('themeMenu')">
+              <i class="bx bx-palette"></i> Theme
+            </button>
+            <div class="dropdown-menu" id="themeMenu">
+              <div class="dropdown-section-title">PLAIN COLORS</div>
+              <button class="menu-option" type="button" onclick="setGradient('plain-slate')"><span>Dark Slate</span><span class="color-dot" style="background: #0f172a;"></span></button>
+              <button class="menu-option" type="button" onclick="setGradient('plain-navy')"><span>Deep Navy</span><span class="color-dot" style="background: #0b1329;"></span></button>
+              <button class="menu-option" type="button" onclick="setGradient('plain-onyx')"><span>Onyx Black</span><span class="color-dot" style="background: #121212;"></span></button>
+              <button class="menu-option" type="button" onclick="setGradient('plain-daylight')"><span>Pure Daylight</span><span class="color-dot" style="background: #f8fafc;"></span></button>
+              <button class="menu-option" type="button" onclick="setGradient('plain-sky-light')"><span>Sky Daylight</span><span class="color-dot" style="background: #e0f2fe;"></span></button>
+              <button class="menu-option" type="button" onclick="setGradient('plain-warm-light')"><span>Warm Sand Daylight</span><span class="color-dot" style="background: #f5f5f4;"></span></button>
+        
+              <div class="dropdown-section-title">3D &amp; ABSTRACT</div>
+              <button class="menu-option" type="button" onclick="setGradient('3d-chrome-swirl')"><span>Glossy Obsidian</span><span class="color-dot" style="background: radial-gradient(circle, #f97316, #0f172a);"></span></button>
+              <button class="menu-option" type="button" onclick="setGradient('cyan-liquid-glass')"><span>Cyan Liquid</span><span class="color-dot" style="background: radial-gradient(circle, #06b6d4, #083344);"></span></button>
+              <button class="menu-option" type="button" onclick="setGradient('deep-liquid-chrome')"><span>Chrome Blue</span><span class="color-dot" style="background: linear-gradient(135deg, #1e293b, #3b82f6);"></span></button>
+              <button class="menu-option" type="button" onclick="setGradient('neon-line-ribbon')"><span>Magenta Glowing</span><span class="color-dot" style="background: linear-gradient(135deg, #d946ef, #8b5cf6);"></span></button>
+              <button class="menu-option" type="button" onclick="setGradient('neural-wireframe')"><span>Neural Grid</span><span class="color-dot" style="background: linear-gradient(135deg, #f97316, #ef4444);"></span></button>
+              <button class="menu-option" type="button" onclick="setGradient('dark-energy-vortex')"><span>Crimson Vortex</span><span class="color-dot" style="background: radial-gradient(circle, #e11d48, #4c0519);"></span></button>
             </div>
           </div>
-        </div>
-
-        <div class="banner-bottom-row" style="margin-top: 16px;">
-          <div class="world-clocks">
-            <div class="clock-badge">
-              <span class="clock-label">GMT+8</span>
-              <span class="clock-time" id="clock-gmt8">00:00:00</span>
-            </div>
-            <div class="clock-badge">
-              <span class="clock-label">CET</span>
-              <span class="clock-time" id="clock-cet">00:00:00</span>
-            </div>
-            <div class="clock-badge">
-              <span class="clock-label">GMT+2</span>
-              <span class="clock-time" id="clock-gmt2">00:00:00</span>
-            </div>
+          
+          <div class="command-btn" style="background: rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.3); pointer-events: none;">
+            <i class="bx bx-user-check" style="color: #38bdf8;"></i> <span id="activeTraderCount">0 Working</span>
           </div>
         </div>
       </div>
 
-      <div class="glass-card" id="widget-top-picks">
-        <div class="card-header">
-          <span style="color: #fca5a5; display: flex; align-items: center; gap: 8px;">
-            <i class="bx bxs-flame"></i> TOP PICKS / HOT BOOSTS
-          </span>
-          <div class="actions">
-            <i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-top-picks')"></i>
-          </div>
+      <!-- ALERTS AREA -->
+      <div class="alerts-area">
+        <div id="jiraAlertBanner" class="jira-static-alert-banner">
+          <div class="jira-alert-badge"><i class="bx bx-error-circle"></i> PENDING JIRA (&gt;24H)</div>
+          <div class="jira-ticket-pills-container" id="jiraPillsContainer"></div>
+          <a href="jira.html" target="_blank" class="jira-pill-key-link">View Tracker <i class="bx bx-right-arrow-alt"></i></a>
         </div>
 
-        <div class="top-picks-filter-bar">
-          <button class="boost-filter-btn active" id="btn-boost-eng.1" onclick="filterTopPicks('eng.1', this)">EPL</button>
-          <button class="boost-filter-btn" id="btn-boost-esp.1" onclick="filterTopPicks('esp.1', this)">LA LIGA</button>
-          <button class="boost-filter-btn" id="btn-boost-ger.1" onclick="filterTopPicks('ger.1', this)">BUNDESLIGA</button>
-          <button class="boost-filter-btn" id="btn-boost-ita.1" onclick="filterTopPicks('ita.1', this)">SERIE A</button>
-          <button class="boost-filter-btn" id="btn-boost-fra.1" onclick="filterTopPicks('fra.1', this)">LIGUE 1</button>
-          <button class="boost-filter-btn" id="btn-boost-uefa.champions" onclick="filterTopPicks('uefa.champions', this)">UEFA</button>
-        </div>
-
-        <div id="topPicksContainer" class="top-picks-grid-row">
-          <div style="text-align:center; padding:15px; width:100%;">
-            <i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#38bdf8;"></i>
+        <div id="urgentHandoverBanner" class="urgent-handover-banner active">
+          <div class="handover-header-row">
+            <div class="handover-alert-badge" id="handoverAlertBadge"><i class="bx bx-alarm-exclamation"></i> URGENT HANDOVER</div>
+            <button type="button" class="handover-manage-btn" onclick="openHandoverModal()"><i class="bx bx-plus"></i> Manage</button>
           </div>
+          <div class="handover-pills-container" id="handoverPillsContainer"></div>
         </div>
       </div>
 
+      <!-- COMPACT 3-COLUMN GRID -->
       <div class="dashboard-grid">
 
-        <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
           <div class="glass-card" id="widget-brand-dock">
             <div class="card-header">
-              <span style="color: #fcd34d;"><i class="bx bx-pin"></i> BRAND DIRECTORY DOCK</span>
+              <span style="color: #fcd34d;"><i class="bx bx-pin"></i> BRAND DIRECTORY</span>
               <div class="actions"><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-brand-dock')"></i></div>
             </div>
             <div class="tab-pills">
@@ -462,44 +390,73 @@
               <div class="tab-pill" id="tab-edge" onclick="switchBrandTab('edge')">EDGE</div>
               <div class="tab-pill" id="tab-pubs" onclick="switchBrandTab('pubs')">PUBS</div>
             </div>
-            <div id="brandLinksContainer" style="display: flex; flex-direction: column; gap: 10px;"></div>
+            <div id="brandLinksContainer" style="display: flex; flex-direction: column; gap: 8px;"></div>
           </div>
 
           <div class="glass-card" id="widget-task-dock">
             <div class="card-header">
-              <span style="color: #fca5a5;"><i class="bx bx-list-ul"></i> DAILY TASK DOCK</span>
+              <span style="color: #fca5a5;"><i class="bx bx-list-ul"></i> DAILY TASKS</span>
               <div class="actions"><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-task-dock')"></i></div>
             </div>
             <a class="action-row" href="boostschedule.html" target="_blank"><span>TOP PICKS (SCHEDULE)</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="action-row" href="https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit?gid=1450723096#gid=1450723096" target="_blank"><span>EDGE BOOST (MIG)</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="action-row" href="https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit?gid=784209986#gid=784209986" target="_blank"><span>IBET BOOST (MIG)</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="action-row" href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank"><span>KT SPORTS CHECK</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="action-row" href="https://polymarket.com/breaking" target="_blank"><span>PREDICTION OFFER CHECK</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="action-row" href="https://polymarket.com/breaking" target="_blank"><span>PREDICTION OFFERS</span><i class="bx bx-right-arrow-alt"></i></a>
           </div>
         </div>
 
-        <div class="glass-card" id="widget-duties-dock">
+        <div class="glass-card" id="widget-top-picks" style="grid-column: 2 / span 1;">
           <div class="card-header">
-            <span style="color: #fdba74;"><i class="bx bx-time"></i> LIVE TIME-SLOT DUTIES</span>
-            <div class="actions"><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-duties-dock')"></i></div>
+            <span style="color: #fca5a5;"><i class="bx bxs-flame"></i> TOP PICKS</span>
+            <div class="actions">
+              <i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-top-picks')"></i>
+            </div>
           </div>
-          <div id="liveDutyContent" style="display: flex; flex-direction: column; gap: 8px;">
-            <div style="text-align:center; padding:15px;"><i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#38bdf8;"></i></div>
+          <div class="top-picks-filter-bar">
+            <button class="boost-filter-btn active" id="btn-boost-eng.1" onclick="filterTopPicks('eng.1', this)">EPL</button>
+            <button class="boost-filter-btn" id="btn-boost-esp.1" onclick="filterTopPicks('esp.1', this)">LA LIGA</button>
+            <button class="boost-filter-btn" id="btn-boost-uefa.champions" onclick="filterTopPicks('uefa.champions', this)">UEFA</button>
+            <button class="boost-filter-btn" id="btn-boost-ger.1" onclick="filterTopPicks('ger.1', this)">BUND</button>
+          </div>
+          <div id="topPicksContainer" class="top-picks-grid-row compact">
+            <div style="text-align:center; padding:15px; width:100%;"><i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#38bdf8;"></i></div>
           </div>
         </div>
 
-        <div class="glass-card" id="widget-games-dock">
-          <div class="card-header">
-            <span style="color: #7dd3fc;"><i class="bx bx-play-circle"></i> TOP GAMES (DAILY MATCHDAY)</span>
-            <div class="actions"><span>FLASHSCORE</span><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-games-dock')"></i></div>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="glass-card" id="widget-duties-dock">
+            <div class="card-header">
+              <span style="color: #fdba74;"><i class="bx bx-time"></i> TIME-SLOT DUTIES</span>
+              <div class="actions">
+                <select id="traderFilterDropdown" onchange="filterDuties()" class="trader-dropdown">
+                  <option value="ALL">All Traders</option>
+                  <option value="ANN">Ann</option>
+                  <option value="DAVE">Dave</option>
+                  <option value="KEN">Ken</option>
+                  <option value="KRIZTEL">Kriztel</option>
+                </select>
+                <i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-duties-dock')"></i>
+              </div>
+            </div>
+            <div id="liveDutyContent" style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="text-align:center; padding:15px;"><i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#38bdf8;"></i></div>
+            </div>
           </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 10px 14px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.05);">
-            <i class="bx bx-chevron-left" style="cursor: pointer; font-size: 16px;" onclick="navigateMatchDay(-1)"></i>
-            <span id="matchDayDisplay">TODAY (GMT+8)</span>
-            <i class="bx bx-chevron-right" style="cursor: pointer; font-size: 16px;" onclick="navigateMatchDay(1)"></i>
-          </div>
-          <div id="gamesContainer" style="display: flex; flex-direction: column; gap: 10px;">
-            <div style="text-align:center; padding:15px;"><i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#38bdf8;"></i></div>
+
+          <div class="glass-card" id="widget-games-dock">
+            <div class="card-header">
+              <span style="color: #7dd3fc;"><i class="bx bx-play-circle"></i> TOP GAMES</span>
+              <div class="actions"><span>FLASHSCORE</span><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-games-dock')"></i></div>
+            </div>
+            <div class="matchday-nav">
+              <i class="bx bx-chevron-left" onclick="navigateMatchDay(-1)"></i>
+              <span id="matchDayDisplay">TODAY (GMT+8)</span>
+              <i class="bx bx-chevron-right" onclick="navigateMatchDay(1)"></i>
+            </div>
+            <div id="gamesContainer" style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="text-align:center; padding:15px;"><i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#38bdf8;"></i></div>
+            </div>
           </div>
         </div>
 
@@ -508,13 +465,13 @@
     </main>
   </div>
 
+  <!-- HANDOVER MODAL -->
   <div id="handoverModal" class="handover-modal-overlay">
     <div class="handover-modal-card">
       <div class="handover-modal-header">
         <span class="handover-modal-title"><i class="bx bx-alarm-exclamation" style="color: #fde047;"></i> Manage Handovers</span>
         <i class="bx bx-x handover-modal-close" onclick="closeHandoverModal()"></i>
       </div>
-      
       <form onsubmit="addUrgentHandover(event)" class="handover-modal-form">
         <div class="handover-form-group">
           <select id="handoverPriorityInput" class="handover-field select-priority" required>
@@ -527,7 +484,6 @@
           <button type="submit" class="handover-post-btn"><i class="bx bx-plus"></i> Post Note</button>
         </div>
       </form>
-
       <div class="handover-modal-subtitle">ACTIVE HANDOVERS</div>
       <div class="handover-items-list" id="handoverModalList"></div>
     </div>
@@ -588,9 +544,7 @@
 
             return '<div class="jira-pill-item">' +
                      '<span class="jira-pill-brand">' + brandStr + '</span> ' +
-                     '<a href="' + ticketUrl + '" target="_blank" class="jira-pill-key-link">' +
-                       cleanKey +
-                     '</a> ' +
+                     '<a href="' + ticketUrl + '" target="_blank" class="jira-pill-key-link">' + cleanKey + '</a> ' +
                      '<span style="color:rgba(255,255,255,0.2); margin:0 4px;">•</span> ' +
                      '<span class="jira-pill-time">' + timeStr + '</span>' +
                    '</div>';
@@ -654,28 +608,18 @@
         
         var titleText = 'URGENT HANDOVER';
         var titleIcon = 'bx-alarm-exclamation';
-        if (highestPriority === 'Need Attention') {
-          titleText = 'ATTENTION HANDOVER';
-          titleIcon = 'bx-error-circle';
-        } else if (highestPriority === 'Normal') {
-          titleText = 'HANDOVER NOTE';
-          titleIcon = 'bx-info-circle';
-        }
+        if (highestPriority === 'Need Attention') { titleText = 'ATTENTION HANDOVER'; titleIcon = 'bx-error-circle'; } 
+        else if (highestPriority === 'Normal') { titleText = 'HANDOVER NOTE'; titleIcon = 'bx-info-circle'; }
 
         var countHTML = (totalCount >= 2) ? '<span class="handover-count-pill">' + totalCount + '</span>' : '';
-        if (alertBadge) {
-          alertBadge.innerHTML = '<i class="bx ' + titleIcon + '"></i> ' + titleText + countHTML;
-        }
+        if (alertBadge) alertBadge.innerHTML = '<i class="bx ' + titleIcon + '"></i> ' + titleText + countHTML;
 
         var displayItems = [];
         displayItems.push(list[0]);
-
         if (list[0].msg.length <= 120) {
           var accumulatedLength = list[0].msg.length;
           for (var i = 1; i < list.length && i < 3; i++) {
-            if (list[i].msg.length > 120 || accumulatedLength + list[i].msg.length > 240) {
-              break;
-            }
+            if (list[i].msg.length > 120 || accumulatedLength + list[i].msg.length > 240) break;
             displayItems.push(list[i]);
             accumulatedLength += list[i].msg.length;
           }
@@ -685,8 +629,7 @@
           var priorityBadge = getPriorityBadgeHTML(item.priority || 'URGENT/CRITICAL');
           return '<div class="handover-pill-item">' +
                    '<span class="handover-pill-brand">' + item.brand.toUpperCase() + '</span> ' +
-                   priorityBadge + ' ' +
-                   '<span class="handover-pill-msg">' + item.msg + '</span>' +
+                   priorityBadge + ' <span class="handover-pill-msg">' + item.msg + '</span>' +
                  '</div>';
         }).join('');
 
@@ -704,30 +647,17 @@
           modalList.innerHTML = list.map(function(item, idx) {
             var badge = getPriorityBadgeHTML(item.priority || 'URGENT/CRITICAL');
             return '<div class="handover-manage-row">' +
-                     '<div class="handover-manage-left">' +
-                       '<span class="handover-manage-brand">' + item.brand.toUpperCase() + '</span>' +
-                       badge +
-                       '<span class="handover-manage-text">' + item.msg + '</span>' +
-                     '</div>' +
-                     '<button type="button" class="handover-delete-btn" onclick="deleteUrgentHandover(' + idx + ')">' +
-                       '<i class="bx bx-check"></i> Complete' +
-                     '</button>' +
+                     '<div class="handover-manage-left"><span class="handover-manage-brand">' + item.brand.toUpperCase() + '</span>' +
+                     badge + '<span class="handover-manage-text">' + item.msg + '</span></div>' +
+                     '<button type="button" class="handover-delete-btn" onclick="deleteUrgentHandover(' + idx + ')"><i class="bx bx-check"></i> Complete</button>' +
                    '</div>';
           }).join('');
         }
       }
     }
 
-    function openHandoverModal() {
-      var modal = document.getElementById('handoverModal');
-      if (modal) modal.classList.add('show');
-      renderUrgentHandovers();
-    }
-
-    function closeHandoverModal() {
-      var modal = document.getElementById('handoverModal');
-      if (modal) modal.classList.remove('show');
-    }
+    function openHandoverModal() { var modal = document.getElementById('handoverModal'); if (modal) modal.classList.add('show'); renderUrgentHandovers(); }
+    function closeHandoverModal() { var modal = document.getElementById('handoverModal'); if (modal) modal.classList.remove('show'); }
 
     function addUrgentHandover(event) {
       event.preventDefault();
@@ -735,31 +665,20 @@
       var brandEl = document.getElementById('handoverBrandInput');
       var msgEl = document.getElementById('handoverMsgInput');
       if (!brandEl || !msgEl) return;
-
       var priority = priorityEl ? priorityEl.value : 'URGENT/CRITICAL';
       var brand = brandEl.value.trim();
       var msg = msgEl.value.trim();
       if (!brand || !msg) return;
 
       var list = getHandovers();
-      list.unshift({
-        priority: priority,
-        brand: brand,
-        msg: msg,
-        timestamp: new Date().toISOString()
-      });
-
+      list.unshift({ priority: priority, brand: brand, msg: msg, timestamp: new Date().toISOString() });
       saveHandovers(list);
-      brandEl.value = '';
-      msgEl.value = '';
+      brandEl.value = ''; msgEl.value = '';
     }
 
     function deleteUrgentHandover(index) {
       var list = getHandovers();
-      if (index >= 0 && index < list.length) {
-        list.splice(index, 1);
-        saveHandovers(list);
-      }
+      if (index >= 0 && index < list.length) { list.splice(index, 1); saveHandovers(list); }
     }
 
     if (handoverChannel) handoverChannel.onmessage = renderUrgentHandovers;
