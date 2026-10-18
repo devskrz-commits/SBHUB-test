@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SB HUB Workspace</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Apple System Font Stack */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --bg-color: #000000;
+            --sidebar-bg: #0A0A0C;
+            --panel-bg: rgba(28, 28, 30, 0.7);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --text-main: #F5F5F7;
+            --text-muted: #86868B;
+            --glass-blur: blur(20px);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.5);
+            --accent-blue: #0A84FF;
+        }
+
+        body.light-mode {
+            --bg-color: #F5F5F7;
+            --sidebar-bg: #FFFFFF;
+            --panel-bg: rgba(255, 255, 255, 0.7);
+            --panel-border: rgba(0, 0, 0, 0.05);
+            --text-main: #1D1D1F;
+            --text-muted: #86868B;
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.05);
+            --accent-blue: #007AFF;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            background-image: var(--bg-image);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Set Background Images */
+        body { --bg-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url('https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=2564&auto=format&fit=crop'); }
+        body.light-mode { --bg-image: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.8)), url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2564&auto=format&fit=crop'); }
+
+        ::-webkit-scrollbar { width: 0px; height: 0px; }
+        
+        /* Glassmorphism Panels */
+        .glass-panel {
+            background-color: var(--panel-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--panel-border);
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+
+        /* Sidebar Setup */
+        .sidebar-container {
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--panel-border);
+            transition: width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .sub-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .sub-menu.open { max-height: 400px; }
+
+        /* Segmented Control (Filters) */
+        .segmented-control {
+            background-color: rgba(118, 118, 128, 0.24);
+            border-radius: 9px;
+            padding: 2px;
+            display: inline-flex;
+        }
+        .segment-btn {
+            border-radius: 7px;
+            padding: 4px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+        .segment-btn.active {
+            background-color: var(--bg-color);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);
+        }
+
+        /* Search Dropdown */
+        .search-dropdown {
+            background-color: var(--panel-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--panel-border);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Modals */
+        .modal-overlay { 
+            background-color: rgba(0,0,0,0.4);
+            backdrop-filter: blur(5px);
+        }
+
+        .widget-item {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar-container w-20 flex-shrink-0 flex flex-col h-full z-30 absolute md:relative">
+        <div class="h-20 flex items-center justify-center px-4 border-b border-[var(--panel-border)]">
+            <button id="toggle-sidebar" class="w-10 h-10 flex items-center justify-center rounded-xl bg-[var(--accent-blue)] text-white">
+                <i data-lucide="layers" class="w-5 h-5"></i>
+            </button>
+            <span id="sidebar-logo-text" class="ml-3 font-semibold text-lg tracking-wide hidden whitespace-nowrap">SB HUB</span>
+        </div>
+
+        <div class="flex-1 overflow-y-auto px-3 py-4 space-y-1 pb-24">
+            
+            <a href="#" class="flex items-center px-3 py-3 rounded-xl bg-[var(--accent-blue)] text-white mb-2">
+                <i data-lucide="layout-grid" class="w-5 h-5 min-w-[20px]"></i>
+                <span class="sidebar-text ml-4 font-medium text-sm hidden whitespace-nowrap">Workspace</span>
+            </a>
+
+            <!-- Internal -->
+            <div>
+                <button class="w-full flex items-center px-3 py-3 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--panel-border)] transition-colors" onclick="toggleMenu('menu-internal', this, true)">
+                    <i data-lucide="home" class="w-5 h-5 min-w-[20px] text-indigo-500"></i>
+                    <span class="sidebar-text ml-4 font-medium text-sm flex-1 text-left hidden whitespace-nowrap">Internal</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 sidebar-text hidden transition-transform"></i>
+                </button>
+                <div id="menu-internal" class="sub-menu flex flex-col pl-11 pr-2 space-y-1.5 mt-1">
+                    <a href="duties.html" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">Daily Duty</a>
+                    <a href="rota.html" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">Rota</a>
+                    <a href="https://reliancedigi-my.sharepoint.com/:x:/p/ann/IQCWP022FAMHSY-z3-eV0c9XAWFWLrVAPb9xSCUut_VuZ9U?rtime=BxZTEFXS3kg" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] line-clamp-1">Daily Big Winners</a>
+                    <a href="handover.html" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">Handover</a>
+                </div>
+            </div>
+
+            <!-- Daily Tasks -->
+            <div>
+                <button class="w-full flex items-center px-3 py-3 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--panel-border)] transition-colors" onclick="toggleMenu('menu-tasks', this, true)">
+                    <i data-lucide="check-square" class="w-5 h-5 min-w-[20px] text-orange-500"></i>
+                    <span class="sidebar-text ml-4 font-medium text-sm flex-1 text-left hidden whitespace-nowrap">Daily Tasks</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 sidebar-text hidden transition-transform"></i>
+                </button>
+                <div id="menu-tasks" class="sub-menu flex flex-col pl-11 pr-2 space-y-1.5 mt-1">
+                    <a href="boostschedule.html" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">Top Picks</a>
+                    <a href="https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit?gid=1450723096#gid=1450723096" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">Edge Boost (MIG)</a>
+                    <a href="https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit?gid=784209986#gid=784209986" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">Ibet Boost (MIG)</a>
+                    <a href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">KT Sports Check</a>
+                    <a href="https://polymarket.com/breaking" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">Prediction Offer Check</a>
+                </div>
+            </div>
+
+            <!-- Monitoring -->
+            <div>
+                <button class="w-full flex items-center px-3 py-3 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--panel-border)] transition-colors" onclick="toggleMenu('menu-monitoring', this, true)">
+                    <i data-lucide="activity" class="w-5 h-5 min-w-[20px] text-green-500"></i>
+                    <span class="sidebar-text ml-4 font-medium text-sm flex-1 text-left hidden whitespace-nowrap">Monitoring</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 sidebar-text hidden transition-transform"></i>
+                </button>
+                <div id="menu-monitoring" class="sub-menu flex flex-col pl-11 pr-2 space-y-1.5 mt-1">
+                    <a href="https://docs.google.com/spreadsheets/d/1qruVq-HZCyM0uDgnYSqFhccXKnMkqJ8z/edit?gid=1305147410#gid=1305147410" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">Green Tracker</a>
+                    <a href="https://docs.google.com/spreadsheets/d/1OcaMz_AOUeRsWIVplbnk2XAna62m3IKa/edit?gid=457800468#gid=457800468" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">Red Tracker</a>
+                    <a href="https://docs.google.com/spreadsheets/d/1U-Dmc628kHQabzJGoBeEgRus5PiRhgSd/edit?pli=1&gid=1983372695#gid=1983372695" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">Orange Tracker</a>
+                    <a href="#7a" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">7A Tracker</a>
+                </div>
+            </div>
+
+            <!-- Back Office -->
+            <div>
+                <button class="w-full flex items-center px-3 py-3 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--panel-border)] transition-colors" onclick="toggleMenu('menu-integration', this, true)">
+                    <i data-lucide="briefcase" class="w-5 h-5 min-w-[20px] text-red-500"></i>
+                    <span class="sidebar-text ml-4 font-medium text-sm flex-1 text-left hidden whitespace-nowrap">Back Office</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 sidebar-text hidden transition-transform"></i>
+                </button>
+                <div id="menu-integration" class="sub-menu flex flex-col pl-11 pr-2 space-y-1.5 mt-1">
+                    <a href="https://betbook.center/qbet/bets" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">QBET/55/30</a>
+                    <a href="https://mga-betbook.center/ibet/bets" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">IBET</a>
+                    <a href="https://eu-b7k.center/pubs8/bets" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">PUBS</a>
+                </div>
+            </div>
+            
+            <!-- Betradar -->
+            <div>
+                <button class="w-full flex items-center px-3 py-3 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--panel-border)] transition-colors" onclick="toggleMenu('menu-betradar', this, true)">
+                    <i data-lucide="globe" class="w-5 h-5 min-w-[20px] text-teal-500"></i>
+                    <span class="sidebar-text ml-4 font-medium text-sm flex-1 text-left hidden whitespace-nowrap">Betradar</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 sidebar-text hidden transition-transform"></i>
+                </button>
+                <div id="menu-betradar" class="sub-menu flex flex-col pl-11 pr-2 space-y-1.5 mt-1">
+                    <a href="https://mtsc-its.betradar.com/" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">MTS</a>
+                    <a href="https://portal.betradar.com/" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">CTRL Portal</a>
+                </div>
+            </div>
+
+            <!-- RESTORED: Own Brands -->
+            <div>
+                <button class="w-full flex items-center px-3 py-3 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--panel-border)] transition-colors" onclick="toggleMenu('menu-brands', this, true)">
+                    <i data-lucide="hexagon" class="w-5 h-5 min-w-[20px] text-purple-400"></i>
+                    <span class="sidebar-text ml-4 font-medium text-sm flex-1 text-left hidden whitespace-nowrap">Own Brands</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 sidebar-text hidden transition-transform"></i>
+                </button>
+                <div id="menu-brands" class="sub-menu flex flex-col pl-11 pr-2 space-y-1.5 mt-1">
+                    <a href="https://www.7abet.com/en-UN" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">7A</a>
+                    <a href="https://www.qbet.com/en-UN" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">QBET</a>
+                    <a href="https://www.55bet.com/en-UN" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">55BET</a>
+                    <a href="https://www.30bet.com/en-UN" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">30BET</a>
+                    <a href="https://www.gqbet.vip/en-UN/" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">GQBET</a>
+                    <a href="https://www.bvbet.com/en-UN" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">BVBET</a>
+                    <a href="https://www.ibet.com/en-UN/sportsbook/price-boost/football" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">IBET Sportsbook</a>
+                </div>
+            </div>
+
+            <!-- Prices -->
+            <div>
+                <button class="w-full flex items-center px-3 py-3 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--panel-border)] transition-colors" onclick="toggleMenu('menu-prices', this, true)">
+                    <i data-lucide="coins" class="w-5 h-5 min-w-[20px] text-emerald-500"></i>
+                    <span class="sidebar-text ml-4 font-medium text-sm flex-1 text-left hidden whitespace-nowrap">Prices</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 sidebar-text hidden transition-transform"></i>
+                </button>
+                <div id="menu-prices" class="sub-menu flex flex-col pl-11 pr-2 space-y-1.5 mt-1">
+                    <a href="https://www.flashscore.com/" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">Flashscore</a>
+                    <a href="https://www.oddsportal.com/football/" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">Oddsportal</a>
+                    <a href="https://www.bet365.com/" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">Bet365</a>
+                    <a href="https://www.pinnacle.com/" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">Pinnacle</a>
+                </div>
+            </div>
+
+            <!-- RESTORED: Procedures -->
+            <div>
+                <button class="w-full flex items-center px-3 py-3 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--panel-border)] transition-colors" onclick="toggleMenu('menu-procedures', this, true)">
+                    <i data-lucide="book-open" class="w-5 h-5 min-w-[20px] text-pink-400"></i>
+                    <span class="sidebar-text ml-4 font-medium text-sm flex-1 text-left hidden whitespace-nowrap">Procedures</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 sidebar-text hidden transition-transform"></i>
+                </button>
+                <div id="menu-procedures" class="sub-menu flex flex-col pl-11 pr-2 space-y-1.5 mt-1">
+                    <a href="https://ibet.atlassian.net/wiki/spaces/Sportsbook/overview" target="_blank" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">Confluence</a>
+                    <a href="workspace.html" class="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)]">Workspace Guide</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 w-full p-4 bg-[var(--sidebar-bg)] border-t border-[var(--panel-border)]">
+            <button class="w-full flex items-center justify-center p-3 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors">
+                <i data-lucide="log-out" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN WORKSPACE -->
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden">
+        
+        <!-- Top Navigation -->
+        <header class="h-20 flex items-center justify-between px-8 shrink-0 relative z-20">
+            <!-- Left Side: Date -->
+            <div class="flex flex-col">
+                <span class="text-[var(--text-muted)] text-xs font-semibold tracking-wider uppercase mb-0.5" id="current-date"></span>
+                <h1 class="text-2xl font-bold tracking-tight">Workspace</h1>
+            </div>
+            
+            <!-- Right Side: Tools -->
+            <div class="flex items-center space-x-4">
+                
+                <!-- FIX: Functional Search -->
+                <div class="relative hidden md:block z-50">
+                    <input type="text" id="search-input" oninput="handleSearch(this)" placeholder="Search resources..." class="bg-[var(--panel-bg)] backdrop-blur-md text-sm rounded-full pl-10 pr-4 py-2 border border-[var(--panel-border)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)] w-56 transition-all shadow-sm">
+                    <i data-lucide="search" class="absolute left-3.5 top-2.5 w-4 h-4 text-[var(--text-muted)]"></i>
+                    
+                    <!-- Search Results Dropdown -->
+                    <div id="search-results" class="hidden absolute top-12 left-0 w-full search-dropdown rounded-2xl overflow-hidden mt-2 p-2">
+                        <div id="no-results" class="text-xs text-[var(--text-muted)] p-3 text-center hidden">No matches found</div>
+                        <a href="boostschedule.html" class="search-item block px-4 py-2 text-sm hover:bg-[var(--panel-border)] rounded-lg transition-colors">Top Picks Schedule</a>
+                        <a href="https://betbook.center/qbet/bets" class="search-item block px-4 py-2 text-sm hover:bg-[var(--panel-border)] rounded-lg transition-colors">QBET BO</a>
+                        <a href="duties.html" class="search-item block px-4 py-2 text-sm hover:bg-[var(--panel-border)] rounded-lg transition-colors">Daily Duty</a>
+                        <a href="rota.html" class="search-item block px-4 py-2 text-sm hover:bg-[var(--panel-border)] rounded-lg transition-colors">Rota Matrix</a>
+                    </div>
+                </div>
+                
+                <!-- Theme Toggle -->
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-[var(--panel-bg)] backdrop-blur-md border border-[var(--panel-border)] flex items-center justify-center hover:bg-[var(--panel-border)] transition-colors shadow-sm">
+                    <i data-lucide="sun" id="theme-icon-light" class="w-4 h-4 text-yellow-500 hidden"></i>
+                    <i data-lucide="moon" id="theme-icon-dark" class="w-4 h-4 text-indigo-400"></i>
+                </button>
+                
+                <!-- Customizer -->
+                <button onclick="toggleCustomizer()" class="w-10 h-10 rounded-full bg-[var(--panel-bg)] backdrop-blur-md border border-[var(--panel-border)] flex items-center justify-center hover:bg-[var(--panel-border)] transition-colors shadow-sm text-[var(--text-main)]">
+                    <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+                </button>
+
+                <!-- Profile -->
+                <div class="w-10 h-10 rounded-full overflow-hidden border border-[var(--panel-border)] shadow-sm cursor-pointer hover:opacity-80 transition-opacity">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Profile" class="w-full h-full object-cover bg-gray-200">
+                </div>
+            </div>
+        </header>
+
+        <!-- Dynamic Filter Bar -->
+        <div class="px-8 pb-4 flex items-center justify-between z-10 shrink-0">
+            <div class="segmented-control">
+                <button class="segment-btn active" onclick="filterWorkspace('all', this)">All Views</button>
+                <button class="segment-btn" onclick="filterWorkspace('operations', this)">Operations</button>
+                <button class="segment-btn" onclick="filterWorkspace('sports', this)">Sports Data</button>
+                <button class="segment-btn" onclick="filterWorkspace('team', this)">Team & Links</button>
+            </div>
+        </div>
+
+        <!-- Scrollable Bento Grid Workspace -->
+        <div class="flex-1 overflow-y-auto px-8 pb-10 pt-2 hide-scroll z-0 relative">
+            <div id="workspace-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
+                
+                <!-- WIDGET: Jira & Handover (Ops) -->
+                <div class="glass-panel p-6 widget-item" data-category="operations" id="widget-jira">
+                    <div class="flex justify-between items-start mb-5">
+                        <div>
+                            <h3 class="font-semibold text-lg flex items-center">
+                                <span class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center mr-3"><i data-lucide="trello" class="w-4 h-4"></i></span>
+                                Operations Alerts
+                            </h3>
+                        </div>
+                        <button onclick="openModal('alert-modal')" class="text-xs font-semibold bg-[var(--accent-blue)] text-white px-3 py-1.5 rounded-full shadow-md hover:opacity-90">
+                            + New Alert
+                        </button>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="bg-[var(--bg-color)]/50 p-4 rounded-2xl border border-[var(--panel-border)] border-l-4 border-l-red-500">
+                            <div class="flex justify-between text-xs text-[var(--text-muted)] mb-1"><span>SB-1042</span> <span>10:30 AM</span></div>
+                            <div class="text-sm font-medium">Check odds mapping for Premier League API update.</div>
+                        </div>
+                        <div class="bg-[var(--bg-color)]/50 p-4 rounded-2xl border border-[var(--panel-border)] border-l-4 border-l-yellow-500">
+                            <div class="flex justify-between text-xs text-[var(--text-muted)] mb-1"><span>Handover • Shift 1</span> <span>Ann</span></div>
+                            <div class="text-sm font-medium">Edge boost applied to top 5 matches.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WIDGET: Top Picks (Sports) -->
+                <div class="glass-panel p-6 widget-item" data-category="sports" id="widget-picks">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-semibold text-lg flex items-center">
+                            <span class="w-8 h-8 rounded-full bg-orange-500/20 text-orange-500 flex items-center justify-center mr-3"><i data-lucide="flame" class="w-4 h-4"></i></span>
+                            Hot Boosts
+                        </h3>
+                        <!-- FIX: Functional Expand Button -->
+                        <button onclick="openHotBoostExpanded()" class="p-1.5 rounded-full bg-[var(--bg-color)]/50 text-[var(--text-muted)] hover:text-[var(--text-main)]">
+                            <i data-lucide="maximize-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="bg-[var(--bg-color)]/50 p-4 rounded-2xl border border-[var(--panel-border)] flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-[var(--text-muted)]">EPL (eng.1) • Today</span>
+                                <h4 class="font-semibold text-[var(--text-main)] mt-0.5">Arsenal vs Chelsea</h4>
+                            </div>
+                            <span class="bg-green-500/20 text-green-500 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Boosted</span>
+                        </div>
+                        <div class="bg-[var(--bg-color)]/50 p-4 rounded-2xl border border-[var(--panel-border)] flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-[var(--text-muted)]">EPL (eng.1) • Tomorrow</span>
+                                <h4 class="font-semibold text-[var(--text-main)] mt-0.5">Man City vs Liverpool</h4>
+                            </div>
+                            <span class="bg-[var(--panel-border)] text-[var(--text-muted)] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Pending</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WIDGET: Daily Matchday (Sports - FIX: ESPN API Parse) -->
+                <div class="glass-panel p-6 widget-item flex flex-col" data-category="sports" id="widget-matchday">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-semibold text-lg flex items-center">
+                            <span class="w-8 h-8 rounded-full bg-yellow-500/20 text-yellow-500 flex items-center justify-center mr-3"><i data-lucide="trophy" class="w-4 h-4"></i></span>
+                            Matchday
+                        </h3>
+                        <div class="flex space-x-1">
+                            <button onclick="fetchMatchdayData()" title="Refresh API" class="w-7 h-7 rounded-full bg-[var(--bg-color)]/50 flex items-center justify-center hover:bg-[var(--panel-border)]"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Match Container injected by JS -->
+                    <div id="matchday-container" class="flex-1 overflow-y-auto space-y-3 hide-scroll">
+                        <div class="text-sm text-[var(--text-muted)] text-center py-4 flex flex-col items-center">
+                            <i data-lucide="loader-2" class="w-6 h-6 animate-spin mb-2"></i>
+                            Loading ESPN API...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WIDGET: Slot Duties (Team) -->
+                <div class="glass-panel p-6 widget-item" data-category="team" id="widget-staff">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-semibold text-lg flex items-center">
+                            <span class="w-8 h-8 rounded-full bg-purple-500/20 text-purple-500 flex items-center justify-center mr-3"><i data-lucide="users" class="w-4 h-4"></i></span>
+                            Slot Duties
+                        </h3>
+                        <!-- FIX: Restored Filter Dropdown -->
+                        <div class="relative">
+                            <select class="appearance-none bg-[var(--bg-color)]/50 text-xs border border-[var(--panel-border)] rounded-full pl-3 pr-8 py-1.5 outline-none cursor-pointer">
+                                <option class="bg-[var(--sidebar-bg)] text-[var(--text-main)]">All Traders</option>
+                                <option class="bg-[var(--sidebar-bg)] text-[var(--text-main)]">ANN</option>
+                                <option class="bg-[var(--sidebar-bg)] text-[var(--text-main)]">DAVE</option>
+                                <option class="bg-[var(--sidebar-bg)] text-[var(--text-main)]">KRIZTEL</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="absolute right-2.5 top-1.5 w-3.5 h-3.5 text-[var(--text-muted)] pointer-events-none"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between p-3 rounded-xl hover:bg-[var(--bg-color)]/30 transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-pink-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs">AN</div>
+                                <div>
+                                    <p class="font-semibold text-sm">ANN</p>
+                                    <p class="text-xs text-[var(--text-muted)]">08:00 - 16:00</p>
+                                </div>
+                            </div>
+                            <span class="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-xl hover:bg-[var(--bg-color)]/30 transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xs">DA</div>
+                                <div>
+                                    <p class="font-semibold text-sm">DAVE</p>
+                                    <p class="text-xs text-[var(--text-muted)]">16:00 - 00:00</p>
+                                </div>
+                            </div>
+                            <span class="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-xl hover:bg-[var(--bg-color)]/30 transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-xs">KR</div>
+                                <div>
+                                    <p class="font-semibold text-sm">KRIZTEL</p>
+                                    <p class="text-xs text-[var(--text-muted)]">00:00 - 08:00</p>
+                                </div>
+                            </div>
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WIDGET: Brand Directory (Team) -->
+                <div class="glass-panel p-6 widget-item" data-category="team" id="widget-brands">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-semibold text-lg flex items-center">
+                            <span class="w-8 h-8 rounded-full bg-pink-500/20 text-pink-500 flex items-center justify-center mr-3"><i data-lucide="layout-grid" class="w-4 h-4"></i></span>
+                            Brand Directory
+                        </h3>
+                    </div>
+                    
+                    <!-- FIX: Restored Brand Tabs Instead of Grid -->
+                    <div class="flex bg-[var(--panel-border)] p-1 rounded-xl mb-4">
+                        <button onclick="switchBrandTab('ibet')" id="tab-brand-ibet" class="brand-tab flex-1 py-1.5 text-xs font-bold rounded-lg bg-[var(--bg-color)] text-[var(--text-main)] shadow-sm transition-all">IBET</button>
+                        <button onclick="switchBrandTab('edge')" id="tab-brand-edge" class="brand-tab flex-1 py-1.5 text-xs font-bold rounded-lg text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all">EDGE</button>
+                        <button onclick="switchBrandTab('pubs')" id="tab-brand-pubs" class="brand-tab flex-1 py-1.5 text-xs font-bold rounded-lg text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all">PUBS</button>
+                    </div>
+                    
+                    <div id="content-brand-ibet" class="brand-content grid grid-cols-2 gap-3">
+                        <a href="https://mga-betbook.center/ibet/bets" target="_blank" class="flex flex-col items-center justify-center bg-[var(--bg-color)]/50 hover:bg-[var(--panel-border)] border border-[var(--panel-border)] rounded-2xl p-4 transition-all">
+                            <i data-lucide="shield" class="w-6 h-6 text-indigo-400 mb-2"></i><span class="text-[11px] font-semibold text-[var(--text-muted)]">IBET BO</span>
+                        </a>
+                        <a href="https://b2b.betssonbusiness.com/" target="_blank" class="flex flex-col items-center justify-center bg-[var(--bg-color)]/50 hover:bg-[var(--panel-border)] border border-[var(--panel-border)] rounded-2xl p-4 transition-all">
+                            <i data-lucide="server" class="w-6 h-6 text-orange-400 mb-2"></i><span class="text-[11px] font-semibold text-[var(--text-muted)]">Betsson</span>
+                        </a>
+                    </div>
+                    <div id="content-brand-edge" class="brand-content hidden grid grid-cols-2 gap-3">
+                        <a href="https://admin.edgegaming.io/admin/qbet/homepage" target="_blank" class="flex flex-col items-center justify-center bg-[var(--bg-color)]/50 hover:bg-[var(--panel-border)] border border-[var(--panel-border)] rounded-2xl p-4 transition-all">
+                            <i data-lucide="zap" class="w-6 h-6 text-emerald-400 mb-2"></i><span class="text-[11px] font-semibold text-[var(--text-muted)]">Edge Admin</span>
+                        </a>
+                        <a href="https://p2ibet.sbx.bet/bets" target="_blank" class="flex flex-col items-center justify-center bg-[var(--bg-color)]/50 hover:bg-[var(--panel-border)] border border-[var(--panel-border)] rounded-2xl p-4 transition-all">
+                            <i data-lucide="cpu" class="w-6 h-6 text-red-400 mb-2"></i><span class="text-[11px] font-semibold text-[var(--text-muted)]">KT SBX</span>
+                        </a>
+                    </div>
+                    <div id="content-brand-pubs" class="brand-content hidden grid grid-cols-2 gap-3">
+                        <a href="https://gg-backoffice-eu.gogaming.cc/en-US/member/list" target="_blank" class="flex flex-col items-center justify-center bg-[var(--bg-color)]/50 hover:bg-[var(--panel-border)] border border-[var(--panel-border)] rounded-2xl p-4 transition-all">
+                            <i data-lucide="gamepad-2" class="w-6 h-6 text-blue-400 mb-2"></i><span class="text-[11px] font-semibold text-[var(--text-muted)]">Go Gaming</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- WIDGET: Quick Workflows (Ops) -->
+                <div class="glass-panel p-6 widget-item" data-category="operations" id="widget-workflows">
+                    <h3 class="font-semibold text-lg flex items-center mb-5">
+                        <span class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-500 flex items-center justify-center mr-3"><i data-lucide="workflow" class="w-4 h-4"></i></span>
+                        Workflows
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 gap-2.5">
+                        <a href="boostschedule.html" class="flex items-center justify-between bg-[var(--bg-color)]/40 hover:bg-[var(--bg-color)]/70 p-3.5 rounded-xl transition-colors border border-transparent hover:border-[var(--panel-border)]">
+                            <span class="flex items-center text-sm font-medium"><i data-lucide="calendar" class="w-4 h-4 text-cyan-500 mr-3"></i> Top Picks Schedule</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 text-[var(--text-muted)]"></i>
+                        </a>
+                        <a href="https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit" target="_blank" class="flex items-center justify-between bg-[var(--bg-color)]/40 hover:bg-[var(--bg-color)]/70 p-3.5 rounded-xl transition-colors border border-transparent hover:border-[var(--panel-border)]">
+                            <span class="flex items-center text-sm font-medium"><i data-lucide="table" class="w-4 h-4 text-green-500 mr-3"></i> Edge Boost (MIG)</span>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4 text-[var(--text-muted)]"></i>
+                        </a>
+                        <!-- FIX: Added Ibet Boost (MIG) -->
+                        <a href="https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit" target="_blank" class="flex items-center justify-between bg-[var(--bg-color)]/40 hover:bg-[var(--bg-color)]/70 p-3.5 rounded-xl transition-colors border border-transparent hover:border-[var(--panel-border)]">
+                            <span class="flex items-center text-sm font-medium"><i data-lucide="table" class="w-4 h-4 text-green-500 mr-3"></i> Ibet Boost (MIG)</span>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4 text-[var(--text-muted)]"></i>
+                        </a>
+                        <a href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit" target="_blank" class="flex items-center justify-between bg-[var(--bg-color)]/40 hover:bg-[var(--bg-color)]/70 p-3.5 rounded-xl transition-colors border border-transparent hover:border-[var(--panel-border)]">
+                            <span class="flex items-center text-sm font-medium"><i data-lucide="clipboard-check" class="w-4 h-4 text-blue-500 mr-3"></i> KT Sports Check</span>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4 text-[var(--text-muted)]"></i>
+                        </a>
+                        <!-- FIX: Added Prediction Market Check -->
+                        <a href="https://polymarket.com/breaking" target="_blank" class="flex items-center justify-between bg-[var(--bg-color)]/40 hover:bg-[var(--bg-color)]/70 p-3.5 rounded-xl transition-colors border border-transparent hover:border-[var(--panel-border)]">
+                            <span class="flex items-center text-sm font-medium"><i data-lucide="line-chart" class="w-4 h-4 text-purple-500 mr-3"></i> Prediction Market</span>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4 text-[var(--text-muted)]"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- RIGHT SLIDE DRAWER (Widget Settings) -->
+    <div id="settings-drawer" class="fixed right-0 top-0 h-full w-80 glass-panel !rounded-none !border-y-0 !border-r-0 border-l z-50 drawer-closed transition-transform duration-300 flex flex-col shadow-2xl">
+        <div class="p-6 border-b border-[var(--panel-border)] flex justify-between items-center">
+            <h2 class="text-xl font-bold">Customize View</h2>
+            <button onclick="toggleCustomizer()" class="w-8 h-8 rounded-full bg-[var(--bg-color)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)]">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+        <div class="p-6 flex-1 overflow-y-auto space-y-6">
+            <p class="text-sm text-[var(--text-muted)]">Toggle switches below to permanently hide or show panels.</p>
+            <div class="space-y-4">
+                <label class="flex items-center justify-between cursor-pointer">
+                    <span class="font-medium text-sm flex items-center"><i data-lucide="trello" class="w-4 h-4 mr-2 text-blue-500"></i> Ops Alerts</span>
+                    <div class="relative"><input type="checkbox" class="sr-only toggle-checkbox" checked onchange="toggleWidgetVisibility('widget-jira', this)"><div class="block bg-gray-600 w-11 h-6 rounded-full toggle-label transition-colors"><div class="toggle-dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div></div></div>
+                </label>
+                <label class="flex items-center justify-between cursor-pointer">
+                    <span class="font-medium text-sm flex items-center"><i data-lucide="flame" class="w-4 h-4 mr-2 text-orange-500"></i> Hot Boosts</span>
+                    <div class="relative"><input type="checkbox" class="sr-only toggle-checkbox" checked onchange="toggleWidgetVisibility('widget-picks', this)"><div class="block bg-gray-600 w-11 h-6 rounded-full toggle-label transition-colors"><div class="toggle-dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div></div></div>
+                </label>
+                <label class="flex items-center justify-between cursor-pointer">
+                    <span class="font-medium text-sm flex items-center"><i data-lucide="trophy" class="w-4 h-4 mr-2 text-yellow-500"></i> Matchday</span>
+                    <div class="relative"><input type="checkbox" class="sr-only toggle-checkbox" checked onchange="toggleWidgetVisibility('widget-matchday', this)"><div class="block bg-gray-600 w-11 h-6 rounded-full toggle-label transition-colors"><div class="toggle-dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div></div></div>
+                </label>
+                <label class="flex items-center justify-between cursor-pointer">
+                    <span class="font-medium text-sm flex items-center"><i data-lucide="users" class="w-4 h-4 mr-2 text-purple-500"></i> Slot Duties</span>
+                    <div class="relative"><input type="checkbox" class="sr-only toggle-checkbox" checked onchange="toggleWidgetVisibility('widget-staff', this)"><div class="block bg-gray-600 w-11 h-6 rounded-full toggle-label transition-colors"><div class="toggle-dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div></div></div>
+                </label>
+                <label class="flex items-center justify-between cursor-pointer">
+                    <span class="font-medium text-sm flex items-center"><i data-lucide="layout-grid" class="w-4 h-4 mr-2 text-pink-500"></i> Brand Directory</span>
+                    <div class="relative"><input type="checkbox" class="sr-only toggle-checkbox" checked onchange="toggleWidgetVisibility('widget-brands', this)"><div class="block bg-gray-600 w-11 h-6 rounded-full toggle-label transition-colors"><div class="toggle-dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div></div></div>
+                </label>
+                <label class="flex items-center justify-between cursor-pointer">
+                    <span class="font-medium text-sm flex items-center"><i data-lucide="workflow" class="w-4 h-4 mr-2 text-cyan-500"></i> Workflows</span>
+                    <div class="relative"><input type="checkbox" class="sr-only toggle-checkbox" checked onchange="toggleWidgetVisibility('widget-workflows', this)"><div class="block bg-gray-600 w-11 h-6 rounded-full toggle-label transition-colors"><div class="toggle-dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div></div></div>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <!-- Add Alert Modal -->
+    <div id="alert-modal" class="fixed inset-0 z-[100] modal-overlay hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-md p-6 transform scale-95 transition-transform duration-300" id="alert-modal-content">
+            <h2 class="text-xl font-bold mb-4">Create New Alert</h2>
+            <input type="text" placeholder="Jira Ticket (e.g. SB-1042)" class="w-full bg-[var(--bg-color)] border border-[var(--panel-border)] rounded-xl px-4 py-3 mb-4 focus:outline-none focus:border-[var(--accent-blue)]">
+            <textarea placeholder="Description" class="w-full bg-[var(--bg-color)] border border-[var(--panel-border)] rounded-xl px-4 py-3 mb-4 h-24 focus:outline-none focus:border-[var(--accent-blue)]"></textarea>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeModal('alert-modal')" class="px-5 py-2.5 rounded-xl font-medium bg-[var(--bg-color)] hover:bg-[var(--panel-border)]">Cancel</button>
+                <button onclick="closeModal('alert-modal')" class="px-5 py-2.5 rounded-xl font-medium bg-[var(--accent-blue)] text-white shadow-lg">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expand Modal (Dynamically Populated) -->
+    <div id="expand-modal" class="fixed inset-0 z-[100] modal-overlay hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-2xl h-[70vh] p-6 transform scale-95 transition-transform duration-300 flex flex-col" id="expand-modal-content">
+            <!-- Injected via JS -->
+        </div>
+    </div>
+
+    <script>
+        // Init Icons
+        lucide.createIcons();
+        const defaultEspnLogo = "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
+
+        // Date setup
+        const dateOptions = { weekday: 'long', month: 'long', day: 'numeric' };
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions).toUpperCase();
+
+        // ESPN API Match Fetch
+        async function fetchMatchdayData() {
+            const container = document.getElementById('matchday-container');
+            container.innerHTML = `<div class="text-sm text-[var(--text-muted)] text-center py-4 flex flex-col items-center"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mb-2"></i> Fetching ESPN API...</div>`;
+            lucide.createIcons();
+
+            try {
+                // Fetch English Premier League (eng.1) as standard data
+                const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard');
+                const data = await res.json();
+                
+                if (!data.events || data.events.length === 0) {
+                    container.innerHTML = '<div class="text-sm text-[var(--text-muted)] text-center py-4 bg-[var(--bg-color)]/50 rounded-2xl border border-[var(--panel-border)]">No matches scheduled today.</div>';
+                    return;
+                }
+
+                let html = '';
+                // Render top 3 events
+                data.events.slice(0, 3).forEach(event => {
+                    const home = event.competitions[0].competitors.find(c => c.homeAway === 'home');
+                    const away = event.competitions[0].competitors.find(c => c.homeAway === 'away');
+                    const time = new Date(event.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    
+                    html += `
+                    <div class="bg-[var(--bg-color)]/50 p-4 rounded-2xl border border-[var(--panel-border)] relative overflow-hidden group">
+                        <div class="flex justify-between text-[10px] font-bold text-[var(--text-muted)] uppercase mb-3">
+                            <span>${data.leagues[0].name}</span> <span>${time}</span>
+                        </div>
+                        <div class="flex justify-between items-center font-bold text-[var(--text-main)] text-sm">
+                            <span class="flex-1 text-left flex items-center gap-2">
+                                <img src="${home.team.logo || defaultEspnLogo}" class="w-6 h-6 object-contain bg-white rounded-full p-0.5">
+                                <span class="truncate">${home.team.shortDisplayName}</span>
+                            </span>
+                            <span class="text-[10px] font-bold text-[var(--text-muted)] bg-[var(--panel-border)] px-2.5 py-1 rounded-full mx-2 uppercase border border-[var(--panel-border)] shadow-inner">${event.status.type.shortDetail}</span>
+                            <span class="flex-1 text-right flex items-center justify-end gap-2">
+                                <span class="truncate">${away.team.shortDisplayName}</span>
+                                <img src="${away.team.logo || defaultEspnLogo}" class="w-6 h-6 object-contain bg-white rounded-full p-0.5">
+                            </span>
+                        </div>
+                    </div>`;
+                });
+                container.innerHTML = html;
+            } catch(e) {
+                console.error(e);
+                container.innerHTML = '<div class="text-sm text-red-400 text-center py-4 bg-[var(--bg-color)]/50 rounded-2xl border border-[var(--panel-border)]">Failed to load data. Please try again.</div>';
+            }
+        }
+        
+        // Fetch on Load
+        document.addEventListener('DOMContentLoaded', fetchMatchdayData);
+
+        // Sidebar & Menu Toggle
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggle-sidebar');
+        const sidebarTexts = document.querySelectorAll('.sidebar-text');
+        
+        toggleBtn.addEventListener('click', () => {
+            if(!sidebar.classList.contains('w-20')) {
+                sidebar.classList.remove('w-64');
+                sidebar.classList.add('w-20');
+                sidebarTexts.forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll('.sub-menu').forEach(menu => {
+                    menu.classList.remove('open');
+                    const chevron = menu.previousElementSibling.querySelector('[data-lucide="chevron-down"]');
+                    if(chevron) chevron.style.transform = 'rotate(0deg)';
+                });
+            } else {
+                sidebar.classList.remove('w-20');
+                sidebar.classList.add('w-64');
+                setTimeout(() => { sidebarTexts.forEach(el => el.classList.remove('hidden')); }, 150);
+            }
+        });
+
+        function toggleMenu(menuId, btnElement, autoExpand = false) {
+            if(autoExpand && sidebar.classList.contains('w-20')) {
+                toggleBtn.click();
+                setTimeout(() => toggleMenu(menuId, btnElement, false), 250);
+                return;
+            }
+            const menu = document.getElementById(menuId);
+            const chevron = btnElement.querySelector('[data-lucide="chevron-down"]');
+            if (menu.classList.contains('open')) {
+                menu.classList.remove('open');
+                chevron.style.transform = 'rotate(0deg)';
+            } else {
+                menu.classList.add('open');
+                chevron.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Search Bar Functionality
+        function handleSearch(el) {
+            const val = el.value.toLowerCase();
+            const resultsBox = document.getElementById('search-results');
+            const items = resultsBox.querySelectorAll('.search-item');
+            const noResults = document.getElementById('no-results');
+            
+            if(val.length > 0) {
+                resultsBox.classList.remove('hidden');
+                let found = false;
+                items.forEach(item => {
+                    if(item.innerText.toLowerCase().includes(val)) {
+                        item.style.display = 'block';
+                        found = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                noResults.style.display = found ? 'none' : 'block';
+            } else {
+                resultsBox.classList.add('hidden');
+            }
+        }
+
+        // Hide search dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if(!e.target.closest('#search-input') && !e.target.closest('#search-results')) {
+                document.getElementById('search-results').classList.add('hidden');
+            }
+        });
+
+        // Brand Tab Switcher
+        function switchBrandTab(tabId) {
+            document.querySelectorAll('.brand-tab').forEach(tab => {
+                tab.classList.remove('bg-[var(--bg-color)]', 'text-[var(--text-main)]', 'shadow-sm');
+                tab.classList.add('text-[var(--text-muted)]');
+            });
+            document.querySelectorAll('.brand-content').forEach(content => content.classList.add('hidden'));
+
+            const activeTab = document.getElementById(`tab-brand-${tabId}`);
+            activeTab.classList.remove('text-[var(--text-muted)]');
+            activeTab.classList.add('bg-[var(--bg-color)]', 'text-[var(--text-main)]', 'shadow-sm');
+            document.getElementById(`content-brand-${tabId}`).classList.remove('hidden');
+        }
+
+        // Expand Modal Content Injector for Hot Boost
+        function openHotBoostExpanded() {
+            const content = document.getElementById('expand-modal-content');
+            content.innerHTML = `
+                <div class="flex justify-between items-center mb-6 border-b border-[var(--panel-border)] pb-4">
+                    <h2 class="text-2xl font-bold flex items-center">
+                        <i data-lucide="flame" class="w-6 h-6 mr-3 text-orange-500"></i> Expanded Hot Boosts Database
+                    </h2>
+                    <button onclick="closeModal('expand-modal')" class="w-8 h-8 rounded-full bg-[var(--bg-color)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)]">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <div class="flex-1 overflow-y-auto space-y-3 hide-scroll">
+                    <div class="bg-[var(--bg-color)]/50 p-4 rounded-2xl border border-[var(--panel-border)] flex items-center justify-between">
+                        <div><span class="text-xs font-bold text-[var(--text-muted)]">EPL (eng.1) • Today, 20:00</span><h4 class="font-semibold text-lg mt-0.5">Arsenal vs Chelsea</h4></div>
+                        <span class="bg-green-500/20 text-green-500 text-xs font-bold px-3 py-1.5 rounded-full uppercase">Boost Active</span>
+                    </div>
+                    <div class="bg-[var(--bg-color)]/50 p-4 rounded-2xl border border-[var(--panel-border)] flex items-center justify-between">
+                        <div><span class="text-xs font-bold text-[var(--text-muted)]">EPL (eng.1) • Tomorrow, 18:30</span><h4 class="font-semibold text-lg mt-0.5">Man City vs Liverpool</h4></div>
+                        <span class="bg-[var(--panel-border)] text-[var(--text-muted)] text-xs font-bold px-3 py-1.5 rounded-full uppercase">Pending Review</span>
+                    </div>
+                    <div class="bg-[var(--bg-color)]/50 p-4 rounded-2xl border border-[var(--panel-border)] flex items-center justify-between">
+                        <div><span class="text-xs font-bold text-[var(--text-muted)]">LA LIGA (esp.1) • Saturday, 21:00</span><h4 class="font-semibold text-lg mt-0.5">Real Madrid vs Barcelona</h4></div>
+                        <span class="bg-yellow-500/20 text-yellow-500 text-xs font-bold px-3 py-1.5 rounded-full uppercase">Requested</span>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+            openModal('expand-modal');
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('light-mode');
+            const isLight = body.classList.contains('light-mode');
+            document.getElementById('theme-icon-light').classList.toggle('hidden', !isLight);
+            document.getElementById('theme-icon-dark').classList.toggle('hidden', isLight);
+        }
+
+        // Modals Management
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            const content = document.getElementById(id + '-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            const content = document.getElementById(id + '-content');
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        // Segmented Control Filter
+        function filterWorkspace(category, btnElement) {
+            document.querySelectorAll('.segment-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            document.querySelectorAll('.widget-item').forEach(widget => {
+                if (widget.getAttribute('data-hidden') === 'true') {
+                    widget.style.display = 'none';
+                    return;
+                }
+                if (category === 'all' || widget.getAttribute('data-category') === category) {
+                    widget.style.display = 'block';
+                    setTimeout(() => { widget.style.opacity = '1'; widget.style.transform = 'scale(1)'; }, 10);
+                } else {
+                    widget.style.opacity = '0'; 
+                    widget.style.transform = 'scale(0.95)';
+                    setTimeout(() => { widget.style.display = 'none'; }, 300);
+                }
+            });
+        }
+
+        // Customizer Drawer Settings
+        function toggleCustomizer() {
+            document.getElementById('settings-drawer').classList.toggle('drawer-closed');
+        }
+
+        function toggleWidgetVisibility(widgetId, checkbox) {
+            const widget = document.getElementById(widgetId);
+            if(checkbox.checked) {
+                widget.setAttribute('data-hidden', 'false');
+                widget.style.display = 'block';
+                setTimeout(() => { widget.style.opacity = '1'; widget.style.transform = 'scale(1)'; }, 10);
+            } else {
+                widget.setAttribute('data-hidden', 'true');
+                widget.style.opacity = '0'; 
+                widget.style.transform = 'scale(0.95)';
+                setTimeout(() => { widget.style.display = 'none'; }, 300);
+            }
+        }
+    </script>
+</body>
+</html>
