@@ -11,8 +11,6 @@
     --accent: #000000;
     --glass-border: rgba(255, 255, 255, 0.6);
     --inner-card-bg: rgba(255, 255, 255, 0.85);
-    
-    /* Native Grayscale 3D Fluid Background */
     --body-bg: url("https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=2564&auto=format&fit=crop");
 }
 
@@ -628,9 +626,9 @@ body {
     background: var(--inner-card-bg);
     border: 1px solid var(--glass-border);
     border-radius: 8px;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    padding: 2px 6px;
+    padding: 3px 8px;
     color: var(--text-main);
     outline: none;
     cursor: pointer;
@@ -801,6 +799,16 @@ body {
     cursor: pointer;
 }
 
+/* Modal Expand Styles */
+.expand-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
 /* --- MODALS --- */
 .modal-overlay {
     display: none;
@@ -837,6 +845,7 @@ body {
     margin-bottom: 1.2rem;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     letter-spacing: -0.5px;
 }
 
