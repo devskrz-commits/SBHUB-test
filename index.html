@@ -13,20 +13,19 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=17.0.0">
+  <link rel="stylesheet" href="./styles.css?v=18.0.0">
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <script src="./app.js?v=17.0.0" defer></script>
+  <script src="./app.js?v=18.0.0" defer></script>
 </head>
 <body id="pageBody">
 
   <canvas id="bgCanvas"></canvas>
 
-  <!-- AUTHENTICATION OVERLAY -->
   <div id="authOverlay">
     <div class="login-container">
       <div class="sitting-robot-stage" id="sittingRobotStage">
@@ -50,16 +49,16 @@
         <div class="login-subtitle">SPORTSBOOK HUB OPERATIONAL PORTAL</div>
         <form class="login-input-group" onsubmit="handleLogin(event)">
           <div class="field-wrapper">
-            <label class="login-label" for="usernameInput">Username or email</label>
-            <input type="text" id="usernameInput" class="login-input" value="sportsbook2026" required autocomplete="username">
+            <label class="login-label">Username</label>
+            <input type="text" id="usernameInput" class="login-input" value="sportsbook2026" required>
           </div>
           <div class="field-wrapper">
             <div class="field-label-row">
-              <label class="login-label" for="passwordInput">Security Key</label>
+              <label class="login-label">Security Key</label>
               <a href="#forgot" class="forgot-link">Forgot key?</a>
             </div>
             <div class="password-field-wrap">
-              <input type="password" id="passwordInput" class="login-input" placeholder="Enter password" required autocomplete="current-password">
+              <input type="password" id="passwordInput" class="login-input" placeholder="Enter password" required>
               <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility()"><i class="bx bx-show" id="togglePassIcon"></i></button>
             </div>
           </div>
@@ -83,23 +82,23 @@
     </div>
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar(false)"></div>
 
-    <!-- ORIGINAL LEFT SIDEBAR -->
+    <!-- LEFT SIDEBAR -->
     <aside class="sidebar" id="mainSidebar">
       <div class="sidebar-menu-scroll">
         <div class="sidebar-header">
-          <span>SPORTSBOOK HUB</span>
+          <span class="hide-on-collapse">SPORTSBOOK HUB</span>
           <button type="button" class="mobile-sidebar-close" onclick="toggleMobileSidebar(false)"><i class="bx bx-x"></i></button>
         </div>
 
-        <div class="search-box">
+        <div class="search-box hide-on-collapse">
           <i class="bx bx-search" style="font-size: 14px;"></i>
-          <input type="text" placeholder="Search categories & links...">
+          <input type="text" placeholder="Search categories...">
         </div>
 
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-internal', this)">
-            <div class="nav-main-left"><div class="icon-badge icon-internal"><i class="bx bx-home-alt"></i></div><span>INTERNAL</span></div>
-            <i class="bx bx-chevron-down toggle-icon"></i>
+            <div class="nav-main-left"><div class="icon-badge icon-internal"><i class="bx bx-home-alt"></i></div><span class="hide-on-collapse">INTERNAL</span></div>
+            <i class="bx bx-chevron-down toggle-icon hide-on-collapse"></i>
           </div>
           <div class="sub-menu collapsed" id="sub-internal">
             <a class="nav-sub-btn searchable-link" href="duties.html" target="_blank"><span>DAILY DUTY</span><i class="bx bx-right-arrow-alt"></i></a>
@@ -111,8 +110,8 @@
 
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-dailytask', this)">
-            <div class="nav-main-left"><div class="icon-badge icon-tasks"><i class="bx bx-task"></i></div><span>DAILY TASKS</span></div>
-            <i class="bx bx-chevron-down toggle-icon"></i>
+            <div class="nav-main-left"><div class="icon-badge icon-tasks"><i class="bx bx-task"></i></div><span class="hide-on-collapse">DAILY TASKS</span></div>
+            <i class="bx bx-chevron-down toggle-icon hide-on-collapse"></i>
           </div>
           <div class="sub-menu collapsed" id="sub-dailytask">
             <a class="nav-sub-btn searchable-link" href="boostschedule.html" target="_blank"><span>TOP PICKS</span><i class="bx bx-right-arrow-alt"></i></a>
@@ -127,8 +126,8 @@
 
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-dailymonitoring', this)">
-            <div class="nav-main-left"><div class="icon-badge icon-monitor"><i class="bx bx-line-chart"></i></div><span>DAILY MONITORING</span></div>
-            <i class="bx bx-chevron-down toggle-icon"></i>
+            <div class="nav-main-left"><div class="icon-badge icon-monitor"><i class="bx bx-line-chart"></i></div><span class="hide-on-collapse">MONITORING</span></div>
+            <i class="bx bx-chevron-down toggle-icon hide-on-collapse"></i>
           </div>
           <div class="sub-menu collapsed" id="sub-dailymonitoring">
             <a class="nav-sub-btn searchable-link" href="https://docs.google.com/spreadsheets/d/1qruVq-HZCyM0uDgnYSqFhccXKnMkqJ8z/edit?gid=1305147410#gid=1305147410" target="_blank"><span>GREEN TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
@@ -142,8 +141,8 @@
 
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-backoffice', this)">
-            <div class="nav-main-left"><div class="icon-badge icon-back"><i class="bx bx-briefcase-alt-2"></i></div><span>BACK OFFICE</span></div>
-            <i class="bx bx-chevron-down toggle-icon"></i>
+            <div class="nav-main-left"><div class="icon-badge icon-back"><i class="bx bx-briefcase-alt-2"></i></div><span class="hide-on-collapse">BACK OFFICE</span></div>
+            <i class="bx bx-chevron-down toggle-icon hide-on-collapse"></i>
           </div>
           <div class="sub-menu collapsed" id="sub-backoffice">
             <a class="nav-sub-btn searchable-link" href="https://betbook.center/qbet/bets" target="_blank"><span>QBET/55/30</span><i class="bx bx-right-arrow-alt"></i></a>
@@ -153,9 +152,33 @@
         </div>
 
         <div class="nav-group">
+          <div class="nav-main-btn" onclick="toggleMenu('sub-multimonitor', this)">
+            <div class="nav-main-left"><div class="icon-badge icon-multi"><i class="bx bx-desktop"></i></div><span class="hide-on-collapse">MONITOR</span></div>
+            <i class="bx bx-chevron-down toggle-icon hide-on-collapse"></i>
+          </div>
+          <div class="sub-menu collapsed" id="sub-multimonitor">
+            <a class="nav-sub-btn searchable-link" href="https://betbook.center/monitor?providerIds=prediction_markets" target="_blank"><span>EDGE TICKER</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn searchable-link" href="https://eu-b7k.center/monitor?providerIds=prediction_markets" target="_blank"><span>PUBS TICKER</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn searchable-link" href="https://betbook.center/monitor" target="_blank"><span>QBET REJECTED</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn searchable-link" href="https://eu-b7k.center/monitor" target="_blank"><span>PUBS REJECTED</span><i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-main-btn" onclick="toggleMenu('sub-betradar', this)">
+            <div class="nav-main-left"><div class="icon-badge icon-radar"><i class="bx bx-radar"></i></div><span class="hide-on-collapse">BETRADAR</span></div>
+            <i class="bx bx-chevron-down toggle-icon hide-on-collapse"></i>
+          </div>
+          <div class="sub-menu collapsed" id="sub-betradar">
+            <a class="nav-sub-btn searchable-link" href="https://mtsc-its.betradar.com/" target="_blank"><span>MTS</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn searchable-link" href="https://portal.betradar.com/" target="_blank"><span>CTRL PORTAL</span><i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+        </div>
+
+        <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-ownbrands', this)">
-            <div class="nav-main-left"><div class="icon-badge icon-brands"><i class="bx bx-layer"></i></div><span>OWN BRANDS</span></div>
-            <i class="bx bx-chevron-down toggle-icon"></i>
+            <div class="nav-main-left"><div class="icon-badge icon-brands"><i class="bx bx-layer"></i></div><span class="hide-on-collapse">BRANDS</span></div>
+            <i class="bx bx-chevron-down toggle-icon hide-on-collapse"></i>
           </div>
           <div class="sub-menu collapsed" id="sub-ownbrands">
             <a class="nav-sub-btn searchable-link" href="https://www.7abet.com/en-UN" target="_blank"><span>7A</span><i class="bx bx-right-arrow-alt"></i></a>
@@ -170,8 +193,8 @@
 
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-priceref', this)">
-            <div class="nav-main-left"><div class="icon-badge icon-price"><i class="bx bx-data"></i></div><span>PRICE REFERENCES</span></div>
-            <i class="bx bx-chevron-down toggle-icon"></i>
+            <div class="nav-main-left"><div class="icon-badge icon-price"><i class="bx bx-data"></i></div><span class="hide-on-collapse">REFS</span></div>
+            <i class="bx bx-chevron-down toggle-icon hide-on-collapse"></i>
           </div>
           <div class="sub-menu collapsed" id="sub-priceref">
             <a class="nav-sub-btn searchable-link" href="https://www.flashscore.com/" target="_blank"><span>FLASHSCORE</span><i class="bx bx-right-arrow-alt"></i></a>
@@ -182,10 +205,14 @@
             <a class="nav-sub-btn searchable-link" href="https://www.bet365.com/" target="_blank"><span>BET365</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="nav-sub-btn searchable-link" href="https://www.pinnacle.com/" target="_blank"><span>PINNACLE</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="nav-sub-btn searchable-link" href="https://gg.bet/" target="_blank"><span>GGBET</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn searchable-link" href="https://www.unibet.com.au/" target="_blank"><span>UNIBET</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn searchable-link" href="https://www.sofascore.com/" target="_blank"><span>SOFASCORE</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn searchable-link" href="https://www.marathonbet.com/" target="_blank"><span>MARATHONBET</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn searchable-link" href="https://fonbet.com/" target="_blank"><span>FONBET</span><i class="bx bx-right-arrow-alt"></i></a>
           </div>
         </div>
 
-        <div class="sidebar-quick-dock">
+        <div class="sidebar-quick-dock hide-on-collapse">
           <div class="quick-dock-title"><i class="bx bx-rocket"></i> QUICK LAUNCH</div>
           <a href="https://claude.ai" target="_blank" class="quick-launch-btn">
             <div class="btn-left"><div class="icon-badge icon-claude"><i class="bx bx-bot"></i></div><span>Claude AI</span></div>
@@ -199,64 +226,75 @@
       </div>
 
       <div class="sidebar-admin-footer">
-        <div class="admin-top-pill">
+        <div class="admin-top-pill" onclick="handleLogout()">
           <div class="avatar-circle">AD</div>
-          <span class="user-title">Admin</span>
-          <button class="logout-action-btn" type="button" onclick="handleLogout()"><i class="bx bx-log-out"></i> Lock</button>
+          <span class="user-title hide-on-collapse">Admin</span>
+          <button class="logout-action-btn hide-on-collapse" type="button" title="Lock Session"><i class="bx bx-log-out"></i></button>
         </div>
       </div>
     </aside>
 
-    <!-- WRAPPER TO HOLD CENTER WORKSPACE AND RIGHT SIDEBAR -->
-    <div class="app-wrapper">
+    <!-- WRAPPER: Ensures Layout Fits Screen & Prevents Overlaps -->
+    <div class="app-layout">
       
-      <!-- ORIGINAL CENTER WORKSPACE -->
+      <!-- CENTER CONTENT -->
       <main class="main-workspace">
         
-        <!-- ALERTS BANNER -->
-        <div class="alerts-container">
+        <!-- ALERTS AREA -->
+        <div class="alerts-area">
+          <div id="jiraAlertBanner" class="jira-static-alert-banner">
+            <div class="jira-alert-badge"><i class="bx bx-error-circle"></i> PENDING JIRA (&gt;24H)</div>
+            <div class="jira-ticket-pills-container" id="jiraPillsContainer"></div>
+            <a href="jira.html" target="_blank" class="jira-pill-key-link">View Tracker <i class="bx bx-right-arrow-alt"></i></a>
+          </div>
+
           <div id="urgentHandoverBanner" class="urgent-handover-banner active">
             <div class="handover-header-row">
               <div class="handover-alert-badge" id="handoverAlertBadge"><i class="bx bx-alarm-exclamation"></i> URGENT HANDOVER</div>
-              <button type="button" class="handover-manage-btn" onclick="openHandoverModal()"><i class="bx bx-plus-circle"></i> Manage Notes</button>
+              <button type="button" class="handover-manage-btn" onclick="openHandoverModal()"><i class="bx bx-plus"></i> Manage</button>
             </div>
             <div class="handover-pills-container" id="handoverPillsContainer"></div>
           </div>
         </div>
 
-        <!-- ORIGINAL 3-COLUMN GRID -->
+        <!-- 3-COLUMN ORIGINAL GRID -->
         <div class="dashboard-grid">
           
           <!-- COLUMN 1: BRAND DIRECTORY & DAILY TASKS -->
-          <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 24px;">
             <div class="glass-card" id="widget-brand-dock">
               <div class="card-header">
-                <span style="color: #f59e0b;"><i class="bx bx-pin"></i> BRAND DIRECTORY DOCK</span>
+                <span style="color: #fcd34d;"><i class="bx bx-pin"></i> BRAND DIRECTORY</span>
+                <div class="actions"><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-brand-dock')"></i></div>
               </div>
               <div class="tab-pills">
                 <div class="tab-pill active" id="tab-ibet" onclick="switchBrandTab('ibet')">IBET</div>
                 <div class="tab-pill" id="tab-edge" onclick="switchBrandTab('edge')">EDGE</div>
                 <div class="tab-pill" id="tab-pubs" onclick="switchBrandTab('pubs')">PUBS</div>
               </div>
-              <div id="brandLinksContainer" style="display: flex; flex-direction: column; gap: 10px;"></div>
+              <div id="brandLinksContainer" class="widget-scroll-area"></div>
             </div>
 
-            <div class="glass-card" id="widget-task-dock">
+            <div class="glass-card full-height" id="widget-task-dock">
               <div class="card-header">
-                <span style="color: #ef4444;"><i class="bx bx-list-ul"></i> DAILY TASK DOCK</span>
+                <span style="color: #fca5a5;"><i class="bx bx-list-ul"></i> DAILY TASKS</span>
+                <div class="actions"><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-task-dock')"></i></div>
               </div>
-              <a class="action-row" href="boostschedule.html" target="_blank"><span>TOP PICKS (SCHEDULE)</span><i class="bx bx-right-arrow-alt"></i></a>
-              <a class="action-row" href="https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit?gid=1450723096#gid=1450723096" target="_blank"><span>EDGE BOOST (MIG)</span><i class="bx bx-right-arrow-alt"></i></a>
-              <a class="action-row" href="https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit?gid=784209986#gid=784209986" target="_blank"><span>IBET BOOST (MIG)</span><i class="bx bx-right-arrow-alt"></i></a>
-              <a class="action-row" href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank"><span>KT SPORTS CHECK</span><i class="bx bx-right-arrow-alt"></i></a>
-              <a class="action-row" href="https://polymarket.com/breaking" target="_blank"><span>PREDICTION OFFER CHECK</span><i class="bx bx-right-arrow-alt"></i></a>
+              <div class="widget-scroll-area">
+                <a class="action-row" href="boostschedule.html" target="_blank"><span>TOP PICKS (SCHEDULE)</span><i class="bx bx-right-arrow-alt"></i></a>
+                <a class="action-row" href="https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit?gid=1450723096#gid=1450723096" target="_blank"><span>EDGE BOOST (MIG)</span><i class="bx bx-right-arrow-alt"></i></a>
+                <a class="action-row" href="https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit?gid=784209986#gid=784209986" target="_blank"><span>IBET BOOST (MIG)</span><i class="bx bx-right-arrow-alt"></i></a>
+                <a class="action-row" href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank"><span>KT SPORTS CHECK</span><i class="bx bx-right-arrow-alt"></i></a>
+                <a class="action-row" href="https://polymarket.com/breaking" target="_blank"><span>PREDICTION OFFERS</span><i class="bx bx-right-arrow-alt"></i></a>
+              </div>
             </div>
           </div>
 
           <!-- COLUMN 2: TOP PICKS -->
-          <div class="glass-card" id="widget-top-picks" style="padding-bottom:10px;">
+          <div class="glass-card full-height" id="widget-top-picks">
             <div class="card-header">
-              <span style="color: #ff4d4d; display: flex; align-items: center; gap: 8px;"><i class="bx bxs-flame" style="font-size: 18px;"></i> TOP PICKS</span>
+              <span style="color: #ff4d4d; display: flex; align-items: center; gap: 8px;"><i class="bx bxs-flame" style="font-size: 16px;"></i> TOP PICKS</span>
+              <div class="actions"><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-top-picks')"></i></div>
             </div>
             <div class="top-picks-filter-bar">
               <button class="boost-filter-btn active" id="btn-boost-eng.1" onclick="filterTopPicks('eng.1', this)">EPL</button>
@@ -272,34 +310,37 @@
           </div>
 
           <!-- COLUMN 3: DUTIES & GAMES -->
-          <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 24px;">
             <div class="glass-card" id="widget-duties-dock">
               <div class="card-header">
                 <span style="color: #f97316;"><i class="bx bx-time"></i> TIME-SLOT DUTIES</span>
-                <select id="traderFilterDropdown" onchange="filterDuties()" class="trader-dropdown">
-                  <option value="ALL">All Traders</option>
-                  <option value="ANN">Ann</option>
-                  <option value="DAVE">Dave</option>
-                  <option value="KEN">Ken</option>
-                  <option value="KRIZTEL">Kriztel</option>
-                </select>
+                <div class="actions">
+                  <select id="traderFilterDropdown" onchange="filterDuties()" class="trader-dropdown">
+                    <option value="ALL">All Traders</option>
+                    <option value="ANN">Ann</option>
+                    <option value="DAVE">Dave</option>
+                    <option value="KEN">Ken</option>
+                    <option value="KRIZTEL">Kriztel</option>
+                  </select>
+                  <i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-duties-dock')"></i>
+                </div>
               </div>
-              <div id="liveDutyContent" style="display: flex; flex-direction: column; gap: 8px;">
+              <div id="liveDutyContent" class="widget-scroll-area" style="max-height:160px;">
                 <div style="text-align:center; padding:15px;"><i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#38bdf8;"></i></div>
               </div>
             </div>
 
-            <div class="glass-card" id="widget-games-dock">
+            <div class="glass-card full-height" id="widget-games-dock">
               <div class="card-header">
                 <span style="color: #38bdf8;"><i class="bx bx-play-circle"></i> TOP GAMES</span>
-                <div class="actions"><span>FLASHSCORE</span></div>
+                <div class="actions"><span>FLASHSCORE</span><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-games-dock')"></i></div>
               </div>
               <div class="matchday-nav">
                 <i class="bx bx-chevron-left" onclick="navigateMatchDay(-1)"></i>
-                <span id="matchDayDisplay">TODAY (OCT 18)</span>
+                <span id="matchDayDisplay">TODAY</span>
                 <i class="bx bx-chevron-right" onclick="navigateMatchDay(1)"></i>
               </div>
-              <div id="gamesContainer" style="display: flex; flex-direction: column; gap: 10px;">
+              <div id="gamesContainer" class="widget-scroll-area">
                 <div style="text-align:center; padding:15px;"><i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#38bdf8;"></i></div>
               </div>
             </div>
@@ -308,82 +349,76 @@
         </div>
       </main>
 
-      <!-- NEW RIGHT SIDEBAR (UTILITIES, CLOCKS, REMINDERS) -->
+      <!-- RIGHT SIDEBAR (THE YELLOW BOX AREA) -->
       <aside class="right-sidebar">
         
-        <!-- TOP UTILITIES CARD -->
-        <div class="glass-card util-panel-card">
-          <!-- Row 1: Create, Search, Notifications, Profile -->
-          <div class="util-top-row">
-            <button class="utility-btn create-btn" onclick="openCreateTaskModal()"><i class="bx bx-plus"></i> Create</button>
-            
-            <div class="utility-search-container">
-              <i class="bx bx-search search-icon"></i>
-              <input type="text" id="globalSearchInput" class="utility-search-input" placeholder="Search..." oninput="handleGlobalSearch(this.value)">
-              <div class="search-results-dropdown" id="searchResultsDropdown"></div>
-            </div>
-            
-            <div class="dropdown-container">
-              <button class="utility-btn icon-only" onclick="toggleDropdown('notificationMenu')">
-                <i class="bx bx-bell"></i>
-                <span class="notification-badge" id="notificationBadge" style="display:none;">0</span>
-              </button>
-              <div class="dropdown-menu right-aligned" id="notificationMenu" style="width: 260px;">
-                <div class="dropdown-section-title">KICKING OFF SOON (< 2 HOURS)</div>
-                <div id="notificationList" style="display:flex; flex-direction:column; gap:4px; max-height:250px; overflow-y:auto;">
-                  <div style="padding:10px; font-size:10px; opacity:0.6; text-align:center;">No upcoming matches.</div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="dropdown-container">
-              <button class="utility-btn profile-btn" onclick="toggleDropdown('profileMenu')">
-                <img src="https://ui-avatars.com/api/?name=AD&background=38bdf8&color=fff" alt="Profile" class="profile-avatar">
-              </button>
-              <div class="dropdown-menu right-aligned" id="profileMenu" style="width: 240px;">
-                <div style="padding: 10px; display:flex; align-items:center; gap:10px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:6px;">
-                  <img src="https://ui-avatars.com/api/?name=AD&background=38bdf8&color=fff" alt="Profile" style="width:36px; height:36px; border-radius:50%;">
-                  <div>
-                    <div style="font-size:12px; font-weight:800; color:#fff;">Admin User</div>
-                    <div style="font-size:10px; color:rgba(255,255,255,0.6);">sportsbook2026</div>
-                  </div>
-                </div>
-                
-                <div class="dropdown-section-title">TIMEZONE SETTINGS</div>
-                <div style="padding: 4px 8px;">
-                  <select id="userTimezoneSelect" class="settings-select" onchange="updatePrimaryTimezone(this.value)">
-                    <option value="Asia/Singapore">Asia/Manila (GMT+8)</option>
-                    <option value="Europe/Berlin">Europe/Berlin (CET)</option>
-                    <option value="Europe/London">Europe/London (GMT)</option>
-                    <option value="Europe/Athens">Europe/Athens (GMT+2)</option>
-                    <option value="America/New_York">America/New_York (EST)</option>
-                  </select>
-                </div>
-                
-                <div class="dropdown-section-title" style="margin-top:8px;">WIDGETS</div>
-                <label class="menu-option"><span>Top Picks</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-top-picks', this.checked)"></label>
-                <label class="menu-option"><span>Brands</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-brand-dock', this.checked)"></label>
-                <label class="menu-option"><span>Daily Tasks</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-task-dock', this.checked)"></label>
-                <label class="menu-option"><span>Duties</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-duties-dock', this.checked)"></label>
-                <label class="menu-option"><span>Games</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-games-dock', this.checked)"></label>
-
-                <div class="dropdown-section-title" style="margin-top:8px;">THEMES</div>
-                <button class="menu-option" type="button" onclick="setGradient('plain-slate')"><span>Dark Slate</span><span class="color-dot" style="background: #0f172a;"></span></button>
-                <button class="menu-option" type="button" onclick="setGradient('3d-chrome-swirl')"><span>Glossy Obsidian</span><span class="color-dot" style="background: radial-gradient(circle, #f97316, #0f172a);"></span></button>
-                <button class="menu-option" type="button" onclick="setGradient('cyan-liquid-glass')"><span>Cyan Liquid</span><span class="color-dot" style="background: radial-gradient(circle, #06b6d4, #083344);"></span></button>
-                <button class="menu-option" type="button" onclick="setGradient('deep-liquid-chrome')"><span>Chrome Blue</span><span class="color-dot" style="background: linear-gradient(135deg, #1e293b, #3b82f6);"></span></button>
+        <!-- TOP UTILITY BAR (Create, Search, Notifications, Profile) -->
+        <div class="top-utility-bar">
+          <button class="utility-btn create-btn" onclick="openCreateTaskModal()">
+            <i class="bx bx-plus"></i> Create
+          </button>
+          
+          <div class="utility-search-container">
+            <i class="bx bx-search search-icon"></i>
+            <input type="text" id="globalSearchInput" class="utility-search-input" placeholder="Search..." oninput="handleGlobalSearch(this.value)">
+            <div class="search-results-dropdown" id="searchResultsDropdown"></div>
+          </div>
+          
+          <div class="dropdown-container">
+            <button class="utility-btn icon-only" onclick="toggleDropdown('notificationMenu')">
+              <i class="bx bx-bell"></i>
+              <span class="notification-badge" id="notificationBadge" style="display:none;">0</span>
+            </button>
+            <div class="dropdown-menu right-aligned" id="notificationMenu" style="width: 260px;">
+              <div class="dropdown-section-title">KICKING OFF SOON (< 2 HOURS)</div>
+              <div id="notificationList" class="widget-scroll-area" style="max-height:250px;">
+                <div style="padding:10px; font-size:10px; opacity:0.6; text-align:center;">No upcoming matches.</div>
               </div>
             </div>
           </div>
+          
+          <div class="dropdown-container">
+            <button class="utility-btn profile-btn" onclick="toggleDropdown('profileMenu')">
+              <img src="https://ui-avatars.com/api/?name=AD&background=38bdf8&color=fff" alt="Profile" class="profile-avatar">
+            </button>
+            <div class="dropdown-menu right-aligned" id="profileMenu" style="width: 240px;">
+              <div style="padding: 10px; display:flex; align-items:center; gap:10px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:6px;">
+                <img src="https://ui-avatars.com/api/?name=AD&background=38bdf8&color=fff" alt="Profile" style="width:36px; height:36px; border-radius:50%;">
+                <div>
+                  <div style="font-size:12px; font-weight:800; color:#fff;">Admin User</div>
+                  <div style="font-size:10px; color:rgba(255,255,255,0.6);">sportsbook2026</div>
+                </div>
+              </div>
+              <div class="dropdown-section-title">TIMEZONE SETTINGS</div>
+              <div style="padding: 4px 8px;">
+                <select id="userTimezoneSelect" class="settings-select" onchange="updatePrimaryTimezone(this.value)">
+                  <option value="Asia/Singapore">Asia/Manila (GMT+8)</option>
+                  <option value="Europe/Berlin">Europe/Berlin (CET)</option>
+                  <option value="Europe/London">Europe/London (GMT)</option>
+                  <option value="Europe/Athens">Europe/Athens (GMT+2)</option>
+                  <option value="America/New_York">America/New_York (EST)</option>
+                </select>
+              </div>
+              
+              <div style="border-top:1px solid rgba(255,255,255,0.1); margin-top:8px; padding-top:4px;">
+                <button class="menu-option" style="color:#f87171;" type="button" onclick="handleLogout()">
+                  <i class="bx bx-log-out"></i> <span>Lock Session</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          <!-- Row 2: Clocks -->
+        <!-- CLOCKS, WEATHER & THEMES BUTTON (Restored) -->
+        <div class="glass-card util-panel-card">
+          <!-- Row 1: Clocks -->
           <div class="world-clocks">
             <div class="clock-badge"><span class="clock-label" id="lbl-clock-primary">GMT+8</span><span class="clock-time" id="clock-primary">00:00:00</span></div>
             <div class="clock-badge"><span class="clock-label">CET</span><span class="clock-time" id="clock-cet">00:00:00</span></div>
             <div class="clock-badge"><span class="clock-label">GMT+2</span><span class="clock-time" id="clock-gmt2">00:00:00</span></div>
           </div>
 
-          <!-- Row 3: Weather -->
+          <!-- Row 2: Weather -->
           <div class="weather-mini">
             <div style="display:flex; align-items:center; gap:8px;">
               <i class="bx bx-cloud" id="weatherIcon" style="font-size: 20px; color: #f59e0b;"></i>
@@ -392,21 +427,45 @@
             <span id="weatherCond" style="font-size: 10px; font-weight:700; color:rgba(255,255,255,0.7); text-transform:uppercase;">LOADING...</span>
           </div>
 
-          <!-- Row 4: Jira & Active Traders -->
-          <div class="util-bottom-row">
+          <!-- Row 3: Action Buttons Grid -->
+          <div class="right-buttons-grid">
             <a href="jira.html" target="_blank" class="command-btn"><i class="bx bx-task"></i> Jira</a>
-            <div class="command-btn" style="background: rgba(56, 189, 248, 0.15); border-color: rgba(56, 189, 248, 0.4); pointer-events: none; flex:1; justify-content:center;">
+            
+            <div class="dropdown-container">
+              <button class="command-btn" type="button" onclick="toggleDropdown('widgetMenu')" style="width:100%; justify-content:center;"><i class="bx bx-slider-alt"></i> Widgets</button>
+              <div class="dropdown-menu right-aligned" id="widgetMenu">
+                <label class="menu-option"><span>Top Picks</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-top-picks', this.checked)"></label>
+                <label class="menu-option"><span>Brands</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-brand-dock', this.checked)"></label>
+                <label class="menu-option"><span>Daily Tasks</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-task-dock', this.checked)"></label>
+                <label class="menu-option"><span>Duties</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-duties-dock', this.checked)"></label>
+                <label class="menu-option"><span>Games</span><input type="checkbox" class="widget-checkbox" checked onchange="toggleWidget('widget-games-dock', this.checked)"></label>
+              </div>
+            </div>
+
+            <!-- RESTORED THEMES BUTTON -->
+            <div class="dropdown-container">
+              <button class="command-btn" type="button" onclick="toggleDropdown('themeMenuDirect')" style="width:100%; justify-content:center;"><i class="bx bx-palette"></i> Theme</button>
+              <div class="dropdown-menu right-aligned" id="themeMenuDirect" style="width:200px;">
+                <div class="dropdown-section-title">THEMES</div>
+                <button class="menu-option" type="button" onclick="setGradient('plain-slate')"><span>Dark Slate</span><span class="color-dot" style="background: #0f172a;"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('3d-chrome-swirl')"><span>Glossy Obsidian</span><span class="color-dot" style="background: radial-gradient(circle, #f97316, #0f172a);"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('cyan-liquid-glass')"><span>Cyan Liquid</span><span class="color-dot" style="background: radial-gradient(circle, #06b6d4, #083344);"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('deep-liquid-chrome')"><span>Chrome Blue</span><span class="color-dot" style="background: linear-gradient(135deg, #1e293b, #3b82f6);"></span></button>
+              </div>
+            </div>
+
+            <div class="command-btn" style="background: rgba(56, 189, 248, 0.15); border-color: rgba(56, 189, 248, 0.4); pointer-events: none; justify-content:center;">
               <i class="bx bx-user-check" style="color: #38bdf8;"></i> <span id="activeTraderCount" style="font-weight:800;">0 Working</span>
             </div>
           </div>
         </div>
 
-        <!-- REMINDERS (Empty space fill) -->
-        <div class="glass-card" style="flex:1; margin-bottom:20px;">
+        <!-- TASKS & REMINDERS WIDGET (Fills Remaining Space) -->
+        <div class="glass-card full-height" id="widget-reminders">
           <div class="card-header">
             <span style="color: #6ee7b7;"><i class="bx bx-check-square"></i> MY TASKS & REMINDERS</span>
           </div>
-          <div id="remindersContainer" style="display:flex; flex-direction:column; gap:8px; overflow-y:auto;"></div>
+          <div id="remindersContainer" class="widget-scroll-area"></div>
         </div>
 
       </aside>
