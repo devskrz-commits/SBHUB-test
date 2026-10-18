@@ -1,6 +1,6 @@
 const DEFAULT_USER = "sportsbook2026";
 const DEFAULT_PASS = "sb2026";
-const isMobileDevice = () => window.innerWidth <= 950;
+const isMobileDevice = () => window.innerWidth <= 850;
 let rosterDb = null;
 
 try {
@@ -67,7 +67,8 @@ function generateScriptedMarket(homeName, awayName, index) {
     `${homeName} vs ${awayName} - Both Teams to Score`,
     `${homeName} to Win + Have 2+ Goals`,
     `${awayName} to Win or Draw + Over 1.5 Goals`,
-    `${homeName} vs ${awayName} - Both Teams to Score + Over 2.5 Goals`
+    `${homeName} vs ${awayName} - Both Teams to Score + Over 2.5 Goals`,
+    `${homeName} to Win First Half & Over 1.5 Goals`
   ];
   return templates[index % templates.length];
 }
@@ -107,13 +108,13 @@ async function fetchTopPicksAndBoosts() {
   try {
     const now = new Date();
     const seenMatchKeys = new Set();
-    const targetDates = [getFormattedDateQuery(0), getFormattedDateQuery(1), getFormattedDateQuery(2)];
+    const targetDates = [getFormattedDateQuery(0), getFormattedDateQuery(1), getFormattedDateQuery(2), getFormattedDateQuery(3)];
     const fetchPromises = [];
     
     for (const league of PRIORITY_LEAGUES) {
       for (const dateStr of targetDates) {
         fetchPromises.push(
-          fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard?dates=${dateStr}&limit=50`)
+          fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard?dates=${dateStr}&limit=100`)
             .then(res => res.ok ? res.json() : null).then(data => ({ league, data })).catch(() => null)
         );
       }
@@ -166,6 +167,10 @@ function filterTopPicks(leagueKey, btnElement) {
   currentFilterKey = leagueKey;
   document.querySelectorAll('.boost-filter-btn').forEach(btn => btn.classList.remove('active'));
   if (btnElement) btnElement.classList.add('active');
+  else {
+    const defaultBtn = document.getElementById(`btn-boost-${leagueKey}`);
+    if (defaultBtn) defaultBtn.classList.add('active');
+  }
   renderFilteredTopPicks();
 }
 
@@ -173,24 +178,26 @@ function renderFilteredTopPicks() {
   const container = document.getElementById('topPicksContainer');
   if (!container) return;
   const now = new Date();
-  let displayPicks = cachedTopPicks.filter(pick => pick.kickOffTimestamp > now.getTime() && pick.leagueKey === currentFilterKey).slice(0, 10);
+  let displayPicks = cachedTopPicks.filter(pick => pick.kickOffTimestamp > now.getTime() && pick.leagueKey === currentFilterKey).slice(0, 12); // Restored to 12
 
   if (displayPicks.length === 0) {
-    container.innerHTML = `<div style="text-align:center; padding:20px; font-size:11px; font-weight:600; color:rgba(255,255,255,0.5);">No upcoming scheduled matches.</div>`;
+    container.innerHTML = `<div style="text-align:center; padding:25px; width:100%; font-size:12px; font-weight:600; color:rgba(255,255,255,0.65);">No upcoming scheduled matches available.</div>`;
     return;
   }
 
   let cardsHtml = "";
   displayPicks.forEach(pick => {
+    const isTopPick = pick.badge === "TOP PICK";
     cardsHtml += `
-      <div class="boost-card ${pick.badge === 'TOP PICK' ? 'highlight-border' : ''}">
+      <div class="boost-card ${isTopPick ? 'highlight-border' : ''}">
         <div class="flags-row"><img src="${pick.homeLogo}" class="team-flag-img"><img src="${pick.awayLogo}" class="team-flag-img"></div>
         <div class="boost-match-info">
-          <div class="boost-match-title">${pick.homeName} vs ${pick.awayName}</div>
+          <div class="boost-match-title">${pick.homeName} <span class="vs-light">vs</span> ${pick.awayName}</div>
+          <div class="boost-league-sub">${pick.leagueName}</div>
           <div class="boost-market-desc">${pick.market}</div>
         </div>
         <div class="boost-card-bottom">
-          <span class="boost-badge ${pick.badge === 'TOP PICK' ? 'top-pick' : 'hot'}">${pick.badge}</span>
+          <span class="boost-badge ${isTopPick ? 'top-pick' : 'hot'}">${pick.badge}</span>
           <div class="boost-kickoff-pill"><i class='bx bx-time-five'></i> ${pick.kickOff}</div>
         </div>
       </div>`;
@@ -206,13 +213,13 @@ function loadReminders() {
   if(!container) return;
   const list = JSON.parse(localStorage.getItem('sbhub_reminders') || '[]');
   if(list.length === 0){ 
-    container.innerHTML = '<span style="font-size:10px; color:rgba(255,255,255,0.5); padding:4px;">No reminders.</span>'; 
+    container.innerHTML = '<span style="font-size:11px; color:rgba(255,255,255,0.7); padding:4px; text-align:center; display:block; font-weight:600;">No active tasks or reminders.</span>'; 
     return; 
   }
   container.innerHTML = list.map((r, i) => `
     <div class="reminder-item" style="border-left-color:${r.color};">
       <span>${r.title}</span>
-      <i class="bx bx-trash" onclick="deleteReminder(${i})"></i>
+      <i class="bx bx-trash" onclick="deleteReminder(${i})" title="Delete Reminder"></i>
     </div>
   `).join('');
 }
@@ -244,7 +251,7 @@ function handleGlobalSearch(query) {
   const matches = links.filter(l => l.textContent.toLowerCase().includes(lowerQ));
   
   if(matches.length === 0) {
-    dropdown.innerHTML = '<div style="padding:10px; font-size:10px; color:#fff; text-align:center;">No results</div>';
+    dropdown.innerHTML = '<div style="padding:10px; font-size:11px; font-weight:700; color:rgba(255,255,255,0.7); text-align:center;">No results</div>';
   } else {
     dropdown.innerHTML = matches.map(m => `<a href="${m.href}" target="_blank" class="search-result-item"><i class="bx bx-link"></i> ${m.textContent}</a>`).join('');
   }
@@ -280,7 +287,7 @@ function updateNotifications() {
   });
 
   if(soonGames.length === 0) {
-    menu.innerHTML = '<div style="padding:10px; font-size:10px; opacity:0.6; text-align:center;">No upcoming matches within 2 hrs.</div>';
+    menu.innerHTML = '<div style="padding:15px; font-size:11px; font-weight:600; opacity:0.7; text-align:center;">No upcoming matches within 2 hrs.</div>';
     badge.textContent = '0';
     badge.style.display = 'none';
   } else {
@@ -288,8 +295,8 @@ function updateNotifications() {
     badge.style.display = 'block';
     menu.innerHTML = soonGames.map(g => {
       const timeStr = new Intl.DateTimeFormat('en-GB', { timeZone: primaryTimezone, hour:'2-digit', minute:'2-digit' }).format(new Date(g.kickOffTimestamp || g.kickOffTime));
-      return `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.05); font-size:10px; color:#fff;">
-        <strong style="color:#38bdf8;">${timeStr}</strong> - ${g.homeName} vs ${g.awayName}
+      return `<div style="padding:10px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:11px; font-weight:600; color:#fff;">
+        <strong style="color:#38bdf8; margin-right:6px;">${timeStr}</strong> ${g.homeName} vs ${g.awayName}
       </div>`;
     }).join('');
   }
@@ -318,7 +325,7 @@ function updateWorldClocks() {
 }
 setInterval(updateWorldClocks, 1000);
 
-/* API LOGIC (ESPN) */
+/* API LOGIC (ESPN NO MOCKS) */
 function getGMT8DateObj(offsetDays = 0) {
   const now = new Date(new Date().toLocaleString("en-US", { timeZone: primaryTimezone }));
   now.setDate(now.getDate() + offsetDays);
@@ -344,14 +351,14 @@ async function fetchLiveGames() {
     const dateLabelStr = targetDateObj.toLocaleDateString("en-US", { month: 'short', day: 'numeric' }).toUpperCase();
     
     let dayTag = `DAY ${selectedGameDayOffset + 1}`;
-    if (selectedGameDayOffset === 0) dayTag = `TODAY`;
+    if (selectedGameDayOffset === 0) dayTag = `TODAY (${dateLabelStr})`;
 
     const labelEl = document.getElementById("matchDayDisplay");
     if (labelEl) labelEl.textContent = `${dayTag}`;
 
     let matches = await fetchLeagueList(TOP_TIER_LEAGUES, targetDateQuery);
 
-    if (matches.length < 5) {
+    if (matches.length < 10) {
       const secondaryMatches = await fetchLeagueList(SECONDARY_LEAGUES, targetDateQuery);
       const seenMatchKeys = new Set(matches.map(m => `${m.homeName}-${m.awayName}`));
       for (const sm of secondaryMatches) {
@@ -363,16 +370,16 @@ async function fetchLiveGames() {
     cachedLiveGames = matches; 
 
     if (matches.length === 0) {
-      container.innerHTML = `<div style="text-align:center; padding:20px; font-size:11px; color:rgba(255,255,255,0.5);">No scheduled fixtures.</div>`;
+      container.innerHTML = `<div style="text-align:center; padding:20px; font-size:11px; font-weight:700; color:rgba(255,255,255,0.65);">No scheduled fixtures.</div>`;
       updateNotifications();
       return;
     }
 
     let gamesHtml = "";
-    matches.slice(0, 5).forEach(item => {
+    matches.slice(0, 10).forEach(item => { // Restored to 10
       gamesHtml += `
         <div class="top-game-card">
-          <div class="top-game-title">${item.homeName} vs ${item.awayName}</div>
+          <div class="top-game-title">${item.homeName} <span class="vs-light" style="margin:0 4px; font-weight:500; opacity:0.5;">vs</span> ${item.awayName}</div>
           <div class="top-game-league">${item.leagueName}${item.kickOffTimeStr ? ' &bull; <span style="color:#38bdf8;">' + item.kickOffTimeStr + '</span>' : ''}</div>
         </div>
       `;
@@ -387,7 +394,7 @@ async function fetchLiveGames() {
 
 async function fetchLeagueList(leagueList, dateQuery) {
   const fetchPromises = leagueList.map(l =>
-    fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${l.code}/scoreboard?dates=${dateQuery}`)
+    fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${l.code}/scoreboard?dates=${dateQuery}&limit=100`)
       .then(res => res.ok ? res.json() : null).then(data => data ? { code: l.code, defaultName: l.name, data } : null).catch(() => null)
   );
 
@@ -398,7 +405,7 @@ async function fetchLeagueList(leagueList, dateQuery) {
   for (const item of results) {
     if (!item || !item.data || !item.data.events) continue;
     for (const evt of item.data.events) {
-      if (matches.length >= 10) break;
+      if (matches.length >= 15) break;
       const comp = evt.competitions?.[0];
       if (!comp) continue;
 
@@ -441,7 +448,7 @@ function navigateMatchDay(dir) {
   fetchLiveGames();
 }
 
-/* UI HELPERS */
+/* UI LOGIC & TOGGLES */
 function toggleDropdown(menuId) {
   const menu = document.getElementById(menuId);
   const isShowing = menu.classList.contains('show');
@@ -569,6 +576,7 @@ function renderLiveDutyWidget(rosterData) {
   document.getElementById('activeTraderCount').textContent = activeCount + ' Working';
 }
 
+/* WEATHER ENGINE */
 async function fetchManilaWeather() {
   try {
     const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current_weather=true&timezone=Asia%2FManila');
