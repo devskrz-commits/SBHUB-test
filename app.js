@@ -23,6 +23,7 @@ try {
 }
 
 let selectedGameDayOffset = 0;
+let currentTraderFilter = 'ALL'; // Global state for Trader Filter
 
 function toggleMobileSidebar(forceState) {
   const sidebar = document.getElementById('mainSidebar');
@@ -82,10 +83,10 @@ function switchBrandTab(tabName) {
 function generateScriptedMarket(homeName, awayName, index) {
   const templates = [
     `${homeName} to Win + Over 2.5 Goals`,
-    `${homeName} vs ${awayName} - Both Teams to Score`,
+    `${homeName} vs${awayName} - Both Teams to Score`,
     `${homeName} to Win + Have 2+ Goals`,
     `${awayName} to Win or Draw + Over 1.5 Goals`,
-    `${homeName} vs ${awayName} - Both Teams to Score + Over 2.5 Goals`,
+    `${homeName} vs${awayName} - Both Teams to Score + Over 2.5 Goals`,
     `${homeName} to Win First Half & Over 1.5 Goals`
   ];
   return templates[index % templates.length];
@@ -105,9 +106,7 @@ const PRIORITY_LEAGUES = [
 const TOP_TIER_LEAGUES = PRIORITY_LEAGUES;
 const SECONDARY_LEAGUES = [
   { name: "UEFA Nations League", code: "uefa.nations" },
-  { name: "Major League Soccer", code: "usa.1" },
-  { name: "Veikkausliiga", code: "fin.1" },
-  { name: "Eliteserien", code: "nor.1" }
+  { name: "Major League Soccer", code: "usa.1" }
 ];
 
 let cachedTopPicks = [];
@@ -137,13 +136,13 @@ async function fetchTopPicksAndBoosts() {
   try {
     const now = new Date();
     const seenMatchKeys = new Set();
-    const targetDates = ["20261010", "20261011", "20261012", "20261014"];
+    const targetDates = ["20261010", "20261011", "20261012"];
     const fetchPromises = [];
     
     for (const league of PRIORITY_LEAGUES) {
       for (const dateStr of targetDates) {
         fetchPromises.push(
-          fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard?dates=${dateStr}&limit=100`)
+          fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard?dates=${dateStr}&limit=50`)
             .then(res => res.ok ? res.json() : null)
             .then(data => ({ league, data }))
             .catch(() => null)
@@ -228,15 +227,10 @@ async function fetchTopPicksAndBoosts() {
 
 function filterTopPicks(leagueKey, btnElement) {
   currentFilterKey = leagueKey;
-
   document.querySelectorAll('.boost-filter-btn').forEach(btn => btn.classList.remove('active'));
   if (btnElement) {
     btnElement.classList.add('active');
-  } else {
-    const defaultBtn = document.getElementById(`btn-boost-${leagueKey}`);
-    if (defaultBtn) defaultBtn.classList.add('active');
   }
-
   renderFilteredTopPicks();
 }
 
@@ -249,12 +243,11 @@ function renderFilteredTopPicks() {
   let displayPicks = activePicks.filter(pick => pick.leagueKey === currentFilterKey);
 
   if (displayPicks.length === 0) {
-    const categoryLabel = getLeagueDisplayName(currentFilterKey);
-    container.innerHTML = `<div style="text-align:center; padding:25px; width:100%; font-size:12px; font-weight:600; color:rgba(255,255,255,0.5);">No upcoming scheduled ${categoryLabel} matches available.</div>`;
+    container.innerHTML = `<div style="text-align:center; padding:20px; width:100%; font-size:11px; font-weight:600; color:rgba(255,255,255,0.5);">No upcoming scheduled matches available.</div>`;
     return;
   }
 
-  displayPicks = displayPicks.slice(0, 12);
+  displayPicks = displayPicks.slice(0, 10);
 
   let cardsHtml = "";
   displayPicks.forEach(pick => {
@@ -263,22 +256,14 @@ function renderFilteredTopPicks() {
       <div class="boost-card ${isTopPick ? 'highlight-border' : ''}">
         <div class="flags-row">
           <img src="${pick.homeLogo}" alt="${pick.homeName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
-          <span class="vs-text">VS</span>
           <img src="${pick.awayLogo}" alt="${pick.awayName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
         </div>
-        
         <div class="boost-match-info">
-          <div class="boost-match-title">${pick.homeName} <span class="vs-light">vs</span> ${pick.awayName}</div>
-          <div class="boost-league-sub">${pick.leagueName}</div>
+          <div class="boost-match-title">${pick.homeName} vs${pick.awayName}</div>
+          <div class="boost-market-desc">${pick.market}</div>
         </div>
-
-        <div style="text-align:center;">
-          <span class="boost-badge ${isTopPick ? 'top-pick' : 'hot'}">${pick.badge}</span>
-        </div>
-
-        <div class="boost-market-desc">${pick.market}</div>
-
         <div class="boost-card-bottom">
+          <span class="boost-badge ${isTopPick ? 'top-pick' : 'hot'}">${pick.badge}</span>
           <div class="boost-kickoff-pill"><i class='bx bx-time-five'></i> ${pick.kickOff}</div>
         </div>
       </div>
@@ -304,34 +289,26 @@ window.addEventListener('resize', () => {
 });
 
 class Particle {
-  constructor() {
-    this.reset();
-  }
+  constructor() { this.reset(); }
   reset() {
     this.x = Math.random() * width;
     this.y = Math.random() * height;
     this.radius = Math.random() * (isMobileDevice() ? 1.5 : 2) + 1;
-    this.vx = (Math.random() - 0.5) * (isMobileDevice() ? 0.4 : 0.8);
-    this.vy = (Math.random() - 0.5) * (isMobileDevice() ? 0.4 : 0.8);
+    this.vx = (Math.random() - 0.5) * (isMobileDevice() ? 0.3 : 0.6);
+    this.vy = (Math.random() - 0.5) * (isMobileDevice() ? 0.3 : 0.6);
     this.alpha = Math.random() * 0.4 + 0.1;
   }
   update() {
-    this.x += this.vx;
-    this.y += this.vy;
+    this.x += this.vx; this.y += this.vy;
     if (this.x < 0 || this.x > width) this.vx *= -1;
     if (this.y < 0 || this.y > height) this.vy *= -1;
   }
   draw() {
     if (!ctx) return;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(56, 189, 248, ${this.alpha})`;
-    if (!isMobileDevice()) {
-      ctx.shadowBlur = 8;
-      ctx.shadowColor = '#00f2fe';
-    } else {
-      ctx.shadowBlur = 0;
-    }
+    if (!isMobileDevice()) { ctx.shadowBlur = 8; ctx.shadowColor = '#00f2fe'; } 
+    else { ctx.shadowBlur = 0; }
     ctx.fill();
   }
 }
@@ -339,29 +316,24 @@ class Particle {
 function initParticles() {
   if (!canvas) return;
   particles = [];
-  const particleCount = isMobileDevice() ? 15 : 45;
+  const particleCount = isMobileDevice() ? 10 : 30;
   for (let i = 0; i < particleCount; i++) particles.push(new Particle());
 }
-
 resizeCanvas();
 
 function animateCanvas() {
   if (!canvas || !ctx) return;
   ctx.clearRect(0, 0, width, height);
-  particles.forEach(p => {
-    p.update();
-    p.draw();
-  });
+  particles.forEach(p => { p.update(); p.draw(); });
   requestAnimationFrame(animateCanvas);
 }
 if (canvas) animateCanvas();
 
 document.addEventListener('mousemove', (e) => {
   if (isMobileDevice()) return;
-
   const robotStage = document.getElementById('sittingRobotStage');
   const authOverlay = document.getElementById('authOverlay');
-  if (!robotStage || (authOverlay && authOverlay.classList.contains('unlocked'))) return;
+  if (!robotStage || (authOverlay && authOverlay.style.display === 'none')) return;
 
   const leftEye = document.getElementById('leftEye');
   const rightEye = document.getElementById('rightEye');
@@ -381,13 +353,11 @@ document.addEventListener('mousemove', (e) => {
   const eyeY = Math.sin(angle) * eyeDist;
 
   if (leftEye && rightEye) {
-    leftEye.style.transform = `translate(${eyeX}px, ${eyeY}px)`;
-    rightEye.style.transform = `translate(${eyeX}px, ${eyeY}px)`;
+    leftEye.style.transform = `translate(${eyeX}px,${eyeY}px)`;
+    rightEye.style.transform = `translate(${eyeX}px,${eyeY}px)`;
   }
-
   const rotateY = Math.max(-25, Math.min(25, deltaX / 20));
   const rotateX = Math.max(-15, Math.min(15, -deltaY / 25));
-
   if (robotHead) robotHead.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
   if (robotBodyWrapper) robotBodyWrapper.style.transform = `rotateY(${rotateY * 0.3}deg)`;
 });
@@ -412,51 +382,28 @@ updateWorldClocks();
 async function fetchManilaWeather() {
   const tempEl = document.getElementById('weatherTemp');
   const condEl = document.getElementById('weatherCond');
-  const humEl = document.getElementById('weatherHumidity');
-  const windEl = document.getElementById('weatherWind');
   const iconEl = document.getElementById('weatherIcon');
 
   if (!tempEl) return;
-
   try {
-    const url = 'https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current_weather=true&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=Asia%2FManila';
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current_weather=true&timezone=Asia%2FManila';
     const response = await fetch(url);
     if (!response.ok) throw new Error('Network error');
     const data = await response.json();
 
-    let temp, humidity, wind, code;
-
-    if (data && data.current) {
-      temp = Math.round(data.current.temperature_2m ?? data.current_weather?.temperature);
-      humidity = data.current.relative_humidity_2m ?? 56;
-      wind = Math.round(data.current.wind_speed_10m ?? data.current_weather?.windspeed ?? 7);
-      code = data.current.weather_code ?? data.current_weather?.weathercode ?? 3;
-    } else if (data && data.current_weather) {
-      temp = Math.round(data.current_weather.temperature);
-      humidity = 56;
-      wind = Math.round(data.current_weather.windspeed);
-      code = data.current_weather.weathercode;
-    } else {
-      throw new Error('Invalid weather payload');
-    }
-
+    let temp = Math.round(data.current_weather?.temperature ?? 32);
+    let code = data.current_weather?.weathercode ?? 3;
     const weatherMeta = parseWMOWeatherCode(code);
 
     tempEl.textContent = `${temp}°C`;
     if (condEl) condEl.textContent = weatherMeta.label;
-    if (humEl) humEl.textContent = `Humidity: ${humidity}%`;
-    if (windEl) windEl.textContent = `Wind: ${wind} km/h`;
-
     if (iconEl) {
       iconEl.className = `bx ${weatherMeta.icon}`;
       iconEl.style.color = weatherMeta.color;
     }
   } catch (err) {
-    console.warn('Weather fetch fallback triggered:', err);
     tempEl.textContent = '32°C';
     if (condEl) condEl.textContent = 'OVERCAST';
-    if (humEl) humEl.textContent = 'Humidity: 56%';
-    if (windEl) windEl.textContent = 'Wind: 7 km/h';
   }
 }
 
@@ -464,7 +411,6 @@ function parseWMOWeatherCode(code) {
   if (code === 0) return { label: 'CLEAR SKY', icon: 'bx-sun', color: '#f59e0b' };
   if (code === 1 || code === 2) return { label: 'PARTLY CLOUDY', icon: 'bx-cloud-sun', color: '#f59e0b' };
   if (code === 3) return { label: 'OVERCAST', icon: 'bx-cloud', color: '#38bdf8' };
-  if (code >= 45 && code <= 48) return { label: 'FOGGY', icon: 'bx-cloud-fog', color: '#94a3b8' };
   if (code >= 51 && code <= 67) return { label: 'LIGHT RAIN', icon: 'bx-cloud-drizzle', color: '#60a5fa' };
   if (code >= 80 && code <= 82) return { label: 'HEAVY RAIN', icon: 'bx-cloud-showers-heavy', color: '#3b82f6' };
   if (code >= 95) return { label: 'THUNDERSTORM', icon: 'bx-cloud-lightning', color: '#eab308' };
@@ -475,14 +421,8 @@ function togglePasswordVisibility() {
   const passInput = document.getElementById('passwordInput');
   const icon = document.getElementById('togglePassIcon');
   if (!passInput || !icon) return;
-  
-  if (passInput.type === 'password') {
-    passInput.type = 'text';
-    icon.className = 'bx bx-hide';
-  } else {
-    passInput.type = 'password';
-    icon.className = 'bx bx-show';
-  }
+  if (passInput.type === 'password') { passInput.type = 'text'; icon.className = 'bx bx-hide'; } 
+  else { passInput.type = 'password'; icon.className = 'bx bx-show'; }
 }
 
 function handleLogin(event) {
@@ -494,51 +434,33 @@ function handleLogin(event) {
   const userVal = userInput ? userInput.value.trim() : '';
   const passVal = passInput ? passInput.value : '';
   const isRemember = rememberCheckbox ? rememberCheckbox.checked : false;
-
   const errorMsg = document.getElementById('loginErrorMsg');
   const card = document.getElementById('loginCard');
 
   if ((userVal === DEFAULT_USER || userVal === "sportsbookhub") && passVal === DEFAULT_PASS) {
-    if (isRemember) {
-      localStorage.setItem('sbhub_auth', 'true');
-    } else {
-      sessionStorage.setItem('sbhub_auth', 'true');
-    }
+    if (isRemember) localStorage.setItem('sbhub_auth', 'true');
+    else sessionStorage.setItem('sbhub_auth', 'true');
     unlockDashboard();
   } else {
     if (errorMsg) errorMsg.textContent = "ACCESS DENIED: Invalid Security Key";
-    if (card) {
-      card.classList.add('shake');
-      setTimeout(() => {
-        card.classList.remove('shake');
-      }, 500);
-    }
-    if (passInput) {
-      passInput.focus();
-      passInput.select();
-    }
+    if (card) { card.classList.add('shake'); setTimeout(() => card.classList.remove('shake'), 500); }
+    if (passInput) { passInput.focus(); passInput.select(); }
   }
 }
 
 function unlockDashboard() {
-  const authOverlay = document.getElementById('authOverlay');
-  const dashboardApp = document.getElementById('dashboardApp');
-  if (authOverlay) authOverlay.classList.add('unlocked');
-  if (dashboardApp) dashboardApp.classList.add('unlocked');
+  document.documentElement.classList.add('is-authenticated');
 }
 
 function handleLogout() {
   localStorage.removeItem('sbhub_auth');
   sessionStorage.removeItem('sbhub_auth');
-
+  document.documentElement.classList.remove('is-authenticated');
+  
   const passInput = document.getElementById('passwordInput');
   if (passInput) passInput.value = '';
   const errorMsg = document.getElementById('loginErrorMsg');
   if (errorMsg) errorMsg.textContent = '';
-  const dashboardApp = document.getElementById('dashboardApp');
-  const authOverlay = document.getElementById('authOverlay');
-  if (dashboardApp) dashboardApp.classList.remove('unlocked');
-  if (authOverlay) authOverlay.classList.remove('unlocked');
 }
 
 function toggleMenu(menuId, btnElement) {
@@ -548,12 +470,8 @@ function toggleMenu(menuId, btnElement) {
   const isOpen = targetMenu.classList.contains('open');
   const icon = btnElement ? btnElement.querySelector('.toggle-icon') : null;
   
-  document.querySelectorAll('.sub-menu').forEach(menu => {
-    menu.classList.remove('open');
-  });
-  document.querySelectorAll('.toggle-icon').forEach(icn => {
-    icn.style.transform = 'rotate(-90deg)';
-  });
+  document.querySelectorAll('.sub-menu').forEach(menu => menu.classList.remove('open'));
+  document.querySelectorAll('.toggle-icon').forEach(icn => icn.style.transform = 'rotate(-90deg)');
 
   if (!isOpen) {
     targetMenu.classList.add('open');
@@ -569,32 +487,22 @@ function toggleDropdown(menuId) {
 function toggleWidget(widgetId, show) {
   const el = document.getElementById(widgetId);
   if (el) el.style.display = show ? 'flex' : 'none';
-
   const checkbox = document.querySelector(`input[onchange*="${widgetId}"]`);
   if (checkbox) checkbox.checked = show;
-
   try {
     const savedWidgets = JSON.parse(localStorage.getItem('sbhub_widgets') || '{}');
     savedWidgets[widgetId] = show;
     localStorage.setItem('sbhub_widgets', JSON.stringify(savedWidgets));
-  } catch(e) {
-    console.warn("Could not save widget preference:", e);
-  }
+  } catch(e) { console.warn("Could not save widget preference:", e); }
 }
 
-function hideWidgetDirect(widgetId) {
-  toggleWidget(widgetId, false);
-}
+function hideWidgetDirect(widgetId) { toggleWidget(widgetId, false); }
 
 function restoreSavedWidgets() {
   try {
     const savedWidgets = JSON.parse(localStorage.getItem('sbhub_widgets') || '{}');
-    Object.keys(savedWidgets).forEach(widgetId => {
-      toggleWidget(widgetId, savedWidgets[widgetId]);
-    });
-  } catch(e) {
-    console.warn("Could not load widget preferences:", e);
-  }
+    Object.keys(savedWidgets).forEach(widgetId => toggleWidget(widgetId, savedWidgets[widgetId]));
+  } catch(e) { console.warn("Could not load widget preferences:", e); }
 }
 
 const ABSTRACT_WALLPAPERS = {
@@ -612,38 +520,20 @@ function setGradient(theme) {
   let backgroundStyle = '';
 
   const lightThemes = ['plain-daylight', 'plain-sky-light', 'plain-warm-light'];
-  if (lightThemes.includes(theme)) {
-    body.classList.add('light-theme');
-  } else {
-    body.classList.remove('light-theme');
-  }
+  if (lightThemes.includes(theme)) body.classList.add('light-theme');
+  else body.classList.remove('light-theme');
 
-  if (ABSTRACT_WALLPAPERS[theme]) {
-    backgroundStyle = `url("${ABSTRACT_WALLPAPERS[theme]}")`;
-  } else if (typeof theme === 'string' && (theme.startsWith('http') || theme.startsWith('url('))) {
-    backgroundStyle = theme.startsWith('url(') ? theme : `url("${theme}")`;
-  } else {
+  if (ABSTRACT_WALLPAPERS[theme]) backgroundStyle = `url("${ABSTRACT_WALLPAPERS[theme]}")`;
+  else if (typeof theme === 'string' && (theme.startsWith('http') || theme.startsWith('url('))) backgroundStyle = theme.startsWith('url(') ? theme : `url("${theme}")`;
+  else {
     switch(theme) {
-      case 'plain-slate':
-        backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.95)), #0f172a';
-        break;
-      case 'plain-navy':
-        backgroundStyle = 'linear-gradient(rgba(11, 19, 41, 0.95), rgba(11, 19, 41, 0.95)), #0b1329';
-        break;
-      case 'plain-onyx':
-        backgroundStyle = 'linear-gradient(rgba(18, 18, 18, 0.95), rgba(18, 18, 18, 0.95)), #121212';
-        break;
-      case 'plain-daylight':
-        backgroundStyle = 'linear-gradient(rgba(248, 250, 252, 0.95), rgba(248, 250, 252, 0.95)), #f8fafc';
-        break;
-      case 'plain-sky-light':
-        backgroundStyle = 'linear-gradient(rgba(224, 242, 254, 0.95), rgba(224, 242, 254, 0.95)), #e0f2fe';
-        break;
-      case 'plain-warm-light':
-        backgroundStyle = 'linear-gradient(rgba(245, 245, 244, 0.95), rgba(245, 245, 244, 0.95)), #f5f5f4';
-        break;
-      default:
-        backgroundStyle = `url("${ABSTRACT_WALLPAPERS['3d-chrome-swirl']}")`;
+      case 'plain-slate': backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.95)), #0f172a'; break;
+      case 'plain-navy': backgroundStyle = 'linear-gradient(rgba(11, 19, 41, 0.95), rgba(11, 19, 41, 0.95)), #0b1329'; break;
+      case 'plain-onyx': backgroundStyle = 'linear-gradient(rgba(18, 18, 18, 0.95), rgba(18, 18, 18, 0.95)), #121212'; break;
+      case 'plain-daylight': backgroundStyle = 'linear-gradient(rgba(248, 250, 252, 0.95), rgba(248, 250, 252, 0.95)), #f8fafc'; break;
+      case 'plain-sky-light': backgroundStyle = 'linear-gradient(rgba(224, 242, 254, 0.95), rgba(224, 242, 254, 0.95)), #e0f2fe'; break;
+      case 'plain-warm-light': backgroundStyle = 'linear-gradient(rgba(245, 245, 244, 0.95), rgba(245, 245, 244, 0.95)), #f5f5f4'; break;
+      default: backgroundStyle = `url("${ABSTRACT_WALLPAPERS['3d-chrome-swirl']}")`;
     }
   }
 
@@ -651,7 +541,6 @@ function setGradient(theme) {
   body.style.backgroundSize = 'cover';
   body.style.backgroundPosition = 'center';
   body.style.backgroundAttachment = 'fixed';
-  body.style.backgroundRepeat = 'no-repeat';
 
   const themeMenu = document.getElementById('themeMenu');
   if (themeMenu) themeMenu.classList.remove('show');
@@ -675,6 +564,19 @@ function getCurrentSlotInfo() {
   if (hours >= 15 && hours < 18) return { slotId: "slot_15_18", label: "15:00 - 18:00" };
   if (hours >= 18 && hours < 21) return { slotId: "slot_18_21", label: "18:00 - 21:00" };
   return { slotId: "slot_21_0", label: "21:00 - 00:00" };
+}
+
+/* FILTER DUTIES BY TRADER */
+function filterDuties() {
+  const filterDropdown = document.getElementById('traderFilterDropdown');
+  if (filterDropdown) {
+    currentTraderFilter = filterDropdown.value;
+    if (rosterDb) {
+      rosterDb.ref('roster_data').once('value').then(snapshot => {
+        renderLiveDutyWidget(snapshot.val());
+      });
+    }
+  }
 }
 
 function listenToLiveDutyRoster() {
@@ -718,18 +620,20 @@ function renderLiveDutyWidget(rosterData) {
   }
 
   const dayData = rosterData[activeDayKey];
-  const displayDate = dayData.isoDate || dayData.date || todayIso;
-  const teamMembers = [
+  let teamMembers = [
     { id: 'ann', name: 'ANN' }, { id: 'dave', name: 'DAVE' },
     { id: 'ken', name: 'KEN' }, { id: 'kriztel', name: 'KRIZTEL' }
   ];
 
-  let html = `
-    <div style="font-size:11px; font-weight:700; opacity:0.9; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-      <span>📅 ${displayDate}</span>
-      <span class="badge-time">⏰ ${slotLabel}</span>
-    </div>
-  `;
+  // Apply Filter
+  if (currentTraderFilter !== 'ALL') {
+    teamMembers = teamMembers.filter(m => m.name === currentTraderFilter);
+  }
+
+  let html = ``;
+  if (teamMembers.length === 0) {
+     html = `<div style="text-align:center; padding:10px; font-size:10px; color:rgba(255,255,255,0.5);">No trader selected.</div>`;
+  }
 
   teamMembers.forEach(m => {
     const mGrid = dayData.grid ? dayData.grid[m.id] : null;
@@ -765,7 +669,22 @@ function renderLiveDutyWidget(rosterData) {
   });
 
   container.innerHTML = html;
-  calculateActiveTraders();
+  calculateActiveTraders(dayData);
+}
+
+function calculateActiveTraders(dayData) {
+  let activeCount = 0;
+  if (dayData && dayData.grid) {
+     const ids = ['ann', 'dave', 'ken', 'kriztel'];
+     ids.forEach(id => {
+        const shiftId = dayData.grid[id]?.shift || '';
+        if (shiftId && !shiftId.includes('rd') && !shiftId.includes('vl') && !shiftId.includes('sl')) {
+           activeCount++;
+        }
+     });
+  }
+  const el = document.getElementById('activeTraderCount');
+  if (el) el.textContent = activeCount + ' Working';
 }
 
 function getGMT8DateObj(offsetDays = 0) {
@@ -802,7 +721,7 @@ async function fetchLiveGames() {
 
     let matches = await fetchLeagueList(TOP_TIER_LEAGUES, targetDateQuery);
 
-    if (matches.length < 10) {
+    if (matches.length < 5) {
       const secondaryMatches = await fetchLeagueList(SECONDARY_LEAGUES, targetDateQuery);
       const seenMatchKeys = new Set(matches.map(m => `${m.homeName}-${m.awayName}`));
       
@@ -816,22 +735,17 @@ async function fetchLiveGames() {
     }
 
     if (matches.length === 0) {
-      container.innerHTML = `<div style="text-align:center; padding:20px; font-size:11px; color:rgba(255,255,255,0.5);">No scheduled fixtures for ${dateLabelStr} (GMT+8).</div>`;
+      container.innerHTML = `<div style="text-align:center; padding:20px; font-size:11px; color:rgba(255,255,255,0.5);">No scheduled fixtures.</div>`;
       return;
     }
 
-    matches = matches.slice(0, 10);
+    matches = matches.slice(0, 5); // Max 5 to save space
 
     let gamesHtml = "";
     matches.forEach(item => {
       gamesHtml += `
         <div class="top-game-card">
-          <div class="top-game-flags">
-            <img src="${item.homeLogo}" alt="${item.homeName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
-            <span class="vs-text">vs</span>
-            <img src="${item.awayLogo}" alt="${item.awayName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
-          </div>
-          <div class="top-game-title">${item.homeName} <span class="vs-light">vs</span> ${item.awayName}</div>
+          <div class="top-game-title">${item.homeName} vs ${item.awayName}</div>
           <div class="top-game-league">${item.leagueName}${item.kickOffTime ? ' &bull; <span style="color:#38bdf8;">' + item.kickOffTime + '</span>' : ''}</div>
         </div>
       `;
@@ -867,7 +781,7 @@ async function fetchLeagueList(leagueList, dateQuery) {
   for (const item of results) {
     if (!item || !item.data || !item.data.events) continue;
     for (const evt of item.data.events) {
-      if (matches.length >= 15) break;
+      if (matches.length >= 10) break;
       const comp = evt.competitions?.[0];
       if (!comp) continue;
 
@@ -920,45 +834,21 @@ function navigateMatchDay(dir) {
   fetchLiveGames();
 }
 
-function calculateActiveTraders() {
-  const dutyCards = document.querySelectorAll('.duty-card');
-  let activeCount = 0;
-  dutyCards.forEach(card => {
-    const timeBadge = card.querySelector('.badge-time');
-    if (timeBadge) {
-      const text = timeBadge.textContent.trim().toUpperCase();
-      if (!text.includes('OFF') && !text.includes('REST') && !text.includes('RD') && !text.includes('LEAVE')) {
-        activeCount++;
-      }
-    }
-  });
-  const el = document.getElementById('activeTraderCount');
-  if (el) el.textContent = activeCount + ' Working';
-}
-
 function initDashboardApp() {
   const savedTheme = localStorage.getItem('sbhub_theme');
-  if (savedTheme) {
-    setGradient(savedTheme);
-  } else {
-    setGradient('3d-chrome-swirl');
-  }
+  if (savedTheme) { setGradient(savedTheme); } 
+  else { setGradient('3d-chrome-swirl'); }
 
-  if (localStorage.getItem('sbhub_auth') === 'true' || sessionStorage.getItem('sbhub_auth') === 'true') {
-    unlockDashboard();
-  }
-
+  // Initial UI Setup
   switchBrandTab('ibet');
   restoreSavedWidgets();
-
   loadCachedTopPicks();
 
+  // Async API Calls
   fetchTopPicksAndBoosts();
   setInterval(fetchTopPicksAndBoosts, 2 * 60 * 1000);
-
   listenToLiveDutyRoster();
   fetchLiveGames();
-  calculateActiveTraders();
   fetchManilaWeather();
   setInterval(fetchManilaWeather, 15 * 60 * 1000);
 }
