@@ -181,7 +181,7 @@ function renderFilteredTopPicks() {
   let displayPicks = cachedTopPicks.filter(pick => pick.kickOffTimestamp > now.getTime() && pick.leagueKey === currentFilterKey).slice(0, 12);
 
   if (displayPicks.length === 0) {
-    container.innerHTML = `<div style="text-align:center; padding:25px; width:100%; font-size:12px; font-weight:600; color:rgba(255,255,255,0.65);">No upcoming scheduled matches available.</div>`;
+    container.innerHTML = `<div style="text-align:center; padding:25px; width:100%; font-size:12px; font-weight:800; color:rgba(255,255,255,0.65);">No upcoming scheduled matches available.</div>`;
     return;
   }
 
@@ -192,7 +192,7 @@ function renderFilteredTopPicks() {
       <div class="boost-card ${isTopPick ? 'highlight-border' : ''}">
         <div class="flags-row"><img src="${pick.homeLogo}" class="team-flag-img"><img src="${pick.awayLogo}" class="team-flag-img"></div>
         <div class="boost-match-info">
-          <div class="boost-match-title">${pick.homeName} <span class="vs-light" style="margin:0 2px; font-weight:500; opacity:0.5;">vs</span> ${pick.awayName}</div>
+          <div class="boost-match-title">${pick.homeName} <span class="vs-light" style="margin:0 4px; font-weight:500; opacity:0.5;">vs</span> ${pick.awayName}</div>
           <div class="boost-league-sub">${pick.leagueName}</div>
           <div class="boost-market-desc">${pick.market}</div>
         </div>
@@ -213,7 +213,7 @@ function loadReminders() {
   if(!container) return;
   const list = JSON.parse(localStorage.getItem('sbhub_reminders') || '[]');
   if(list.length === 0){ 
-    container.innerHTML = '<span style="font-size:11px; color:rgba(255,255,255,0.7); padding:4px; text-align:center; display:block; font-weight:600;">No active tasks or reminders.</span>'; 
+    container.innerHTML = '<span style="font-size:11px; color:rgba(255,255,255,0.7); padding:4px; text-align:center; display:block; font-weight:700;">No active tasks or reminders.</span>'; 
     return; 
   }
   container.innerHTML = list.map((r, i) => `
@@ -287,7 +287,7 @@ function updateNotifications() {
   });
 
   if(soonGames.length === 0) {
-    menu.innerHTML = '<div style="padding:15px; font-size:11px; font-weight:600; opacity:0.7; text-align:center;">No upcoming matches within 2 hrs.</div>';
+    menu.innerHTML = '<div style="padding:15px; font-size:11px; font-weight:700; opacity:0.7; text-align:center;">No upcoming matches within 2 hrs.</div>';
     badge.textContent = '0';
     badge.style.display = 'none';
   } else {
@@ -295,7 +295,7 @@ function updateNotifications() {
     badge.style.display = 'block';
     menu.innerHTML = soonGames.map(g => {
       const timeStr = new Intl.DateTimeFormat('en-GB', { timeZone: primaryTimezone, hour:'2-digit', minute:'2-digit' }).format(new Date(g.kickOffTimestamp || g.kickOffTime));
-      return `<div style="padding:10px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:11px; font-weight:600; color:#fff;">
+      return `<div style="padding:10px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:11px; font-weight:700; color:#fff;">
         <strong style="color:#38bdf8; margin-right:6px;">${timeStr}</strong> ${g.homeName} vs ${g.awayName}
       </div>`;
     }).join('');
@@ -376,10 +376,10 @@ async function fetchLiveGames() {
     }
 
     let gamesHtml = "";
-    matches.slice(0, 10).forEach(item => {
+    matches.slice(0, 10).forEach(item => { 
       gamesHtml += `
         <div class="top-game-card">
-          <div class="top-game-title">${item.homeName} <span class="vs-light" style="margin:0 4px; font-weight:500; opacity:0.5;">vs</span> ${item.awayName}</div>
+          <div class="top-game-title">${item.homeName} <span class="vs-light" style="margin:0 4px; font-weight:600; opacity:0.5;">vs</span> ${item.awayName}</div>
           <div class="top-game-league">${item.leagueName}${item.kickOffTimeStr ? ' &bull; <span style="color:#38bdf8;">' + item.kickOffTimeStr + '</span>' : ''}</div>
         </div>
       `;
