@@ -1,551 +1,978 @@
-/* eslint-disable */
-/* jshint ignore:start */
-"use strict";
+const DEFAULT_USER = "sportsbook2026";
+const DEFAULT_PASS = "sb2026";
 
-if (typeof window.lucide !== "undefined") {
-    window.lucide.createIcons();
+const isMobileDevice = () => window.innerWidth <= 768;
+
+let rosterDb = null;
+try {
+  if (typeof firebase !== 'undefined') {
+    const rosterFirebaseConfig = {
+      apiKey: "AIzaSyCaEclzLI284lWCFk-vXbLSXa_bEZsXbOg",
+      authDomain: "test-daily-task--sb.firebaseapp.com",
+      databaseURL: "https://test-daily-task--sb-default-rtdb.firebaseio.com",
+      projectId: "test-daily-task--sb",
+      storageBucket: "test-daily-task--sb.firebasestorage.app",
+      messagingSenderId: "928476661919",
+      appId: "1:928476661919:web:c6d531190824c6ed7c7aaa"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(rosterFirebaseConfig);
+    rosterDb = firebase.database();
+  }
+} catch (e) {
+  console.warn("Firebase offline or blocked.", e);
 }
 
-var DEFAULT_USER = "@sportsbook";
-var DEFAULT_PASS = "sb2026";
+let selectedGameDayOffset = 0;
 
-function handleLogin(e) {
-    e.preventDefault();
-    var userEl = document.getElementById("usernameInput");
-    var passEl = document.getElementById("passwordInput");
-    var rememberEl = document.getElementById("rememberMe");
-    
-    if (!userEl || !passEl) return;
-    
-    if (userEl.value.trim() === DEFAULT_USER && passEl.value === DEFAULT_PASS) {
-        if (rememberEl && rememberEl.checked) {
-            localStorage.setItem("sbhub_auth", "true");
-        } else {
-            sessionStorage.setItem("sbhub_auth", "true");
-        }
-        document.getElementById("authOverlay").classList.add("unlocked");
-        document.getElementById("dashboardWrapper").classList.add("unlocked");
-        document.getElementById("loginErrorMsg").innerText = "";
-    } else {
-        document.getElementById("loginErrorMsg").innerText = "Invalid credentials";
-        var card = document.querySelector(".login-card");
-        if (card) {
-            card.classList.add("shake");
-            setTimeout(function() { card.classList.remove("shake"); }, 400);
-        }
-    }
+function toggleMobileSidebar(forceState) {
+  const sidebar = document.getElementById('mainSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (!sidebar || !overlay) return;
+
+  const isActive = forceState !== undefined ? forceState : !sidebar.classList.contains('mobile-open');
+
+  if (isActive) {
+    sidebar.classList.add('mobile-open');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  } else {
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
 }
 
-function handleLogout() {
-    localStorage.removeItem("sbhub_auth");
-    sessionStorage.removeItem("sbhub_auth");
-    var authOverlay = document.getElementById("authOverlay");
-    var dashboardWrapper = document.getElementById("dashboardWrapper");
-    if (authOverlay) authOverlay.classList.remove("unlocked");
-    if (dashboardWrapper) dashboardWrapper.classList.remove("unlocked");
-}
-
-if (localStorage.getItem("sbhub_auth") === "true" || sessionStorage.getItem("sbhub_auth") === "true") {
-    var authOverlay = document.getElementById("authOverlay");
-    var dashboardWrapper = document.getElementById("dashboardWrapper");
-    if (authOverlay) authOverlay.classList.add("unlocked");
-    if (dashboardWrapper) dashboardWrapper.classList.add("unlocked");
-}
-
-function toggleMenu(menuId) {
-    var menu = document.getElementById(menuId);
-    if (menu) {
-        menu.classList.toggle("open");
-    }
-}
-
-function openModal(id) { 
-    var modal = document.getElementById(id);
-    if (modal) {
-        modal.classList.add("active"); 
-        if (id === 'expandPicksModal') renderExpandedPicks();
-        if (id === 'expandMatchdayModal') renderExpandedMatchday();
-    }
-}
-
-function closeModal(id) { 
-    var modal = document.getElementById(id);
-    if (modal) modal.classList.remove("active"); 
-}
-
-function filterSidebar() {
-    var searchInput = document.getElementById("sidebarSearchInput");
-    if (!searchInput) return;
-    var query = searchInput.value.toLowerCase();
-    var links = document.querySelectorAll(".sub-link");
-    
-    for (var i = 0; i < links.length; i++) {
-        var link = links[i];
-        var text = link.innerText.toLowerCase();
-        var parentMenu = link.closest(".sub-menu");
-        if (text.indexOf(query) !== -1) {
-            link.style.display = "block";
-            if (query.length > 0 && parentMenu) {
-                parentMenu.classList.add("open");
-                link.classList.add("highlight");
-            } else {
-                link.classList.remove("highlight");
-            }
-        } else {
-            link.style.display = "none";
-            link.classList.remove("highlight");
-        }
-    }
-}
-
-var brandTabData = {
-    ibet: [
-        { name: "IBET ADMIN", url: "https://mga-betbook.center/ibet/bets" },
-        { name: "IBET BETSSON", url: "https://b2b.betssonbusiness.com/" },
-        { name: "BET CONSTRUCT", url: "https://backoffice.betconstruct.com/" }
-    ],
-    edge: [
-        { name: "KT SBX", url: "https://p2ibet.sbx.bet/bets" },
-        { name: "KT PROJECTS", url: "https://kickertech.atlassian.net/jira/projects" },
-        { name: "EDGE ADMIN", url: "https://admin.edgegaming.io/admin/qbet/homepage" },
-        { name: "SERVICE DESK", url: "https://kickertech.atlassian.net/servicedesk/customer/user/login?destination=portals" }
-    ],
-    pubs: [
-        { name: "GO GAMING", url: "https://gg-backoffice-eu.gogaming.cc/en-US/member/list" }
-    ]
+const brandTabData = {
+  ibet: [
+    { name: "IBET ADMIN", url: "https://mga-betbook.center/ibet/bets" },
+    { name: "IBET BETSSON", url: "https://b2b.betssonbusiness.com/" },
+    { name: "BET CONSTRUCT", url: "https://backoffice.betconstruct.com/" }
+  ],
+  edge: [
+    { name: "KT SBX", url: "https://p2ibet.sbx.bet/bets" },
+    { name: "KT PROJECTS", url: "https://kickertech.atlassian.net/jira/projects" },
+    { name: "EDGE ADMIN", url: "https://admin.edgegaming.io/admin/qbet/homepage" },
+    { name: "SERVICE DESK", url: "https://kickertech.atlassian.net/servicedesk/customer/user/login?destination=portals" }
+  ],
+  pubs: [
+    { name: "GO GAMING", url: "https://gg-backoffice-eu.gogaming.cc/en-US/member/list" }
+  ]
 };
 
 function switchBrandTab(tabName) {
-    var buttons = document.querySelectorAll("#brand-tabs .filter-btn");
-    for (var i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
-    var activeTab = document.getElementById("tab-" + tabName);
-    if (activeTab) activeTab.classList.add("active");
+  document.querySelectorAll('.tab-pill').forEach(pill => pill.classList.remove('active'));
+  const activePill = document.getElementById(`tab-${tabName}`);
+  if (activePill) activePill.classList.add('active');
+
+  const container = document.getElementById('brandLinksContainer');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const items = brandTabData[tabName] || [];
+  items.forEach(item => {
+    const a = document.createElement('a');
+    a.className = 'action-row';
+    a.href = item.url;
+    if (item.url !== '#') a.target = '_blank';
+    a.innerHTML = `<span>${item.name}</span><i class='bx bx-right-arrow-alt'></i>`;
+    container.appendChild(a);
+  });
+}
+
+function generateScriptedMarket(homeName, awayName, index) {
+  const templates = [
+    `${homeName} to Win + Over 2.5 Goals`,
+    `${homeName} vs ${awayName} - Both Teams to Score`,
+    `${homeName} to Win + Have 2+ Goals`,
+    `${awayName} to Win or Draw + Over 1.5 Goals`,
+    `${homeName} vs ${awayName} - Both Teams to Score + Over 2.5 Goals`,
+    `${homeName} to Win First Half & Over 1.5 Goals`
+  ];
+  return templates[index % templates.length];
+}
+
+const PRIORITY_LEAGUES = [
+  { rank: 1, key: "uefa.champions", name: "UEFA Champions League", code: "uefa.champions" },
+  { rank: 2, key: "eng.1",          name: "Premier League",         code: "eng.1" },
+  { rank: 3, key: "esp.1",          name: "La Liga",                code: "esp.1" },
+  { rank: 4, key: "ger.1",          name: "Bundesliga",             code: "ger.1" },
+  { rank: 5, key: "ita.1",          name: "Serie A",                code: "ita.1" },
+  { rank: 6, key: "fra.1",          name: "Ligue 1",                code: "fra.1" },
+  { rank: 7, key: "por.1",          name: "Primeira Liga",          code: "por.1" },
+  { rank: 8, key: "ned.1",          name: "Eredivisie",             code: "ned.1" }
+];
+
+const TOP_TIER_LEAGUES = PRIORITY_LEAGUES;
+const SECONDARY_LEAGUES = [
+  { name: "UEFA Nations League", code: "uefa.nations" },
+  { name: "Major League Soccer", code: "usa.1" },
+  { name: "Veikkausliiga", code: "fin.1" },
+  { name: "Eliteserien", code: "nor.1" }
+];
+
+let cachedTopPicks = [];
+let currentFilterKey = 'eng.1';
+
+function getLeagueDisplayName(key) {
+  const lg = PRIORITY_LEAGUES.find(l => l.key === key);
+  return lg ? lg.name : key.toUpperCase();
+}
+
+function loadCachedTopPicks() {
+  try {
+    const stored = localStorage.getItem('sbhub_toppicks_cache');
+    if (stored) {
+      cachedTopPicks = JSON.parse(stored);
+      renderFilteredTopPicks();
+    }
+  } catch (e) {
+    console.warn("Could not parse top picks cache:", e);
+  }
+}
+
+async function fetchTopPicksAndBoosts() {
+  const container = document.getElementById('topPicksContainer');
+  if (!container) return;
+
+  try {
+    const now = new Date();
+    const seenMatchKeys = new Set();
+    const targetDates = ["20261010", "20261011", "20261012", "20261014"];
+    const fetchPromises = [];
     
-    var container = document.getElementById("brandLinksContainer");
-    if (container) {
-        var linksHTML = "";
-        var items = brandTabData[tabName] || [];
-        for (var j = 0; j < items.length; j++) {
-            var item = items[j];
-            linksHTML += "<a href=\"" + item.url + "\" target=\"_blank\" rel=\"noreferrer\" class=\"dock-link\"><span>" + item.name + "</span> <i data-lucide=\"arrow-right\" size=\"14\"></i></a>";
+    for (const league of PRIORITY_LEAGUES) {
+      for (const dateStr of targetDates) {
+        fetchPromises.push(
+          fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${league.code}/scoreboard?dates=${dateStr}&limit=100`)
+            .then(res => res.ok ? res.json() : null)
+            .then(data => ({ league, data }))
+            .catch(() => null)
+        );
+      }
+    }
+
+    const results = await Promise.all(fetchPromises);
+    let apiPicks = [];
+
+    for (const resItem of results) {
+      if (!resItem || !resItem.data || !resItem.data.events) continue;
+      const { league, data } = resItem;
+
+      for (const evt of data.events) {
+        const gameState = evt.status?.type?.state;
+        const evtDate = new Date(evt.date);
+
+        if (gameState !== 'pre' || evtDate <= now) continue;
+
+        const comp = evt.competitions?.[0];
+        if (!comp) continue;
+
+        const homeTeam = comp.competitors?.find(c => c.homeAway === 'home');
+        const awayTeam = comp.competitors?.find(c => c.homeAway === 'away');
+
+        if (homeTeam && awayTeam) {
+          const homeName = homeTeam.team?.shortDisplayName || homeTeam.team?.displayName || "Home";
+          const awayName = awayTeam.team?.shortDisplayName || awayTeam.team?.displayName || "Away";
+
+          const matchKey = evt.id || `${homeName}-${awayName}-${evt.date}`;
+          if (seenMatchKeys.has(matchKey)) continue;
+          seenMatchKeys.add(matchKey);
+
+          const homeLogo = homeTeam.team?.logo || homeTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
+          const awayLogo = awayTeam.team?.logo || awayTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
+
+          const kickOffStr = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Manila',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }).format(evtDate).toUpperCase();
+
+          const scriptedMarket = generateScriptedMarket(homeName, awayName, apiPicks.length);
+
+          apiPicks.push({
+            leagueKey: league.key,
+            leagueRank: league.rank,
+            kickOffTimestamp: evtDate.getTime(),
+            homeName,
+            awayName,
+            homeLogo,
+            awayLogo,
+            leagueName: data.leagues?.[0]?.name || league.name,
+            market: scriptedMarket,
+            badge: (apiPicks.length % 2 === 0) ? "TOP PICK" : "HOT",
+            kickOff: kickOffStr
+          });
         }
-        container.innerHTML = linksHTML;
-        if (typeof window.lucide !== "undefined") window.lucide.createIcons();
-    }
-}
-switchBrandTab("ibet");
-
-function performGlobalSearch() {
-    var searchInput = document.getElementById("globalSearchInput");
-    var resultsContainer = document.getElementById("globalSearchResults");
-    if (!searchInput || !resultsContainer) return;
-    
-    var query = searchInput.value.toLowerCase();
-    if (query.length === 0) {
-        resultsContainer.innerHTML = "<div style=\"font-size:0.8rem; color:var(--text-muted); text-align:center;\">Type to search...</div>";
-        return;
+      }
     }
 
-    var resultsHTML = "";
-    var allSubLinks = document.querySelectorAll("a.sub-link");
-    for (var k = 0; k < allSubLinks.length; k++) {
-        var link = allSubLinks[k];
-        if (link.innerText.toLowerCase().indexOf(query) !== -1) {
-            resultsHTML += "<a href=\"" + link.href + "\" class=\"dock-link\" target=\"_blank\" rel=\"noreferrer\" onclick=\"closeModal('globalSearchModal')\"><span>" + link.innerText + "</span> <i data-lucide=\"external-link\" size=\"14\"></i></a>";
-        }
-    }
-    resultsContainer.innerHTML = resultsHTML || "<div style=\"font-size:0.8rem; color:var(--text-muted); text-align:center;\">No results found.</div>";
-    if (typeof window.lucide !== "undefined") window.lucide.createIcons();
-}
-
-function loadTasks() {
-    var tasksString = localStorage.getItem("sbhub_tasks");
-    var tasks = tasksString ? JSON.parse(tasksString) : [];
-    var container = document.getElementById("taskContainer");
-    var taskCountEl = document.getElementById("taskCount");
-    if (taskCountEl) taskCountEl.innerText = tasks.length;
-    
-    var html = "";
-    for (var i = 0; i < tasks.length; i++) {
-        var t = tasks[i];
-        html += "<div class=\"task-card\">\n<div style=\"display:flex; justify-content:space-between;\">\n<div class=\"task-icon\"><i data-lucide=\"clipboard-list\" size=\"14\"></i></div>\n<i data-lucide=\"x\" size=\"12\" style=\"color:var(--text-muted); cursor:pointer;\" onclick=\"deleteTask(" + i + ")\"></i>\n</div>\n<div>\n<div class=\"task-name\">" + t.title + "</div>\n<div class=\"task-time\">" + t.time + "</div>\n</div>\n<div class=\"task-corner-icon\"><i data-lucide=\"check\" size=\"10\"></i></div>\n</div>";
-    }
-    html += "<div class=\"task-card dashed\" onclick=\"openModal('taskModal')\">+ Add task</div>";
-    if (container) {
-        container.innerHTML = html;
-        if (typeof window.lucide !== "undefined") window.lucide.createIcons();
-    }
-}
-
-function saveTask(e) {
-    e.preventDefault();
-    var titleEl = document.getElementById("taskTitle");
-    var timeEl = document.getElementById("taskTime");
-    if (titleEl && timeEl) {
-        var tasks = JSON.parse(localStorage.getItem("sbhub_tasks") || "[]");
-        tasks.push({ title: titleEl.value, time: timeEl.value });
-        localStorage.setItem("sbhub_tasks", JSON.stringify(tasks));
-        titleEl.value = ""; timeEl.value = "";
-        closeModal("taskModal");
-        loadTasks();
-    }
-}
-
-function deleteTask(index) {
-    var tasks = JSON.parse(localStorage.getItem("sbhub_tasks") || "[]");
-    tasks.splice(index, 1);
-    localStorage.setItem("sbhub_tasks", JSON.stringify(tasks));
-    loadTasks();
-}
-loadTasks();
-
-function loadAlerts() {
-    var alerts = JSON.parse(localStorage.getItem("sbhub_alerts") || "[]");
-    var container = document.getElementById("jiraHandoverContent");
-    if (!container) return;
-    
-    if (alerts.length === 0) {
-        container.innerHTML = "<div style=\"text-align:center; padding:2rem; color:var(--text-muted); font-size:0.8rem;\">No pending alerts.</div>";
-        return;
-    }
-
-    var html = "";
-    for (var i = 0; i < alerts.length; i++) {
-        var a = alerts[i];
-        var isJira = a.type === "JIRA";
-        html += "<div class=\"alert-item " + (isJira ? "jira" : "") + "\">\n<i data-lucide=\"x\" class=\"delete-alert\" size=\"12\" onclick=\"deleteAlert(" + i + ")\"></i>\n<div style=\"display:flex; justify-content:space-between; margin-bottom:4px; padding-right:12px;\">\n<span style=\"font-weight:700;\"><span class=\"alert-brand\">" + a.brand + "</span>" + a.type + "</span>\n<span style=\"font-size:0.65rem; color:#a1a1aa;\">ACTIVE</span>\n</div>\n<div style=\"color:var(--text-main); font-weight:500;\">" + a.msg + "</div>\n</div>";
-    }
-    container.innerHTML = html;
-    if (typeof window.lucide !== "undefined") window.lucide.createIcons();
-}
-
-function saveAlert(e) {
-    e.preventDefault();
-    var typeEl = document.getElementById("alertType");
-    var brandEl = document.getElementById("alertBrand");
-    var msgEl = document.getElementById("alertMsg");
-    if (typeEl && brandEl && msgEl) {
-        var alerts = JSON.parse(localStorage.getItem("sbhub_alerts") || "[]");
-        alerts.push({ type: typeEl.value, brand: brandEl.value, msg: msgEl.value });
-        localStorage.setItem("sbhub_alerts", JSON.stringify(alerts));
-        brandEl.value = ""; msgEl.value = "";
-        closeModal("alertModal");
-        loadAlerts();
-    }
-}
-
-function deleteAlert(index) {
-    var alerts = JSON.parse(localStorage.getItem("sbhub_alerts") || "[]");
-    alerts.splice(index, 1);
-    localStorage.setItem("sbhub_alerts", JSON.stringify(alerts));
-    loadAlerts();
-}
-loadAlerts();
-
-function updateClocks() {
-    var now = new Date();
-    var timeGmt8 = document.getElementById("live-time-gmt8");
-    var dateGmt8 = document.getElementById("live-date-gmt8");
-    if (timeGmt8 && dateGmt8) {
-        timeGmt8.innerText = now.toLocaleTimeString("en-US", { timeZone: "Asia/Manila", hour12: false });
-        dateGmt8.innerText = now.toLocaleDateString("en-US", { timeZone: "Asia/Manila", weekday: "short", month: "short", day: "numeric" });
-    }
-    var timeGmt2 = document.getElementById("live-time-gmt2");
-    var dateGmt2 = document.getElementById("live-date-gmt2");
-    if (timeGmt2 && dateGmt2) {
-        timeGmt2.innerText = now.toLocaleTimeString("en-US", { timeZone: "Europe/Athens", hour12: false });
-        dateGmt2.innerText = now.toLocaleDateString("en-US", { timeZone: "Europe/Athens", weekday: "short", month: "short", day: "numeric" });
-    }
-}
-setInterval(updateClocks, 1000);
-updateClocks();
-
-var fbDb = null;
-try { 
-    if (typeof window.firebase !== "undefined") {
-        window.firebase.initializeApp({
-            databaseURL: "https://test-daily-task--sb-default-rtdb.firebaseio.com", 
-            projectId: "test-daily-task--sb"
-        }); 
-        fbDb = window.firebase.database(); 
-    }
-} catch (e) {}
-
-function fetchWeather() {
-    fetch("https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current_weather=true")
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-            var temp = Math.round(data.current_weather.temperature);
-            var wind = Math.round(data.current_weather.windspeed);
-            var tempEl = document.getElementById("live-temp");
-            var descEl = document.getElementById("live-weather-desc");
-            if (tempEl && descEl) {
-                tempEl.innerText = temp + "°C";
-                descEl.innerText = "Wind: " + wind + " km/h | Manila Local";
-            }
-        }).catch(function() {});
-}
-fetchWeather();
-
-function applyTheme(theme) {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("sbhub_theme_pref", theme);
-    closeModal("themeModal");
-}
-var savedTheme = localStorage.getItem("sbhub_theme_pref");
-if (savedTheme) applyTheme(savedTheme);
-
-var cachedPicks = [];
-var currentLeague = "eng.1";
-var matchDayOffset = 0;
-var selectedTraderFilter = "ALL";
-
-function filterTraderDuty(traderId) {
-    selectedTraderFilter = traderId;
-    loadLiveDuties();
-}
-
-function fetchTopPicks() {
-    var leagues = ["eng.1", "esp.1", "ger.1", "ita.1", "uefa.champions"];
-    var allMatches = [];
-    var promises = [];
-    
-    for (var day = 0; day < 7; day++) {
-        var d = new Date();
-        d.setDate(d.getDate() + day);
-        var dateQ = d.getFullYear() + ("0" + (d.getMonth() + 1)).slice(-2) + ("0" + d.getDate()).slice(-2);
-        
-        for (var i = 0; i < leagues.length; i++) {
-            (function(l, dq, formattedDate) {
-                var p = fetch("https://site.api.espn.com/apis/site/v2/sports/soccer/" + l + "/scoreboard?dates=" + dq)
-                    .then(function(res) { return res.json(); })
-                    .then(function(data) {
-                        if (data && data.events) {
-                            for (var j = 0; j < data.events.length; j++) {
-                                var e = data.events[j];
-                                var comp = e.competitions[0];
-                                var home = null, away = null;
-                                for (var c = 0; c < comp.competitors.length; c++) {
-                                    if (comp.competitors[c].homeAway === "home") home = comp.competitors[c].team;
-                                    if (comp.competitors[c].homeAway === "away") away = comp.competitors[c].team;
-                                }
-                                if (home && away) {
-                                    allMatches.push({
-                                        dateQuery: dq,
-                                        dateLabel: formattedDate,
-                                        league: l,
-                                        homeName: home.shortDisplayName || home.name,
-                                        awayName: away.shortDisplayName || away.name,
-                                        homeLogo: home.logo || 'https://a.espncdn.com/i/teamlogos/soccer/500/default.png', 
-                                        awayLogo: away.logo || 'https://a.espncdn.com/i/teamlogos/soccer/500/default.png',
-                                        time: new Date(e.date).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false }),
-                                        badge: l.toUpperCase().replace(".1", "")
-                                    });
-                                }
-                            }
-                        }
-                    }).catch(function() {});
-                promises.push(p);
-            })(leagues[i], dateQ, d.toLocaleDateString("en-US", { month: "short", day: "numeric" }));
-        }
-    }
-    
-    Promise.all(promises).then(function() {
-        cachedPicks = allMatches;
-        renderPicks();
-        renderGamesList();
+    apiPicks.sort((a, b) => {
+      if (a.leagueRank !== b.leagueRank) return a.leagueRank - b.leagueRank;
+      return a.kickOffTimestamp - b.kickOffTimestamp;
     });
+
+    if (apiPicks.length > 0) {
+      cachedTopPicks = apiPicks;
+      localStorage.setItem('sbhub_toppicks_cache', JSON.stringify(apiPicks));
+    }
+    
+    renderFilteredTopPicks();
+  } catch (e) {
+    console.error("Fetch Top Picks Error:", e);
+    renderFilteredTopPicks();
+  }
 }
 
-function filterPicks(league, btn) {
-    currentLeague = league;
-    var filterBtns = document.querySelectorAll(".filter-btn");
-    for (var i = 0; i < filterBtns.length; i++) filterBtns[i].classList.remove("active");
-    if (btn) btn.classList.add("active");
-    renderPicks();
+function filterTopPicks(leagueKey, btnElement) {
+  currentFilterKey = leagueKey;
+
+  document.querySelectorAll('.boost-filter-btn').forEach(btn => btn.classList.remove('active'));
+  if (btnElement) {
+    btnElement.classList.add('active');
+  } else {
+    const defaultBtn = document.getElementById(`btn-boost-${leagueKey}`);
+    if (defaultBtn) defaultBtn.classList.add('active');
+  }
+
+  renderFilteredTopPicks();
 }
 
-function renderPicks() {
-    var container = document.getElementById("topPicksContainer");
-    if (!container) return;
-    
-    var matches = cachedPicks.filter(function(m) { return m.league === currentLeague; }).slice(0, 6);
-    if (matches.length === 0) {
-        container.innerHTML = "<div style=\"grid-column: 1/-1; display:flex; align-items:center; justify-content:center; padding:1.5rem; color: var(--text-muted); font-size: 0.8rem;\">No fixtures found for this category.</div>";
-        return;
-    }
+function renderFilteredTopPicks() {
+  const container = document.getElementById('topPicksContainer');
+  if (!container) return;
 
-    var html = "";
-    for (var j = 0; j < matches.length; j++) {
-        var m = matches[j];
-        html += "<div class=\"match-card\">\n<div class=\"flags-row\">\n<img src=\"" + m.homeLogo + "\" alt=\"Home\" />\n<span style=\"font-size:0.65rem; color:var(--text-muted); font-weight:800;\">VS</span>\n<img src=\"" + m.awayLogo + "\" alt=\"Away\" />\n</div>\n<div class=\"match-name\">" + m.homeName + " vs " + m.awayName + "</div>\n<div style=\"font-size:0.62rem; font-weight:700; color:var(--text-muted); margin-top:2px;\">" + m.dateLabel + " - " + m.time + "</div>\n</div>";
-    }
-    container.innerHTML = html;
-    if (typeof window.lucide !== "undefined") window.lucide.createIcons();
-}
+  const now = new Date();
+  let activePicks = cachedTopPicks.filter(pick => pick.kickOffTimestamp > now.getTime());
+  let displayPicks = activePicks.filter(pick => pick.leagueKey === currentFilterKey);
 
-function renderExpandedPicks() {
-    var grid = document.getElementById("expandedPicksGrid");
-    if (!grid) return;
-    
-    var matches = cachedPicks.filter(function(m) { return m.league === currentLeague; });
-    if (matches.length === 0) {
-        grid.innerHTML = "<div style=\"grid-column:1/-1; text-align:center; padding:2rem; color:var(--text-muted);\">No games available.</div>";
-        return;
-    }
+  if (displayPicks.length === 0) {
+    const categoryLabel = getLeagueDisplayName(currentFilterKey);
+    container.innerHTML = `<div style="text-align:center; padding:25px; width:100%; font-size:12px; font-weight:600; color:rgba(255,255,255,0.5);">No upcoming scheduled ${categoryLabel} matches available.</div>`;
+    return;
+  }
 
-    var html = "";
-    for (var i = 0; i < matches.length; i++) {
-        var m = matches[i];
-        var cleanLeague = m.league.toUpperCase().replace(".1", "");
-        html += "<div class=\"match-card\" style=\"padding:1rem;\">\n<div class=\"match-badge\">" + cleanLeague + "</div>\n<div class=\"flags-row\" style=\"margin-top:6px;\">\n<img src=\"" + m.homeLogo + "\" alt=\"Home\" />\n<span style=\"font-size:0.65rem; color:var(--text-muted); font-weight:800;\">VS</span>\n<img src=\"" + m.awayLogo + "\" alt=\"Away\" />\n</div>\n<div class=\"match-name\" style=\"font-size:0.8rem;\">" + m.homeName + " vs " + m.awayName + "</div>\n<div style=\"font-size:0.7rem; font-weight:700; color:var(--text-muted); margin-top:4px;\">" + m.dateLabel + " @ " + m.time + "</div>\n</div>";
-    }
-    grid.innerHTML = html;
-    if (typeof window.lucide !== "undefined") window.lucide.createIcons();
-}
+  displayPicks = displayPicks.slice(0, 12);
 
-function renderExpandedMatchday() {
-    var grid = document.getElementById("expandedMatchdayGrid");
-    if (!grid) return;
-    
-    var targetDate = new Date();
-    targetDate.setDate(targetDate.getDate() + matchDayOffset);
-    var targetQuery = targetDate.getFullYear() + ("0" + (targetDate.getMonth() + 1)).slice(-2) + ("0" + targetDate.getDate()).slice(-2);
-    
-    var dayGames = cachedPicks.filter(function(g) { return g.dateQuery === targetQuery; });
-    if (dayGames.length === 0) {
-        grid.innerHTML = "<div style=\"grid-column:1/-1; text-align:center; padding:2rem; color:var(--text-muted);\">No fixtures available for this date.</div>";
-        return;
-    }
-
-    var html = "";
-    for (var i = 0; i < dayGames.length; i++) {
-        var g = dayGames[i];
-        var cleanLeague = g.league.toUpperCase().replace(".1", "");
-        html += "<div class=\"match-card\" style=\"padding:1rem;\">\n<div class=\"match-badge\">" + cleanLeague + "</div>\n<div class=\"flags-row\" style=\"margin-top:6px;\">\n<img src=\"" + g.homeLogo + "\" alt=\"Home\" />\n<span style=\"font-size:0.65rem; color:var(--text-muted); font-weight:800;\">VS</span>\n<img src=\"" + g.awayLogo + "\" alt=\"Away\" />\n</div>\n<div class=\"match-name\" style=\"font-size:0.8rem;\">" + g.homeName + " vs " + g.awayName + "</div>\n<div style=\"font-size:0.7rem; font-weight:700; color:var(--text-muted); margin-top:4px;\">" + g.dateLabel + " @ " + g.time + "</div>\n</div>";
-    }
-    grid.innerHTML = html;
-    if (typeof window.lucide !== "undefined") window.lucide.createIcons();
-}
-
-fetchTopPicks();
-
-function openNotifications() {
-    var list = document.getElementById("notificationsList");
-    openModal("notificationsModal");
-    if (!list) return;
-    
-    var html = "";
-    for (var i = 0; i < Math.min(cachedPicks.length, 10); i++) {
-        var m = cachedPicks[i];
-        html += "<div style=\"background:var(--inner-card-bg); border:1px solid var(--glass-border); border-radius: 12px; padding: 0.8rem; display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;\">\n<div style=\"display:flex; align-items:center; gap: 10px;\">\n<img src=\"" + m.homeLogo + "\" style=\"width:24px;height:24px;border-radius:50%; background:white;\" alt=\"Home\" />\n<span style=\"font-weight:700; font-size:0.8rem; color:var(--text-main);\">" + m.homeName + " vs " + m.awayName + "</span>\n<img src=\"" + m.awayLogo + "\" style=\"width:24px;height:24px;border-radius:50%; background:white;\" alt=\"Away\" />\n</div>\n<div style=\"text-align:right;\">\n<div class=\"match-badge\">" + m.league.toUpperCase().replace(".1", "") + "</div>\n<div style=\"font-size:0.65rem; color:var(--text-muted); margin-top:4px;\">" + m.dateLabel + " - " + m.time + "</div>\n</div>\n</div>";
-    }
-    list.innerHTML = html;
-    if (typeof window.lucide !== "undefined") window.lucide.createIcons();
-}
-
-function navMatchDay(dir) {
-    matchDayOffset += dir;
-    if (matchDayOffset < 0) matchDayOffset = 0;
-    if (matchDayOffset > 6) matchDayOffset = 6;
-    renderGamesList();
-}
-
-function renderGamesList() {
-    var container = document.getElementById("gamesContainer");
-    var display = document.getElementById("matchDayDisplay");
-    
-    var targetDate = new Date();
-    targetDate.setDate(targetDate.getDate() + matchDayOffset);
-    var targetQuery = targetDate.getFullYear() + ("0" + (targetDate.getMonth() + 1)).slice(-2) + ("0" + targetDate.getDate()).slice(-2);
-    
-    if (display) {
-        var label = matchDayOffset === 0 ? "TODAY" : "DAY +" + matchDayOffset;
-        display.innerText = label + " (" + targetDate.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + ")";
-    }
-
-    var dayGames = cachedPicks.filter(function(g) { return g.dateQuery === targetQuery; }).slice(0, 5);
-    if (dayGames.length === 0) {
-        if (container) container.innerHTML = "<div style=\"text-align:center; padding: 1.5rem; color: var(--text-muted); font-size: 0.8rem;\">No fixtures available for this date.</div>";
-        return;
-    }
-
-    var html = "";
-    for (var i = 0; i < dayGames.length; i++) {
-        var g = dayGames[i];
-        html += "<div class=\"game-row\">\n<img src=\"" + g.homeLogo + "\" style=\"width:20px;height:20px;border-radius:50%; background:white;\" alt=\"Home\" />\n<img src=\"" + g.awayLogo + "\" style=\"width:20px;height:20px;border-radius:50%;margin-left:-6px; background:white;\" alt=\"Away\" />\n<div style=\"flex-grow:1; margin-left:8px;\">\n<div class=\"game-title\">" + g.homeName + " <span style=\"color:var(--text-muted);font-weight:400;font-size:0.65rem;\">vs</span> " + g.awayName + "</div>\n<div class=\"game-sub\">" + g.time + "</div>\n</div>\n</div>";
-    }
-    if (container) container.innerHTML = html;
-}
-
-function loadLiveDuties() {
-    var h = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" })).getHours();
-    var slot = { id: "slot_21_0", label: "21:00 - 00:00" };
-    if (h >= 6 && h < 9) slot = { id: "slot_6_9", label: "06:00 - 09:00" };
-    else if (h >= 9 && h < 12) slot = { id: "slot_9_12", label: "09:00 - 12:00" };
-    else if (h >= 12 && h < 15) slot = { id: "slot_12_15", label: "12:00 - 15:00" };
-    else if (h >= 15 && h < 18) slot = { id: "slot_15_18", label: "15:00 - 18:00" };
-    else if (h >= 18 && h < 21) slot = { id: "slot_18_21", label: "18:00 - 21:00" };
-    
-    var badgeEl = document.getElementById("slotBadge");
-    if (badgeEl) badgeEl.innerText = "Slot: " + slot.label;
-    
-    var container = document.getElementById("liveDutyContent");
-    if (!container) return;
-
-    if (!fbDb) { 
-        container.innerHTML = "<div style=\"font-size:0.8rem; color:var(--text-muted); text-align:center;\">Database offline</div>"; 
-        return; 
-    }
-
-    fbDb.ref("roster_data").on("value", function(snapshot) {
-        var data = snapshot.val();
-        if (!data) return;
+  let cardsHtml = "";
+  displayPicks.forEach(pick => {
+    const isTopPick = pick.badge === "TOP PICK";
+    cardsHtml += `
+      <div class="boost-card ${isTopPick ? 'highlight-border' : ''}">
+        <div class="flags-row">
+          <img src="${pick.homeLogo}" alt="${pick.homeName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+          <span class="vs-text">VS</span>
+          <img src="${pick.awayLogo}" alt="${pick.awayName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+        </div>
         
-        var todayIso = new Date().toLocaleString("en-CA", { timeZone: "Asia/Manila" }).split(",")[0];
-        var dayData = data[todayIso] || data[Object.keys(data)[Object.keys(data).length - 1]];
-        if (!dayData || dayData === "archives") return;
+        <div class="boost-match-info">
+          <div class="boost-match-title">${pick.homeName} <span class="vs-light">vs</span> ${pick.awayName}</div>
+          <div class="boost-league-sub">${pick.leagueName}</div>
+        </div>
 
-        var html = ""; 
-        var activeCount = 0;
-        var members = [
-            { id: "ann", n: "ANN" }, 
-            { id: "dave", n: "DAVE" }, 
-            { id: "ken", n: "KEN" }, 
-            { id: "kriztel", n: "KRIZTEL" }
-        ];
-        
-        for (var i = 0; i < members.length; i++) {
-            var m = members[i];
-            if (selectedTraderFilter !== "ALL" && selectedTraderFilter !== m.id) continue;
+        <div style="text-align:center;">
+          <span class="boost-badge ${isTopPick ? 'top-pick' : 'hot'}">${pick.badge}</span>
+        </div>
 
-            var grid = (dayData.grid && dayData.grid[m.id]) ? dayData.grid[m.id] : null;
-            var shiftId = (grid && grid.shift) ? grid.shift : "shift-7-16";
-            var isRest = shiftId.indexOf("rd") !== -1 || shiftId.indexOf("vl") !== -1;
-            if (!isRest) activeCount++;
-            
-            var tasks = (grid && grid.slots) ? (grid.slots[slot.id] || []) : [];
-            html += "<div class=\"duty-card\">\n<div class=\"duty-top\">\n<span>" + m.n + "</span>\n<span class=\"duty-badge\">" + (isRest ? "OFF" : shiftId.replace("shift-", "")) + "</span>\n</div>";
-            
-            if (isRest) {
-                html += "<div class=\"duty-text\">Offline / Rest Day</div>";
-            } else if (tasks.length === 0) {
-                html += "<div class=\"duty-text\">No specific tasks.</div>";
-            } else {
-                for (var j = 0; j < tasks.length; j++) {
-                    var t = tasks[j];
-                    var text = typeof t === "string" ? t : t.text;
-                    var done = typeof t === "object" ? t.done : false;
-                    html += "<div class=\"duty-text\"><i data-lucide=\"" + (done ? "check-circle" : "clock") + "\" size=\"12\" style=\"color:" + (done ? "#71717a" : "var(--text-muted)") + "\"></i> <span>" + text + "</span></div>";
-                }
-            }
-            html += "</div>";
-        }
-        
-        container.innerHTML = html;
-        var countEl = document.getElementById("activeTraderCount");
-        if (countEl) countEl.innerText = activeCount;
-        if (typeof window.lucide !== "undefined") window.lucide.createIcons();
+        <div class="boost-market-desc">${pick.market}</div>
+
+        <div class="boost-card-bottom">
+          <div class="boost-kickoff-pill"><i class='bx bx-time-five'></i> ${pick.kickOff}</div>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = cardsHtml;
+}
+
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas ? canvas.getContext('2d') : null;
+let width = 0, height = 0, particles = [];
+
+function resizeCanvas() {
+  if (!canvas) return;
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+  initParticles();
+}
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  if (!isMobileDevice()) toggleMobileSidebar(false);
+});
+
+class Particle {
+  constructor() {
+    this.reset();
+  }
+  reset() {
+    this.x = Math.random() * width;
+    this.y = Math.random() * height;
+    this.radius = Math.random() * (isMobileDevice() ? 1.5 : 2) + 1;
+    this.vx = (Math.random() - 0.5) * (isMobileDevice() ? 0.4 : 0.8);
+    this.vy = (Math.random() - 0.5) * (isMobileDevice() ? 0.4 : 0.8);
+    this.alpha = Math.random() * 0.4 + 0.1;
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.x < 0 || this.x > width) this.vx *= -1;
+    if (this.y < 0 || this.y > height) this.vy *= -1;
+  }
+  draw() {
+    if (!ctx) return;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(56, 189, 248, ${this.alpha})`;
+    if (!isMobileDevice()) {
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = '#00f2fe';
+    } else {
+      ctx.shadowBlur = 0;
+    }
+    ctx.fill();
+  }
+}
+
+function initParticles() {
+  if (!canvas) return;
+  particles = [];
+  const particleCount = isMobileDevice() ? 15 : 45;
+  for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+}
+
+resizeCanvas();
+
+function animateCanvas() {
+  if (!canvas || !ctx) return;
+  ctx.clearRect(0, 0, width, height);
+  particles.forEach(p => {
+    p.update();
+    p.draw();
+  });
+  requestAnimationFrame(animateCanvas);
+}
+if (canvas) animateCanvas();
+
+document.addEventListener('mousemove', (e) => {
+  if (isMobileDevice()) return;
+
+  const robotStage = document.getElementById('sittingRobotStage');
+  const authOverlay = document.getElementById('authOverlay');
+  if (!robotStage || (authOverlay && authOverlay.classList.contains('unlocked'))) return;
+
+  const leftEye = document.getElementById('leftEye');
+  const rightEye = document.getElementById('rightEye');
+  const robotHead = document.getElementById('robotHead');
+  const robotBodyWrapper = document.getElementById('robotBodyWrapper');
+
+  const rect = robotStage.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+
+  const deltaX = e.clientX - centerX;
+  const deltaY = e.clientY - centerY;
+  const angle = Math.atan2(deltaY, deltaX);
+
+  const eyeDist = Math.min(5, Math.hypot(deltaX, deltaY) / 35);
+  const eyeX = Math.cos(angle) * eyeDist;
+  const eyeY = Math.sin(angle) * eyeDist;
+
+  if (leftEye && rightEye) {
+    leftEye.style.transform = `translate(${eyeX}px, ${eyeY}px)`;
+    rightEye.style.transform = `translate(${eyeX}px, ${eyeY}px)`;
+  }
+
+  const rotateY = Math.max(-25, Math.min(25, deltaX / 20));
+  const rotateX = Math.max(-15, Math.min(15, -deltaY / 25));
+
+  if (robotHead) robotHead.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  if (robotBodyWrapper) robotBodyWrapper.style.transform = `rotateY(${rotateY * 0.3}deg)`;
+});
+
+function updateWorldClocks() {
+  const now = new Date();
+  const optionsGMT8 = { timeZone: 'Asia/Singapore', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+  const gmt8El = document.getElementById('clock-gmt8');
+  if (gmt8El) gmt8El.textContent = new Intl.DateTimeFormat('en-GB', optionsGMT8).format(now);
+
+  const optionsCET = { timeZone: 'Europe/Berlin', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+  const cetEl = document.getElementById('clock-cet');
+  if (cetEl) cetEl.textContent = new Intl.DateTimeFormat('en-GB', optionsCET).format(now);
+
+  const optionsGMT2 = { timeZone: 'Europe/Athens', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+  const gmt2El = document.getElementById('clock-gmt2');
+  if (gmt2El) gmt2El.textContent = new Intl.DateTimeFormat('en-GB', optionsGMT2).format(now);
+}
+setInterval(updateWorldClocks, 1000);
+updateWorldClocks();
+
+async function fetchManilaWeather() {
+  const tempEl = document.getElementById('weatherTemp');
+  const condEl = document.getElementById('weatherCond');
+  const humEl = document.getElementById('weatherHumidity');
+  const windEl = document.getElementById('weatherWind');
+  const iconEl = document.getElementById('weatherIcon');
+
+  if (!tempEl) return;
+
+  try {
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=14.5995&longitude=120.9842&current_weather=true&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=Asia%2FManila';
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Network error');
+    const data = await response.json();
+
+    let temp, humidity, wind, code;
+
+    if (data && data.current) {
+      temp = Math.round(data.current.temperature_2m ?? data.current_weather?.temperature);
+      humidity = data.current.relative_humidity_2m ?? 56;
+      wind = Math.round(data.current.wind_speed_10m ?? data.current_weather?.windspeed ?? 7);
+      code = data.current.weather_code ?? data.current_weather?.weathercode ?? 3;
+    } else if (data && data.current_weather) {
+      temp = Math.round(data.current_weather.temperature);
+      humidity = 56;
+      wind = Math.round(data.current_weather.windspeed);
+      code = data.current_weather.weathercode;
+    } else {
+      throw new Error('Invalid weather payload');
+    }
+
+    const weatherMeta = parseWMOWeatherCode(code);
+
+    tempEl.textContent = `${temp}°C`;
+    if (condEl) condEl.textContent = weatherMeta.label;
+    if (humEl) humEl.textContent = `Humidity: ${humidity}%`;
+    if (windEl) windEl.textContent = `Wind: ${wind} km/h`;
+
+    if (iconEl) {
+      iconEl.className = `bx ${weatherMeta.icon}`;
+      iconEl.style.color = weatherMeta.color;
+    }
+  } catch (err) {
+    console.warn('Weather fetch fallback triggered:', err);
+    tempEl.textContent = '32°C';
+    if (condEl) condEl.textContent = 'OVERCAST';
+    if (humEl) humEl.textContent = 'Humidity: 56%';
+    if (windEl) windEl.textContent = 'Wind: 7 km/h';
+  }
+}
+
+function parseWMOWeatherCode(code) {
+  if (code === 0) return { label: 'CLEAR SKY', icon: 'bx-sun', color: '#f59e0b' };
+  if (code === 1 || code === 2) return { label: 'PARTLY CLOUDY', icon: 'bx-cloud-sun', color: '#f59e0b' };
+  if (code === 3) return { label: 'OVERCAST', icon: 'bx-cloud', color: '#38bdf8' };
+  if (code >= 45 && code <= 48) return { label: 'FOGGY', icon: 'bx-cloud-fog', color: '#94a3b8' };
+  if (code >= 51 && code <= 67) return { label: 'LIGHT RAIN', icon: 'bx-cloud-drizzle', color: '#60a5fa' };
+  if (code >= 80 && code <= 82) return { label: 'HEAVY RAIN', icon: 'bx-cloud-showers-heavy', color: '#3b82f6' };
+  if (code >= 95) return { label: 'THUNDERSTORM', icon: 'bx-cloud-lightning', color: '#eab308' };
+  return { label: 'CLOUDY', icon: 'bx-cloud', color: '#38bdf8' };
+}
+
+function togglePasswordVisibility() {
+  const passInput = document.getElementById('passwordInput');
+  const icon = document.getElementById('togglePassIcon');
+  if (!passInput || !icon) return;
+  
+  if (passInput.type === 'password') {
+    passInput.type = 'text';
+    icon.className = 'bx bx-hide';
+  } else {
+    passInput.type = 'password';
+    icon.className = 'bx bx-show';
+  }
+}
+
+function handleLogin(event) {
+  event.preventDefault();
+  const userInput = document.getElementById('usernameInput');
+  const passInput = document.getElementById('passwordInput');
+  const rememberCheckbox = document.getElementById('rememberMe');
+
+  const userVal = userInput ? userInput.value.trim() : '';
+  const passVal = passInput ? passInput.value : '';
+  const isRemember = rememberCheckbox ? rememberCheckbox.checked : false;
+
+  const errorMsg = document.getElementById('loginErrorMsg');
+  const card = document.getElementById('loginCard');
+
+  if ((userVal === DEFAULT_USER || userVal === "sportsbookhub") && passVal === DEFAULT_PASS) {
+    if (isRemember) {
+      localStorage.setItem('sbhub_auth', 'true');
+    } else {
+      sessionStorage.setItem('sbhub_auth', 'true');
+    }
+    unlockDashboard();
+  } else {
+    if (errorMsg) errorMsg.textContent = "ACCESS DENIED: Invalid Security Key";
+    if (card) {
+      card.classList.add('shake');
+      setTimeout(() => {
+        card.classList.remove('shake');
+      }, 500);
+    }
+    if (passInput) {
+      passInput.focus();
+      passInput.select();
+    }
+  }
+}
+
+function unlockDashboard() {
+  const authOverlay = document.getElementById('authOverlay');
+  const dashboardApp = document.getElementById('dashboardApp');
+  if (authOverlay) authOverlay.classList.add('unlocked');
+  if (dashboardApp) dashboardApp.classList.add('unlocked');
+}
+
+function handleLogout() {
+  localStorage.removeItem('sbhub_auth');
+  sessionStorage.removeItem('sbhub_auth');
+
+  const passInput = document.getElementById('passwordInput');
+  if (passInput) passInput.value = '';
+  const errorMsg = document.getElementById('loginErrorMsg');
+  if (errorMsg) errorMsg.textContent = '';
+  const dashboardApp = document.getElementById('dashboardApp');
+  const authOverlay = document.getElementById('authOverlay');
+  if (dashboardApp) dashboardApp.classList.remove('unlocked');
+  if (authOverlay) authOverlay.classList.remove('unlocked');
+}
+
+/* UPDATED MENU TOGGLE LOGIC FOR AUTO-EXPAND SIDEBAR */
+function toggleMenu(menuId, btnElement) {
+  const targetMenu = document.getElementById(menuId);
+  if (!targetMenu) return;
+  
+  const isOpen = targetMenu.classList.contains('open');
+  const icon = btnElement ? btnElement.querySelector('.toggle-icon') : null;
+  
+  // Close all sub-menus for accordion feel
+  document.querySelectorAll('.sub-menu').forEach(menu => {
+    menu.classList.remove('open');
+  });
+  document.querySelectorAll('.toggle-icon').forEach(icn => {
+    icn.style.transform = 'rotate(-90deg)';
+  });
+
+  if (!isOpen) {
+    targetMenu.classList.add('open');
+    if (icon) icon.style.transform = 'rotate(0deg)';
+  }
+}
+
+function toggleDropdown(menuId) {
+  const menu = document.getElementById(menuId);
+  if (menu) menu.classList.toggle('show');
+}
+
+function toggleWidget(widgetId, show) {
+  const el = document.getElementById(widgetId);
+  if (el) el.style.display = show ? 'flex' : 'none';
+
+  const checkbox = document.querySelector(`input[onchange*="${widgetId}"]`);
+  if (checkbox) checkbox.checked = show;
+
+  try {
+    const savedWidgets = JSON.parse(localStorage.getItem('sbhub_widgets') || '{}');
+    savedWidgets[widgetId] = show;
+    localStorage.setItem('sbhub_widgets', JSON.stringify(savedWidgets));
+  } catch(e) {
+    console.warn("Could not save widget preference:", e);
+  }
+}
+
+function hideWidgetDirect(widgetId) {
+  toggleWidget(widgetId, false);
+}
+
+function restoreSavedWidgets() {
+  try {
+    const savedWidgets = JSON.parse(localStorage.getItem('sbhub_widgets') || '{}');
+    Object.keys(savedWidgets).forEach(widgetId => {
+      toggleWidget(widgetId, savedWidgets[widgetId]);
     });
+  } catch(e) {
+    console.warn("Could not load widget preferences:", e);
+  }
 }
-loadLiveDuties();
+
+const ABSTRACT_WALLPAPERS = {
+  '3d-chrome-swirl': 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2560&auto=format&fit=crop',
+  'cyan-liquid-glass': 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2560&auto=format&fit=crop',
+  'deep-liquid-chrome': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=2560&auto=format&fit=crop',
+  'neon-line-ribbon': 'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=2560&auto=format&fit=crop',
+  'neural-wireframe': 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2560&auto=format&fit=crop',
+  'dark-energy-vortex': 'https://images.unsplash.com/photo-1604076913837-52ab5629fba9?q=80&w=2560&auto=format&fit=crop'
+};
+
+function setGradient(theme) {
+  const body = document.getElementById('pageBody');
+  if (!body) return;
+  let backgroundStyle = '';
+
+  const lightThemes = ['plain-daylight', 'plain-sky-light', 'plain-warm-light'];
+  if (lightThemes.includes(theme)) {
+    body.classList.add('light-theme');
+  } else {
+    body.classList.remove('light-theme');
+  }
+
+  if (ABSTRACT_WALLPAPERS[theme]) {
+    backgroundStyle = `url("${ABSTRACT_WALLPAPERS[theme]}")`;
+  } else if (typeof theme === 'string' && (theme.startsWith('http') || theme.startsWith('url('))) {
+    backgroundStyle = theme.startsWith('url(') ? theme : `url("${theme}")`;
+  } else {
+    switch(theme) {
+      case 'plain-slate':
+        backgroundStyle = 'linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.95)), #0f172a';
+        break;
+      case 'plain-navy':
+        backgroundStyle = 'linear-gradient(rgba(11, 19, 41, 0.95), rgba(11, 19, 41, 0.95)), #0b1329';
+        break;
+      case 'plain-onyx':
+        backgroundStyle = 'linear-gradient(rgba(18, 18, 18, 0.95), rgba(18, 18, 18, 0.95)), #121212';
+        break;
+      case 'plain-daylight':
+        backgroundStyle = 'linear-gradient(rgba(248, 250, 252, 0.95), rgba(248, 250, 252, 0.95)), #f8fafc';
+        break;
+      case 'plain-sky-light':
+        backgroundStyle = 'linear-gradient(rgba(224, 242, 254, 0.95), rgba(224, 242, 254, 0.95)), #e0f2fe';
+        break;
+      case 'plain-warm-light':
+        backgroundStyle = 'linear-gradient(rgba(245, 245, 244, 0.95), rgba(245, 245, 244, 0.95)), #f5f5f4';
+        break;
+      default:
+        backgroundStyle = `url("${ABSTRACT_WALLPAPERS['3d-chrome-swirl']}")`;
+    }
+  }
+
+  body.style.background = backgroundStyle;
+  body.style.backgroundSize = 'cover';
+  body.style.backgroundPosition = 'center';
+  body.style.backgroundAttachment = 'fixed';
+  body.style.backgroundRepeat = 'no-repeat';
+
+  const themeMenu = document.getElementById('themeMenu');
+  if (themeMenu) themeMenu.classList.remove('show');
+  localStorage.setItem('sbhub_theme', theme);
+}
+
+function getGMT8IsoDate() {
+  const nowManila = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
+  const year = nowManila.getFullYear();
+  const month = String(nowManila.getMonth() + 1).padStart(2, '0');
+  const day = String(nowManila.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getCurrentSlotInfo() {
+  const nowManila = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
+  const hours = nowManila.getHours();
+  if (hours >= 6 && hours < 9)    return { slotId: "slot_6_9", label: "7:00 - 9:00" };
+  if (hours >= 9 && hours < 12)  return { slotId: "slot_9_12", label: "9:00 - 12:00" };
+  if (hours >= 12 && hours < 15) return { slotId: "slot_12_15", label: "12:00 - 15:00" };
+  if (hours >= 15 && hours < 18) return { slotId: "slot_15_18", label: "15:00 - 18:00" };
+  if (hours >= 18 && hours < 21) return { slotId: "slot_18_21", label: "18:00 - 21:00" };
+  return { slotId: "slot_21_0", label: "21:00 - 00:00" };
+}
+
+function listenToLiveDutyRoster() {
+  if (!rosterDb) return;
+  rosterDb.ref('roster_data').on('value', (snapshot) => {
+    renderLiveDutyWidget(snapshot.val());
+  });
+}
+
+function renderLiveDutyWidget(rosterData) {
+  const container = document.getElementById("liveDutyContent");
+  if (!container) return;
+
+  if (!rosterData) {
+    container.innerHTML = `<div style="text-align:center; padding:15px; font-size:10px; color:rgba(255,255,255,0.5);">No roster data available.</div>`;
+    return;
+  }
+
+  const todayIso = getGMT8IsoDate();
+  const { slotId, label: slotLabel } = getCurrentSlotInfo();
+
+  let activeDayKey = Object.keys(rosterData).find(key => {
+    if (key === 'archives') return false;
+    const entry = rosterData[key];
+    return entry?.isoDate === todayIso || entry?.date === todayIso || key === todayIso || key.includes(todayIso);
+  });
+
+  if (!activeDayKey) {
+    const activeKeys = Object.keys(rosterData).filter(k => k !== 'archives');
+    activeKeys.sort((a, b) => {
+      const dateA = rosterData[b]?.isoDate || rosterData[b]?.date || b;
+      const dateB = rosterData[a]?.isoDate || rosterData[a]?.date || a;
+      return String(dateA).localeCompare(String(dateB));
+    });
+    activeDayKey = activeKeys[0];
+  }
+
+  if (!activeDayKey || !rosterData[activeDayKey]) {
+    container.innerHTML = `<div style="text-align:center; padding:15px; font-size:10px; color:rgba(255,255,255,0.5);">No active schedule found.</div>`;
+    return;
+  }
+
+  const dayData = rosterData[activeDayKey];
+  const displayDate = dayData.isoDate || dayData.date || todayIso;
+  const teamMembers = [
+    { id: 'ann', name: 'ANN' }, { id: 'dave', name: 'DAVE' },
+    { id: 'ken', name: 'KEN' }, { id: 'kriztel', name: 'KRIZTEL' }
+  ];
+
+  let html = `
+    <div style="font-size:11px; font-weight:700; opacity:0.9; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+      <span>📅 ${displayDate}</span>
+      <span class="badge-time">⏰ ${slotLabel}</span>
+    </div>
+  `;
+
+  teamMembers.forEach(m => {
+    const mGrid = dayData.grid ? dayData.grid[m.id] : null;
+    const shiftId = mGrid?.shift || 'shift-7-16';
+    const isRest = (shiftId === 'shift-rd' || shiftId === 'shift-vl' || shiftId === 'shift-sl');
+    const restLabel = shiftId === 'shift-vl' ? 'VACATION LEAVE' : (shiftId === 'shift-sl' ? 'SICK LEAVE' : 'REST DAY');
+
+    let rawTasks = (mGrid && mGrid.slots) ? mGrid.slots[slotId] || [] : [];
+    if (!Array.isArray(rawTasks)) rawTasks = [];
+    const tasks = rawTasks.map(item => (typeof item === 'string' ? { text: item, done: false } : { text: item.text || '', done: !!item.done }));
+
+    html += `
+      <div class="duty-card">
+        <div class="duty-top">
+          <span>${m.name}</span>
+          <span class="badge-time">${isRest ? restLabel : shiftId.replace('shift-', '')}</span>
+        </div>
+    `;
+
+    if (isRest) {
+      html += `<div class="duty-desc">Rest day.</div>`;
+    } else if (tasks.length === 0) {
+      html += `<div class="duty-desc">No assigned tasks in this slot.</div>`;
+    } else {
+      tasks.forEach(t => {
+        html += `<div class="duty-desc" style="display:flex; gap:6px; align-items:center;">
+          <i class='bx ${t.done ? 'bx-check-circle' : 'bx-time-five'}' style="color:${t.done ? '#34d399' : '#38bdf8'}"></i>
+          <span style="${t.done ? 'text-decoration:line-through; opacity:0.5;' : ''}">${t.text}</span>
+        </div>`;
+      });
+    }
+    html += `</div>`;
+  });
+
+  container.innerHTML = html;
+  calculateActiveTraders();
+}
+
+function getGMT8DateObj(offsetDays = 0) {
+  const now = new Date();
+  const gmt8String = now.toLocaleString("en-US", { timeZone: "Asia/Manila" });
+  const gmt8Date = new Date(gmt8String);
+  gmt8Date.setDate(gmt8Date.getDate() + offsetDays);
+  return gmt8Date;
+}
+
+function getFormattedDateQuery(daysAhead) {
+  const d = getGMT8DateObj(daysAhead);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}${month}${day}`;
+}
+
+async function fetchLiveGames() {
+  const container = document.getElementById("gamesContainer");
+  if (!container) return;
+  container.innerHTML = `<div style="text-align:center; padding:15px;"><i class='bx bx-loader-alt bx-spin' style="font-size:20px; color:#38bdf8;"></i></div>`;
+  
+  try {
+    const targetDateQuery = getFormattedDateQuery(selectedGameDayOffset);
+    const targetDateObj = getGMT8DateObj(selectedGameDayOffset);
+    const dateLabelStr = targetDateObj.toLocaleDateString("en-US", { month: 'short', day: 'numeric' }).toUpperCase();
+    
+    let dayTag = `DAY ${selectedGameDayOffset + 1}`;
+    if (selectedGameDayOffset === 0) dayTag = `TODAY`;
+
+    const labelEl = document.getElementById("matchDayDisplay");
+    if (labelEl) labelEl.textContent = `${dayTag} (${dateLabelStr})`;
+
+    let matches = await fetchLeagueList(TOP_TIER_LEAGUES, targetDateQuery);
+
+    if (matches.length < 10) {
+      const secondaryMatches = await fetchLeagueList(SECONDARY_LEAGUES, targetDateQuery);
+      const seenMatchKeys = new Set(matches.map(m => `${m.homeName}-${m.awayName}`));
+      
+      for (const sm of secondaryMatches) {
+        const key = `${sm.homeName}-${sm.awayName}`;
+        if (!seenMatchKeys.has(key)) {
+          seenMatchKeys.add(key);
+          matches.push(sm);
+        }
+      }
+    }
+
+    if (matches.length === 0) {
+      container.innerHTML = `<div style="text-align:center; padding:20px; font-size:11px; color:rgba(255,255,255,0.5);">No scheduled fixtures for ${dateLabelStr} (GMT+8).</div>`;
+      return;
+    }
+
+    matches = matches.slice(0, 10);
+
+    let gamesHtml = "";
+    matches.forEach(item => {
+      gamesHtml += `
+        <div class="top-game-card">
+          <div class="top-game-flags">
+            <img src="${item.homeLogo}" alt="${item.homeName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+            <span class="vs-text">vs</span>
+            <img src="${item.awayLogo}" alt="${item.awayName}" class="team-flag-img" onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'">
+          </div>
+          <div class="top-game-title">${item.homeName} <span class="vs-light">vs</span> ${item.awayName}</div>
+          <div class="top-game-league">${item.leagueName}${item.kickOffTime ? ' &bull; <span style="color:#38bdf8;">' + item.kickOffTime + '</span>' : ''}</div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = gamesHtml;
+
+  } catch (e) {
+    console.error("Fetch Live Games Error:", e);
+    container.innerHTML = `<div style="text-align:center; padding:10px; font-size:11px; color:#f87171;">Failed to fetch live fixture data.</div>`;
+  }
+}
+
+async function fetchLeagueList(leagueList, dateQuery) {
+  const uniqueCodeToLeagues = new Map();
+  leagueList.forEach(league => {
+    if (!uniqueCodeToLeagues.has(league.code)) {
+      uniqueCodeToLeagues.set(league.code, league.name);
+    }
+  });
+
+  const fetchPromises = Array.from(uniqueCodeToLeagues.entries()).map(([code, defaultName]) =>
+    fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${code}/scoreboard?dates=${dateQuery}`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => data ? { code, defaultName, data } : null)
+      .catch(() => null)
+  );
+
+  const results = await Promise.all(fetchPromises);
+  let matches = [];
+  const seenMatchKeys = new Set();
+
+  for (const item of results) {
+    if (!item || !item.data || !item.data.events) continue;
+    for (const evt of item.data.events) {
+      if (matches.length >= 15) break;
+      const comp = evt.competitions?.[0];
+      if (!comp) continue;
+
+      const homeTeam = comp.competitors?.find(c => c.homeAway === 'home');
+      const awayTeam = comp.competitors?.find(c => c.homeAway === 'away');
+
+      if (homeTeam && awayTeam) {
+        const homeName = homeTeam.team?.shortDisplayName || homeTeam.team?.displayName || "Home";
+        const awayName = awayTeam.team?.shortDisplayName || awayTeam.team?.displayName || "Away";
+
+        const matchKey = evt.id || `${homeName}-${awayName}`;
+        if (seenMatchKeys.has(matchKey)) continue;
+        seenMatchKeys.add(matchKey);
+
+        const homeLogo = homeTeam.team?.logo || homeTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
+        const awayLogo = awayTeam.team?.logo || awayTeam.team?.logos?.[0]?.href || "https://a.espncdn.com/i/teamlogos/soccer/500/default.png";
+
+        let kickOffTime = "";
+        if (evt.date || comp.date) {
+          const dObj = new Date(evt.date || comp.date);
+          kickOffTime = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Manila',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }).format(dObj);
+        }
+
+        const displayedLeagueName = item.data.leagues?.[0]?.name || item.defaultName;
+
+        matches.push({
+          homeName,
+          awayName,
+          homeLogo,
+          awayLogo,
+          leagueName: displayedLeagueName,
+          kickOffTime
+        });
+      }
+    }
+  }
+
+  return matches;
+}
+
+function navigateMatchDay(dir) {
+  selectedGameDayOffset += dir;
+  if (selectedGameDayOffset < 0) selectedGameDayOffset = 6;
+  if (selectedGameDayOffset > 6) selectedGameDayOffset = 0;
+  fetchLiveGames();
+}
+
+function calculateActiveTraders() {
+  const dutyCards = document.querySelectorAll('.duty-card');
+  let activeCount = 0;
+  dutyCards.forEach(card => {
+    const timeBadge = card.querySelector('.badge-time');
+    if (timeBadge) {
+      const text = timeBadge.textContent.trim().toUpperCase();
+      if (!text.includes('OFF') && !text.includes('REST') && !text.includes('RD') && !text.includes('LEAVE')) {
+        activeCount++;
+      }
+    }
+  });
+  const el = document.getElementById('activeTraderCount');
+  if (el) el.textContent = activeCount + ' Working';
+}
+
+function initDashboardApp() {
+  const savedTheme = localStorage.getItem('sbhub_theme');
+  if (savedTheme) {
+    setGradient(savedTheme);
+  } else {
+    setGradient('3d-chrome-swirl');
+  }
+
+  if (localStorage.getItem('sbhub_auth') === 'true' || sessionStorage.getItem('sbhub_auth') === 'true') {
+    unlockDashboard();
+  }
+
+  switchBrandTab('ibet');
+  restoreSavedWidgets();
+
+  loadCachedTopPicks();
+
+  fetchTopPicksAndBoosts();
+  setInterval(fetchTopPicksAndBoosts, 2 * 60 * 1000);
+
+  listenToLiveDutyRoster();
+  fetchLiveGames();
+  calculateActiveTraders();
+  fetchManilaWeather();
+  setInterval(fetchManilaWeather, 15 * 60 * 1000);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initDashboardApp);
+} else {
+  initDashboardApp();
+}
+
+window.addEventListener('click', function(e) {
+  if (!e.target.closest('.dropdown-container')) {
+    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+  }
+});
