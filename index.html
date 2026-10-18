@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sportsbook Hub Growth Dashboard</title>
     
-    <!-- External Dependencies -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     
-    <!-- External CSS -->
     <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
@@ -46,14 +44,12 @@
                 <div class="logo-main"><i data-lucide="waves"></i> Growth</div>
             </div>
 
-            <!-- Search Bar -->
             <div class="sidebar-search">
                 <i data-lucide="search" size="16" style="color: var(--text-muted);"></i>
                 <input type="text" id="sidebarSearchInput" placeholder="Search links (e.g. ROTA)" onkeyup="filterSidebar()" />
             </div>
 
             <div class="menu-group" id="sidebarMenuContainer">
-                
                 <div class="menu-item-wrapper">
                     <a class="menu-item active" href="#">
                         <div class="menu-item-left"><i data-lucide="layout-dashboard" size="18"></i> <span class="label-ref">Dashboard</span></div>
@@ -86,12 +82,10 @@
                         <a href="https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit?gid=784209986#gid=784209986" target="_blank" rel="noreferrer" class="sub-link">Ibet Boost (MIG)</a>
                         <a href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank" rel="noreferrer" class="sub-link">KT Sports Check</a>
                         <a href="https://polymarket.com/breaking" target="_blank" rel="noreferrer" class="sub-link">Prediction Offer Check</a>
-                        <a href="edge_boosts.html" target="_blank" rel="noreferrer" class="sub-link">Edge Boost Sys</a>
-                        <a href="ibet_boosts.html" target="_blank" rel="noreferrer" class="sub-link">Ibet Boost Sys</a>
                     </div>
                 </div>
 
-                <!-- DAILY MONITORING -->
+                <!-- MONITORING -->
                 <div class="menu-item-wrapper">
                     <div class="menu-item" onclick="toggleMenu('sub-monitoring')">
                         <div class="menu-item-left"><i data-lucide="activity" size="18"></i> <span class="label-ref">MONITORING</span></div>
@@ -100,108 +94,11 @@
                     <div class="sub-menu" id="sub-monitoring">
                         <a href="https://docs.google.com/spreadsheets/d/1qruVq-HZCyM0uDgnYSqFhccXKnMkqJ8z/edit?gid=1305147410#gid=1305147410" target="_blank" rel="noreferrer" class="sub-link">Green Tracker</a>
                         <a href="https://docs.google.com/spreadsheets/d/1OcaMz_AOUeRsWIVplbnk2XAna62m3IKa/edit?gid=457800468#gid=457800468" target="_blank" rel="noreferrer" class="sub-link">Red Tracker</a>
-                        <a href="https://docs.google.com/spreadsheets/d/1U-Dmc628kHQabzJGoBeEgRus5PiRhgSd/edit?pli=1&amp;gid=1983372695#gid=1983372695" target="_blank" rel="noreferrer" class="sub-link">Orange Tracker</a>
-                        <a href="#7a" class="sub-link">7A Tracker</a>
-                        <a href="https://docs.google.com/spreadsheets/d/11STKO4Xsj0a8iTuUXSCXC-XEE4-7qmF9/edit?pli=1&amp;gid=1701374259#gid=1701374259" target="_blank" rel="noreferrer" class="sub-link">Green CRM</a>
-                        <a href="https://docs.google.com/spreadsheets/d/1gPks2FdHyOOTiILvn553miz32WeEtOpx/edit?gid=1701374259#gid=1701374259" target="_blank" rel="noreferrer" class="sub-link">Red CRM</a>
-                    </div>
-                </div>
-            
-                <div class="menu-title">INTEGRATION</div>
-                
-                <!-- BACK OFFICE -->
-                <div class="menu-item-wrapper">
-                    <div class="menu-item" onclick="toggleMenu('sub-backoffice')">
-                        <div class="menu-item-left"><i data-lucide="slack" size="18"></i> <span class="label-ref">BACK OFFICE</span></div>
-                        <i data-lucide="chevron-down" size="16"></i>
-                    </div>
-                    <div class="sub-menu" id="sub-backoffice">
-                        <a href="https://betbook.center/qbet/bets" target="_blank" rel="noreferrer" class="sub-link">QBET/55/30</a>
-                        <a href="https://mga-betbook.center/ibet/bets" target="_blank" rel="noreferrer" class="sub-link">IBET</a>
-                        <a href="https://eu-b7k.center/pubs8/bets" target="_blank" rel="noreferrer" class="sub-link">PUBS</a>
-                    </div>
-                </div>
-
-                <!-- MULTI-MONITOR -->
-                <div class="menu-item-wrapper">
-                    <div class="menu-item" onclick="toggleMenu('sub-multimonitor')">
-                        <div class="menu-item-left"><i data-lucide="monitor" size="18"></i> <span class="label-ref">MULTI-MONITOR</span></div>
-                        <i data-lucide="chevron-down" size="16"></i>
-                    </div>
-                    <div class="sub-menu" id="sub-multimonitor">
-                        <a href="https://betbook.center/monitor?providerIds=prediction_markets" target="_blank" rel="noreferrer" class="sub-link">Edge Prediction Ticker</a>
-                        <a href="https://eu-b7k.center/monitor?providerIds=prediction_markets" target="_blank" rel="noreferrer" class="sub-link">Pubs Prediction Ticker</a>
-                        <a href="https://betbook.center/monitor" target="_blank" rel="noreferrer" class="sub-link">Qbet/55/30 Rejected</a>
-                        <a href="https://eu-b7k.center/monitor" target="_blank" rel="noreferrer" class="sub-link">Pubs Rejected</a>
-                    </div>
-                </div>
-
-                <!-- BETRADAR -->
-                <div class="menu-item-wrapper">
-                    <div class="menu-item" onclick="toggleMenu('sub-betradar')">
-                        <div class="menu-item-left"><i data-lucide="target" size="18"></i> <span class="label-ref">BETRADAR</span></div>
-                        <i data-lucide="chevron-down" size="16"></i>
-                    </div>
-                    <div class="sub-menu" id="sub-betradar">
-                        <a href="https://mtsc-its.betradar.com/" target="_blank" rel="noreferrer" class="sub-link">MTS</a>
-                        <a href="https://portal.betradar.com/" target="_blank" rel="noreferrer" class="sub-link">CTRL Portal</a>
-                    </div>
-                </div>
-
-                <!-- OWN BRANDS -->
-                <div class="menu-item-wrapper">
-                    <div class="menu-item" onclick="toggleMenu('sub-ownbrands')">
-                        <div class="menu-item-left"><i data-lucide="plus-circle" size="18"></i> <span class="label-ref">OWN BRANDS</span></div>
-                        <i data-lucide="chevron-down" size="16"></i>
-                    </div>
-                    <div class="sub-menu" id="sub-ownbrands">
-                        <a href="https://www.7abet.com/en-UN" target="_blank" rel="noreferrer" class="sub-link">7A</a>
-                        <a href="https://www.qbet.com/en-UN" target="_blank" rel="noreferrer" class="sub-link">QBET</a>
-                        <a href="https://www.55bet.com/en-UN" target="_blank" rel="noreferrer" class="sub-link">55BET</a>
-                        <a href="https://www.30bet.com/en-UN" target="_blank" rel="noreferrer" class="sub-link">30BET</a>
-                        <a href="https://www.gqbet.vip/en-UN/" target="_blank" rel="noreferrer" class="sub-link">GQBET</a>
-                        <a href="https://www.bvbet.com/en-UN" target="_blank" rel="noreferrer" class="sub-link">BVBET</a>
-                        <a href="https://www.ibet.com/en-UN/sportsbook/price-boost/football" target="_blank" rel="noreferrer" class="sub-link">IBET</a>
-                    </div>
-                </div>
-
-                <!-- PRICE REFERENCES -->
-                <div class="menu-item-wrapper">
-                    <div class="menu-item" onclick="toggleMenu('sub-priceref')">
-                        <div class="menu-item-left"><i data-lucide="database" size="18"></i> <span class="label-ref">PRICE REFERENCES</span></div>
-                        <i data-lucide="chevron-down" size="16"></i>
-                    </div>
-                    <div class="sub-menu" id="sub-priceref">
-                        <a href="https://www.flashscore.com/" target="_blank" rel="noreferrer" class="sub-link">Flashscore</a>
-                        <a href="https://betsapi.com/" target="_blank" rel="noreferrer" class="sub-link">Betsapi</a>
-                        <a href="https://www.oddsportal.com/football/" target="_blank" rel="noreferrer" class="sub-link">Oddsportal</a>
-                        <a href="https://www.oddschecker.com/" target="_blank" rel="noreferrer" class="sub-link">Oddschecker</a>
-                        <a href="https://www.betfair.com/exchange/plus/" target="_blank" rel="noreferrer" class="sub-link">Betfair</a>
-                        <a href="https://www.bet365.com/" target="_blank" rel="noreferrer" class="sub-link">Bet365</a>
-                        <a href="https://www.pinnacle.com/" target="_blank" rel="noreferrer" class="sub-link">Pinnacle</a>
-                        <a href="https://gg.bet/" target="_blank" rel="noreferrer" class="sub-link">GGBet</a>
-                        <a href="https://www.unibet.com.au/" target="_blank" rel="noreferrer" class="sub-link">Unibet</a>
-                        <a href="https://www.sofascore.com/" target="_blank" rel="noreferrer" class="sub-link">Sofascore</a>
-                        <a href="https://www.marathonbet.com/" target="_blank" rel="noreferrer" class="sub-link">Marathonbet</a>
-                        <a href="https://fonbet.com/" target="_blank" rel="noreferrer" class="sub-link">Fonbet</a>
-                    </div>
-                </div>
-
-                <!-- PROCEDURES -->
-                <div class="menu-item-wrapper">
-                    <div class="menu-item" onclick="toggleMenu('sub-procedures')">
-                        <div class="menu-item-left"><i data-lucide="file-text" size="18"></i> <span class="label-ref">PROCEDURES</span></div>
-                        <i data-lucide="chevron-down" size="16"></i>
-                    </div>
-                    <div class="sub-menu" id="sub-procedures">
-                        <a href="https://ibet.atlassian.net/wiki/spaces/Sportsbook/overview" target="_blank" rel="noreferrer" class="sub-link">Confluence</a>
-                        <a href="workspace.html" target="_blank" rel="noreferrer" class="sub-link">Workspace Guide</a>
                     </div>
                 </div>
             </div>
 
             <div class="spacer"></div>
-            <!-- SIGN OUT BUTTON -->
             <a href="#" class="menu-item" style="color: #ef4444;" onclick="handleLogout()">
                 <div class="menu-item-left"><i data-lucide="log-out" size="18"></i> <span style="font-weight:700;">SIGN OUT</span></div>
             </a>
@@ -209,15 +106,14 @@
 
         <!-- MAIN CONTENT -->
         <div class="main-content">
-            <!-- HEADER -->
             <div class="top-header">
                 <h1>Hi, User!</h1>
                 <div class="header-actions">
                     <button class="btn-create" onclick="openModal('taskModal')"><i data-lucide="plus" size="16"></i> Create</button>
                     <button class="icon-btn" onclick="openModal('globalSearchModal')" title="Global Search"><i data-lucide="search" size="18"></i></button>
-                    <button class="icon-btn" onclick="openNotifications()" title="Notifications / Upcoming Games"><i data-lucide="bell" size="18"></i></button>
-                    <div class="user-avatar" onclick="openModal('themeModal')" title="Profile Configuration">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User Profile" style="width:100%; height:100%;" />
+                    <button class="icon-btn" onclick="openNotifications()" title="Upcoming Games"><i data-lucide="bell" size="18"></i></button>
+                    <div class="user-avatar" onclick="openModal('themeModal')" title="Profile">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Avatar" style="width:100%; height:100%;" />
                     </div>
                 </div>
             </div>
@@ -231,9 +127,7 @@
                         <button class="add-alert-btn" onclick="openModal('alertModal')">+ Add Alert</button>
                     </div>
                     <div class="card-title">Pending &amp; Urgent <i data-lucide="share-2" size="18"></i></div>
-                    <div class="widget-content-scroll" id="jiraHandoverContent">
-                        <!-- Filled by JS -->
-                    </div>
+                    <div class="widget-content-scroll" id="jiraHandoverContent"></div>
                 </div>
 
                 <!-- Top Picks / Upcoming Matches -->
@@ -241,7 +135,7 @@
                     <div class="card-header-label">TOP PICKS / HOT BOOST</div>
                     <div class="card-title">
                         <span>Upcoming Matches</span>
-                        <i data-lucide="maximize-2" size="18" style="cursor:pointer;" title="Expand Upcoming Matches" onclick="openModal('expandPicksModal')"></i>
+                        <i data-lucide="maximize-2" size="18" style="cursor:pointer;" title="Expand" onclick="openModal('expandPicksModal')"></i>
                     </div>
                     <div class="filter-bar" style="margin-bottom: 0.2rem;">
                         <button class="filter-btn active" onclick="filterPicks('eng.1', this)">EPL</button>
@@ -250,15 +144,16 @@
                         <button class="filter-btn" onclick="filterPicks('ita.1', this)">SERIE A</button>
                         <button class="filter-btn" onclick="filterPicks('uefa.champions', this)">UEFA</button>
                     </div>
-                    <div class="picks-grid" id="topPicksContainer">
-                        <!-- Filled by JS -->
-                    </div>
+                    <div class="picks-grid" id="topPicksContainer"></div>
                 </div>
 
-                <!-- Top Games -->
+                <!-- Daily Matchday -->
                 <div class="card">
                     <div class="card-header-label">TOP DAILY GAMES</div>
-                    <div class="card-title">Daily Matchday <i data-lucide="arrow-up-right" size="20"></i></div>
+                    <div class="card-title">
+                        <span>Daily Matchday</span>
+                        <i data-lucide="maximize-2" size="18" style="cursor:pointer;" title="Expand Matchday" onclick="openModal('expandMatchdayModal')"></i>
+                    </div>
                     <div class="games-navigator">
                         <i data-lucide="chevron-left" style="cursor: pointer;" onclick="navMatchDay(-1)"></i>
                         <span id="matchDayDisplay">TODAY</span>
@@ -272,8 +167,7 @@
 
             <!-- MIDDLE GRID -->
             <div class="grid-middle">
-                
-                <!-- Col 1: Slot Duties with Trader Filter Dropdown -->
+                <!-- Slot Duties -->
                 <div class="card">
                     <div class="card-header-label">
                         <span>SLOT DUTIES</span>
@@ -295,7 +189,7 @@
                     </div>
                 </div>
 
-                <!-- Col 2: Brand Directory Dock -->
+                <!-- Brand Directory Dock -->
                 <div class="card">
                     <div class="card-header-label">BRAND DIRECTORY DOCK</div>
                     <div class="filter-bar" id="brand-tabs" style="margin-bottom: 0.5rem; margin-top: 0.3rem;">
@@ -303,12 +197,10 @@
                         <button class="filter-btn" id="tab-edge" onclick="switchBrandTab('edge')">EDGE</button>
                         <button class="filter-btn" id="tab-pubs" onclick="switchBrandTab('pubs')">PUBS</button>
                     </div>
-                    <div class="widget-content-scroll" id="brandLinksContainer">
-                        <!-- Populated by JS -->
-                    </div>
+                    <div class="widget-content-scroll" id="brandLinksContainer"></div>
                 </div>
 
-                <!-- Col 3: Daily Task Dock -->
+                <!-- Daily Task Dock -->
                 <div class="card">
                     <div class="card-header-label" style="margin-bottom: 0.6rem;">DAILY TASK DOCK</div>
                     <div class="card-title" style="font-size:0.85rem;">Quick Workflows</div>
@@ -317,50 +209,43 @@
                         <a href="https://docs.google.com/spreadsheets/d/1Pl8XVaYNEaupKx57HlXbWibsIeR7a28UfemRasxJ8RY/edit?gid=1450723096#gid=1450723096" target="_blank" rel="noreferrer" class="dock-link"><span>EDGE BOOST (MIG)</span> <i data-lucide="arrow-right" size="14"></i></a>
                         <a href="https://docs.google.com/spreadsheets/d/18ZJNs7wJ37-4sAHX5CNMfqQQcmpfy1cIvP19tHI7rY4/edit?gid=784209986#gid=784209986" target="_blank" rel="noreferrer" class="dock-link"><span>IBET BOOST (MIG)</span> <i data-lucide="arrow-right" size="14"></i></a>
                         <a href="https://docs.google.com/spreadsheets/d/1-sft6uXe-D4GlDng96bMfWcOC4492WA3lkuO8gaUqQ4/edit?gid=0#gid=0" target="_blank" rel="noreferrer" class="dock-link"><span>KT SPORTS CHECK</span> <i data-lucide="arrow-right" size="14"></i></a>
-                        <a href="https://polymarket.com/breaking" target="_blank" rel="noreferrer" class="dock-link"><span>PREDICTION OFFER CHECK</span> <i data-lucide="arrow-right" size="14"></i></a>
                     </div>
                 </div>
 
-                <!-- Col 4: Task in process -->
+                <!-- Tasks -->
                 <div style="display:flex; flex-direction:column; overflow:hidden;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
                         <h3 style="font-size:0.95rem; font-weight:800; color:var(--text-main);">Tasks (<span id="taskCount">0</span>)</h3>
                         <div style="font-size:0.7rem; font-weight:700; color:var(--text-muted); cursor:pointer;">Archive &gt;</div>
                     </div>
-                    
                     <div class="widget-content-scroll" id="taskContainer">
                         <div class="task-card dashed" onclick="openModal('taskModal')">+ Add task</div>
                     </div>
                 </div>
-
             </div>
 
             <!-- BOTTOM GRID -->
             <div>
                 <div class="card-title" style="margin-bottom:0.6rem; font-size:0.95rem; color:var(--text-main);">Live Widgets &amp; Tracking</div>
                 <div class="grid-bottom">
-                    <!-- Manila Time -->
                     <div class="card black-theme bottom-card">
                         <div class="card-header-label">MANILA TIME (GMT+8)</div>
                         <div class="bottom-val" id="live-time-gmt8">--:--:--</div>
                         <div class="bottom-sub" id="live-date-gmt8">Loading date...</div>
                         <div class="corner-icon"><i data-lucide="clock" size="14"></i></div>
                     </div>
-                    <!-- Athens/Europe Time -->
                     <div class="card black-theme bottom-card">
                         <div class="card-header-label">EUROPE TIME (GMT+2)</div>
                         <div class="bottom-val" id="live-time-gmt2">--:--:--</div>
                         <div class="bottom-sub" id="live-date-gmt2">Loading date...</div>
                         <div class="corner-icon"><i data-lucide="globe" size="14"></i></div>
                     </div>
-                    <!-- Weather -->
                     <div class="card black-theme bottom-card">
                         <div class="card-header-label">WEATHER (METRO MANILA)</div>
                         <div class="bottom-val" id="live-temp">--&deg;C</div>
                         <div class="bottom-sub" id="live-weather-desc">Loading weather...</div>
                         <div class="corner-icon"><i data-lucide="cloud-rain" size="14"></i></div>
                     </div>
-                    <!-- Dashboard Sync -->
                     <div class="card black-theme bottom-card" onclick="openModal('themeModal')">
                         <div class="card-header-label">SYSTEM (CLICK FOR THEME)</div>
                         <div class="bottom-val" style="font-size: 1.2rem; padding: 0.2rem 0;">Dashboard Sync</div>
@@ -369,12 +254,10 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
     <!-- MODALS -->
-
     <!-- Expanded Upcoming Matches Modal -->
     <div class="modal-overlay" id="expandPicksModal">
         <div class="modal-card" style="width: 800px; max-width: 95%;">
@@ -383,26 +266,37 @@
                 <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('expandPicksModal')"></i>
             </div>
             <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 1rem;">Full schedule view across all monitored leagues for the upcoming week.</p>
-            <div class="expand-grid" id="expandedPicksGrid">
-                <!-- Filled dynamically by JS -->
-            </div>
+            <div class="expand-grid" id="expandedPicksGrid"></div>
             <button class="modal-btn" style="margin-top:1.2rem;" onclick="closeModal('expandPicksModal')">Close Window</button>
         </div>
     </div>
-    
-    <!-- Add Task Modal -->
+
+    <!-- Expanded Daily Matchday Modal -->
+    <div class="modal-overlay" id="expandMatchdayModal">
+        <div class="modal-card" style="width: 800px; max-width: 95%;">
+            <div class="modal-title">
+                <span>Daily Matchday Timetable</span>
+                <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('expandMatchdayModal')"></i>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 1rem;">Complete fixture breakdown for the selected matchday.</p>
+            <div class="expand-grid" id="expandedMatchdayGrid"></div>
+            <button class="modal-btn" style="margin-top:1.2rem;" onclick="closeModal('expandMatchdayModal')">Close Window</button>
+        </div>
+    </div>
+
+    <!-- Task Modal -->
     <div class="modal-overlay" id="taskModal">
         <div class="modal-card">
             <div class="modal-title">Create New Task <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('taskModal')"></i></div>
             <form onsubmit="saveTask(event)">
-                <input type="text" id="taskTitle" class="modal-input" placeholder="Task Title (e.g. Meet HR For Project)" required />
-                <input type="text" id="taskTime" class="modal-input" placeholder="Time / Detail (e.g. Tonight, 15:00)" required />
+                <input type="text" id="taskTitle" class="modal-input" placeholder="Task Title" required />
+                <input type="text" id="taskTime" class="modal-input" placeholder="Time / Detail" required />
                 <button type="submit" class="modal-btn">Save Task</button>
             </form>
         </div>
     </div>
 
-    <!-- Add Alert Modal -->
+    <!-- Alert Modal -->
     <div class="modal-overlay" id="alertModal">
         <div class="modal-card">
             <div class="modal-title">Add Alert/Handover <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('alertModal')"></i></div>
@@ -411,18 +305,17 @@
                     <option value="HANDOVER">Handover</option>
                     <option value="JIRA">Jira Ticket</option>
                 </select>
-                <input type="text" id="alertBrand" class="modal-input" placeholder="Brand or Ticket Key (e.g. IBET, PROJ-123)" required />
+                <input type="text" id="alertBrand" class="modal-input" placeholder="Brand or Ticket Key" required />
                 <input type="text" id="alertMsg" class="modal-input" placeholder="Message or Details" required />
                 <button type="submit" class="modal-btn">Post Alert</button>
             </form>
         </div>
     </div>
 
-    <!-- Theme Selection Modal -->
+    <!-- Theme Modal -->
     <div class="modal-overlay" id="themeModal">
         <div class="modal-card">
             <div class="modal-title">Configuration &amp; Theme <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('themeModal')"></i></div>
-            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 1rem;">Select a dashboard appearance:</p>
             <button class="theme-btn" onclick="applyTheme('light')">Light Clean Theme (Default)</button>
             <button class="theme-btn" onclick="applyTheme('dark')">Dark Obsidian Theme</button>
             <button class="theme-btn" style="background:#e0f2fe; color:#0c0c0c;" onclick="applyTheme('blue')">Sky Blue Daylight</button>
@@ -433,10 +326,8 @@
     <div class="modal-overlay" id="globalSearchModal">
         <div class="modal-card">
             <div class="modal-title">Global Search <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('globalSearchModal')"></i></div>
-            <input type="text" id="globalSearchInput" class="modal-input" placeholder="Search any link, tool, or category..." onkeyup="performGlobalSearch()" />
-            <div id="globalSearchResults" style="display:flex; flex-direction:column; gap:8px; max-height:300px; overflow-y:auto; padding-right: 5px;">
-                <div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Type to search...</div>
-            </div>
+            <input type="text" id="globalSearchInput" class="modal-input" placeholder="Search any link..." onkeyup="performGlobalSearch()" />
+            <div id="globalSearchResults" style="display:flex; flex-direction:column; gap:8px; max-height:300px; overflow-y:auto; padding-right: 5px;"></div>
         </div>
     </div>
 
@@ -444,14 +335,10 @@
     <div class="modal-overlay" id="notificationsModal">
         <div class="modal-card" style="width: 500px;">
             <div class="modal-title">Upcoming Top Games <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('notificationsModal')"></i></div>
-            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 1rem;">Master list of monitored upcoming fixtures.</p>
-            <div id="notificationsList" style="display:flex; flex-direction:column; gap:8px; max-height:400px; overflow-y:auto; padding-right: 5px;">
-                <!-- Filled by JS -->
-            </div>
+            <div id="notificationsList" style="display:flex; flex-direction:column; gap:8px; max-height:400px; overflow-y:auto; padding-right: 5px;"></div>
         </div>
     </div>
 
-    <!-- External JS -->
     <script src="./app.js"></script>
 </body>
 </html>
