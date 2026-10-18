@@ -23,7 +23,6 @@ function handleLogin(e) {
     var pass = passEl.value;
     
     if (user === DEFAULT_USER && pass === DEFAULT_PASS) {
-        // Check remember me status
         var remember = rememberEl ? rememberEl.checked : false;
         
         if (remember) {
@@ -226,10 +225,10 @@ function loadTasks() {
     var html = "";
     for (var i = 0; i < tasks.length; i++) {
         var t = tasks[i];
-        html += "<div class=\"task-card\">\n                    <div style=\"display:flex; justify-content:space-between;\">\n                        <div class=\"task-icon\"><i data-lucide=\"clipboard-list\" size=\"16\"></i></div>\n                        <i data-lucide=\"x\" size=\"14\" style=\"color:var(--text-muted); cursor:pointer;\" onclick=\"deleteTask(" + i + ")\"></i>\n                    </div>\n                    <div>\n                        <div class=\"task-name\">" + t.title + "</div>\n                        <div class=\"task-time\">" + t.time + "</div>\n                    </div>\n                    <div class=\"task-corner-icon\"><i data-lucide=\"check\" size=\"12\"></i></div>\n                </div>";
+        html += "<div class=\"task-card\">\n                    <div style=\"display:flex; justify-content:space-between;\">\n                        <div class=\"task-icon\"><i data-lucide=\"clipboard-list\" size=\"14\"></i></div>\n                        <i data-lucide=\"x\" size=\"12\" style=\"color:var(--text-muted); cursor:pointer;\" onclick=\"deleteTask(" + i + ")\"></i>\n                    </div>\n                    <div>\n                        <div class=\"task-name\">" + t.title + "</div>\n                        <div class=\"task-time\">" + t.time + "</div>\n                    </div>\n                    <div class=\"task-corner-icon\"><i data-lucide=\"check\" size=\"10\"></i></div>\n                </div>";
     }
     
-    html += "<div class=\"task-card dashed\" onclick=\"openModal('taskModal')\">+ Add a task</div>";
+    html += "<div class=\"task-card dashed\" onclick=\"openModal('taskModal')\">+ Add task</div>";
     
     if (container) {
         container.innerHTML = html;
@@ -415,63 +414,70 @@ if (savedTheme) {
     applyTheme(savedTheme);
 }
 
-// --- Top Picks ---
+// --- Real Multi-Date Fixtures (Oct 18-25 Range Parsing) ---
 var cachedPicks = [];
 var currentLeague = "eng.1";
+var matchDayOffset = 0;
+var selectedTraderFilter = "ALL";
+
+function filterTraderDuty(traderId) {
+    selectedTraderFilter = traderId;
+    loadLiveDuties();
+}
 
 function fetchTopPicks() {
     var leagues = ["eng.1", "esp.1", "ger.1", "ita.1", "uefa.champions"];
-    var dateStr = new Date().toLocaleString("en-CA", { timeZone: "Asia/Manila" }).split(",")[0];
-    var dateQ = dateStr.replace(/-/g, "");
-    
     var allMatches = [];
     var promises = [];
     
-    for (var i = 0; i < leagues.length; i++) {
-        (function(l) {
-            var p = fetch("https://site.api.espn.com/apis/site/v2/sports/soccer/" + l + "/scoreboard?dates=" + dateQ)
-                .then(function(res) { return res.json(); })
-                .then(function(data) {
-                    if (data && data.events) {
-                        for (var j = 0; j < data.events.length; j++) {
-                            var e = data.events[j];
-                            if (e.status.type.state !== "pre") continue;
-                            
-                            var comp = e.competitions[0];
-                            var home = null;
-                            var away = null;
-                            
-                            for (var c = 0; c < comp.competitors.length; c++) {
-                                if (comp.competitors[c].homeAway === "home") home = comp.competitors[c].team;
-                                if (comp.competitors[c].homeAway === "away") away = comp.competitors[c].team;
-                            }
-                            
-                            if (home && away) {
-                                allMatches.push({
-                                    league: l,
-                                    homeName: home.shortDisplayName || home.name,
-                                    awayName: away.shortDisplayName || away.name,
-                                    homeLogo: home.logo, 
-                                    awayLogo: away.logo,
-                                    time: new Date(e.date).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false }),
-                                    badge: (allMatches.length % 2 === 0) ? "TOP PICK" : "HOT"
-                                });
+    // Parse fixtures across next 7 days (Oct 18-25)
+    for (var day = 0; day < 7; day++) {
+        var d = new Date();
+        d.setDate(d.getDate() + day);
+        var dateQ = d.getFullYear() + ("0" + (d.getMonth() + 1)).slice(-2) + ("0" + d.getDate()).slice(-2);
+        
+        for (var i = 0; i < leagues.length; i++) {
+            (function(l, dq, formattedDate) {
+                var p = fetch("https://site.api.espn.com/apis/site/v2/sports/soccer/" + l + "/scoreboard?dates=" + dq)
+                    .then(function(res) { return res.json(); })
+                    .then(function(data) {
+                        if (data && data.events) {
+                            for (var j = 0; j < data.events.length; j++) {
+                                var e = data.events[j];
+                                var comp = e.competitions[0];
+                                var home = null;
+                                var away = null;
+                                
+                                for (var c = 0; c < comp.competitors.length; c++) {
+                                    if (comp.competitors[c].homeAway === "home") home = comp.competitors[c].team;
+                                    if (comp.competitors[c].homeAway === "away") away = comp.competitors[c].team;
+                                }
+                                
+                                if (home && away) {
+                                    allMatches.push({
+                                        dateQuery: dq,
+                                        dateLabel: formattedDate,
+                                        league: l,
+                                        homeName: home.shortDisplayName || home.name,
+                                        awayName: away.shortDisplayName || away.name,
+                                        homeLogo: home.logo || 'https://a.espncdn.com/i/teamlogos/soccer/500/default.png', 
+                                        awayLogo: away.logo || 'https://a.espncdn.com/i/teamlogos/soccer/500/default.png',
+                                        time: new Date(e.date).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false }),
+                                        badge: (j % 2 === 0) ? "TOP PICK" : "HOT"
+                                    });
+                                }
                             }
                         }
-                    }
-                })
-                .catch(function(e) {
-                    // Ignored
-                });
-            promises.push(p);
-        })(leagues[i]);
+                    }).catch(function() {});
+                promises.push(p);
+            })(leagues[i], dateQ, d.toLocaleDateString("en-US", { month: "short", day: "numeric" }));
+        }
     }
     
     Promise.all(promises).then(function() {
         cachedPicks = allMatches;
         renderPicks();
-    }).catch(function(e) {
-        renderPicks();
+        renderGamesList();
     });
 }
 
@@ -491,27 +497,17 @@ function renderPicks() {
     var container = document.getElementById("topPicksContainer");
     if (!container) return;
     
-    var matches = [];
-    for (var i = 0; i < cachedPicks.length; i++) {
-        if (cachedPicks[i].league === currentLeague) {
-            matches.push(cachedPicks[i]);
-        }
-        if (matches.length >= 5) break;
-    }
+    var matches = cachedPicks.filter(function(m) { return m.league === currentLeague; }).slice(0, 6);
     
     if (matches.length === 0) {
-        container.innerHTML = "<div style=\"grid-column: 1/-1; display:flex; align-items:center; justify-content:center; height:100%; min-height:100px; color: var(--text-muted); font-size: 0.85rem; font-weight:600;\">No scheduled matches available for this league today.</div>";
+        container.innerHTML = "<div style=\"grid-column: 1/-1; display:flex; align-items:center; justify-content:center; padding:1.5rem; color: var(--text-muted); font-size: 0.8rem;\">No fixtures found for this tournament period.</div>";
         return;
     }
 
     var html = "";
     for (var j = 0; j < matches.length; j++) {
         var m = matches[j];
-        var isTop = m.badge === "TOP PICK";
-        var topClass = isTop ? "top-pick" : "";
-        var blueClass = isTop ? "blue" : "";
-        
-        html += "<div class=\"match-card " + topClass + "\">\n                <div class=\"flags-row\">\n                    <img src=\"" + m.homeLogo + "\" onerror=\"this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'\" alt=\"Home Team\" />\n                    <span style=\"font-size:0.7rem; color:var(--text-muted); font-weight:800;\">VS</span>\n                    <img src=\"" + m.awayLogo + "\" onerror=\"this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'\" alt=\"Away Team\" />\n                </div>\n                <div class=\"match-name\">" + m.homeName + " vs " + m.awayName + "</div>\n                <div class=\"match-badge " + blueClass + "\">" + m.badge + "</div>\n                <div style=\"font-size: 0.7rem; color: var(--text-muted); margin-top: 6px;\"><i data-lucide=\"clock\" size=\"10\"></i> " + m.time + "</div>\n            </div>";
+        html += "<div class=\"match-card\">\n                <div class=\"flags-row\">\n                    <img src=\"" + m.homeLogo + "\" alt=\"Home\" />\n                    <span style=\"font-size:0.65rem; color:var(--text-muted); font-weight:800;\">VS</span>\n                    <img src=\"" + m.awayLogo + "\" alt=\"Away\" />\n                </div>\n                <div class=\"match-name\">" + m.homeName + " vs " + m.awayName + "</div>\n                <div style=\"font-size:0.65rem; font-weight:800; color:var(--text-muted); margin-top:2px;\">" + m.dateLabel + " - " + m.time + "</div>\n            </div>";
     }
     container.innerHTML = html;
     if (typeof window.lucide !== "undefined") {
@@ -536,7 +532,7 @@ function openNotifications() {
     for (var i = 0; i < cachedPicks.length; i++) {
         var m = cachedPicks[i];
         var cleanLeague = m.league.toUpperCase().replace(".1", "");
-        html += "<div style=\"background: rgba(150,150,150,0.05); border: 1px solid var(--glass-border); border-radius: 12px; padding: 0.8rem; display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;\">\n                <div style=\"display:flex; align-items:center; gap: 10px;\">\n                    <img src=\"" + m.homeLogo + "\" style=\"width:24px;height:24px;border-radius:50%; background:white;\" onerror=\"this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'\" alt=\"Home Team\" />\n                    <span style=\"font-weight:700; font-size:0.8rem; color:var(--text-main);\">" + m.homeName + " vs " + m.awayName + "</span>\n                    <img src=\"" + m.awayLogo + "\" style=\"width:24px;height:24px;border-radius:50%; background:white;\" onerror=\"this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'\" alt=\"Away Team\" />\n                </div>\n                <div style=\"text-align:right;\">\n                    <div style=\"font-size:0.6rem; font-weight:800; background:var(--accent); color:white; padding:2px 6px; border-radius:4px; display:inline-block;\">" + cleanLeague + "</div>\n                    <div style=\"font-size:0.65rem; color:var(--text-muted); margin-top:4px;\"><i data-lucide=\"clock\" size=\"10\"></i> " + m.time + "</div>\n                </div>\n            </div>";
+        html += "<div style=\"background: rgba(150,150,150,0.05); border: 1px solid var(--glass-border); border-radius: 12px; padding: 0.8rem; display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;\">\n                <div style=\"display:flex; align-items:center; gap: 10px;\">\n                    <img src=\"" + m.homeLogo + "\" style=\"width:24px;height:24px;border-radius:50%; background:white;\" alt=\"Home\" />\n                    <span style=\"font-weight:700; font-size:0.8rem; color:var(--text-main);\">" + m.homeName + " vs " + m.awayName + "</span>\n                    <img src=\"" + m.awayLogo + "\" style=\"width:24px;height:24px;border-radius:50%; background:white;\" alt=\"Away\" />\n                </div>\n                <div style=\"text-align:right;\">\n                    <div style=\"font-size:0.6rem; font-weight:800; background:var(--accent); color:white; padding:2px 6px; border-radius:4px; display:inline-block;\">" + cleanLeague + "</div>\n                    <div style=\"font-size:0.65rem; color:var(--text-muted); margin-top:4px;\">" + m.dateLabel + " - " + m.time + "</div>\n                </div>\n            </div>";
     }
     
     if (list) {
@@ -548,11 +544,10 @@ function openNotifications() {
 }
 
 // --- Top Games Navigation ---
-var dayOffset = 0;
 function navMatchDay(dir) {
-    dayOffset += dir;
-    if (dayOffset < 0) dayOffset = 6; 
-    if (dayOffset > 6) dayOffset = 0;
+    matchDayOffset += dir;
+    if (matchDayOffset < 0) matchDayOffset = 0;
+    if (matchDayOffset > 6) matchDayOffset = 6;
     renderGamesList();
 }
 
@@ -560,34 +555,34 @@ function renderGamesList() {
     var container = document.getElementById("gamesContainer");
     var display = document.getElementById("matchDayDisplay");
     
-    var target = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
-    target.setDate(target.getDate() + dayOffset);
+    var targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + matchDayOffset);
+    var targetQuery = targetDate.getFullYear() + ("0" + (targetDate.getMonth() + 1)).slice(-2) + ("0" + targetDate.getDate()).slice(-2);
     
     if (display) {
-        var label = dayOffset === 0 ? "TODAY" : "DAY " + (dayOffset + 1);
-        var formattedDate = target.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-        display.innerText = label + " (" + formattedDate + ")";
+        var label = matchDayOffset === 0 ? "TODAY" : "DAY +" + matchDayOffset;
+        display.innerText = label + " (" + targetDate.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + ")";
     }
 
-    var games = cachedPicks.slice(0, 5); 
-    if (games.length === 0) {
+    var dayGames = cachedPicks.filter(function(g) { return g.dateQuery === targetQuery; }).slice(0, 5);
+    
+    if (dayGames.length === 0) {
          if (container) {
-             container.innerHTML = "<div style=\"text-align:center; padding: 2rem; color: var(--text-muted); font-size: 0.8rem;\">No fixtures available for this date.</div>";
+             container.innerHTML = "<div style=\"text-align:center; padding: 1.5rem; color: var(--text-muted); font-size: 0.8rem;\">No fixtures available for this date.</div>";
          }
          return;
     }
 
     var html = "";
-    for (var i = 0; i < games.length; i++) {
-        var g = games[i];
-        html += "<div class=\"game-row\">\n                <img src=\"" + g.homeLogo + "\" style=\"width:24px;height:24px;border-radius:50%; background:white;\" onerror=\"this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'\" alt=\"Home Team\" />\n                <img src=\"" + g.awayLogo + "\" style=\"width:24px;height:24px;border-radius:50%;margin-left:-8px; background:white;\" onerror=\"this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'\" alt=\"Away Team\" />\n                <div style=\"flex-grow:1; margin-left:8px;\">\n                    <div class=\"game-title\">" + g.homeName + " <span style=\"color:var(--text-muted);font-weight:400;font-size:0.7rem;\">vs</span> " + g.awayName + "</div>\n                    <div class=\"game-sub\">" + g.time + "</div>\n                </div>\n            </div>";
+    for (var i = 0; i < dayGames.length; i++) {
+        var g = dayGames[i];
+        html += "<div class=\"game-row\">\n                <img src=\"" + g.homeLogo + "\" style=\"width:20px;height:20px;border-radius:50%; background:white;\" alt=\"Home\" />\n                <img src=\"" + g.awayLogo + "\" style=\"width:20px;height:20px;border-radius:50%;margin-left:-6px; background:white;\" alt=\"Away\" />\n                <div style=\"flex-grow:1; margin-left:8px;\">\n                    <div class=\"game-title\">" + g.homeName + " <span style=\"color:var(--text-muted);font-weight:400;font-size:0.65rem;\">vs</span> " + g.awayName + "</div>\n                    <div class=\"game-sub\">" + g.time + "</div>\n                </div>\n            </div>";
     }
     
     if (container) {
         container.innerHTML = html;
     }
 }
-setTimeout(renderGamesList, 1500);
 
 // --- Firebase Live Duties ---
 function loadLiveDuties() {
@@ -601,15 +596,14 @@ function loadLiveDuties() {
     
     var badgeEl = document.getElementById("slotBadge");
     if (badgeEl) {
-        badgeEl.innerText = slot.label;
+        badgeEl.innerText = "Slot: " + slot.label;
     }
     
     var container = document.getElementById("liveDutyContent");
+    if (!container) return;
 
     if (!fbDb) { 
-        if (container) {
-            container.innerHTML = "<div style=\"font-size:0.8rem; color:var(--text-muted); text-align:center;\">Database offline</div>"; 
-        }
+        container.innerHTML = "<div style=\"font-size:0.8rem; color:var(--text-muted); text-align:center;\">Database offline</div>"; 
         return; 
     }
 
@@ -618,7 +612,6 @@ function loadLiveDuties() {
         if (!data) return;
         
         var todayIso = new Date().toLocaleString("en-CA", { timeZone: "Asia/Manila" }).split(",")[0];
-        
         var dayData = data[todayIso];
         if (!dayData) {
             var keys = Object.keys(data);
@@ -638,6 +631,12 @@ function loadLiveDuties() {
         
         for (var i = 0; i < members.length; i++) {
             var m = members[i];
+            
+            // Trader Filter / Space Saver Mode check
+            if (selectedTraderFilter !== "ALL" && selectedTraderFilter !== m.id) {
+                continue;
+            }
+
             var grid = (dayData.grid && dayData.grid[m.id]) ? dayData.grid[m.id] : null;
             var shiftId = "shift-7-16";
             if (grid && grid.shift) {
@@ -645,7 +644,6 @@ function loadLiveDuties() {
             }
             
             var isRest = shiftId.indexOf("rd") !== -1 || shiftId.indexOf("vl") !== -1;
-            
             if (!isRest) {
                 activeCount++;
             }
@@ -675,10 +673,7 @@ function loadLiveDuties() {
             html += "</div>";
         }
         
-        if (container) {
-            container.innerHTML = html;
-        }
-        
+        container.innerHTML = html;
         var countEl = document.getElementById("activeTraderCount");
         if (countEl) {
             countEl.innerText = activeCount;
