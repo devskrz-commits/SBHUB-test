@@ -23,7 +23,7 @@ try {
 }
 
 let selectedGameDayOffset = 0;
-let currentTraderFilter = 'ALL'; // Global state for Trader Filter
+let currentTraderFilter = 'ALL';
 
 function toggleMobileSidebar(forceState) {
   const sidebar = document.getElementById('mainSidebar');
@@ -96,9 +96,9 @@ const PRIORITY_LEAGUES = [
   { rank: 1, key: "uefa.champions", name: "UEFA Champions League", code: "uefa.champions" },
   { rank: 2, key: "eng.1",          name: "Premier League",         code: "eng.1" },
   { rank: 3, key: "esp.1",          name: "La Liga",                code: "esp.1" },
-  { rank: 4, key: "ger.1",          name: "Bundesliga",             code: "ger.1" },
-  { rank: 5, key: "ita.1",          name: "Serie A",                code: "ita.1" },
-  { rank: 6, key: "fra.1",          name: "Ligue 1",                code: "fra.1" },
+  { rank: 4, key: "ita.1",          name: "Serie A",                code: "ita.1" },
+  { rank: 5, key: "fra.1",          name: "Ligue 1",                code: "fra.1" },
+  { rank: 6, key: "ger.1",          name: "Bundesliga",             code: "ger.1" },
   { rank: 7, key: "por.1",          name: "Primeira Liga",          code: "por.1" },
   { rank: 8, key: "ned.1",          name: "Eredivisie",             code: "ned.1" }
 ];
@@ -625,7 +625,6 @@ function renderLiveDutyWidget(rosterData) {
     { id: 'ken', name: 'KEN' }, { id: 'kriztel', name: 'KRIZTEL' }
   ];
 
-  // Apply Filter
   if (currentTraderFilter !== 'ALL') {
     teamMembers = teamMembers.filter(m => m.name === currentTraderFilter);
   }
@@ -739,7 +738,7 @@ async function fetchLiveGames() {
       return;
     }
 
-    matches = matches.slice(0, 5); // Max 5 to save space
+    matches = matches.slice(0, 5);
 
     let gamesHtml = "";
     matches.forEach(item => {
@@ -839,12 +838,10 @@ function initDashboardApp() {
   if (savedTheme) { setGradient(savedTheme); } 
   else { setGradient('3d-chrome-swirl'); }
 
-  // Initial UI Setup
   switchBrandTab('ibet');
   restoreSavedWidgets();
   loadCachedTopPicks();
 
-  // Async API Calls
   fetchTopPicksAndBoosts();
   setInterval(fetchTopPicksAndBoosts, 2 * 60 * 1000);
   listenToLiveDutyRoster();
