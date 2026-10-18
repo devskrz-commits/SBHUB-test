@@ -387,7 +387,7 @@ body {
   overflow-x: hidden;
   flex: 1;
   padding: 20px 10px;
-  scrollbar-width: none; /* Hide scrollbar for cleaner look */
+  scrollbar-width: none;
 }
 .sidebar-menu-scroll::-webkit-scrollbar {
   display: none;
@@ -471,7 +471,6 @@ body {
   color: #fff !important;
 }
 
-/* Subtle premium gradients for icons */
 .icon-internal { background: linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(29, 78, 216, 0.8)); }
 .icon-tasks    { background: linear-gradient(135deg, rgba(249, 115, 22, 0.8), rgba(194, 65, 12, 0.8)); }
 .icon-monitor  { background: linear-gradient(135deg, rgba(16, 185, 129, 0.8), rgba(4, 120, 87, 0.8)); }
@@ -775,18 +774,17 @@ body {
 .card-header .actions { display: flex; align-items: center; gap: 8px; font-size: 14px; opacity: 0.5; }
 
 /* ==========================================================================
-   OVERVIEW BANNER CARD (CLEANER, TECHY LOOK)
+   OVERVIEW BANNER CARD 
    ========================================================================== */
 .top-banner-card {
   padding: 24px;
   border-radius: 20px;
   background-image: 
     linear-gradient(180deg, rgba(10, 15, 30, 0.6) 0%, rgba(5, 8, 15, 0.9) 100%), 
-    url('./sports-banner.jpg'), 
-    url('./american-football-player-neon-style_23-2151827356.avif') !important;
-  background-size: cover, cover, cover !important;
-  background-position: center 25%, center 25%, center 25% !important;
-  background-repeat: no-repeat, no-repeat, no-repeat !important;
+    url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2560&auto=format&fit=crop') !important;
+  background-size: cover !important;
+  background-position: center 25% !important;
+  background-repeat: no-repeat !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
@@ -805,7 +803,6 @@ body {
   flex: 1 1 auto !important;
 }
 
-/* REFINED ALERTS (NO CHEAP GLOWS) */
 @keyframes softPulseRed {
   0%, 100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); }
   50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); }
@@ -880,7 +877,6 @@ body {
 .priority-tag.normal { background: rgba(59, 130, 246, 0.2) !important; color: #93c5fd !important; border: 1px solid rgba(59, 130, 246, 0.3) !important; }
 .handover-pill-msg { color: #e2e8f0 !important; font-weight: 500 !important; line-height: 1.5 !important; }
 
-/* WEATHER WIDGET (CLEANER) */
 .weather-banner-widget {
   background: rgba(10, 15, 30, 0.6) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -903,7 +899,6 @@ body {
 .weather-location-tag { font-weight: 600; color: #fff; }
 .weather-banner-details { display: flex; flex-direction: column; align-items: flex-end; font-size: 9px; color: rgba(255, 255, 255, 0.5); gap: 2px; }
 
-/* BOTTOM ROW FLEX (CLOCKS) */
 .banner-bottom-row {
   display: flex;
   justify-content: space-between;
@@ -1168,65 +1163,4 @@ body.light-theme .weather-banner-temp, body.light-theme .weather-location-tag { 
 body.light-theme .weather-banner-cond, body.light-theme .weather-banner-details { color: #64748b !important; }
 body.light-theme .clock-badge { background: #fff !important; border-color: rgba(0, 0, 0, 0.1) !important; }
 body.light-theme .clock-label { color: #64748b !important; }
-body.light-theme .clock-time { color: #0f172a !important; }
-
-body.light-theme .boost-card, body.light-theme .duty-card, body.light-theme .top-game-card { background: #fff !important; border-color: rgba(0, 0, 0, 0.1) !important; color: #0f172a !important; }
-body.light-theme .boost-match-title, body.light-theme .duty-top, body.light-theme .top-game-title { color: #0f172a !important; }
-body.light-theme .boost-market-desc, body.light-theme .duty-desc { color: #475569 !important; }
-body.light-theme .vs-text, body.light-theme .vs-light, body.light-theme .top-game-league, body.light-theme .boost-league-sub { color: #64748b !important; }
-
-/* ==========================================================================
-   MOBILE RESPONSIVENESS
-   ========================================================================== */
-.mobile-nav-header { display: none; }
-.sidebar-overlay { display: none; }
-
-@media (max-width: 768px) {
-  body { padding: 12px; gap: 0; }
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 280px !important;
-    height: 100vh;
-    z-index: 99999;
-    transform: translateX(-100%);
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    border-radius: 0;
-  }
-  .sidebar.mobile-open { transform: translateX(0); }
-  .sidebar-overlay { display: block; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); z-index: 99998; opacity: 0; visibility: hidden; transition: 0.3s; }
-  .sidebar-overlay.active { opacity: 1; visibility: visible; }
-  
-  .sidebar-header, .search-box, .nav-main-btn span, .toggle-icon, .sidebar-quick-dock, .sidebar-admin-footer .user-title, .sidebar-admin-footer .logout-action-btn { opacity: 1 !important; }
-  .search-box, .nav-main-btn, .sub-menu, .sidebar-quick-dock { width: 100% !important; }
-
-  .mobile-sidebar-close { display: block; }
-  .mobile-nav-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--glass-card-bg);
-    padding: 12px;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    border: 1px solid var(--glass-border);
-  }
-  .mobile-menu-toggle { background: transparent; border: none; color: #fff; font-size: 24px; cursor: pointer; }
-  .mobile-brand-title { font-size: 14px; font-weight: 700; color: #fff; }
-  .mobile-lock-btn { background: transparent; border: none; color: #fca5a5; font-size: 20px; cursor: pointer; }
-
-  #dashboardApp { flex-direction: column; width: 100%; }
-  .main-workspace { height: auto; overflow: visible; }
-
-  .command-bar { flex-wrap: wrap; justify-content: flex-start; padding: 0 0 12px 0; }
-  .banner-top-row { flex-direction: column; }
-  .weather-banner-widget { width: 100%; min-width: 0; }
-  .banner-bottom-row { flex-direction: column; gap: 12px; align-items: stretch; }
-  .world-clocks { justify-content: space-between; }
-  .clock-badge { flex: 1; padding: 8px; }
-
-  .dashboard-grid { grid-template-columns: 1fr; }
-  .login-card { padding: 24px; }
-}
+body.light
