@@ -1,6 +1,6 @@
 const DEFAULT_USER = "sportsbook2026";
 const DEFAULT_PASS = "sb2026";
-const isMobileDevice = () => window.innerWidth <= 768;
+const isMobileDevice = () => window.innerWidth <= 850;
 let rosterDb = null;
 
 try {
@@ -203,9 +203,15 @@ function openCreateTaskModal() { document.getElementById('createTaskModal').clas
 function closeCreateTaskModal() { document.getElementById('createTaskModal').classList.remove('show'); }
 function loadReminders() {
   const container = document.getElementById('remindersContainer');
+  const widget = document.getElementById('widget-reminders');
   if(!container) return;
   const list = JSON.parse(localStorage.getItem('sbhub_reminders') || '[]');
-  if(list.length === 0){ container.innerHTML = ''; return; }
+  if(list.length === 0){ 
+    container.innerHTML = '<span style="font-size:10px; color:rgba(255,255,255,0.5); padding:4px;">No tasks.</span>'; 
+    if(widget) widget.style.display = 'none';
+    return; 
+  }
+  if(widget) widget.style.display = 'flex';
   container.innerHTML = list.map((r, i) => `
     <div class="reminder-item" style="border-left-color:${r.color};">
       <span>${r.title}</span>
@@ -263,9 +269,7 @@ function updateNotifications() {
   const now = new Date().getTime();
   const twoHours = 2 * 60 * 60 * 1000;
   
-  // Combine all cached picks & games
   let allUpcoming = [...cachedTopPicks, ...cachedLiveGames];
-  // Deduplicate
   const seen = new Set();
   const unique = [];
   allUpcoming.forEach(g => {
@@ -300,7 +304,7 @@ function updatePrimaryTimezone(tz) {
   const lbl = document.getElementById('lbl-clock-primary');
   if(lbl) lbl.textContent = tz.split('/')[1].replace('_',' ').toUpperCase();
   updateWorldClocks();
-  fetchTopPicksAndBoosts(); // Re-render times
+  fetchTopPicksAndBoosts(); 
 }
 
 function updateWorldClocks() {
@@ -316,7 +320,7 @@ function updateWorldClocks() {
 }
 setInterval(updateWorldClocks, 1000);
 
-/* API LOGIC (ESPN NO MOCKS) */
+/* API LOGIC (ESPN) */
 function getGMT8DateObj(offsetDays = 0) {
   const now = new Date(new Date().toLocaleString("en-US", { timeZone: primaryTimezone }));
   now.setDate(now.getDate() + offsetDays);
@@ -358,7 +362,7 @@ async function fetchLiveGames() {
       }
     }
 
-    cachedLiveGames = matches; // Store for notifications
+    cachedLiveGames = matches; 
 
     if (matches.length === 0) {
       container.innerHTML = `<div style="text-align:center; padding:20px; font-size:11px; color:rgba(255,255,255,0.5);">No scheduled fixtures.</div>`;
@@ -392,7 +396,6 @@ async function fetchLeagueList(leagueList, dateQuery) {
   const results = await Promise.all(fetchPromises);
   let matches = [];
   const seenMatchKeys = new Set();
-  const now = new Date();
 
   for (const item of results) {
     if (!item || !item.data || !item.data.events) continue;
@@ -401,7 +404,6 @@ async function fetchLeagueList(leagueList, dateQuery) {
       const comp = evt.competitions?.[0];
       if (!comp) continue;
 
-      // Ignore finished games
       if(evt.status?.type?.state === 'post') continue;
 
       const homeTeam = comp.competitors?.find(c => c.homeAway === 'home');
