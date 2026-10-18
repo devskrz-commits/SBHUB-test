@@ -23,8 +23,8 @@
                 <div class="logo-main" style="justify-content:center;"><i data-lucide="waves"></i> Growth</div>
             </div>
             <form onsubmit="handleLogin(event)" style="display:flex; flex-direction:column; gap:0.5rem;">
-                <input type="text" id="usernameInput" class="modal-input" placeholder="Username" required />
-                <input type="password" id="passwordInput" class="modal-input" placeholder="Password" required />
+                <input type="text" id="usernameInput" class="modal-input" placeholder="Username (@sportsbook)" required />
+                <input type="password" id="passwordInput" class="modal-input" placeholder="Password (sb2026)" required />
                 
                 <div style="display:flex; align-items:center; gap:0.5rem; padding-left: 0.2rem; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-main); font-weight: 500;">
                     <input type="checkbox" id="rememberMe" style="cursor: pointer;" />
@@ -236,10 +236,13 @@
                     </div>
                 </div>
 
-                <!-- Top Picks -->
+                <!-- Top Picks / Upcoming Matches -->
                 <div class="card">
                     <div class="card-header-label">TOP PICKS / HOT BOOST</div>
-                    <div class="card-title">Upcoming Matches <i data-lucide="pie-chart" size="20"></i></div>
+                    <div class="card-title">
+                        <span>Upcoming Matches</span>
+                        <i data-lucide="maximize-2" size="18" style="cursor:pointer;" title="Expand Upcoming Matches" onclick="openModal('expandPicksModal')"></i>
+                    </div>
                     <div class="filter-bar" style="margin-bottom: 0.2rem;">
                         <button class="filter-btn active" onclick="filterPicks('eng.1', this)">EPL</button>
                         <button class="filter-btn" onclick="filterPicks('esp.1', this)">LA LIGA</button>
@@ -267,10 +270,10 @@
                 </div>
             </div>
 
-            <!-- MIDDLE GRID (4 Columns Structure) -->
+            <!-- MIDDLE GRID -->
             <div class="grid-middle">
                 
-                <!-- Col 1: Slot Duties -->
+                <!-- Col 1: Slot Duties with Trader Filter Dropdown -->
                 <div class="card">
                     <div class="card-header-label">
                         <span>SLOT DUTIES</span>
@@ -371,6 +374,21 @@
     </div>
 
     <!-- MODALS -->
+
+    <!-- Expanded Upcoming Matches Modal -->
+    <div class="modal-overlay" id="expandPicksModal">
+        <div class="modal-card" style="width: 800px; max-width: 95%;">
+            <div class="modal-title">
+                <span>All Upcoming Matches</span>
+                <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('expandPicksModal')"></i>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 1rem;">Full schedule view across all monitored leagues for the upcoming week.</p>
+            <div class="expand-grid" id="expandedPicksGrid">
+                <!-- Filled dynamically by JS -->
+            </div>
+            <button class="modal-btn" style="margin-top:1.2rem;" onclick="closeModal('expandPicksModal')">Close Window</button>
+        </div>
+    </div>
     
     <!-- Add Task Modal -->
     <div class="modal-overlay" id="taskModal">
