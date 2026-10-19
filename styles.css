@@ -88,7 +88,7 @@ html.is-authenticated #dashboardApp { opacity: 1 !important; visibility: visible
   gap: 24px; 
 }
 
-/* SIDEBAR FIX (Perfect auto-expand, no overlapping text & clean hiding) */
+/* SIDEBAR FIX (Perfect auto-expand, clean hiding of labels on collapse) */
 .sidebar { 
   width: var(--sidebar-collapsed); 
   background: transparent; 
@@ -102,7 +102,7 @@ html.is-authenticated #dashboardApp { opacity: 1 !important; visibility: visible
   width: var(--sidebar-expanded); 
 }
 .sidebar-inner {
-  width: var(--sidebar-expanded); /* Fixed width container prevents internal reflow */
+  width: var(--sidebar-expanded); 
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -115,7 +115,7 @@ html.is-authenticated #dashboardApp { opacity: 1 !important; visibility: visible
 
 .sidebar-header { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px; font-size: 13px; font-weight: 800; letter-spacing: 0.5px; color: #fff; white-space: nowrap; margin-bottom: 8px;}
 
-/* Hide inner text / containers completely on collapse, fade in smoothly on hover to avoid any overlap */
+/* Hide inner text / elements cleanly on collapse, fade in on hover to eliminate overlap */
 .sidebar:not(:hover) .sidebar-header span,
 .sidebar:not(:hover) .search-box,
 .sidebar:not(:hover) .nav-main-btn span,
@@ -329,11 +329,11 @@ html.is-authenticated #dashboardApp { opacity: 1 !important; visibility: visible
 .command-btn { background: rgba(8, 12, 22, 0.85) !important; border: 1px solid rgba(255, 255, 255, 0.18) !important; padding: 7px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; color: #ffffff; cursor: pointer; backdrop-filter: blur(12px) !important; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35); display: flex; align-items: center; justify-content:center; gap: 6px; text-decoration:none; transition: 0.2s;}
 .command-btn:hover { background: rgba(255, 255, 255, 0.15) !important; border-color: rgba(56, 189, 248, 0.4) !important; }
 
-/* DROPDOWNS */
+/* DROPDOWNS FIX: Prevent card overlapping and layout clipping */
 .dropdown-container { position: relative; display: inline-block; z-index: 1002; }
 .dropdown-menu { display: none; position: absolute; background: #0a0f1d !important; border: 1px solid rgba(255, 255, 255, 0.28) !important; border-radius: 16px; padding: 12px; z-index: 999999 !important; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95) !important; }
 .dropdown-menu.show { display: flex; flex-direction: column; gap: 6px; }
-.dropdown-menu.right-aligned { right: 0; top: calc(100% + 12px); }
+.dropdown-menu.right-aligned { right: 0; left: auto; top: calc(100% + 12px); }
 .dropdown-section-title { font-size: 9px; font-weight: 800; color: #38bdf8; letter-spacing: 0.8px; padding: 6px 8px 2px 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 2px; }
 .menu-option { padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: space-between; color: #ffffff; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); width: 100%; transition: 0.2s ease; }
 .menu-option:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(56, 189, 248, 0.4); }
