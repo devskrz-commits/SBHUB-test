@@ -55,7 +55,7 @@ function switchBrandTab(tabName) {
   const items = brandTabData[tabName] || [];
   items.forEach(item => {
     const a = document.createElement('a');
-    a.className = 'action-row'; a.href = item.url; a.target = '_blank';
+    a.className = 'action-row searchable-link'; a.href = item.url; a.target = '_blank';
     a.innerHTML = `<span>${item.name}</span><i class='bx bx-right-arrow-alt'></i>`;
     container.appendChild(a);
   });
@@ -245,6 +245,7 @@ function deleteReminder(i) {
 /* SEARCH SYSTEM */
 function handleGlobalSearch(query) {
   const dropdown = document.getElementById('searchResultsDropdown');
+  if(!dropdown) return;
   if(!query || query.length < 2) { dropdown.classList.remove('show'); return; }
   const lowerQ = query.toLowerCase();
   const links = Array.from(document.querySelectorAll('.searchable-link'));
@@ -356,7 +357,7 @@ async function fetchLiveGames() {
     const labelEl = document.getElementById("matchDayDisplay");
     if (labelEl) labelEl.textContent = `${dayTag}`;
 
-    let matches = await fetchLeagueList(TOP_TIER_LEAGUES, targetDateQuery);
+    let matches = await fetchLeagueList(PRIORITY_LEAGUES, targetDateQuery);
 
     if (matches.length < 10) {
       const secondaryMatches = await fetchLeagueList(SECONDARY_LEAGUES, targetDateQuery);
@@ -379,6 +380,7 @@ async function fetchLiveGames() {
     matches.slice(0, 10).forEach(item => { 
       gamesHtml += `
         <div class="top-game-card">
+          <div style="font-size:16px; color:#38bdf8;"><i class="bx bx-football"></i></div>
           <div class="top-game-title">${item.homeName} <span class="vs-light" style="margin:0 4px; font-weight:600; opacity:0.5;">vs</span> ${item.awayName}</div>
           <div class="top-game-league">${item.leagueName}${item.kickOffTimeStr ? ' &bull; <span style="color:#38bdf8;">' + item.kickOffTimeStr + '</span>' : ''}</div>
         </div>
@@ -481,6 +483,21 @@ function handleLogin(event) {
 function handleLogout() {
   localStorage.removeItem('sbhub_auth'); sessionStorage.removeItem('sbhub_auth');
   document.documentElement.classList.remove('is-authenticated');
+}
+
+function setGradient(themeName) {
+  localStorage.setItem('sbhub_theme', themeName);
+  const body = document.getElementById('pageBody');
+  if(!body) return;
+  body.className = '';
+  if (themeName === 'light-theme') {
+    body.classList.add('light-theme');
+    body.style.background = '#f1f5f9';
+  } else if (themeName === 'plain-slate') {
+    body.style.background = '#090d16';
+  } else {
+    body.style.background = '#090d16';
+  }
 }
 
 function initDashboardApp() {
