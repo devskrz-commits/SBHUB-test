@@ -88,7 +88,7 @@ html.is-authenticated #dashboardApp { opacity: 1 !important; visibility: visible
   gap: 24px; 
 }
 
-/* SIDEBAR FIX (Perfect auto-expand, clean header hiding on collapse) */
+/* SIDEBAR FIX (Perfect auto-expand, clean hiding of labels on collapse) */
 .sidebar { 
   width: var(--sidebar-collapsed); 
   background: transparent; 
@@ -115,9 +115,9 @@ html.is-authenticated #dashboardApp { opacity: 1 !important; visibility: visible
 
 .sidebar-header { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px; font-size: 13px; font-weight: 800; letter-spacing: 0.5px; color: #fff; white-space: nowrap; margin-bottom: 8px;}
 
-/* Completely hide sidebar header text and expanded items when collapsed */
+/* Hide inner text / elements completely on collapse using explicit zeroing & hidden properties */
+.sidebar:not(:hover) .hide-on-collapse,
 .sidebar:not(:hover) .sidebar-header span,
-.sidebar:not(:hover) .sidebar-header .mobile-sidebar-close,
 .sidebar:not(:hover) .search-box,
 .sidebar:not(:hover) .nav-main-btn span,
 .sidebar:not(:hover) .nav-main-btn .toggle-icon,
@@ -125,16 +125,15 @@ html.is-authenticated #dashboardApp { opacity: 1 !important; visibility: visible
 .sidebar:not(:hover) .sidebar-quick-dock,
 .sidebar:not(:hover) .sidebar-admin-footer .user-title,
 .sidebar:not(:hover) .sidebar-admin-footer .logout-action-btn {
-  display: none !important;
-  opacity: 0;
-  pointer-events: none;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  overflow: hidden !important;
 }
 
-.sidebar:hover .sidebar-header span {
-  display: inline-block !important;
-  opacity: 1;
-}
-
+.sidebar:hover .hide-on-collapse,
+.sidebar:hover .sidebar-header span,
 .sidebar:hover .search-box,
 .sidebar:hover .nav-main-btn span,
 .sidebar:hover .nav-main-btn .toggle-icon,
@@ -142,9 +141,10 @@ html.is-authenticated #dashboardApp { opacity: 1 !important; visibility: visible
 .sidebar:hover .sidebar-quick-dock,
 .sidebar:hover .user-title,
 .sidebar:hover .logout-action-btn {
-  opacity: 1;
-  pointer-events: auto;
-  transition: opacity 0.3s ease 0.1s;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  width: auto !important;
 }
 
 .mobile-sidebar-close { display: none; }
@@ -335,10 +335,10 @@ html.is-authenticated #dashboardApp { opacity: 1 !important; visibility: visible
 .command-btn:hover { background: rgba(255, 255, 255, 0.15) !important; border-color: rgba(56, 189, 248, 0.4) !important; }
 
 /* DROPDOWNS & PROFILE MENU FIX */
-.dropdown-container { position: relative; display: inline-block; z-index: 1005; }
+.dropdown-container { position: relative; display: inline-block; z-index: 99999 !important; }
 .dropdown-menu { display: none; position: absolute; background: #0a0f1d !important; border: 1px solid rgba(255, 255, 255, 0.28) !important; border-radius: 16px; padding: 12px; z-index: 999999 !important; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95) !important; }
-.dropdown-menu.show { display: flex; flex-direction: column; gap: 6px; }
-.dropdown-menu.right-aligned { right: 0; left: auto; top: calc(100% + 14px) !important; }
+.dropdown-menu.show { display: flex !important; flex-direction: column; gap: 6px; }
+.dropdown-menu.right-aligned { right: 0 !important; left: auto !important; top: calc(100% + 12px) !important; }
 .dropdown-section-title { font-size: 9px; font-weight: 800; color: #38bdf8; letter-spacing: 0.8px; padding: 6px 8px 2px 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 2px; }
 .menu-option { padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: space-between; color: #ffffff; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); width: 100%; transition: 0.2s ease; }
 .menu-option:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(56, 189, 248, 0.4); }
