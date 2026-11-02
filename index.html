@@ -5,6 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sportsbook Hub - Secured Dashboard</title>
   
+  <!-- INSTANT HEAD FAILSAFE SCRIPT (ELIMINATES REFRESH GLIMPSE IN 0MS) -->
+  <script>
+    (function() {
+      try {
+        var isAuth = localStorage.getItem('sbhub_auth') === 'true' || sessionStorage.getItem('sbhub_auth') === 'true';
+        if (isAuth) {
+          document.documentElement.classList.add('sbhub-authenticated');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- Dynamic Glass Opacity Initialization -->
+  <script>
+    (function() {
+      try {
+        var savedOpacity = localStorage.getItem('sbhub_glass_opacity') || '0.45';
+        document.documentElement.style.setProperty('--glass-opacity-val', savedOpacity);
+      } catch(e) {}
+    })();
+  </script>
+
   <!-- Preconnect & Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
@@ -14,7 +36,7 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="./styles.css?v=9.1.0">
+  <link rel="stylesheet" href="./styles.css?v=11.0.0">
 
   <!-- External Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -22,18 +44,15 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   
   <!-- App JS -->
-  <script src="./app.js?v=9.5.0" defer></script>
+  <script src="./app.js?v=11.0.0" defer></script>
 </head>
 <body id="pageBody">
 
-  <!-- ANIMATED PLASMA BACKGROUND CANVAS -->
   <canvas id="bgCanvas"></canvas>
 
-  <!-- FRONT SECURITY LOGIN OVERLAY MODAL -->
   <div id="authOverlay">
     <div class="login-container">
 
-      <!-- SITTING ROBOT STAGE -->
       <div class="sitting-robot-stage" id="sittingRobotStage">
         <div class="robot-body-wrapper" id="robotBodyWrapper">
           <div class="robot-antenna"></div>
@@ -51,33 +70,29 @@
         </div>
       </div>
 
-      <!-- SOLID LOGIN CARD -->
       <div class="login-card" id="loginCard">
         <div class="login-title">Security Gateway</div>
         <div class="login-subtitle">SPORTSBOOK HUB OPERATIONAL PORTAL</div>
         
         <form class="login-input-group" onsubmit="handleLogin(event)">
-          <!-- USERNAME INPUT FIELD -->
           <div class="field-wrapper">
             <label class="login-label" for="usernameInput">Username or email</label>
             <input type="text" id="usernameInput" class="login-input" value="sportsbook2026" required autocomplete="username">
           </div>
 
-          <!-- PASSWORD INPUT FIELD -->
           <div class="field-wrapper">
             <div class="field-label-row">
               <label class="login-label" for="passwordInput">Security Key</label>
               <a href="#forgot" class="forgot-link">Forgot key?</a>
             </div>
             <div class="password-field-wrap">
-              <input type="password" id="passwordInput" class="login-input" value="" placeholder="Enter password" required autocomplete="current-password">
+              <input type="password" id="passwordInput" class="login-input" value="sb2026" placeholder="Enter password" required autocomplete="current-password">
               <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility()" aria-label="Toggle Password Visibility">
                 <i class="bx bx-show" id="togglePassIcon"></i>
               </button>
             </div>
           </div>
 
-          <!-- REMEMBER ME CHECKBOX -->
           <div class="remember-row">
             <input type="checkbox" id="rememberMe" checked>
             <label for="rememberMe">Maintain active session</label>
@@ -85,7 +100,6 @@
 
           <div class="login-error" id="loginErrorMsg"></div>
 
-          <!-- SUBMIT BUTTON -->
           <button type="submit" class="login-btn">
             <i class="bx bx-key"></i> ACCESS DASHBOARD
           </button>
@@ -95,10 +109,8 @@
     </div>
   </div>
 
-  <!-- DASHBOARD APP CONTAINER -->
   <div id="dashboardApp">
 
-    <!-- MOBILE NAVIGATION HEADER -->
     <div class="mobile-nav-header">
       <button type="button" class="mobile-menu-toggle" id="mobileMenuBtn" onclick="toggleMobileSidebar()" aria-label="Toggle Navigation Menu">
         <i class="bx bx-menu"></i>
@@ -109,12 +121,9 @@
       </button>
     </div>
 
-    <!-- SIDEBAR BACKDROP OVERLAY FOR MOBILE -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar(false)"></div>
 
-    <!-- SIDEBAR NAVIGATION -->
     <aside class="sidebar" id="mainSidebar">
-      <!-- SCROLLABLE MENU ITEMS AREA -->
       <div class="sidebar-menu-scroll">
         <div class="sidebar-header">
           <span>SPORTSBOOK HUB</span>
@@ -125,10 +134,9 @@
 
         <div class="search-box">
           <i class="bx bx-search" style="font-size: 14px;"></i>
-          <input type="text" placeholder="Search categories &amp; links...">
+          <input type="text" id="sidebarSearchInput" placeholder="Search categories &amp; links..." oninput="handleSidebarSearch(this.value)">
         </div>
 
-        <!-- INTERNAL -->
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-internal', this)">
             <div class="nav-main-left">
@@ -145,7 +153,6 @@
           </div>
         </div>
 
-        <!-- DAILY TASK -->
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-dailytask', this)">
             <div class="nav-main-left">
@@ -165,7 +172,6 @@
           </div>
         </div>
 
-        <!-- DAILY MONITORING -->
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-dailymonitoring', this)">
             <div class="nav-main-left">
@@ -175,16 +181,15 @@
             <i class="bx bx-chevron-down toggle-icon"></i>
           </div>
           <div class="sub-menu collapsed" id="sub-dailymonitoring">
-            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1qruVq-HZCyM0uDgnYSqFhccXKnMkqJ8z/edit?gid=1305147410#gid=1305147410" target="_blank" rel="noreferrer"><span>GREEN TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1OcaMz_AOUeRsWIVplbnk2XAna62m3IKa/edit?gid=457800468#gid=457800468" target="_blank" rel="noreferrer"><span>RED TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1U-Dmc628kHQabzJGoBeEgRus5PiRhgSd/edit?pli=1&amp;gid=1983372695#gid=1983372695" target="_blank" rel="noreferrer"><span>ORANGE TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
-            <a class="nav-sub-btn" href="#7a"><span>7A TRACKER</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1qruVq-HZCyM0uDgnYSqFhccXKnMkqJ8z/edit?gid=1305147410#gid=1305147410" target="_blank" rel="noreferrer"><span style="font-size: 10px; white-space: normal; line-height: 1.2;">Edge - Client Changes Team Tracking</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1OcaMz_AOUeRsWIVplbnk2XAna62m3IKa/edit?gid=457800468#gid=457800468" target="_blank" rel="noreferrer"><span style="font-size: 10px; white-space: normal; line-height: 1.2;">iBet - Client Changes Team Tracking</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1U-Dmc628kHQabzJGoBeEgRus5PiRhgSd/edit?pli=1&amp;gid=1983372695#gid=1983372695" target="_blank" rel="noreferrer"><span style="font-size: 10px; white-space: normal; line-height: 1.2;">PuBs - Client Changes Team Tracking</span><i class="bx bx-right-arrow-alt"></i></a>
+            <a class="nav-sub-btn" href="#7a"><span style="font-size: 10px; white-space: normal; line-height: 1.2;">7a/KT- Client Changes Team Tracking</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/11STKO4Xsj0a8iTuUXSCXC-XEE4-7qmF9/edit?pli=1&amp;gid=1701374259#gid=1701374259" target="_blank" rel="noreferrer"><span>GREEN CRM</span><i class="bx bx-right-arrow-alt"></i></a>
             <a class="nav-sub-btn" href="https://docs.google.com/spreadsheets/d/1gPks2FdHyOOTiILvn553miz32WeEtOpx/edit?gid=1701374259#gid=1701374259" target="_blank" rel="noreferrer"><span>RED CRM</span><i class="bx bx-right-arrow-alt"></i></a>
           </div>
         </div>
 
-        <!-- BACK OFFICE -->
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-backoffice', this)">
             <div class="nav-main-left">
@@ -200,7 +205,6 @@
           </div>
         </div>
 
-        <!-- MULTI MONITOR -->
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-multimonitor', this)">
             <div class="nav-main-left">
@@ -217,7 +221,6 @@
           </div>
         </div>
 
-        <!-- BETRADAR -->
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-betradar', this)">
             <div class="nav-main-left">
@@ -232,7 +235,6 @@
           </div>
         </div>
 
-        <!-- OWN BRANDS -->
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-ownbrands', this)">
             <div class="nav-main-left">
@@ -252,7 +254,6 @@
           </div>
         </div>
 
-        <!-- PRICE REFERENCES -->
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-priceref', this)">
             <div class="nav-main-left">
@@ -277,7 +278,6 @@
           </div>
         </div>
 
-        <!-- PROCEDURES -->
         <div class="nav-group">
           <div class="nav-main-btn" onclick="toggleMenu('sub-procedures', this)">
             <div class="nav-main-left">
@@ -292,7 +292,6 @@
           </div>
         </div>
 
-        <!-- QUICK LAUNCH DOCK -->
         <div class="sidebar-quick-dock">
           <div class="quick-dock-title"><i class="bx bx-rocket"></i> QUICK LAUNCH</div>
           <div class="quick-dock-buttons">
@@ -303,10 +302,17 @@
               </div>
               <i class="bx bx-export" style="font-size: 13px; opacity: 0.7;"></i>
             </a>
-            <a href="Edge_Gaming_Client_Risk_Segmentation_Tool_July_2026_Dashboard.html" target="_blank" rel="noreferrer" class="quick-launch-btn">
+            <a href="https://chatgpt.com" target="_blank" rel="noreferrer" class="quick-launch-btn">
               <div class="btn-left">
-                <div class="icon-badge icon-risk"><i class="bx bx-shield-quarter"></i></div>
-                <span>Risk Seg. Tool</span>
+                <div class="icon-badge icon-chatgpt"><i class="bx bx-message-square-dots"></i></div>
+                <span>ChatGPT</span>
+              </div>
+              <i class="bx bx-export" style="font-size: 13px; opacity: 0.7;"></i>
+            </a>
+            <a href="https://gemini.google.com" target="_blank" rel="noreferrer" class="quick-launch-btn">
+              <div class="btn-left">
+                <div class="icon-badge icon-gemini"><i class="bx bx-sparkles"></i></div>
+                <span>Gemini</span>
               </div>
               <i class="bx bx-export" style="font-size: 13px; opacity: 0.7;"></i>
             </a>
@@ -315,7 +321,6 @@
 
       </div>
 
-      <!-- DOCKED ADMIN PROFILE PILL FOOTER -->
       <div class="sidebar-admin-footer">
         <div class="admin-top-pill">
           <div class="avatar-circle">AD</div>
@@ -327,30 +332,22 @@
       </div>
     </aside>
 
-    <!-- DASHBOARD WORKSPACE -->
     <main class="main-workspace">
 
-      <!-- TOP WIDE BANNER CARD -->
       <div class="glass-card top-banner-card">
         
-        <!-- TOP ROW: JIRA RED GLOWING ALERT ON LEFT, URGENT HANDOVER YELLOW GLOWING BANNER IN MIDDLE, WEATHER ON RIGHT -->
         <div class="banner-top-row">
-          
           <div class="banner-top-left-group">
-            <!-- STATIC INLINE RED GLOWING JIRA PENDING TICKETS BANNER -->
             <div id="jiraAlertBanner" class="jira-static-alert-banner">
               <div class="jira-alert-badge">
                 <i class="bx bx-error-circle"></i> PENDING JIRA (&gt;24H)
               </div>
-              <div class="jira-ticket-pills-container" id="jiraPillsContainer">
-                <!-- Rendered Dynamically -->
-              </div>
+              <div class="jira-ticket-pills-container" id="jiraPillsContainer"></div>
               <a href="jira.html" target="_blank" rel="noreferrer" class="jira-open-btn">
                 View Tracker <i class="bx bx-right-arrow-alt"></i>
               </a>
             </div>
 
-            <!-- URGENT HANDOVER YELLOW GLOWING BANNER -->
             <div id="urgentHandoverBanner" class="urgent-handover-banner active">
               <div class="handover-header-row">
                 <div class="handover-alert-badge" id="handoverAlertBadge">
@@ -360,13 +357,10 @@
                   <i class="bx bx-plus-circle"></i> Manage Notes
                 </button>
               </div>
-              <div class="handover-pills-container" id="handoverPillsContainer">
-                <!-- Rendered Dynamically -->
-              </div>
+              <div class="handover-pills-container" id="handoverPillsContainer"></div>
             </div>
           </div>
 
-          <!-- PHILIPPINES WEATHER WIDGET -->
           <div class="weather-banner-widget">
             <div class="weather-banner-header">
               <span class="weather-banner-title">PHILIPPINES WEATHER</span>
@@ -390,10 +384,8 @@
               </div>
             </div>
           </div>
-
         </div>
 
-        <!-- BOTTOM ROW: WORLD CLOCKS & BANNER CONTROLS -->
         <div class="banner-bottom-row">
           <div class="world-clocks">
             <div class="clock-badge">
@@ -411,12 +403,10 @@
           </div>
 
           <div class="banner-controls-group">
-            <!-- JIRA TRACKER BUTTON -->
             <a href="jira.html" target="_blank" rel="noreferrer" class="dropdown-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
               <i class="bx bx-task"></i> Jira Tracker
             </a>
 
-            <!-- MANAGE WIDGETS DROPDOWN -->
             <div class="dropdown-container">
               <button class="dropdown-btn" type="button" onclick="toggleDropdown('widgetMenu')">
                 <i class="bx bx-slider-alt"></i> Widgets <i class="bx bx-chevron-down"></i>
@@ -445,12 +435,20 @@
               </div>
             </div>
 
-            <!-- THEME CUSTOMIZER DROPDOWN -->
             <div class="dropdown-container">
               <button class="dropdown-btn" type="button" onclick="toggleDropdown('themeMenu')">
               <i class="bx bx-palette"></i> Theme <i class="bx bx-chevron-down"></i>
               </button>
               <div class="dropdown-menu" id="themeMenu">
+                <div class="dropdown-section-title">GLASS OPACITY CONTROL</div>
+                <div style="padding: 6px 8px; display: flex; flex-direction: column; gap: 4px;">
+                  <div style="display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; color: #ffffff;">
+                    <span>Glass Opacity</span>
+                    <span id="opacityValLabel">45%</span>
+                  </div>
+                  <input type="range" id="glassOpacitySlider" min="0.1" max="0.9" step="0.05" value="0.45" oninput="updateGlassOpacity(this.value)" style="width: 100%; cursor: pointer;">
+                </div>
+
                 <div class="dropdown-section-title">PLAIN COLORS</div>
                 <button class="menu-option" type="button" onclick="setGradient('plain-slate')"><span>Dark Slate</span><span class="color-dot" style="background: #0f172a;"></span></button>
                 <button class="menu-option" type="button" onclick="setGradient('plain-navy')"><span>Deep Navy</span><span class="color-dot" style="background: #0b1329;"></span></button>
@@ -460,16 +458,15 @@
                 <button class="menu-option" type="button" onclick="setGradient('plain-warm-light')"><span>Warm Sand Daylight</span><span class="color-dot" style="background: #f5f5f4;"></span></button>
           
                 <div class="dropdown-section-title">ABSTRACT FLUID WALLPAPERS</div>
-                <button class="menu-option" type="button" onclick="setGradient('3d-chrome-swirl')"><span>Liquid Chrome &amp; Blue</span><span class="color-dot" style="background: #38bdf8;"></span></button>
-                <button class="menu-option" type="button" onclick="setGradient('luminous-glass-ribbons')"><span>Luminous Glass Ribbons</span><span class="color-dot" style="background: #a855f7;"></span></button>
-                <button class="menu-option" type="button" onclick="setGradient('deep-violet-fluid')"><span>Deep Violet Fluid</span><span class="color-dot" style="background: #ec4899;"></span></button>
-                <button class="menu-option" type="button" onclick="setGradient('neon-aura-swirl')"><span>Neon Aura Swirl</span><span class="color-dot" style="background: #06b6d4;"></span></button>
-                <button class="menu-option" type="button" onclick="setGradient('prismatic-wave-flow')"><span>Prismatic Wave Flow</span><span class="color-dot" style="background: #22c55e;"></span></button>
-                <button class="menu-option" type="button" onclick="setGradient('magenta-silk-wave')"><span>Magenta Silk Wave</span><span class="color-dot" style="background: #d946ef;"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('blue-orange-wave')"><span>Blue &amp; Orange Wave</span><span class="color-dot" style="background: #ff5500;"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('blue-orange-glow')"><span>Deep Glow Fluid</span><span class="color-dot" style="background: #ff6600;"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('blue-orange-halftone')"><span>Navy Halftone Wave</span><span class="color-dot" style="background: #ff4500;"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('blue-orange-angles')"><span>Sharp Angular Wave</span><span class="color-dot" style="background: #ff8c00;"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('blue-orange-fluid-mesh')"><span>Fluid Vector Mesh</span><span class="color-dot" style="background: #ff7700;"></span></button>
+                <button class="menu-option" type="button" onclick="setGradient('blue-orange-sunset')"><span>Sunset Glow Waves</span><span class="color-dot" style="background: #ffaa00;"></span></button>
               </div>
             </div>
 
-            <!-- ACTIVE TRADER COUNTER -->
             <div class="metric-pill">
               <i class="bx bx-user-check"></i>
               <div>
@@ -482,8 +479,7 @@
 
       </div>
 
-      <!-- WIDGET: TOP PICKS / HOT BOOSTS -->
-      <div class="glass-card" id="widget-top-picks">
+      <div class="glass-card compact-picks-widget" id="widget-top-picks">
         <div class="card-header">
           <span style="color: #ff4d4d; display: flex; align-items: center; gap: 8px;">
             <i class="bx bxs-flame" style="font-size: 18px;"></i> TOP PICKS / HOT BOOSTS
@@ -493,7 +489,6 @@
           </div>
         </div>
 
-        <!-- LEAGUE / TOURNAMENT FILTER BUTTONS (EPL DEFAULT) -->
         <div class="top-picks-filter-bar">
           <button class="boost-filter-btn active" id="btn-boost-eng.1" onclick="filterTopPicks('eng.1', this)">EPL</button>
           <button class="boost-filter-btn" id="btn-boost-esp.1" onclick="filterTopPicks('esp.1', this)">LA LIGA</button>
@@ -503,21 +498,27 @@
           <button class="boost-filter-btn" id="btn-boost-uefa.champions" onclick="filterTopPicks('uefa.champions', this)">UEFA</button>
         </div>
 
-        <!-- BOOST CARDS CONTAINER -->
-        <div id="topPicksContainer" class="top-picks-grid-row">
-          <div style="text-align:center; padding:15px; width:100%;">
-            <i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#38bdf8;"></i>
+        <div class="top-picks-carousel-wrapper">
+          <button type="button" class="carousel-nav-btn prev-btn" id="topPicksPrevBtn" onclick="navigateTopPicks(-1)" title="Previous Page">
+            <i class="bx bx-chevron-left"></i>
+          </button>
+          
+          <div id="topPicksContainer" class="top-picks-single-row">
+            <div style="text-align:center; padding:15px; width:100%;">
+              <i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#38bdf8;"></i>
+            </div>
           </div>
+
+          <button type="button" class="carousel-nav-btn next-btn" id="topPicksNextBtn" onclick="navigateTopPicks(1)" title="Next Page">
+            <i class="bx bx-chevron-right"></i>
+          </button>
         </div>
       </div>
 
-      <!-- 3-COLUMN DASHBOARD GRID -->
       <div class="dashboard-grid">
 
-        <!-- COLUMN 1: BRAND DIRECTORY & DAILY TASKS -->
         <div style="display: flex; flex-direction: column; gap: 20px;">
           
-          <!-- WIDGET: BRAND DIRECTORY -->
           <div class="glass-card" id="widget-brand-dock">
             <div class="card-header">
               <span style="color: #f59e0b;"><i class="bx bx-pin"></i> BRAND DIRECTORY DOCK</span>
@@ -533,7 +534,6 @@
             <div id="brandLinksContainer" style="display: flex; flex-direction: column; gap: 10px;"></div>
           </div>
 
-          <!-- WIDGET: DAILY TASK DOCK -->
           <div class="glass-card" id="widget-task-dock">
             <div class="card-header">
               <span style="color: #ef4444;"><i class="bx bx-list-ul"></i> DAILY TASK DOCK</span>
@@ -547,18 +547,25 @@
           </div>
         </div>
 
-        <!-- COLUMN 2: LIVE TIME-SLOT DUTIES -->
         <div class="glass-card" id="widget-duties-dock">
           <div class="card-header">
             <span style="color: #f97316;"><i class="bx bx-time"></i> LIVE TIME-SLOT DUTIES</span>
-            <div class="actions"><i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-duties-dock')"></i></div>
+            <div class="actions">
+              <select id="traderFilterSelect" class="trader-filter-dropdown" onchange="filterTraderDuty(this.value)">
+                <option value="ALL" selected>ALL TRADERS</option>
+                <option value="ANN">ANN</option>
+                <option value="DAVE">DAVE</option>
+                <option value="KEN">KEN</option>
+                <option value="KRIZTEL">KRIZTEL</option>
+              </select>
+              <i class="bx bx-x" style="cursor:pointer;" onclick="hideWidgetDirect('widget-duties-dock')"></i>
+            </div>
           </div>
           <div id="liveDutyContent" style="display: flex; flex-direction: column; gap: 8px;">
             <div style="text-align:center; padding:15px;"><i class="bx bx-loader-alt bx-spin" style="font-size:20px; color:#38bdf8;"></i></div>
           </div>
         </div>
 
-        <!-- COLUMN 3: TOP GAMES -->
         <div class="glass-card" id="widget-games-dock">
           <div class="card-header">
             <span style="color: #38bdf8;"><i class="bx bx-play-circle"></i> TOP GAMES (DAILY MATCHDAY)</span>
@@ -579,7 +586,6 @@
     </main>
   </div>
 
-  <!-- INTERACTIVE URGENT HANDOVER MODAL -->
   <div id="handoverModal" class="handover-modal-overlay">
     <div class="handover-modal-card">
       <div class="handover-modal-header">
@@ -601,16 +607,12 @@
       </form>
 
       <div class="handover-modal-subtitle">ACTIVE HANDOVERS (Click <i class="bx bx-check"></i> when completed to delete)</div>
-      <div class="handover-items-list" id="handoverModalList">
-        <!-- Rendered Dynamically -->
-      </div>
+      <div class="handover-items-list" id="handoverModalList"></div>
     </div>
   </div>
 
-  <!-- REAL-TIME JIRA & URGENT HANDOVER SYNC SCRIPT -->
   <script>
     (function() {
-      /* --- JIRA SLA REAL-TIME ALERT --- */
       var JIRA_KEY = 'jira_tracked_tickets';
       var jiraChannel = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel('jira_sync_channel') : null;
 
@@ -685,14 +687,13 @@
       setInterval(checkJiraSLA, 10000);
     })();
 
-    /* --- URGENT HANDOVER MANAGER SYSTEM WITH CATEGORIZATION & COUNT --- */
     var HANDOVER_STORAGE_KEY = 'sbhub_urgent_handovers';
     var handoverChannel = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel('handover_sync_channel') : null;
 
     function getPriorityWeight(p) {
       if (p === 'URGENT/CRITICAL') return 3;
       if (p === 'Need Attention') return 2;
-      return 1; // Normal
+      return 1;
     }
 
     function getPriorityBadgeHTML(p) {
